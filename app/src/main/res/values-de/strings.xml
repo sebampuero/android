@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Goals App</string>
+    <string name="loginBtn">Einloggen</string>
+    <string name="registerBtn">Registrieren</string>
+    <string name="emailAddrInput">Email-Adresse</string>
+    <string name="name">Name</string>
+    <string name="lastname">Lastname</string>
+    <string name="new_post">Neues Post</string>
+    <string name="new_post_btn">Posten</string>
+    <string name="goals_profile_tv">Ziele</string>
+    <string name="commentBtn">Kommentieren</string>
+    <string name="logoutAction">Abmelden</string>
+    <string name="feed_nav">Feed</string>
+    <string name="profile_nav">Profil</string>
+    <string name="settings_nav">Einstellungen</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Password bestätigen</string>
+    <string name="goalsListLabel">Wähle einige vordefinierte Ziele aus:</string>
+    <string name="goalSpinnerLabel">Wähle das Ziel des Posts aus</string>
+    <string name="post_title_label">Titel des Posts</string>
+    <string name="post_content_hint">Inhalt des Posts here</string>
+    <string name="load_comments">Kommentare laden</string>
+    <string name="goals_colon">Ziele:</string>
+    <string name="edit_your_information">Bearbeite deine Infos</string>
+
+    <!-- Toasts infos -->
+
+    <string name="post_successfully_created">Post erfolgreich erstellt</string>
+    <string name="server_error">Server Fehler</string>
+    <string name="no_int_connection">Keine Internetverbindung</string>
+    <string name="empty_fields">Eingabefelder können nicht leer sein</string>
+    <string name="goal_select_for_post">Bitte, ein Ziel für das Post auswählen</string>
+    <string name="email_already_exists">Email-Adresse existiert bereits!</string>
+    <string name="pass_dont_match">Passwörter übereinstimmen nicht</string>
+    <string name="invalid_email">Ungültige Email-Adresse</string>
+    <string name="invalid_credentials">Falsche Authentifizierungsdaten</string>
+    <string name="logged_out">Logged out</string>
+    <string name="feed_toolbar_title">Feed</string>
+    <string name="profile_toolbar_title">Profil</string>
+    <string name="settings_toolbar_title">Einstellungen</string>
+    <string name="comments_toolbar_title">Kommentare</string>
+    <string name="newpost_toolbar_title">Neues Post</string>
+    <string name="no_goals_msg">Du hast noch keine Zeile, lege einige in deinem Profil fest</string>
+    <string name="save">Speichern</string>
+    <string name="send">Request senden</string>
+    <string name="goal_request_submit">Ziele</string>
+    <string name="goal_request_label">Keine Ziele, dir zu dir passen? Fordere neue an, mit Komma getrennt</string>
+    <string name="goalsListLabelEditProfile">Ziele</string>
+    <string name="goal_request_toast_msg">Ziel Request wurde den Admins gesendet</string>
+    <string name="goal_tip_msg">Verwende \'-\' statt Leerzeichen</string>
+    <string name="empty_field_singular">Field cannot be empty</string>
+    <string name="loading_goals_msg">Lade Ziele…</string>
+    <string name="loading_feed_msg">Lade Feed…</string>
+    <string name="profile_edit_success_msg">Profil erfolgreich bearbeitet</string>
+    <string name="edit_your_password">Bearbeite dein passwort</string>
+    <string name="old_password">Altes Passwort</string>
+    <string name="new_password">Neues Passwort</string>
+    <string name="new_password_conf">Bestätige neues Passwort</string>
+    <string name="save_new_password">Neues Passwort speichern</string>
+    <string name="old_password_error">Altes Passwort stimmt nicht</string>
+    <string name="password_update_success">Passwort wurde erfolgreich geupdated</string>
+    <string name="comments">Kommentar(e)</string>
+</resources>

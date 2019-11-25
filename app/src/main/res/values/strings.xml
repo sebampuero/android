@@ -1,0 +1,67 @@
+<resources>
+    <string name="app_name">Goals App</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="loginBtn">Login</string>
+    <string name="registerBtn">Register</string>
+    <string name="emailAddrInput">Email Address</string>
+    <string name="name">Name</string>
+    <string name="lastname">Lastname</string>
+    <string name="new_post">New post</string>
+    <string name="new_post_btn">Post</string>
+    <string name="goals_profile_tv">Goals</string>
+    <string name="commentBtn">Comment</string>
+    <string name="logoutAction">Logout</string>
+    <string name="feed_nav">Feed</string>
+    <string name="profile_nav">Profile</string>
+    <string name="settings_nav">Settings</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="goalsListLabel">Select a few predefined goals:</string>
+    <string name="goalSpinnerLabel">Select the goal of the post</string>
+    <string name="post_title_label">Post title</string>
+    <string name="post_content_hint">Post your content here</string>
+    <string name="load_comments">Show comments</string>
+    <string name="goals_colon">Goals:</string>
+    <string name="edit_your_information">Edit your information</string>
+
+    <!-- Toasts infos -->
+
+    <string name="post_successfully_created">Post successfully created</string>
+    <string name="server_error">Server error</string>
+    <string name="no_int_connection">No internet connection</string>
+    <string name="empty_fields">Fields cannot be empty</string>
+    <string name="goal_select_for_post">Please select a goal for the post</string>
+    <string name="email_already_exists">Email address exists already!</string>
+    <string name="pass_dont_match">Passwords dont match</string>
+    <string name="invalid_email">Invalid email address</string>
+    <string name="invalid_credentials">Invalid credentials</string>
+    <string name="logged_out">Logged out</string>
+    <string name="feed_toolbar_title">Feed</string>
+    <string name="profile_toolbar_title">Profile</string>
+    <string name="settings_toolbar_title">Settings</string>
+    <string name="comments_toolbar_title">Comment section</string>
+    <string name="newpost_toolbar_title">New post</string>
+    <string name="no_goals_msg">You have no current goals yet, consider selecting a few ones in your profile</string>
+    <string name="save">Save</string>
+    <string name="goal_request_submit">Goal request (s)</string>
+    <string name="goal_request_label">No adequate goals for you? Request new ones, separated by commas</string>
+    <string name="send">Send request</string>
+    <string name="goalsListLabelEditProfile">Goals section</string>
+    <string name="goal_request_toast_msg">Goal request was sent to the admins</string>
+    <string name="goal_tip_msg">Use \'-\' instead of spaces</string>
+    <string name="empty_field_singular">Field cannot be empty</string>
+    <string name="loading_goals_msg">Loading goals...</string>
+    <string name="loading_feed_msg">Loading feed...</string>
+    <string name="profile_edit_success_msg">Profile edited succesfully</string>
+    <string name="edit_your_password">Edit your password</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="old_password">Old password</string>
+    <string name="new_password">New password</string>
+    <string name="new_password_conf">Confirm new password</string>
+    <string name="save_new_password">Save new password</string>
+    <string name="old_password_error">Old password is incorrect</string>
+    <string name="password_update_success">Password updated successfully</string>
+    <string name="comments">comment (s)</string>
+</resources>

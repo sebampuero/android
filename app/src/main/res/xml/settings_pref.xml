@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <DropDownPreference
+        android:key="languages"
+        android:title="Change language"/>
+    <SwitchPreference
+        android:key="automatic_detection"
+        android:title="Detect lanaguage from operating system"/>
+</PreferenceScreen>

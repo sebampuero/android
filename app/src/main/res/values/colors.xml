@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="formsBackground">#0098de</color>
+    <color name="colorPrimary">#e6e6e6</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="inAppBackgroundColor">#f7f7f7</color>
+    <color name="navBottomBackgroundColor">#e6e6e6</color>
+    <color name="black">#000000</color>
+</resources>

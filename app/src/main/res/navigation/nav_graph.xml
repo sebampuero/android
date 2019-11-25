@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/feedFragment">
+
+    <fragment
+        android:id="@+id/feedFragment"
+        android:name="com.example.tm18app.fragment.FeedFragment"
+        android:label="Feed"
+        tools:layout="@layout/fragment_feed">
+        <action
+            android:id="@+id/action_feedFragment_to_newPostFragment"
+            app:destination="@id/newPostFragment" />
+        <action
+            android:id="@+id/action_feedFragment_to_commentSectionFragment"
+            app:destination="@id/commentSectionFragment" />
+        <action
+            android:id="@+id/action_feedFragment_to_ftime_nav"
+            app:destination="@id/ftime_nav"
+            app:popUpTo="@+id/ftime_nav" />
+    </fragment>
+    <fragment
+        android:id="@+id/newPostFragment"
+        android:name="com.example.tm18app.fragment.NewPostFragment"
+        android:label="New post"
+        tools:layout="@layout/fragment_new_post">
+        <action
+            android:id="@+id/action_newPostFragment_to_feedFragment"
+            app:destination="@id/feedFragment" />
+        <action
+            android:id="@+id/action_newPostFragment_to_ftime_nav"
+            app:destination="@id/ftime_nav"
+            app:popUpTo="@+id/ftime_nav" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.tm18app.fragment.SettingsFragment"
+        android:label="Settings"
+        tools:layout="@layout/fragment_settings">
+        <action
+            android:id="@+id/action_settingsFragment_to_ftime_nav"
+            app:destination="@id/ftime_nav"
+            app:popUpTo="@+id/ftime_nav" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.tm18app.fragment.ProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile">
+        <action
+            android:id="@+id/action_profileFragment_to_editProfileFragment"
+            app:destination="@id/editProfileFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_commentSectionFragment"
+            app:destination="@id/commentSectionFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_ftime_nav"
+            app:destination="@id/ftime_nav"
+            app:popUpTo="@+id/ftime_nav" />
+    </fragment>
+    <fragment
+        android:id="@+id/commentSectionFragment"
+        android:name="com.example.tm18app.fragment.CommentSectionFragment"
+        android:label="Comments"
+        tools:layout="@layout/fragment_comment_section" >
+        <action
+            android:id="@+id/action_commentSectionFragment_to_ftime_nav"
+            app:destination="@id/ftime_nav"
+            app:popUpTo="@+id/ftime_nav" />
+    </fragment>
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="com.example.tm18app.fragment.EditProfileFragment"
+        android:label="Edit Profile"
+        tools:layout="@layout/fragment_edit_profile" >
+        <action
+            android:id="@+id/action_editProfileFragment_to_ftime_nav"
+            app:destination="@id/ftime_nav"
+            app:popUpTo="@+id/ftime_nav" />
+        <action
+            android:id="@+id/action_editProfileFragment_to_profileFragment"
+            app:destination="@id/profileFragment"
+            app:popUpTo="@+id/profileFragment" />
+        <action
+            android:id="@+id/action_editProfileFragment_to_editPasswordFragment"
+            app:destination="@id/editPasswordFragment" />
+    </fragment>
+    <navigation
+        android:id="@+id/ftime_nav"
+        app:startDestination="@id/mainFragment">
+
+        <fragment
+            android:id="@+id/loginFragment"
+            android:name="com.example.tm18app.fragment.LoginFragment"
+            android:label="Login"
+            tools:layout="@layout/fragment_login" />
+        <fragment
+            android:id="@+id/mainFragment"
+            android:name="com.example.tm18app.fragment.MainFragment"
+            android:label="Main"
+            tools:layout="@layout/fragment_main" >
+            <action
+                android:id="@+id/action_mainFragment_to_loginFragment"
+                app:destination="@id/loginFragment" />
+            <action
+                android:id="@+id/action_mainFragment_to_registrationFragment"
+                app:destination="@id/registrationFragment" />
+        </fragment>
+        <fragment
+            android:id="@+id/registrationFragment"
+            android:name="com.example.tm18app.fragment.RegistrationFragment"
+            android:label="Register"
+            tools:layout="@layout/fragment_registration" />
+        <action
+            android:id="@+id/action_global_feedFragment"
+            app:destination="@id/feedFragment"
+            app:popUpTo="@+id/feedFragment" />
+    </navigation>
+    <fragment
+        android:id="@+id/editPasswordFragment"
+        android:name="com.example.tm18app.fragment.EditPasswordFragment"
+        android:label="fragment_edit_password"
+        tools:layout="@layout/fragment_edit_password" />
+</navigation>
