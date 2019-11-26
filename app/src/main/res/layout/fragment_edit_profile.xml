@@ -101,47 +101,24 @@
                     android:layout_width="match_parent"
                     android:layout_marginEnd="10dp"
                     android:layout_marginStart="10dp"
-                    android:layout_marginBottom="30dp"
-                    android:layout_height="100dp" />
-
-                <TextView
-                    android:id="@+id/goalRequestsLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/goal_request_label"
-                    android:layout_marginStart="10dp"
                     android:layout_marginBottom="10dp"
-                    android:textStyle="bold"
-                    android:textSize="15sp"/>
+                    android:layout_height="100dp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
-                    <EditText
-                        android:layout_width="0dp"
-                        android:layout_weight="0.8"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:id="@+id/goalRequest"
-                        android:hint="@string/goal_request_submit"
-                        android:text="@={myVM.goalRequest}"
-                        android:layout_marginStart="10dp"
-                        android:padding="10dp"
-                        android:background="@drawable/custom_edit_text_forms"
-                        android:layout_marginEnd="10dp"
-                        android:inputType="text" />
-
-                    <Button
-                        android:layout_width="0dp"
-                        android:layout_weight="0.5"
+                        android:text="@string/add_new_goals"
+                        android:layout_marginStart="5dp"/>
+                    <ImageButton
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:text="@string/send"
-                        android:onClick="@{() -> myVM.onGoalRequestClicked()}"
-                        android:background="@drawable/custom_btn_form"
-                        android:id="@+id/goalRequestBtn"/>
+                        android:src="@drawable/ic_add_black_24dp"
+                        android:onClick="@{() -> myVM.onNewGoalsClicked()}"
+                        android:background="@color/inAppBackgroundColor"/>
                 </LinearLayout>
 
                 <View
@@ -153,8 +130,9 @@
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:text="@string/save"
+                    android:layout_marginStart="5dp"
+                    android:padding="10dp"
+                    android:text="@string/save_changes"
                     android:onClick="@{() -> myVM.onSaveClicked()}"
                     android:background="@drawable/custom_btn_form"
                     android:id="@+id/saveEditProfileBtn"/>

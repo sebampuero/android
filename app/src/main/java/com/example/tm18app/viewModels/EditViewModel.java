@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.widget.Toast;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.navigation.NavController;
@@ -12,25 +13,37 @@ import com.example.tm18app.R;
 import com.example.tm18app.adapters.MultiGoalSelectAdapter;
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.network.EditProfileAsyncTask;
-import com.example.tm18app.network.FetchGoalsAsyncTask;
+import com.example.tm18app.pojos.Goal;
 import com.example.tm18app.pojos.GoalItemSelection;
 import com.example.tm18app.pojos.User;
+import com.example.tm18app.repository.GoalsItemRepository;
+import com.example.tm18app.util.SingleLiveEvent;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class EditViewModel extends ViewModel {
 
     public MutableLiveData<String> name = new MutableLiveData<>();
     public MutableLiveData<String> lastname = new MutableLiveData<>();
     public MutableLiveData<String> email = new MutableLiveData<>();
-    public MutableLiveData<String> goalRequest = new MutableLiveData<>();
+    public SingleLiveEvent<Boolean> navigateToDialog = new SingleLiveEvent<>(); // https://medium.com/androiddevelopers/livedata-with-snackbar-navigation-and-other-events-the-singleliveevent-case-ac2622673150
+    private LiveData<List<Goal>> goalItemsLiveData;
+
+    public LiveData<List<Goal>> getGoalLiveData() {
+        return goalItemsLiveData;
+    }
 
     private int userID;
-    private ArrayList<GoalItemSelection> goals;
     private MultiGoalSelectAdapter adapter;
     private Context appContext;
     private SharedPreferences preferences;
     private NavController navController;
+
+    private void fetchGoals() {
+        GoalsItemRepository goalsItemRepository = new GoalsItemRepository();
+        this.goalItemsLiveData = goalsItemRepository.getGoals();
+    }
 
     public void onSaveClicked() {
         if(isFormValid()){
@@ -52,24 +65,8 @@ public class EditViewModel extends ViewModel {
     }
 
 
-    public void onGoalRequestClicked() {
-        String goalRequests = goalRequest.getValue();
-        if(goalRequests != null){
-            if(goalRequests.contains(" ")){
-                Toast.makeText(appContext, appContext.getString(R.string.goal_tip_msg), Toast.LENGTH_LONG).show();
-                return;
-            }
-            if(goalRequests.contains(",")){
-                goalRequests.split(",");
-                //send goal requests
-            }else{
-                // send goal request
-            }
-            Toast.makeText(appContext, appContext.getString(R.string.goal_request_toast_msg), Toast.LENGTH_LONG).show();
-            goalRequest.setValue("");
-        }else{
-            Toast.makeText(appContext, appContext.getString(R.string.empty_field_singular), Toast.LENGTH_LONG).show();
-        }
+    public void onNewGoalsClicked() {
+        navigateToDialog.call();
     }
 
     public void onChangePasswordClicked() {
@@ -95,22 +92,12 @@ public class EditViewModel extends ViewModel {
         return true;
     }
 
-    public void setGoalsAdapter(MultiGoalSelectAdapter adapter) {
-        this.adapter = adapter;
-        goals = new ArrayList<>();
-        this.adapter.setGoals(goals);
-        if(preferences.getString(Constant.GOAL_TAGS, null) == null)
-            new FetchGoalsAsyncTask(adapter, appContext).execute();
-        else
-            new FetchGoalsAsyncTask(adapter,
-                    preferences.getString(Constant.GOAL_TAGS, null).split(","),
-                    appContext).execute();
-    }
 
     public void setContext(Context context) {
         this.appContext = context;
         preferences = appContext.getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
         fillUserData();
+        fetchGoals();
     }
 
     private void fillUserData() {
@@ -124,4 +111,7 @@ public class EditViewModel extends ViewModel {
         this.navController = navController;
     }
 
+    public void setAdapter(MultiGoalSelectAdapter adapter) {
+        this.adapter = adapter;
+    }
 }

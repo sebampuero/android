@@ -42,10 +42,10 @@
     <string name="comments_toolbar_title">Kommentare</string>
     <string name="newpost_toolbar_title">Neues Post</string>
     <string name="no_goals_msg">Du hast noch keine Zeile, lege einige in deinem Profil fest</string>
-    <string name="save">Speichern</string>
+    <string name="save_changes">Save changes</string>
     <string name="send">Request senden</string>
     <string name="goal_request_submit">Ziele</string>
-    <string name="goal_request_label">Keine Ziele, dir zu dir passen? Fordere neue an, mit Komma getrennt</string>
+    <string name="goal_request_label">Keine Ziele, dir zu dir passen? Fordere ein neues an</string>
     <string name="goalsListLabelEditProfile">Ziele</string>
     <string name="goal_request_toast_msg">Ziel Request wurde den Admins gesendet</string>
     <string name="goal_tip_msg">Verwende \'-\' statt Leerzeichen</string>
@@ -61,4 +61,5 @@
     <string name="old_password_error">Altes Passwort stimmt nicht</string>
     <string name="password_update_success">Passwort wurde erfolgreich geupdated</string>
     <string name="comments">Kommentar(e)</string>
+    <string name="add_new_goals">Add new goals</string>
 </resources>

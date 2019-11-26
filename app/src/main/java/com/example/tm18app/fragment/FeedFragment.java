@@ -83,27 +83,35 @@ public class FeedFragment extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                model.getPostLiveData().removeObservers(fragment);
-                fetchData();
-                model.fetchData();
+                if(model.getPostLiveData() != null){
+                    model.getPostLiveData().removeObservers(fragment);
+                    fetchData();
+                    model.fetchData();
+                }
             }
         });
     }
 
     private void fetchData() {
-        model.getPostLiveData().observe(this, new Observer<List<Post>>() {
-            @Override
-            public void onChanged(List<Post> posts) {
-                if(posts != null){
-                    postsModelLists.clear();
-                    postsModelLists.addAll(posts);
-                    Collections.sort(postsModelLists);
-                    adapter.notifyDataSetChanged();
-                    swipeRefreshLayout.setRefreshing(false);
-                    progressBar.setVisibility(View.GONE);
+        if(model.getPostLiveData() != null){
+            model.getPostLiveData().observe(this, new Observer<List<Post>>() {
+                @Override
+                public void onChanged(List<Post> posts) {
+                    if(posts != null){
+                        postsModelLists.clear();
+                        postsModelLists.addAll(posts);
+                        Collections.sort(postsModelLists);
+                        adapter.notifyDataSetChanged();
+                        swipeRefreshLayout.setRefreshing(false);
+                        progressBar.setVisibility(View.GONE);
+                    }
                 }
-            }
-        });
+            });
+        }else{
+            postsModelLists.clear();
+            adapter.notifyDataSetChanged();
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
     private void setupRecyclerView() {

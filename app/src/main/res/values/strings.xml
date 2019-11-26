@@ -43,9 +43,9 @@
     <string name="comments_toolbar_title">Comment section</string>
     <string name="newpost_toolbar_title">New post</string>
     <string name="no_goals_msg">You have no current goals yet, consider selecting a few ones in your profile</string>
-    <string name="save">Save</string>
+    <string name="save_changes">Save changes</string>
     <string name="goal_request_submit">Goal request (s)</string>
-    <string name="goal_request_label">No adequate goals for you? Request new ones, separated by commas</string>
+    <string name="goal_request_label">No adequate goals for you? Request a new one</string>
     <string name="send">Send request</string>
     <string name="goalsListLabelEditProfile">Goals section</string>
     <string name="goal_request_toast_msg">Goal request was sent to the admins</string>
@@ -64,4 +64,5 @@
     <string name="old_password_error">Old password is incorrect</string>
     <string name="password_update_success">Password updated successfully</string>
     <string name="comments">comment (s)</string>
+    <string name="add_new_goals">Add new goals</string>
 </resources>

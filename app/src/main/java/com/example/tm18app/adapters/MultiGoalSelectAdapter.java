@@ -27,8 +27,7 @@ public class MultiGoalSelectAdapter extends RecyclerView.Adapter<MultiGoalSelect
         this.goals = goals;
     }
 
-    public MultiGoalSelectAdapter(Context appContext){
-        this.appContext = appContext;
+    public MultiGoalSelectAdapter() {
     }
 
     public void setGoals(ArrayList<GoalItemSelection> goals) {
@@ -40,7 +39,7 @@ public class MultiGoalSelectAdapter extends RecyclerView.Adapter<MultiGoalSelect
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(appContext).inflate(R.layout.goals_listview, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.goals_listview, parent, false);
         return new ViewHolder(view);
     }
 
@@ -51,7 +50,7 @@ public class MultiGoalSelectAdapter extends RecyclerView.Adapter<MultiGoalSelect
 
     @Override
     public int getItemCount() {
-        return goals.size();
+        return (goals != null) ? goals.size() : 0;
     }
 
     public ArrayList<GoalItemSelection> getAll() {

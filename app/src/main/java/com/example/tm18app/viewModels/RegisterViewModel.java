@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.navigation.NavController;
@@ -15,9 +16,13 @@ import com.example.tm18app.R;
 import com.example.tm18app.adapters.MultiGoalSelectAdapter;
 import com.example.tm18app.network.RetrofitNetworkConnectionSingleton;
 import com.example.tm18app.network.UserRestInterface;
+import com.example.tm18app.pojos.Goal;
 import com.example.tm18app.pojos.User;
+import com.example.tm18app.repository.GoalsItemRepository;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -29,10 +34,15 @@ public class RegisterViewModel extends ViewModel {
     public MutableLiveData<String> email = new MutableLiveData<>();
     public MutableLiveData<String> password = new MutableLiveData<>();
     public MutableLiveData<String> passwordConf = new MutableLiveData<>();
+    public LiveData<List<Goal>> getGoalLiveData() {
+        return goalItemsLiveData;
+    }
 
     private Context ctx;
     private NavController navController;
     private MultiGoalSelectAdapter adapter;
+    private LiveData<List<Goal>> goalItemsLiveData;
+
 
     private static final String TAG = RegisterViewModel.class.getSimpleName();
     private static boolean DEBUG = true;
@@ -40,8 +50,14 @@ public class RegisterViewModel extends ViewModel {
     public RegisterViewModel(){
     }
 
+    private void fetchGoals() {
+        GoalsItemRepository goalsItemRepository = new GoalsItemRepository();
+        this.goalItemsLiveData = goalsItemRepository.getGoals();
+    }
+
     public void setContext(Context context) {
         this.ctx = context;
+        fetchGoals();
     }
 
     public void setNavController(NavController navController) {
@@ -50,11 +66,6 @@ public class RegisterViewModel extends ViewModel {
 
     public void onRegister(){
         if(isRegisterValid()){
-            if(DEBUG){
-                for(int i = 0; i < this.adapter.getSelected().size(); i++){
-                    Log.d(TAG, this.adapter.getSelected().get(i).toString());
-                }
-            }
             User user = new User();
             user.setName(name.getValue());
             user.setLastname(lastname.getValue());
@@ -105,13 +116,13 @@ public class RegisterViewModel extends ViewModel {
     static class UserRegisterAsyncTask extends AsyncTask<String, String, User>{
          NavController navController;
          int statusCode;
-         Context appContext;
+         WeakReference<Context> appContext;
          UserRestInterface restClient;
          User userToRegister;
 
         UserRegisterAsyncTask(NavController navController, Context appContext, User userToRegister) {
             this.navController = navController;
-            this.appContext = appContext;
+            this.appContext = new WeakReference<>(appContext);
             RetrofitNetworkConnectionSingleton retrofitNetworkConnectionSingleton = RetrofitNetworkConnectionSingleton.getInstance();
             restClient = retrofitNetworkConnectionSingleton.retrofitInstance().create(UserRestInterface.class);
             this.userToRegister = userToRegister;
@@ -143,13 +154,13 @@ public class RegisterViewModel extends ViewModel {
 
         @Override
         protected void onPostExecute(User user) {
-            SharedPreferences sharedPreferences = appContext.getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences = appContext.get().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             if(user == null && statusCode == 500) {
-                Toast.makeText(appContext, appContext.getString(R.string.server_error), Toast.LENGTH_LONG).show();
+                Toast.makeText(appContext.get(), appContext.get().getString(R.string.server_error), Toast.LENGTH_LONG).show();
             }
             else if(user == null && statusCode == 400){
-                Toast.makeText(appContext, appContext.getString(R.string.email_already_exists), Toast.LENGTH_SHORT).show();
+                Toast.makeText(appContext.get(), appContext.get().getString(R.string.email_already_exists), Toast.LENGTH_SHORT).show();
             }
             else if(user!=null && statusCode == 200) {
                 editor.putBoolean(Constant.LOGGED_IN, true);
