@@ -32,6 +32,10 @@ public class PostItemRepository {
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                 if(response.body() != null){
                     data.setValue(response.body());
+                    Log.e("TAG", "repo not null");
+                }
+                else{
+                    Log.e("TAG", "repo null");
                 }
             }
 
@@ -77,5 +81,20 @@ public class PostItemRepository {
             }
         });
         return data;
+    }
+
+    public void createPost(Post post, MutableLiveData<Integer> postLiveData){
+        final MutableLiveData<Integer> responseCode = postLiveData;
+        postRestInterface.newPost(post).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                responseCode.setValue(response.code());
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+
+            }
+        });
     }
 }

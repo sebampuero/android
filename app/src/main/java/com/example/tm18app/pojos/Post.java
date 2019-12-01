@@ -16,6 +16,13 @@ public class Post implements Comparable<Post>{
     public Post() {
     }
 
+    public Post(String title, String content, int userID, int goalID) {
+        this.title = title;
+        this.content = content;
+        this.userID = userID;
+        this.goalId = goalID;
+    }
+
 
     public String getTitle() {
         return title;

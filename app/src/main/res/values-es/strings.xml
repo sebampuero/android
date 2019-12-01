@@ -65,5 +65,15 @@
     <string name="old_password_error">Contraseña actual incorrecta</string>
     <string name="password_update_success">Contraseña editada con éxito</string>
     <string name="comments">commentario(s)</string>
-    <string name="add_new_goals">Add new goals</string>
+    <string name="add_new_goals">Agrega nuevas metas</string>
+    <string name="no_feeds">No hay posts</string>
+    <string name="logging_in">Entrando</string>
+    <string name="registering">Registrando</string>
+    <string name="you_have_no_posts">Aun no tienes posts</string>
+    <string name="language">Idioma</string>
+    <string name="english">Ingles</string>
+    <string name="deutsch">Aleman</string>
+    <string name="spanish">Español</string>
+    <string name="detect_automatically">Reconocer idioma del sistema operativo</string>
+
 </resources>

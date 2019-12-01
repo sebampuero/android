@@ -113,6 +113,8 @@ public class RegisterViewModel extends ViewModel {
         this.adapter = adapter;
     }
 
+    //TODO: Remove this async task from here, take concept from new post fragment
+
     static class UserRegisterAsyncTask extends AsyncTask<String, String, User>{
          NavController navController;
          int statusCode;
@@ -150,6 +152,11 @@ public class RegisterViewModel extends ViewModel {
                 e.printStackTrace();
                 return null;
             }
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            Toast.makeText(appContext.get(), appContext.get().getString(R.string.registering), Toast.LENGTH_SHORT).show();
         }
 
         @Override

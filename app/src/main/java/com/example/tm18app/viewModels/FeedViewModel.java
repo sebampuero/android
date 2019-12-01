@@ -35,7 +35,6 @@ public class FeedViewModel extends ViewModel {
 
     public void setContext(FragmentActivity activity) {
         this.appContext = activity.getApplicationContext();
-        fetchData();
     }
 
     public void fetchData() {

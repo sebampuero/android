@@ -60,6 +60,7 @@ public class EditViewModel extends ViewModel {
             }
             user.setGoals(goalIds);
             user.setGoalTags(goalTags);
+            //TODO: use repository
             new EditProfileAsyncTask(navController, appContext, user, preferences).execute();
         }
     }

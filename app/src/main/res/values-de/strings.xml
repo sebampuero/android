@@ -61,5 +61,15 @@
     <string name="old_password_error">Altes Passwort stimmt nicht</string>
     <string name="password_update_success">Passwort wurde erfolgreich geupdated</string>
     <string name="comments">Kommentar(e)</string>
-    <string name="add_new_goals">Add new goals</string>
+    <string name="add_new_goals">Neue Ziele hinzufügen</string>
+    <string name="no_feeds">Keine Posts</string>
+    <string name="logging_in">Einloggen</string>
+    <string name="registering">Registrieren</string>
+    <string name="you_have_no_posts">Du hast keine Posts</string>
+    <string name="language">Sprache</string>
+    <string name="english">Englisch</string>
+    <string name="deutsch">Deutsch</string>
+    <string name="spanish">Spanisch</string>
+    <string name="detect_automatically">Sprache vom Betriebssystem erkennen</string>
+
 </resources>

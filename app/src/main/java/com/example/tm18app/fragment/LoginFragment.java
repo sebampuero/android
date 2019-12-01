@@ -36,7 +36,6 @@ public class LoginFragment extends Fragment {
         model = ViewModelProviders.of(getActivity()).get(LoginViewModel.class);
         model.setContext(getContext());
         mainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
-        //mainModel.getActionBar().hide();
         FragmentLoginBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_login, container, false);
         binding.setMyVM(model);
         binding.setLifecycleOwner(this);

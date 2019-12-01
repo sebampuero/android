@@ -10,11 +10,12 @@
     android:layout_height="match_parent"
     tools:context=".fragment.RegistrationFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
         android:background="@drawable/main_pages_background">
-
 
         <EditText
             android:id="@+id/nameInput"
@@ -25,11 +26,8 @@
             android:hint="@string/name"
             android:padding="10dp"
             android:text="@={myVM.name}"
-            android:layout_marginBottom="30dp"
-            android:background="@drawable/custom_edit_text_forms"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/lastnameInput" />
+            android:layout_marginTop="30dp"
+            android:background="@drawable/custom_edit_text_forms" />
 
         <EditText
             android:id="@+id/lastnameInput"
@@ -41,10 +39,8 @@
             android:background="@drawable/custom_edit_text_forms"
             android:hint="@string/lastname"
             android:text="@={myVM.lastname}"
-            android:layout_marginBottom="30dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/emailAddresInputRegister" />
+            android:layout_marginTop="30dp"
+            />
 
         <EditText
             android:id="@+id/emailAddresInputRegister"
@@ -56,10 +52,8 @@
             android:background="@drawable/custom_edit_text_forms"
             android:text="@={myVM.email}"
             android:inputType="textEmailAddress"
-            android:layout_marginBottom="30dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/passwordInputRegister"/>
+            android:layout_marginTop="30dp"
+            />
 
         <EditText
             android:id="@+id/passwordInputRegister"
@@ -71,10 +65,7 @@
             android:inputType="textPassword"
             android:text="@={myVM.password}"
             android:hint="@string/password"
-            android:layout_marginBottom="30dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/passwordInputRegisterConf"/>
+            android:layout_marginTop="30dp" />
 
         <EditText
             android:id="@+id/passwordInputRegisterConf"
@@ -86,42 +77,43 @@
             android:inputType="textPassword"
             android:hint="@string/confirm_password"
             android:text="@={myVM.passwordConf}"
-            android:layout_marginBottom="30dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/goalsComboBox"/>
+            android:layout_marginTop="30dp"
+            />
+
         <TextView
             android:id="@+id/goalsListLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/goalsListLabel"
+            android:layout_marginTop="10dp"
             android:textStyle="bold"
-            android:textSize="15sp"
-            app:layout_constraintBottom_toTopOf="@id/goalsComboBox"
-            app:layout_constraintLeft_toLeftOf="@id/goalsComboBox"/>
+            android:textSize="15sp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/goalsComboBox"
             android:layout_width="match_parent"
             android:layout_marginEnd="50dp"
+            android:visibility="gone"
             android:layout_marginStart="50dp"
-            android:layout_height="100dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/registrationBtn"/>
+            android:layout_height="100dp" />
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progressBarRegistration"/>
 
         <Button
             android:id="@+id/registrationBtn"
-            android:layout_width="197dp"
-            android:layout_height="48dp"
-            android:layout_marginBottom="96dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:padding="10dp"
             android:background="@drawable/custom_btn_form"
             android:text="@string/registerBtn"
             android:onClick="@{() -> myVM.onRegister()}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            />
+
+    </LinearLayout>
 
 
 </FrameLayout></layout>

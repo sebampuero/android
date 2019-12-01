@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
@@ -33,6 +34,8 @@ public class RegistrationFragment extends Fragment {
 
     private MultiGoalSelectAdapter adapter;
     private FragmentRegistrationBinding binding;
+    private ProgressBar progressBar;
+    private RecyclerView recyclerView;
 
     public RegistrationFragment() {
     }
@@ -46,12 +49,15 @@ public class RegistrationFragment extends Fragment {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_registration, container, false);
         binding.setMyVM(model);
         binding.setLifecycleOwner(this);
+        progressBar = binding.progressBarRegistration;
         model.setNavController(mainModel.getNavController());
         setupGoalsBoxRecyclerView();
         model.getGoalLiveData().observe(this, new Observer<List<Goal>>() {
             @Override
             public void onChanged(List<Goal> goals) {
                 prepareDataForAdapter(goals);
+                progressBar.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
             }
         });
         model.setGoalsAdapter(adapter);
@@ -69,7 +75,7 @@ public class RegistrationFragment extends Fragment {
     }
 
     private void setupGoalsBoxRecyclerView() {
-        RecyclerView recyclerView = binding.goalsComboBox;
+        recyclerView = binding.goalsComboBox;
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
         adapter = new MultiGoalSelectAdapter();

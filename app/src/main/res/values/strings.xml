@@ -65,4 +65,14 @@
     <string name="password_update_success">Password updated successfully</string>
     <string name="comments">comment (s)</string>
     <string name="add_new_goals">Add new goals</string>
+    <string name="no_feeds">No feeds</string>
+    <string name="logging_in">Logging in</string>
+    <string name="registering">Regisstering</string>
+    <string name="you_have_no_posts">You have no posts</string>
+    <string name="language">Language</string>
+    <string name="english">English</string>
+    <string name="deutsch">German</string>
+    <string name="spanish">Spanish</string>
+    <string name="detect_automatically">Detect language from OS</string>
+
 </resources>

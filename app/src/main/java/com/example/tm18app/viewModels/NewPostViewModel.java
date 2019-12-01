@@ -5,13 +5,14 @@ import android.content.SharedPreferences;
 import android.widget.Toast;
 
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import androidx.navigation.NavController;
 
 import com.example.tm18app.R;
 import com.example.tm18app.constants.Constant;
-import com.example.tm18app.network.PostAsyncTask;
+import com.example.tm18app.pojos.Post;
+import com.example.tm18app.repository.PostItemRepository;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,12 +22,13 @@ public class NewPostViewModel extends ViewModel {
     public MutableLiveData<String> title = new MutableLiveData<>();
     public MutableLiveData<String> content = new MutableLiveData<>();
 
-    private NavController navController;
     private Context appContext;
     private String selectedGoal;
 
-    public void setNavController(NavController navController) {
-        this.navController = navController;
+    private LiveData<Integer> postLiveDataResponse = new MutableLiveData<>();
+
+    public LiveData<Integer> getPostLiveDataResponse(){
+        return postLiveDataResponse;
     }
 
     public void setContext(FragmentActivity activity) {
@@ -45,11 +47,9 @@ public class NewPostViewModel extends ViewModel {
                     new ArrayList<>(Arrays.asList(sharedPreferences
                             .getString(Constant.GOAL_IDS, null).split(",")));
             int goalID = Integer.valueOf(userGoalIds.get(userGoalTags.indexOf(selectedGoal)));
-            new PostAsyncTask(navController, appContext)
-                    .execute(title.getValue(),
-                            content.getValue(),
-                            String.valueOf(userID),
-                            String.valueOf(goalID));
+            PostItemRepository repository = new PostItemRepository();
+            repository.createPost(new Post(title.getValue(), content.getValue(), userID, goalID),
+                    (MutableLiveData<Integer>) postLiveDataResponse);
             cleanValues();
         }
     }

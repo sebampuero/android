@@ -13,9 +13,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.example.tm18app.constants.Constant;
@@ -45,11 +47,13 @@ public class FeedFragment extends Fragment {
     private PostItemAdapter adapter;
     private List<Post> postsModelLists = new ArrayList<>();
     private ProgressBar progressBar;
+    private boolean goalsExist = true;
+
+    private LinearLayout feedLinearLayout;
 
     public FeedFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,14 +63,20 @@ public class FeedFragment extends Fragment {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_feed, container, false);
         binding.setMyVM(model);
         binding.setLifecycleOwner(this);
-        progressBar = binding.pogressBar;
+        progressBar = binding.progressBarFeed;
+        feedLinearLayout = binding.feedLinearLayout;
         progressBar.setVisibility(View.VISIBLE);
         model.setNavController(mainModel.getNavController());
         setupSwipeRefreshLayout();
         setupRecyclerView();
-        checkIfGoalsExist();
         model.setContext(getActivity());
-        fetchData();
+        checkIfGoalsExist();
+        if(goalsExist){
+            model.fetchData();
+            fetchData();
+        }else{
+            progressBar.setVisibility(View.GONE);
+        }
         return binding.getRoot();
     }
 
@@ -74,6 +84,10 @@ public class FeedFragment extends Fragment {
         SharedPreferences preferences = getActivity().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
         if(preferences.getString(Constant.GOAL_TAGS, null) == null){
             Snackbar.make(binding.getRoot(), getActivity().getString(R.string.no_goals_msg), Snackbar.LENGTH_LONG).show();
+            feedLinearLayout.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+            postsModelLists.clear();
+            goalsExist = false;
         }
     }
 
@@ -83,10 +97,12 @@ public class FeedFragment extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if(model.getPostLiveData() != null){
+                if(model.getPostLiveData() != null && goalsExist){
                     model.getPostLiveData().removeObservers(fragment);
                     fetchData();
                     model.fetchData();
+                }else{
+                    swipeRefreshLayout.setRefreshing(false);
                 }
             }
         });
@@ -97,19 +113,24 @@ public class FeedFragment extends Fragment {
             model.getPostLiveData().observe(this, new Observer<List<Post>>() {
                 @Override
                 public void onChanged(List<Post> posts) {
-                    if(posts != null){
-                        postsModelLists.clear();
-                        postsModelLists.addAll(posts);
-                        Collections.sort(postsModelLists);
-                        adapter.notifyDataSetChanged();
-                        swipeRefreshLayout.setRefreshing(false);
-                        progressBar.setVisibility(View.GONE);
+                    if(posts.size() > 0){
+                        if(goalsExist){
+                            postsModelLists.clear();
+                            postsModelLists.addAll(posts);
+                            Collections.sort(postsModelLists);
+                            adapter.notifyDataSetChanged();
+                            swipeRefreshLayout.setRefreshing(false);
+                            feedLinearLayout.setVisibility(View.GONE);
+                            recyclerView.setVisibility(View.VISIBLE);
+                        }
+                    }else{
+                        feedLinearLayout.setVisibility(View.VISIBLE);
+                        recyclerView.setVisibility(View.GONE);
                     }
+                    progressBar.setVisibility(View.GONE);
                 }
             });
         }else{
-            postsModelLists.clear();
-            adapter.notifyDataSetChanged();
             progressBar.setVisibility(View.GONE);
         }
     }
@@ -122,6 +143,5 @@ public class FeedFragment extends Fragment {
                 mainModel.getNavController(), this);
         recyclerView.setAdapter(adapter);
     }
-
 
 }

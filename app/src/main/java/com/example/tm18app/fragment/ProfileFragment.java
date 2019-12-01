@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.example.tm18app.R;
@@ -40,6 +41,7 @@ public class ProfileFragment extends Fragment {
     private PostItemAdapter adapter;
     private List<Post> postsModelLists = new ArrayList<>();
     private ProgressBar progressBar;
+    private LinearLayout noPostsLayout;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -53,6 +55,7 @@ public class ProfileFragment extends Fragment {
         model = ViewModelProviders.of(getActivity()).get(ProfileViewModel.class);
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false);
         binding.setMyVM(model);
+        noPostsLayout = binding.noPostsLayout;
         binding.setLifecycleOwner(this);
         model.setNavController(mainModel.getNavController());
         model.setContext(getActivity());
@@ -78,10 +81,16 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onChanged(List<Post> posts) {
                 if(posts != null){
-                    postsModelLists.clear();
-                    postsModelLists.addAll(posts);
-                    Collections.shuffle(postsModelLists);
-                    adapter.notifyDataSetChanged();
+                    if(posts.size() > 0){
+                        postsModelLists.clear();
+                        postsModelLists.addAll(posts);
+                        Collections.sort(postsModelLists);
+                        adapter.notifyDataSetChanged();
+                        recyclerView.setVisibility(View.VISIBLE);
+                    }else{
+                        noPostsLayout.setVisibility(View.VISIBLE);
+                        recyclerView.setVisibility(View.GONE);
+                    }
                     progressBar.setVisibility(View.GONE);
                 }
             }

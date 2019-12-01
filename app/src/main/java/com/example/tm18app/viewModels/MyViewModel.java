@@ -32,15 +32,6 @@ public class MyViewModel extends ViewModel {
         return this.cntx;
     }
 
-    /*
-    public void setActionBar(ActionBar actionBar){
-        this.actionBar = actionBar;
-    }
-     */
-
-    public ActionBar getActionBar() {
-        return this.actionBar;
-    }
 
     public void onLoginPressed(){
         navController.navigate(R.id.action_mainFragment_to_loginFragment);

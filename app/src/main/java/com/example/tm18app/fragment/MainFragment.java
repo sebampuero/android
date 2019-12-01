@@ -18,22 +18,18 @@ import com.example.tm18app.viewModels.MyViewModel;
  * A simple {@link Fragment} subclass.
  */
 public class MainFragment extends Fragment {
-    private MyViewModel model;
-    private FragmentMainBinding binding;
 
     public MainFragment() {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        model = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_main, container, false);
+        MyViewModel model = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
+        FragmentMainBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_main, container, false);
         binding.setMyVM(model);
         binding.setLifecycleOwner(this);
-        //model.getActionBar().hide();
         return binding.getRoot();
     }
 

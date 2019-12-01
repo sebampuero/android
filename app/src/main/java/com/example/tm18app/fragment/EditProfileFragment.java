@@ -38,7 +38,6 @@ public class EditProfileFragment extends Fragment {
 
     private FragmentEditProfileBinding binding;
     private MultiGoalSelectAdapter adapter;
-    //TODO: Add progress bar with Mediator
 
     public EditProfileFragment() {
         // Required empty public constructor

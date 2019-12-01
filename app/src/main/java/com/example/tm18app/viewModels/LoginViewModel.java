@@ -17,6 +17,7 @@ import com.example.tm18app.network.UserRestInterface;
 import com.example.tm18app.pojos.User;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -59,17 +60,18 @@ public class LoginViewModel extends ViewModel {
         return true;
     }
 
+    //TODO: Remove this async task from here, take concept from new post fragment
+
     static class UserLoginAsyncTask extends AsyncTask<String, String, User>{
 
          NavController navController;
          int statusCode;
-         //TODO: pass SharedPreferences instead of Context
-         Context appContext;
+         WeakReference<Context> appContext;
          UserRestInterface restClient;
 
         UserLoginAsyncTask(NavController navController, Context appContext) {
             this.navController = navController;
-            this.appContext = appContext;
+            this.appContext = new WeakReference<>(appContext);
             RetrofitNetworkConnectionSingleton retrofitNetworkConnectionSingleton = RetrofitNetworkConnectionSingleton.getInstance();
             restClient = retrofitNetworkConnectionSingleton.retrofitInstance().create(UserRestInterface.class);
         }
@@ -103,16 +105,19 @@ public class LoginViewModel extends ViewModel {
         }
 
         @Override
+        protected void onProgressUpdate(String... values) {
+            Toast.makeText(appContext.get(), appContext.get().getString(R.string.logging_in), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
         protected void onPostExecute(User user) {
-            //TODO: add string constant for this also
-            SharedPreferences sharedPreferences = appContext.getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences = appContext.get().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             if(user == null && statusCode == 403) {
-                //TODO: add strings constants for these messages
-                Toast.makeText(appContext, appContext.getString(R.string.invalid_credentials), Toast.LENGTH_LONG).show();
+                Toast.makeText(appContext.get(), appContext.get().getString(R.string.invalid_credentials), Toast.LENGTH_LONG).show();
             }
             else if(user == null && statusCode == 500) {
-                Toast.makeText(appContext, appContext.getString(R.string.server_error), Toast.LENGTH_LONG).show();
+                Toast.makeText(appContext.get(), appContext.get().getString(R.string.server_error), Toast.LENGTH_LONG).show();
             }
             else if(user!=null && statusCode == 200) {
                 Log.e("TAG", user.toString());
@@ -133,9 +138,6 @@ public class LoginViewModel extends ViewModel {
                 }
                 editor.apply();
                 navController.navigate(R.id.action_global_feedFragment);
-            }
-            else{
-                //TODO: no internet connection!!
             }
         }
 

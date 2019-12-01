@@ -27,12 +27,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private MyViewModel model;
     private NavController navController;
     private Toolbar toolbar;
     private AppBarConfiguration appBarConfiguration;
     private BottomNavigationView bottomNavigationView;
-    private ImageButton logoutBtn;
     private TextView toolbarTitle;
 
 
@@ -40,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //get a new or already existing ViewModel that survived a possible rotation
-        model = ViewModelProviders.of(this).get(MyViewModel.class);
+        MyViewModel model = ViewModelProviders.of(this).get(MyViewModel.class);
         //get the automatically generated binding class for MainActivity
         ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         //connects the ViewModel with the binding class and it's internal objects
@@ -59,10 +57,9 @@ public class MainActivity extends AppCompatActivity {
         model.checkLoginStatus();
         toolbar = findViewById(R.id.toolbar);
         bottomNavigationView = findViewById(R.id.bottomNavView);
-        logoutBtn = findViewById(R.id.logoutBtn);
+        ImageButton logoutBtn = findViewById(R.id.logoutBtn);
         toolbarTitle = findViewById(R.id.toolbarTitle);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-        //TODO: REMOVE INNECESSARY ACTIONS BECAUSE NAV CONTROLLER DOES THINGS AUTOMATICALLY
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
         NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration);
         navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
