@@ -1,0 +1,61 @@
+package com.example.tm18app.adapters;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.viewpager.widget.PagerAdapter;
+
+import com.example.tm18app.R;
+import com.example.tm18app.pojos.ScreenItem;
+
+import java.util.List;
+
+public class IntroViewPagerAdapter extends PagerAdapter {
+
+    Context context;
+    List<ScreenItem> screens;
+
+    public IntroViewPagerAdapter(Context mContext, List<ScreenItem> mListScreen) {
+        this.context = mContext;
+        this.screens = mListScreen;
+    }
+
+    @NonNull
+    @Override
+    public Object instantiateItem(@NonNull ViewGroup container, int position) {
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layoutScreen = inflater.inflate(R.layout.layout_screen,null);
+
+        ImageView imgSlide = layoutScreen.findViewById(R.id.intro_img);
+        TextView title = layoutScreen.findViewById(R.id.intro_title);
+        TextView description = layoutScreen.findViewById(R.id.intro_description);
+
+        title.setText(screens.get(position).getTitle());
+        description.setText(screens.get(position).getDescription());
+        imgSlide.setImageResource(screens.get(position).getScreenImg());
+
+        container.addView(layoutScreen);
+
+        return layoutScreen;
+    }
+
+    @Override
+    public int getCount() {
+        return screens.size();
+    }
+
+    @Override
+    public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
+        return view == object;
+    }
+
+    @Override
+    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+        container.removeView((View)object);
+    }
+}

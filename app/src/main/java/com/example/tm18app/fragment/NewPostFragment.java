@@ -26,6 +26,7 @@ import com.example.tm18app.viewModels.NewPostViewModel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 
 /**
@@ -52,22 +53,22 @@ public class NewPostFragment extends Fragment {
         binding.setLifecycleOwner(this);
         model.setContext(getActivity());
         setSpinner(binding.goalTagsSpinner);
-        //TODO: Apply this concept to all classes sending post requests
-        model.getPostLiveDataResponse().observe(this, new Observer<Integer>() {
+        model.getPostLiveDataResponse().observe(this, new Observer<HashMap<Integer, String>>() {
             @Override
-            public void onChanged(Integer statusCode) {
-                makeToast(statusCode);
+            public void onChanged(HashMap<Integer, String> statusCode) {
+                evaluatePostResponse(statusCode);
             }
         });
         return binding.getRoot();
     }
 
-    private void makeToast(Integer statusCode) {
-        if(statusCode == 200){
+    private void evaluatePostResponse(HashMap<Integer, String> statusCode) {
+        if(statusCode.containsKey(200)){
             Toast.makeText(this.getContext(), this.getContext().getString(R.string.post_successfully_created), Toast.LENGTH_SHORT).show();
             mainModel.getNavController().navigate(R.id.action_newPostFragment_to_feedFragment);
+            model.getPostLiveDataResponse().getValue().clear();
         }
-        else if(statusCode == 500) {
+        else if(statusCode.containsKey(500)) {
             Toast.makeText(this.getContext(), this.getContext().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
         }
     }

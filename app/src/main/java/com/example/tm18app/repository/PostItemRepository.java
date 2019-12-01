@@ -10,6 +10,7 @@ import com.example.tm18app.network.RetrofitNetworkConnectionSingleton;
 import com.example.tm18app.pojos.Comment;
 import com.example.tm18app.pojos.Post;
 
+import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -83,12 +84,17 @@ public class PostItemRepository {
         return data;
     }
 
-    public void createPost(Post post, MutableLiveData<Integer> postLiveData){
-        final MutableLiveData<Integer> responseCode = postLiveData;
+    public void createPost(Post post, MutableLiveData<HashMap<Integer, String>> postLiveData){
+        final MutableLiveData<HashMap<Integer, String>> responseCode = postLiveData;
         postRestInterface.newPost(post).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-                responseCode.setValue(response.code());
+                HashMap<Integer, String> hashMap = new HashMap<>();
+                if(response.code() == 500)
+                    hashMap.put(response.code(), "Server error");
+                else if(response.code() == 200)
+                    hashMap.put(response.code(), "Ok");
+                responseCode.setValue(hashMap);
             }
 
             @Override

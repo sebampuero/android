@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">Goals App</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="loginBtn">Login</string>
     <string name="registerBtn">Register</string>
     <string name="emailAddrInput">Email Address</string>
@@ -56,7 +54,6 @@
     <string name="profile_edit_success_msg">Profile edited succesfully</string>
     <string name="edit_your_password">Edit your password</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="old_password">Old password</string>
     <string name="new_password">New password</string>
     <string name="new_password_conf">Confirm new password</string>
@@ -74,5 +71,14 @@
     <string name="deutsch">German</string>
     <string name="spanish">Spanish</string>
     <string name="detect_automatically">Detect language from OS</string>
+    <string name="motivate_yourself">Motivate yourself</string>
+    <string name="do_it_along_others">Do it along others</string>
+    <string name="share_yr_experiences">Share your experiences</string>
+    <string name="motivation_desc">Everyone knows discipline is the key factor for achieving things, but motivation is what kicks in in first place</string>
+    <string name="do_it_along_others_desc">Don\'t do it alone! You can get 3 times better results with the companion of others in your journey</string>
+    <string name="share_exp_desc">Help others achieve their goals! Share your experiences</string>
+    <string name="get_started">Get Started</string>
+    <string name="skip">Skip</string>
+    <string name="next">Next</string>
 
 </resources>

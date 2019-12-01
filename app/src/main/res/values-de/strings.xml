@@ -42,7 +42,7 @@
     <string name="comments_toolbar_title">Kommentare</string>
     <string name="newpost_toolbar_title">Neues Post</string>
     <string name="no_goals_msg">Du hast noch keine Zeile, lege einige in deinem Profil fest</string>
-    <string name="save_changes">Save changes</string>
+    <string name="save_changes">Änderungen speichern</string>
     <string name="send">Request senden</string>
     <string name="goal_request_submit">Ziele</string>
     <string name="goal_request_label">Keine Ziele, dir zu dir passen? Fordere ein neues an</string>
@@ -71,5 +71,14 @@
     <string name="deutsch">Deutsch</string>
     <string name="spanish">Spanisch</string>
     <string name="detect_automatically">Sprache vom Betriebssystem erkennen</string>
+    <string name="motivate_yourself">Motiviere dich</string>
+    <string name="do_it_along_others">Mit anderen is besser</string>
+    <string name="share_yr_experiences">Teilen ist gut</string>
+    <string name="motivation_desc">Jeder weiß, dass Disziplin der Schlüsselfaktor für das Erreichen von Dingen ist, aber Motivation ist das, was an erster Stelle steht</string>
+    <string name="do_it_along_others_desc">Mach es nicht alleine! Du kannst dreimal bessere Ergebnisse mit dem Begleiter anderer auf Ihrer Reise erzielen</string>
+    <string name="share_exp_desc">Hilf anderen, ihre Ziele zu erreichen! Teilen Sie Ihre Erfahrungen</string>
+    <string name="get_started">Starten</string>
+    <string name="skip">Überspringen</string>
+    <string name="next">Next</string>
 
 </resources>

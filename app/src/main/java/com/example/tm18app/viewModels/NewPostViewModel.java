@@ -16,6 +16,7 @@ import com.example.tm18app.repository.PostItemRepository;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class NewPostViewModel extends ViewModel {
 
@@ -25,9 +26,9 @@ public class NewPostViewModel extends ViewModel {
     private Context appContext;
     private String selectedGoal;
 
-    private LiveData<Integer> postLiveDataResponse = new MutableLiveData<>();
+    private LiveData<HashMap<Integer, String>> postLiveDataResponse = new MutableLiveData<>();
 
-    public LiveData<Integer> getPostLiveDataResponse(){
+    public LiveData<HashMap<Integer, String>> getPostLiveDataResponse(){
         return postLiveDataResponse;
     }
 
@@ -49,7 +50,7 @@ public class NewPostViewModel extends ViewModel {
             int goalID = Integer.valueOf(userGoalIds.get(userGoalTags.indexOf(selectedGoal)));
             PostItemRepository repository = new PostItemRepository();
             repository.createPost(new Post(title.getValue(), content.getValue(), userID, goalID),
-                    (MutableLiveData<Integer>) postLiveDataResponse);
+                    (MutableLiveData<HashMap<Integer, String>>) postLiveDataResponse);
             cleanValues();
         }
     }

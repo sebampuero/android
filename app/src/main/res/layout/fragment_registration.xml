@@ -8,14 +8,15 @@
 <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/main_pages_background"
     tools:context=".fragment.RegistrationFragment">
 
     <LinearLayout
+        android:layout_marginTop="70dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:background="@drawable/main_pages_background">
+        android:gravity="center_horizontal">
 
         <EditText
             android:id="@+id/nameInput"

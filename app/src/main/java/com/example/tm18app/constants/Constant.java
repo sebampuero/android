@@ -2,6 +2,9 @@ package com.example.tm18app.constants;
 
 public class Constant {
     public static final String USER_INFO = "UserInfos";
+    public static final String FIRST_TIME_INTRO = "FirstTimeIntro";
+    public static final String INTRO_OPENED = "IsIntroOpened";
+
     public static final String LOGGED_IN  = "loggedIn";
     public static final String NAME = "name";
     public static final String LASTNAME = "lastname";

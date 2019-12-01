@@ -41,6 +41,7 @@ public class CommentsSectionViewModel extends ViewModel {
             if(!inputComment.getValue().trim().equals("")){
                 SharedPreferences preferences = appContext
                         .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
+                //TODO: use livedata
                 new PostCommentAsyncTask(commentLiveData).execute(inputComment.getValue(),
                         String.valueOf(preferences.getInt(Constant.USER_ID, 0)), postID);
                 inputComment.setValue("");

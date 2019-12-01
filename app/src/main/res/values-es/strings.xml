@@ -2,7 +2,6 @@
 <resources>
     <string name="app_name">Goals App</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="loginBtn">Iniciar sesion</string>
     <string name="registerBtn">Registrarse</string>
     <string name="emailAddrInput">Direccion email</string>
@@ -44,7 +43,7 @@
     <string name="comments_toolbar_title">Comentarios</string>
     <string name="newpost_toolbar_title">Nuevo post</string>
     <string name="no_goals_msg">No tienes metas, selecciona unas en tu perfil</string>
-    <string name="save_changes">Save changes</string>
+    <string name="save_changes">Guardar cambios</string>
     <string name="goal_request_submit">Peticiones para nueva(s) meta(s)</string>
     <string name="goal_request_label">Ninguna meta se adecua a ti? Envia una peticion a los admins</string>
     <string name="send">Enviar peticion</string>
@@ -56,8 +55,6 @@
     <string name="loading_feed_msg">Cargando feed…</string>
     <string name="profile_edit_success_msg">Perfil editado con exito</string>
     <string name="edit_your_password">Cambia tu contraseña</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="old_password">Contraseña actual</string>
     <string name="new_password">Nueva contraseña</string>
     <string name="new_password_conf">Confirma nueva contraseña</string>
@@ -75,5 +72,14 @@
     <string name="deutsch">Aleman</string>
     <string name="spanish">Español</string>
     <string name="detect_automatically">Reconocer idioma del sistema operativo</string>
+    <string name="motivate_yourself">Motivate!</string>
+    <string name="do_it_along_others">No estas solo/a</string>
+    <string name="share_yr_experiences">Comparte experiencias</string>
+    <string name="motivation_desc">Todos saben que la disciplina es el factor principal para lograr algo, pero la motivacion es lo que se necesita para arrancar</string>
+    <string name="do_it_along_others_desc">No lo hagas solo/a! Puedes lograr muy buenos resultados junto a otras personas que compartan tus objetivos</string>
+    <string name="share_exp_desc">Ayuda a otros a alcanzar sus metas! Comparte tus experiencias</string>
+    <string name="get_started">Iniciar</string>
+    <string name="skip">Saltar</string>
+    <string name="next">Siguiente</string>
 
 </resources>

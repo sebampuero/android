@@ -19,9 +19,11 @@ import com.example.tm18app.network.UserRestInterface;
 import com.example.tm18app.pojos.Goal;
 import com.example.tm18app.pojos.User;
 import com.example.tm18app.repository.GoalsItemRepository;
+import com.example.tm18app.repository.UserRepository;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -37,15 +39,15 @@ public class RegisterViewModel extends ViewModel {
     public LiveData<List<Goal>> getGoalLiveData() {
         return goalItemsLiveData;
     }
+    public LiveData<HashMap<Integer, User>> getUserLiveData(){
+        return userLiveData;
+    }
 
     private Context ctx;
-    private NavController navController;
     private MultiGoalSelectAdapter adapter;
     private LiveData<List<Goal>> goalItemsLiveData;
+    private LiveData<HashMap<Integer, User>> userLiveData = new MutableLiveData<>();
 
-
-    private static final String TAG = RegisterViewModel.class.getSimpleName();
-    private static boolean DEBUG = true;
 
     public RegisterViewModel(){
     }
@@ -58,10 +60,6 @@ public class RegisterViewModel extends ViewModel {
     public void setContext(Context context) {
         this.ctx = context;
         fetchGoals();
-    }
-
-    public void setNavController(NavController navController) {
-        this.navController = navController;
     }
 
     public void onRegister(){
@@ -79,8 +77,18 @@ public class RegisterViewModel extends ViewModel {
              }
              user.setGoals(goalIds);
              user.setGoalTags(goalTags);
-             new UserRegisterAsyncTask(navController, ctx, user).execute();
+             UserRepository userRepository = new UserRepository();
+             userRepository.registerUser(user, (MutableLiveData<HashMap<Integer, User>>) userLiveData);
+             cleanValues();
         }
+    }
+
+    private void cleanValues() {
+        name.setValue("");
+        lastname.setValue("");
+        email.setValue("");
+        password.setValue("");
+        passwordConf.setValue("");
     }
 
     private boolean isRegisterValid() {
@@ -113,83 +121,4 @@ public class RegisterViewModel extends ViewModel {
         this.adapter = adapter;
     }
 
-    //TODO: Remove this async task from here, take concept from new post fragment
-
-    static class UserRegisterAsyncTask extends AsyncTask<String, String, User>{
-         NavController navController;
-         int statusCode;
-         WeakReference<Context> appContext;
-         UserRestInterface restClient;
-         User userToRegister;
-
-        UserRegisterAsyncTask(NavController navController, Context appContext, User userToRegister) {
-            this.navController = navController;
-            this.appContext = new WeakReference<>(appContext);
-            RetrofitNetworkConnectionSingleton retrofitNetworkConnectionSingleton = RetrofitNetworkConnectionSingleton.getInstance();
-            restClient = retrofitNetworkConnectionSingleton.retrofitInstance().create(UserRestInterface.class);
-            this.userToRegister = userToRegister;
-        }
-
-        @Override
-        protected User doInBackground(String... strings) {
-            Call<User> call = restClient.registerUser(userToRegister);
-            Response<User> response = null;
-            try {
-                response = call.execute();
-                if(response.code() == 500){
-                    statusCode = response.code();
-                    return null;
-                }
-                else if(response.code() == 400){
-                    statusCode = response.code();
-                    return null;
-                }
-                else{
-                    statusCode = response.code();
-                    return response.body();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onProgressUpdate(String... values) {
-            Toast.makeText(appContext.get(), appContext.get().getString(R.string.registering), Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        protected void onPostExecute(User user) {
-            SharedPreferences sharedPreferences = appContext.get().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            if(user == null && statusCode == 500) {
-                Toast.makeText(appContext.get(), appContext.get().getString(R.string.server_error), Toast.LENGTH_LONG).show();
-            }
-            else if(user == null && statusCode == 400){
-                Toast.makeText(appContext.get(), appContext.get().getString(R.string.email_already_exists), Toast.LENGTH_SHORT).show();
-            }
-            else if(user!=null && statusCode == 200) {
-                editor.putBoolean(Constant.LOGGED_IN, true);
-                editor.putString(Constant.NAME, user.getName());
-                editor.putString(Constant.LASTNAME, user.getLastname());
-                editor.putString(Constant.EMAIL, user.getEmail());
-                editor.putInt(Constant.USER_ID, user.getId());
-                if(user.getGoals().length > 0 && userToRegister.getGoalTags().length > 0){
-                    StringBuilder sb = new StringBuilder();
-                    StringBuilder sb1 = new StringBuilder();
-                    for (int i = 0; i < user.getGoals().length; i++) {
-                        sb.append(user.getGoals()[i]).append(",");
-                        sb1.append(userToRegister.getGoalTags()[i]).append(",");
-                    }
-                    editor.putString(Constant.GOAL_IDS, sb.toString());
-                    editor.putString(Constant.GOAL_TAGS, sb1.toString());
-                }
-                editor.apply();
-                navController.navigate(R.id.action_global_feedFragment);
-                if(DEBUG)
-                    Log.d(TAG, user.toString());
-            }
-        }
-    }
 }
