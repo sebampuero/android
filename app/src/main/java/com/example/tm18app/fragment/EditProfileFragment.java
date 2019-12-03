@@ -42,6 +42,7 @@ public class EditProfileFragment extends Fragment {
     private FragmentEditProfileBinding binding;
     private MultiGoalSelectAdapter adapter;
     private MyViewModel mainModel;
+    private EditViewModel model;
 
     public EditProfileFragment() {
         // Required empty public constructor
@@ -51,7 +52,7 @@ public class EditProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        EditViewModel model = ViewModelProviders.of(getActivity()).get(EditViewModel.class);
+        model = ViewModelProviders.of(getActivity()).get(EditViewModel.class);
         model.setContext(getContext());
         mainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
         model.setNavController(mainModel.getNavController());
@@ -114,6 +115,7 @@ public class EditProfileFragment extends Fragment {
             }
             editor.apply();
             Toast.makeText(this.getContext(), this.getContext().getString(R.string.profile_edit_success_msg), Toast.LENGTH_SHORT).show();
+            model.getUserLiveData().getValue().clear();
             mainModel.getNavController().navigate(R.id.action_editProfileFragment_to_profileFragment);
         }
     }
