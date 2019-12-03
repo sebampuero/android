@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- main pages values -->
+    <dimen name="padding_10">10dp</dimen>
+    <dimen name="padding_10_5">50dp</dimen>
+
+    <dimen name="text_size_10">10sp</dimen>
+    <dimen name="text_size_14">14sp</dimen>
+    <dimen name="text_size_15">15sp</dimen>
+    <dimen name="text_size_18">18sp</dimen>
+    <dimen name="big_ass_text_size">36sp</dimen>
+
+    <dimen name="margin_10">10dp</dimen>
+    <dimen name="margin_10_3">30dp</dimen>
+    <dimen name="margin_10_5">50dp</dimen>
+    <dimen name="margin_10_6">60dp</dimen>
+    <dimen name="height_10_10">100dp</dimen>
+    <dimen name="margin_10_12">120dp</dimen>
+    <dimen name="margin_10_18">180dp</dimen>
+
+</resources>

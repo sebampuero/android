@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- main pages values -->
+    <dimen name="padding_10">8dp</dimen>
+    <dimen name="padding_10_5">50dp</dimen>
+
+    <dimen name="text_size_10">8sp</dimen>
+    <dimen name="text_size_14">13sp</dimen>
+    <dimen name="text_size_15">14sp</dimen>
+    <dimen name="text_size_18">16sp</dimen>
+    <dimen name="big_ass_text_size">30sp</dimen>
+
+    <dimen name="margin_10">8dp</dimen>
+    <dimen name="margin_10_3">25dp</dimen>
+    <dimen name="margin_10_5">40dp</dimen>
+    <dimen name="margin_10_6">50dp</dimen>
+    <dimen name="height_10_10">80dp</dimen>
+    <dimen name="margin_10_12">100dp</dimen>
+    <dimen name="margin_10_18">150dp</dimen>
+</resources>
