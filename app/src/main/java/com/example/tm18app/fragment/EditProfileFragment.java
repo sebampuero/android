@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
@@ -23,11 +24,13 @@ import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.FragmentEditProfileBinding;
 import com.example.tm18app.pojos.Goal;
 import com.example.tm18app.pojos.GoalItemSelection;
+import com.example.tm18app.pojos.User;
 import com.example.tm18app.viewModels.EditViewModel;
 import com.example.tm18app.viewModels.MyViewModel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -38,6 +41,7 @@ public class EditProfileFragment extends Fragment {
 
     private FragmentEditProfileBinding binding;
     private MultiGoalSelectAdapter adapter;
+    private MyViewModel mainModel;
 
     public EditProfileFragment() {
         // Required empty public constructor
@@ -49,7 +53,7 @@ public class EditProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         EditViewModel model = ViewModelProviders.of(getActivity()).get(EditViewModel.class);
         model.setContext(getContext());
-        MyViewModel mainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
+        mainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
         model.setNavController(mainModel.getNavController());
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_edit_profile, container, false);
         binding.setMyVM(model);
@@ -71,8 +75,47 @@ public class EditProfileFragment extends Fragment {
                 prepareDataForAdapter(goals);
             }
         });
+
+        model.getUserLiveData().observe(this, new Observer<HashMap<Integer, User>>() {
+            @Override
+            public void onChanged(HashMap<Integer, User> integerUserHashMap) {
+                evaluateEditUser(integerUserHashMap);
+            }
+        });
         model.setAdapter(adapter);
         return binding.getRoot();
+    }
+
+    private void evaluateEditUser(HashMap<Integer, User> integerUserHashMap) {
+        if(integerUserHashMap.containsKey(500)){
+            Toast.makeText(this.getContext(), this.getContext().getString(R.string.server_error), Toast.LENGTH_LONG).show();
+        }else if(integerUserHashMap.containsKey(400)){
+            Toast.makeText(this.getContext(), this.getContext().getString(R.string.email_already_exists), Toast.LENGTH_LONG).show();
+        }else if(integerUserHashMap.containsKey(200)){
+            SharedPreferences preferences =
+                    this.getActivity().getSharedPreferences(Constant.USER_ID, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            User user = integerUserHashMap.get(200);
+            editor.clear();
+            editor.putBoolean(Constant.LOGGED_IN, true);
+            editor.putString(Constant.NAME, user.getName());
+            editor.putString(Constant.LASTNAME, user.getLastname());
+            editor.putString(Constant.EMAIL, user.getEmail());
+            editor.putInt(Constant.USER_ID, user.getId());
+            if(user.getGoals().length > 0 && user.getGoalTags().length > 0){
+                StringBuilder sb = new StringBuilder();
+                StringBuilder sb1 = new StringBuilder();
+                for (int i = 0; i < user.getGoals().length; i++) {
+                    sb.append(user.getGoals()[i]).append(",");
+                    sb1.append(user.getGoalTags()[i]).append(",");
+                }
+                editor.putString(Constant.GOAL_IDS, sb.toString());
+                editor.putString(Constant.GOAL_TAGS, sb1.toString());
+            }
+            editor.apply();
+            Toast.makeText(this.getContext(), this.getContext().getString(R.string.profile_edit_success_msg), Toast.LENGTH_SHORT).show();
+            mainModel.getNavController().navigate(R.id.action_editProfileFragment_to_profileFragment);
+        }
     }
 
     private void prepareDataForAdapter(List<Goal> goals) {

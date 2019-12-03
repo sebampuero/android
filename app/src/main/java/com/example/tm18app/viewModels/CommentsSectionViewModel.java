@@ -18,6 +18,7 @@ import com.example.tm18app.repository.PostItemRepository;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -41,9 +42,12 @@ public class CommentsSectionViewModel extends ViewModel {
             if(!inputComment.getValue().trim().equals("")){
                 SharedPreferences preferences = appContext
                         .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
-                //TODO: use livedata
-                new PostCommentAsyncTask(commentLiveData).execute(inputComment.getValue(),
-                        String.valueOf(preferences.getInt(Constant.USER_ID, 0)), postID);
+                PostItemRepository postItemRepository = new PostItemRepository();
+                Comment comment = new Comment();
+                comment.setContent(inputComment.getValue());
+                comment.setPostID(Integer.parseInt(postID));
+                comment.setUserID(preferences.getInt(Constant.USER_ID, 0));
+                postItemRepository.createComment(comment, commentLiveData);
                 inputComment.setValue("");
             }
         }

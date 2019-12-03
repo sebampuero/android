@@ -10,6 +10,7 @@ import com.example.tm18app.network.RetrofitNetworkConnectionSingleton;
 import com.example.tm18app.pojos.Comment;
 import com.example.tm18app.pojos.Post;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -82,6 +83,29 @@ public class PostItemRepository {
             }
         });
         return data;
+    }
+
+    public void createComment(final Comment comment, MutableLiveData<List<Comment>> commentLiveData) {
+        final MutableLiveData<List<Comment>> data = commentLiveData;
+        postRestInterface.newComment(comment).enqueue(new Callback<Comment>() {
+            @Override
+            public void onResponse(Call<Comment> call, Response<Comment> response) {
+                if(data.getValue() != null){
+                    ArrayList<Comment> comments = new ArrayList<>(data.getValue());
+                    comments.add(response.body());
+                    data.setValue(comments);
+                }else{
+                    ArrayList<Comment> comments = new ArrayList<>();
+                    comments.add(response.body());
+                    data.setValue(comments);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Comment> call, Throwable t) {
+
+            }
+        });
     }
 
     public void createPost(Post post, MutableLiveData<HashMap<Integer, String>> postLiveData){

@@ -17,9 +17,11 @@ import com.example.tm18app.pojos.Goal;
 import com.example.tm18app.pojos.GoalItemSelection;
 import com.example.tm18app.pojos.User;
 import com.example.tm18app.repository.GoalsItemRepository;
+import com.example.tm18app.repository.UserRepository;
 import com.example.tm18app.util.SingleLiveEvent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class EditViewModel extends ViewModel {
@@ -28,12 +30,15 @@ public class EditViewModel extends ViewModel {
     public MutableLiveData<String> lastname = new MutableLiveData<>();
     public MutableLiveData<String> email = new MutableLiveData<>();
     public SingleLiveEvent<Boolean> navigateToDialog = new SingleLiveEvent<>(); // https://medium.com/androiddevelopers/livedata-with-snackbar-navigation-and-other-events-the-singleliveevent-case-ac2622673150
-    private LiveData<List<Goal>> goalItemsLiveData;
-
     public LiveData<List<Goal>> getGoalLiveData() {
         return goalItemsLiveData;
     }
+    public LiveData<HashMap<Integer, User>> getUserLiveData() {
+        return userLiveData;
+    }
 
+    private LiveData<HashMap<Integer, User>> userLiveData = new MutableLiveData<>();
+    private LiveData<List<Goal>> goalItemsLiveData;
     private int userID;
     private MultiGoalSelectAdapter adapter;
     private Context appContext;
@@ -60,8 +65,8 @@ public class EditViewModel extends ViewModel {
             }
             user.setGoals(goalIds);
             user.setGoalTags(goalTags);
-            //TODO: use repository
-            new EditProfileAsyncTask(navController, appContext, user, preferences).execute();
+            UserRepository userRepository = new UserRepository();
+            userRepository.editUser(user, (MutableLiveData<HashMap<Integer, User>>) userLiveData);
         }
     }
 
