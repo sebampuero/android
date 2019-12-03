@@ -94,7 +94,7 @@ public class EditProfileFragment extends Fragment {
             Toast.makeText(this.getContext(), this.getContext().getString(R.string.email_already_exists), Toast.LENGTH_LONG).show();
         }else if(integerUserHashMap.containsKey(200)){
             SharedPreferences preferences =
-                    this.getActivity().getSharedPreferences(Constant.USER_ID, Context.MODE_PRIVATE);
+                    this.getActivity().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = preferences.edit();
             User user = integerUserHashMap.get(200);
             editor.clear();

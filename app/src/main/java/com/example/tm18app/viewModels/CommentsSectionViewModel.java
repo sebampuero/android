@@ -2,27 +2,15 @@ package com.example.tm18app.viewModels;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
-import android.util.Log;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.tm18app.constants.Constant;
-import com.example.tm18app.network.PostCommentAsyncTask;
-import com.example.tm18app.network.PostRestInterface;
-import com.example.tm18app.network.RetrofitNetworkConnectionSingleton;
 import com.example.tm18app.pojos.Comment;
 import com.example.tm18app.repository.PostItemRepository;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Response;
 
 public class CommentsSectionViewModel extends ViewModel {
 

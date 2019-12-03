@@ -12,15 +12,12 @@ import androidx.navigation.NavController;
 import com.example.tm18app.R;
 import com.example.tm18app.adapters.MultiGoalSelectAdapter;
 import com.example.tm18app.constants.Constant;
-import com.example.tm18app.network.EditProfileAsyncTask;
 import com.example.tm18app.pojos.Goal;
-import com.example.tm18app.pojos.GoalItemSelection;
 import com.example.tm18app.pojos.User;
 import com.example.tm18app.repository.GoalsItemRepository;
 import com.example.tm18app.repository.UserRepository;
 import com.example.tm18app.util.SingleLiveEvent;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 

@@ -93,6 +93,11 @@
             android:id="@+id/action_editProfileFragment_to_editPasswordFragment"
             app:destination="@id/editPasswordFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/editPasswordFragment"
+        android:name="com.example.tm18app.fragment.EditPasswordFragment"
+        android:label="fragment_edit_password"
+        tools:layout="@layout/fragment_edit_password" />
     <!-- TODO: Fix pop up to main fragment, pressing back here takes user back to feed -->
     <navigation
         android:id="@+id/ftime_nav"
@@ -125,9 +130,4 @@
             app:destination="@id/feedFragment"
             app:popUpTo="@+id/feedFragment" />
     </navigation>
-    <fragment
-        android:id="@+id/editPasswordFragment"
-        android:name="com.example.tm18app.fragment.EditPasswordFragment"
-        android:label="fragment_edit_password"
-        tools:layout="@layout/fragment_edit_password" />
 </navigation>

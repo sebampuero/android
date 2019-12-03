@@ -97,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences preferences = getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
                 SharedPreferences.Editor e = preferences.edit();
                 e.clear().apply();
-                navController.popBackStack();
                 switch (navController.getCurrentDestination().getId()){
                     case R.id.feedFragment:
                         navController.navigate(R.id.action_feedFragment_to_ftime_nav);
