@@ -12,108 +12,114 @@
     tools:context=".fragment.RegistrationFragment">
 
     <LinearLayout
-        android:layout_marginTop="70dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_horizontal">
-
-        <EditText
-            android:id="@+id/nameInput"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:hint="@string/name"
-            android:padding="10dp"
-            android:text="@={myVM.name}"
-            android:layout_marginTop="30dp"
-            android:background="@drawable/custom_edit_text_forms" />
-
-        <EditText
-            android:id="@+id/lastnameInput"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:padding="10dp"
-            android:inputType="textPersonName"
-            android:background="@drawable/custom_edit_text_forms"
-            android:hint="@string/lastname"
-            android:text="@={myVM.lastname}"
-            android:layout_marginTop="30dp"
-            />
-
-        <EditText
-            android:id="@+id/emailAddresInputRegister"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:padding="10dp"
-            android:hint="@string/emailAddrInput"
-            android:background="@drawable/custom_edit_text_forms"
-            android:text="@={myVM.email}"
-            android:inputType="textEmailAddress"
-            android:layout_marginTop="30dp"
-            />
-
-        <EditText
-            android:id="@+id/passwordInputRegister"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/custom_edit_text_forms"
-            android:ems="10"
-            android:padding="10dp"
-            android:inputType="textPassword"
-            android:text="@={myVM.password}"
-            android:hint="@string/password"
-            android:layout_marginTop="30dp" />
-
-        <EditText
-            android:id="@+id/passwordInputRegisterConf"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:padding="10dp"
-            android:background="@drawable/custom_edit_text_forms"
-            android:inputType="textPassword"
-            android:hint="@string/confirm_password"
-            android:text="@={myVM.passwordConf}"
-            android:layout_marginTop="30dp"
-            />
-
-        <TextView
-            android:id="@+id/goalsListLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/goalsListLabel"
-            android:layout_marginTop="10dp"
-            android:textStyle="bold"
-            android:textSize="15sp" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/goalsComboBox"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_marginEnd="50dp"
-            android:visibility="gone"
-            android:layout_marginStart="50dp"
-            android:layout_height="100dp" />
-
-        <ProgressBar
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/progressBarRegistration"/>
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
 
-        <Button
-            android:id="@+id/registrationBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:padding="10dp"
-            android:background="@drawable/custom_btn_form"
-            android:text="@string/registerBtn"
-            android:onClick="@{() -> myVM.onRegister()}"
-            />
+            <EditText
+                android:id="@+id/nameInput"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:hint="@string/name"
+                android:padding="@dimen/padding_10"
+                android:text="@={myVM.name}"
+                android:background="@drawable/custom_edit_text_forms"
+                android:layout_marginBottom="@dimen/margin_10"/>
 
+            <EditText
+                android:id="@+id/lastnameInput"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:padding="@dimen/padding_10"
+                android:inputType="textPersonName"
+                android:background="@drawable/custom_edit_text_forms"
+                android:hint="@string/lastname"
+                android:text="@={myVM.lastname}"
+                android:layout_marginBottom="@dimen/margin_10"
+                />
+
+            <EditText
+                android:id="@+id/emailAddresInputRegister"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:padding="@dimen/padding_10"
+                android:hint="@string/emailAddrInput"
+                android:background="@drawable/custom_edit_text_forms"
+                android:text="@={myVM.email}"
+                android:inputType="textEmailAddress"
+                android:layout_marginBottom="@dimen/margin_10"
+                />
+
+            <EditText
+                android:id="@+id/passwordInputRegister"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/custom_edit_text_forms"
+                android:ems="10"
+                android:padding="@dimen/padding_10"
+                android:inputType="textPassword"
+                android:text="@={myVM.password}"
+                android:hint="@string/password"
+                android:layout_marginBottom="@dimen/margin_10" />
+
+            <EditText
+                android:id="@+id/passwordInputRegisterConf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:padding="@dimen/padding_10"
+                android:background="@drawable/custom_edit_text_forms"
+                android:inputType="textPassword"
+                android:hint="@string/confirm_password"
+                android:text="@={myVM.passwordConf}"
+                android:layout_marginBottom="@dimen/margin_10"
+                />
+
+            <TextView
+                android:id="@+id/goalsListLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/goalsListLabel"
+                android:layout_marginTop="@dimen/margin_10"
+                android:textStyle="bold"
+                android:textSize="@dimen/text_size_15" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/goalsComboBox"
+                android:layout_width="match_parent"
+                android:layout_marginEnd="@dimen/margin_10_5"
+                android:visibility="gone"
+                android:layout_marginStart="@dimen/margin_10_5"
+                android:layout_height="@dimen/height_10_10" />
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/progressBarRegistration"/>
+
+            <Button
+                android:id="@+id/registrationBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_10_3"
+                android:paddingRight="@dimen/padding_10_5"
+                android:paddingLeft="@dimen/padding_10_5"
+                android:background="@drawable/custom_btn_form"
+                android:text="@string/registerBtn"
+                android:onClick="@{() -> myVM.onRegister()}"
+                />
+
+        </LinearLayout>
     </LinearLayout>
 
 

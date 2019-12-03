@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
         <variable name="myVM" type="com.example.tm18app.viewModels.EditViewModel" />
@@ -22,47 +21,47 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_person_black_80dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="10dp"/>
+                    android:layout_marginBottom="@dimen/margin_10"
+                    android:layout_marginTop="@dimen/margin_10"/>
 
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/nameField"
                     android:inputType="text"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginBottom="@dimen/margin_10"
                     android:hint="@string/name"
                     android:text="@={myVM.name}"
-                    android:padding="10dp"
+                    android:padding="@dimen/padding_10"
                     android:background="@drawable/custom_edit_text_forms"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"/>
+                    android:layout_marginStart="@dimen/margin_10"
+                    android:layout_marginEnd="@dimen/margin_10"/>
 
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/lastnameField"
                     android:inputType="text"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginBottom="@dimen/margin_10"
                     android:hint="@string/lastname"
                     android:text="@={myVM.lastname}"
-                    android:padding="10dp"
+                    android:padding="@dimen/padding_10"
                     android:background="@drawable/custom_edit_text_forms"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"/>
+                    android:layout_marginStart="@dimen/margin_10"
+                    android:layout_marginEnd="@dimen/margin_10"/>
 
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/emailField"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginBottom="@dimen/margin_10"
                     android:inputType="textEmailAddress"
                     android:hint="@string/emailAddrInput"
                     android:text="@={myVM.email}"
-                    android:padding="10dp"
+                    android:padding="@dimen/padding_10"
                     android:background="@drawable/custom_edit_text_forms"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"/>
+                    android:layout_marginStart="@dimen/margin_10"
+                    android:layout_marginEnd="@dimen/margin_10"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -71,7 +70,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
+                        android:layout_marginStart="@dimen/margin_10"
                         android:text="@string/edit_your_password"/>
                     <ImageButton
                         android:layout_width="wrap_content"
@@ -79,7 +78,7 @@
                         android:src="@drawable/ic_vpn_key_black_24dp"
                         android:background="@color/inAppBackgroundColor"
                         android:onClick="@{() -> myVM.onChangePasswordClicked()}"
-                        android:layout_marginStart="10dp"/>
+                        android:layout_marginStart="@dimen/margin_10"/>
                 </LinearLayout>
 
                 <View
@@ -92,17 +91,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/goals_profile_tv"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginStart="@dimen/margin_10"
                     android:textStyle="bold"
-                    android:textSize="18sp"/>
+                    android:textSize="@dimen/text_size_18"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/goalsComboBoxEditProfile"
                     android:layout_width="match_parent"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_height="100dp" />
+                    android:layout_marginEnd="@dimen/margin_10"
+                    android:layout_marginStart="@dimen/margin_10"
+                    android:layout_marginBottom="@dimen/margin_10"
+                    android:layout_height="@dimen/height_10_10" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -124,14 +123,14 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginBottom="@dimen/margin_10"
                     android:background="@android:color/darker_gray"/>
 
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
-                    android:padding="10dp"
+                    android:padding="@dimen/padding_10"
                     android:text="@string/save_changes"
                     android:onClick="@{() -> myVM.onSaveClicked()}"
                     android:background="@drawable/custom_btn_form"

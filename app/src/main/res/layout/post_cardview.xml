@@ -29,7 +29,7 @@
                     android:layout_height="wrap_content"
                     android:text="Name Lastname"
                     android:layout_weight="0.5"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/text_size_14"
                     android:layout_marginTop="2dp"
                     style="@style/TextAppearance.AppCompat.Medium"
                     android:layout_marginStart="5dp"/>
@@ -40,7 +40,7 @@
                     android:layout_marginEnd="5dp"
                     android:textAlignment="textEnd"
                     android:layout_weight="0.3"
-                    android:textSize="10sp"
+                    android:textSize="@dimen/text_size_10"
                     android:layout_height="wrap_content"
                     android:text="Timestamp"/>
             </LinearLayout>
@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
                 style="@style/CardView.Light"
-                android:textSize="18sp"
+                android:textSize="@dimen/text_size_18"
                 android:layout_marginTop="5dp"
                 android:layout_marginStart="5dp"/>
 
@@ -59,7 +59,7 @@
                 android:id="@+id/postContentCardviewTv"
                 android:text="Content"
                 style="@style/CardView.Light"
-                android:textSize="15sp"
+                android:textSize="@dimen/text_size_15"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
