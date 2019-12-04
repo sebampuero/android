@@ -1,5 +1,12 @@
 package com.example.tm18app.pojos;
 
+/**
+ * Model that holds data of a comment
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public class Comment implements Comparable<Comment>{
 
     private int id;

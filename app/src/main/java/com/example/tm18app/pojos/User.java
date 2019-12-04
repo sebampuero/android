@@ -1,8 +1,14 @@
 package com.example.tm18app.pojos;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * Model that holds data of a User
+ *
+ * @author Sebastian Ampueri
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public class User {
 
    private int id;

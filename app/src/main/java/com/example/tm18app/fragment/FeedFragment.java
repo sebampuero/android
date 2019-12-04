@@ -139,7 +139,7 @@ public class FeedFragment extends Fragment {
         recyclerView = binding.rvFeed;
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new PostItemAdapter(getActivity(), (ArrayList<Post>) postsModelLists,
+        adapter = new PostItemAdapter((ArrayList<Post>) postsModelLists,
                 mainModel.getNavController(), this);
         recyclerView.setAdapter(adapter);
     }

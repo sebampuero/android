@@ -16,6 +16,13 @@ import com.example.tm18app.util.TimeUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Adapter for comments section
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyViewHolder> {
 
     private Context appContext;

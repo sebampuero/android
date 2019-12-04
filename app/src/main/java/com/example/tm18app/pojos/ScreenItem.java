@@ -1,9 +1,16 @@
 package com.example.tm18app.pojos;
 
+/**
+ * Model that holds data for a {@link androidx.viewpager.widget.ViewPager} Screen
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public class ScreenItem {
 
-    String Title,Description;
-    int ScreenImg;
+    private String Title,Description;
+    private int ScreenImg;
 
     public ScreenItem(String title, String description, int screenImg) {
         Title = title;

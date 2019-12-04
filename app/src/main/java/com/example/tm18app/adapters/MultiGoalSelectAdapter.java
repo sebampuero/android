@@ -1,7 +1,5 @@
 package com.example.tm18app.adapters;
 
-import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,20 +10,20 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tm18app.R;
-import com.example.tm18app.pojos.Goal;
 import com.example.tm18app.pojos.GoalItemSelection;
 
 import java.util.ArrayList;
 
+/**
+ * Adapter for multigoal select dropdown that displays goal tags
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public class MultiGoalSelectAdapter extends RecyclerView.Adapter<MultiGoalSelectAdapter.ViewHolder> {
 
-    private Context appContext;
     private ArrayList<GoalItemSelection> goals;
-
-    public MultiGoalSelectAdapter(Context appContext, ArrayList<GoalItemSelection> goals) {
-        this.appContext = appContext;
-        this.goals = goals;
-    }
 
     public MultiGoalSelectAdapter() {
     }
@@ -53,6 +51,10 @@ public class MultiGoalSelectAdapter extends RecyclerView.Adapter<MultiGoalSelect
         return (goals != null) ? goals.size() : 0;
     }
 
+    /**
+     * Searches for selected goal items in the list of goal tags
+     * @return {@link ArrayList} containing the selected goal items
+     */
     public ArrayList<GoalItemSelection> getSelected() {
         ArrayList<GoalItemSelection> selected = new ArrayList<>();
         if(goals != null){

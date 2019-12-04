@@ -18,6 +18,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * Repository for {@link Post} and {@link Comment} responsible for managing the connection to the remote data source where
+ * the model data is persisted. See <a href="https://developer.android.com/jetpack/docs/guide#overview">Jetpack architecture overview</a>
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public class PostItemRepository {
 
     private PostRestInterface postRestInterface;
@@ -27,6 +35,11 @@ public class PostItemRepository {
                 getInstance().retrofitInstance().create(PostRestInterface.class);
     }
 
+    /**
+     * Fetches a {@link List} of {@link Post} that correspond to a given goalId
+     * @param goalIds {@link Integer} the goalId for the corresponding posts
+     * @return {@link LiveData} containing the {@link List} of {@link Post} items
+     */
     public LiveData<List<Post>> getPosts(List<String> goalIds) {
         final MutableLiveData<List<Post>> data = new MutableLiveData<>();
         postRestInterface.getPostsWithGoals(goalIds).enqueue(new Callback<List<Post>>() {
@@ -49,6 +62,11 @@ public class PostItemRepository {
         return data;
     }
 
+    /**
+     * Fetches a {@link List} of {@link Post} that correspond to a given userId
+     * @param userId {@link Integer} the userId
+     * @return {@link LiveData} containing the {@link List} of {@link com.example.tm18app.pojos.User} items
+     */
     public LiveData<List<Post>> getUserPosts(String userId) {
         final MutableLiveData<List<Post>> data = new MutableLiveData<>();
         postRestInterface.getPostsByUserId(userId).enqueue(new Callback<List<Post>>() {
@@ -67,6 +85,11 @@ public class PostItemRepository {
         return data;
     }
 
+    /**
+     * Fetches a {@link List} of {@link Comment} that correspond to a given postId
+     * @param postID {@link Integer} the postId
+     * @return {@link LiveData} containing the {@link List} of {@link Comment} items
+     */
     public MutableLiveData<List<Comment>> getComments(String postID) {
         final MutableLiveData<List<Comment>> data = new MutableLiveData<>();
         postRestInterface.getCommentsByPostId(postID).enqueue(new Callback<List<Comment>>() {
@@ -85,6 +108,11 @@ public class PostItemRepository {
         return data;
     }
 
+    /**
+     * Inserts a {@link Comment} by sending a POST Request to the API
+     * @param comment {@link Comment} the comment to be inserted
+     * @param commentLiveData {@link MutableLiveData} containing the {@link List} of {@link Comment}. The {@link com.example.tm18app.fragment.CommentSectionFragment} observes this parameter to display changes
+     */
     public void createComment(final Comment comment, MutableLiveData<List<Comment>> commentLiveData) {
         final MutableLiveData<List<Comment>> data = commentLiveData;
         postRestInterface.newComment(comment).enqueue(new Callback<Comment>() {
@@ -108,6 +136,12 @@ public class PostItemRepository {
         });
     }
 
+    /**
+     * Inserts a {@link Post} by sending a POST Request to the API
+     * @param post {@link Post} the post to be inserted
+     * @param postLiveData {@link MutableLiveData} containing a {@link HashMap} of the {@link Integer} HTTP Status code and a {@link String} message.
+     * The {@link com.example.tm18app.fragment.NewPostFragment} observes the parameter to display changes according to the received HTTP Status code
+     */
     public void createPost(Post post, MutableLiveData<HashMap<Integer, String>> postLiveData){
         final MutableLiveData<HashMap<Integer, String>> responseCode = postLiveData;
         postRestInterface.newPost(post).enqueue(new Callback<Void>() {

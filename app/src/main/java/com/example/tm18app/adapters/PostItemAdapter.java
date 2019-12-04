@@ -1,6 +1,5 @@
 package com.example.tm18app.adapters;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,15 +21,21 @@ import com.example.tm18app.util.TimeUtils;
 
 import java.util.ArrayList;
 
-
+/**
+ * Adapter for the post items in Feed and Profile
+ * @see com.example.tm18app.fragment.FeedFragment
+ * @see com.example.tm18app.fragment.ProfileFragment
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyViewHolder> {
-    private final Context appContext;
     private ArrayList<Post> postsList;
     private NavController navController;
     private Fragment currentFragment;
 
-    public PostItemAdapter(Context appContext, ArrayList<Post> posts, NavController navController, Fragment fragment) {
-        this.appContext = appContext;
+    public PostItemAdapter(ArrayList<Post> posts, NavController navController, Fragment fragment) {
         this.postsList = posts;
         this.navController = navController;
         this.currentFragment = fragment;
@@ -58,6 +63,8 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
                 bundle.putString("postID", String.valueOf(post.getId()));
+                // Distinguish between feedfragment and profile fragment for nav controller to
+                // correctly navigate to the comment section
                 if(currentFragment instanceof FeedFragment)
                     navController.navigate(R.id.action_feedFragment_to_commentSectionFragment, bundle);
                 else if(currentFragment instanceof ProfileFragment)

@@ -11,6 +11,13 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
+/**
+ * {@link retrofit2.Retrofit} Interface for Post endpoints
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public interface PostRestInterface {
 
     @POST("api/goals/post")

@@ -2,6 +2,14 @@ package com.example.tm18app.pojos;
 
 import java.io.Serializable;
 
+/**
+ * Model that holds data for a GoalItemSelection
+ * @see com.example.tm18app.adapters.MultiGoalSelectAdapter
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public class GoalItemSelection implements Serializable {
 
     private String tag;

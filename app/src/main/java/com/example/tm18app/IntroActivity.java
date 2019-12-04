@@ -22,25 +22,28 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * IntroActivity for the intro pages
+ */
 public class IntroActivity extends AppCompatActivity {
 
     private ViewPager screenPager;
-    IntroViewPagerAdapter introViewPagerAdapter;
-    TabLayout tabIndicator;
-    Button btnNext;
-    int position = 0;
-    Button btnGetStarted;
-    Animation btnAnim;
-    TextView tvSkip;
+    private TabLayout tabIndicator;
+    private Button btnNext;
+    private int position = 0;
+    private Button btnGetStarted;
+    private Animation btnAnim;
+    private TextView tvSkip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                WindowManager.LayoutParams.FLAG_FULLSCREEN); // request full screen
 
-        if (restorePrefData()) {
+        if (restorePrefData()) { // if it is not the first time the user is opening the app
+            // redirect to main activity
             Intent mainActivity = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(mainActivity);
             finish();
@@ -60,7 +63,7 @@ public class IntroActivity extends AppCompatActivity {
 
         // setup viewpager
         screenPager =findViewById(R.id.screen_viewpager);
-        introViewPagerAdapter = new IntroViewPagerAdapter(this,screenList);
+        IntroViewPagerAdapter introViewPagerAdapter = new IntroViewPagerAdapter(this, screenList);
         screenPager.setAdapter(introViewPagerAdapter);
 
         tabIndicator.setupWithViewPager(screenPager);

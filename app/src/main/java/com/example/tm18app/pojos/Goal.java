@@ -1,5 +1,12 @@
 package com.example.tm18app.pojos;
 
+/**
+ * Model that holds data of a Goal
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public class Goal {
 
     private int id;

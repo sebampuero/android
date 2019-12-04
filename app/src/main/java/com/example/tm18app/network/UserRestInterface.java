@@ -11,6 +11,13 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
 
+/**
+ * {@link retrofit2.Retrofit} Interface for User endpoints
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public interface UserRestInterface {
 
     @POST("api/goals/login")

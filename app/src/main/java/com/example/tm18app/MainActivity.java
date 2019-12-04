@@ -25,6 +25,13 @@ import com.example.tm18app.databinding.ActivityMainBinding;
 import com.example.tm18app.viewModels.MyViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+/**
+ * MainActivity
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public class MainActivity extends AppCompatActivity {
 
     private NavController navController;
@@ -52,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
 
         //hand the navcontroller to the viewmodel for navigating
         model.setNavController( navController);
-        //model.setActionBar(getSupportActionBar());
         model.setContext(this.getApplication());
         model.checkLoginStatus();
         toolbar = findViewById(R.id.toolbar);
@@ -66,12 +72,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
                 if(destination.getId() == R.id.mainFragment || destination.getId() == R.id.loginFragment || destination.getId() == R.id.registrationFragment){
+                    // disable toolbar where Fragments don't need it
                     toolbar.setVisibility(View.GONE);
                     bottomNavigationView.setVisibility(View.GONE);
                 }else{
                     toolbar.setVisibility(View.VISIBLE);
                     bottomNavigationView.setVisibility(View.VISIBLE);
-                    switch (destination.getId()){
+                    switch (destination.getId()){ // set corresponding title to fragments depending on nav controller location
                         case R.id.feedFragment:
                             toolbarTitle.setText(R.string.feed_toolbar_title);
                             break;
@@ -91,14 +98,15 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        // handle logout action
         logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 SharedPreferences preferences = getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
                 SharedPreferences.Editor e = preferences.edit();
-                e.clear().apply();
+                e.clear().apply(); // clear SharedPreferences info
                 switch (navController.getCurrentDestination().getId()){
-                    case R.id.feedFragment:
+                    case R.id.feedFragment: // depending on location log out navigate to main page
                         navController.navigate(R.id.action_feedFragment_to_ftime_nav);
                         break;
                     case R.id.profileFragment:

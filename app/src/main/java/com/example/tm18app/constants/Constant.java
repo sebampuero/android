@@ -1,5 +1,11 @@
 package com.example.tm18app.constants;
-
+/**
+ * Constants that are used all over the application
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public class Constant {
     public static final String USER_INFO = "UserInfos";
     public static final String FIRST_TIME_INTRO = "FirstTimeIntro";

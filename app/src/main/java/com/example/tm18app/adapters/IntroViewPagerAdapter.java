@@ -14,11 +14,17 @@ import com.example.tm18app.R;
 import com.example.tm18app.pojos.ScreenItem;
 
 import java.util.List;
-
+/**
+ * Adapter for ViewPager in intro slides
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public class IntroViewPagerAdapter extends PagerAdapter {
 
-    Context context;
-    List<ScreenItem> screens;
+    private Context context;
+    private List<ScreenItem> screens;
 
     public IntroViewPagerAdapter(Context mContext, List<ScreenItem> mListScreen) {
         this.context = mContext;

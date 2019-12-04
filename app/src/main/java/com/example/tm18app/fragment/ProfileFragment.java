@@ -71,7 +71,7 @@ public class ProfileFragment extends Fragment {
         recyclerView = binding.goalsUserRv;
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new PostItemAdapter(getActivity(), (ArrayList<Post>) postsModelLists,
+        adapter = new PostItemAdapter((ArrayList<Post>) postsModelLists,
                 mainModel.getNavController(), this);
         recyclerView.setAdapter(adapter);
     }

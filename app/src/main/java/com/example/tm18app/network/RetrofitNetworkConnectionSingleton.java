@@ -6,6 +6,13 @@ import com.google.gson.GsonBuilder;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * Singleton for a {@link Retrofit} instance
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public class RetrofitNetworkConnectionSingleton {
 
     private static RetrofitNetworkConnectionSingleton singleInstance = null;

@@ -13,8 +13,20 @@ import java.lang.ref.WeakReference;
 import retrofit2.Call;
 import retrofit2.Response;
 
+/**
+ * {@link AsyncTask} for a password reset. Sends a POST Request to the API to update the user's
+ * password
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public class PasswordResetAsyncTask extends AsyncTask<String, String, String> {
 
+    /**
+     * Uses {@link WeakReference} for {@link Context} since having a reference to the application's
+     * context here would cause memory leaks problems.
+     */
     private WeakReference<Context> appContext;
     private UserRestInterface restClient;
     private PasswordReset passwordReset;
@@ -32,7 +44,7 @@ public class PasswordResetAsyncTask extends AsyncTask<String, String, String> {
         Call<Void> call = restClient.updatePassword(passwordReset);
         try {
             Response<Void> response = call.execute();
-            statusCode = response.code();
+            statusCode = response.code(); // get the HTTP Status code of the response
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -41,7 +53,7 @@ public class PasswordResetAsyncTask extends AsyncTask<String, String, String> {
 
     @Override
     protected void onPostExecute(String s) {
-        if(statusCode == 400){
+        if(statusCode == 400){ // means a bad request
             Toast.makeText(appContext.get(),
                     appContext.get().getString(R.string.old_password_error),
                     Toast.LENGTH_LONG).show();
