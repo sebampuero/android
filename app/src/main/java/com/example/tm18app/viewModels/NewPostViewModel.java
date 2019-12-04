@@ -51,14 +51,9 @@ public class NewPostViewModel extends ViewModel {
             PostItemRepository repository = new PostItemRepository();
             repository.createPost(new Post(title.getValue(), content.getValue(), userID, goalID),
                     (MutableLiveData<HashMap<Integer, String>>) postLiveDataResponse);
-            cleanValues();
         }
     }
 
-    private void cleanValues() {
-        title.setValue("");
-        content.setValue("");
-    }
 
     private boolean isFormValid() {
         if(title.getValue() == null || content.getValue() == null){

@@ -40,8 +40,6 @@ public class IntroActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        // when this activity is about to be launch we need to check if its openened before or not
-
         if (restorePrefData()) {
             Intent mainActivity = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(mainActivity);
@@ -49,9 +47,6 @@ public class IntroActivity extends AppCompatActivity {
         }
         setContentView(R.layout.activity_intro);
 
-        //getSupportActionBar().hide();
-
-        // ini views
         btnNext = findViewById(R.id.btn_next);
         btnGetStarted = findViewById(R.id.btn_get_started);
         tabIndicator = findViewById(R.id.tab_indicator);
@@ -77,8 +72,8 @@ public class IntroActivity extends AppCompatActivity {
                     position++;
                     screenPager.setCurrentItem(position);
                 }
-                if (position == screenList.size()-1) { // when we rech to the last screen
-                    loaddLastScreen();
+                if (position == screenList.size()-1) {
+                    loadLastScreen();
                 }
             }
         });
@@ -87,7 +82,7 @@ public class IntroActivity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 if (tab.getPosition() == screenList.size()-1) {
-                    loaddLastScreen();
+                    loadLastScreen();
                 }
             }
 
@@ -126,7 +121,7 @@ public class IntroActivity extends AppCompatActivity {
         return  isIntroActivityOpnendBefore;
     }
 
-    private void loaddLastScreen() {
+    private void loadLastScreen() {
         btnNext.setVisibility(View.INVISIBLE);
         btnGetStarted.setVisibility(View.VISIBLE);
         tvSkip.setVisibility(View.INVISIBLE);

@@ -36,7 +36,6 @@ public class CommentsSectionViewModel extends ViewModel {
                 comment.setPostID(Integer.parseInt(postID));
                 comment.setUserID(preferences.getInt(Constant.USER_ID, 0));
                 postItemRepository.createComment(comment, commentLiveData);
-                inputComment.setValue("");
             }
         }
     }

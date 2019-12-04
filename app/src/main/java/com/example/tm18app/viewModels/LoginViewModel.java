@@ -17,6 +17,7 @@ import com.example.tm18app.network.RetrofitNetworkConnectionSingleton;
 import com.example.tm18app.network.UserRestInterface;
 import com.example.tm18app.pojos.User;
 import com.example.tm18app.repository.UserRepository;
+import com.example.tm18app.util.SingleLiveEvent;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -30,11 +31,11 @@ public class LoginViewModel extends ViewModel {
 
     public MutableLiveData<String> email = new MutableLiveData<>();
     public MutableLiveData<String> password = new MutableLiveData<>();
+    public SingleLiveEvent<Boolean> triggerLoadingBtn = new SingleLiveEvent<>();
 
     private Context ctx;
 
     private LiveData<HashMap<Integer, User>> userLiveData = new MutableLiveData<>();
-
     public LiveData<HashMap<Integer, User>> getUserLiveData(){
         return userLiveData;
     }
@@ -50,13 +51,8 @@ public class LoginViewModel extends ViewModel {
             user.setEmail(email.getValue());
             user.setPassword(password.getValue());
             userRepository.loginUser(user, (MutableLiveData<HashMap<Integer, User>>) userLiveData);
-            cleanValues();
+            triggerLoadingBtn.call();
         }
-    }
-
-    private void cleanValues() {
-        email.setValue("");
-        password.setValue("");
     }
 
     private boolean isLoginValid(){

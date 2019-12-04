@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -32,6 +33,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import br.com.simplepass.loading_button_lib.customViews.CircularProgressButton;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -44,6 +47,12 @@ public class RegistrationFragment extends Fragment {
     private RecyclerView recyclerView;
     private MyViewModel mainModel;
     private RegisterViewModel model;
+    private CircularProgressButton registrationBtn;
+    private EditText name;
+    private EditText lastname;
+    private EditText password;
+    private EditText passwordConf;
+    private EditText email;
 
     public RegistrationFragment() {
     }
@@ -57,7 +66,7 @@ public class RegistrationFragment extends Fragment {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_registration, container, false);
         binding.setMyVM(model);
         binding.setLifecycleOwner(this);
-        progressBar = binding.progressBarRegistration;
+        setupViews();
         setupGoalsBoxRecyclerView();
         model.getGoalLiveData().observe(this, new Observer<List<Goal>>() {
             @Override
@@ -73,48 +82,82 @@ public class RegistrationFragment extends Fragment {
                 evaluateRegistration(integerUserHashMap);
             }
         });
+        model.triggerLoadingBtn.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                registrationBtn.startAnimation();
+            }
+        });
         model.setGoalsAdapter(adapter);
         return binding.getRoot();
     }
 
+    private void setupViews() {
+        progressBar = binding.progressBarRegistration;
+        registrationBtn = binding.registrationBtn;
+        name = binding.nameInput;
+        lastname = binding.lastnameInput;
+        email = binding.emailAddresInputRegister;
+        password = binding.passwordInputRegister;
+        passwordConf = binding.passwordInputRegisterConf;
+    }
+
     private void evaluateRegistration(HashMap<Integer, User> integerUserHashMap) {
-        if(integerUserHashMap.containsKey(500))
+        if(integerUserHashMap.containsKey(500)){
             Toast.makeText(this.getContext(),
                     this.getContext().getString(R.string.server_error),
                     Toast.LENGTH_SHORT).show();
-        else if(integerUserHashMap.containsKey(400))
+            registrationBtn.stopAnimation();
+        }
+        else if(integerUserHashMap.containsKey(400)){
+            registrationBtn.stopAnimation();
             Toast.makeText(this.getContext(),
                     this.getContext().getString(R.string.email_already_exists),
                     Toast.LENGTH_SHORT).show();
-        else if(integerUserHashMap.containsKey(200)){
-            SharedPreferences introPreferences = this.getActivity().
-                    getSharedPreferences(Constant.FIRST_TIME_INTRO,Context.MODE_PRIVATE);
-            SharedPreferences.Editor editorIntro = introPreferences.edit();
-            editorIntro.putBoolean(Constant.INTRO_OPENED,true);
-            editorIntro.commit();
-            SharedPreferences sharedPreferences = this.getActivity()
-                    .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            User user = integerUserHashMap.get(200);
-            editor.putBoolean(Constant.LOGGED_IN, true);
-            editor.putString(Constant.NAME, user.getName());
-            editor.putString(Constant.LASTNAME, user.getLastname());
-            editor.putString(Constant.EMAIL, user.getEmail());
-            editor.putInt(Constant.USER_ID, user.getId());
-            if(user.getGoals().length > 0 && user.getGoalTags().length > 0){
-                StringBuilder sb = new StringBuilder();
-                StringBuilder sb1 = new StringBuilder();
-                for (int i = 0; i < user.getGoals().length; i++) {
-                    sb.append(user.getGoals()[i]).append(",");
-                    sb1.append(user.getGoalTags()[i]).append(",");
-                }
-                editor.putString(Constant.GOAL_IDS, sb.toString());
-                editor.putString(Constant.GOAL_TAGS, sb1.toString());
-            }
-            editor.apply();
-            mainModel.getNavController().navigate(R.id.action_global_feedFragment);
-            model.getUserLiveData().getValue().clear();
         }
+        else if(integerUserHashMap.containsKey(200)){
+            User user = integerUserHashMap.get(200);
+            handleRegisterSuccess(user);
+        }
+    }
+
+    private void handleRegisterSuccess(User user) {
+        SharedPreferences introPreferences = this.getActivity().
+                getSharedPreferences(Constant.FIRST_TIME_INTRO,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editorIntro = introPreferences.edit();
+        editorIntro.putBoolean(Constant.INTRO_OPENED,true);
+        editorIntro.commit();
+        SharedPreferences sharedPreferences = this.getActivity()
+                .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(Constant.LOGGED_IN, true);
+        editor.putString(Constant.NAME, user.getName());
+        editor.putString(Constant.LASTNAME, user.getLastname());
+        editor.putString(Constant.EMAIL, user.getEmail());
+        editor.putInt(Constant.USER_ID, user.getId());
+        if(user.getGoals().length > 0 && user.getGoalTags().length > 0){
+            StringBuilder sb = new StringBuilder();
+            StringBuilder sb1 = new StringBuilder();
+            for (int i = 0; i < user.getGoals().length; i++) {
+                sb.append(user.getGoals()[i]).append(",");
+                sb1.append(user.getGoalTags()[i]).append(",");
+            }
+            editor.putString(Constant.GOAL_IDS, sb.toString());
+            editor.putString(Constant.GOAL_TAGS, sb1.toString());
+        }
+        editor.apply();
+        mainModel.getNavController().navigate(R.id.action_global_feedFragment);
+        model.getUserLiveData().getValue().clear();
+        registrationBtn.stopAnimation();
+        cleanValues();
+    }
+
+    private void cleanValues() {
+        name.setText("");
+        lastname.setText("");
+        email.setText("");
+        passwordConf.setText("");
+        password.setText("");
     }
 
     private void prepareDataForAdapter(List<Goal> goals) {

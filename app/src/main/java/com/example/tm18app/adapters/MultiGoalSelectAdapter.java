@@ -53,28 +53,16 @@ public class MultiGoalSelectAdapter extends RecyclerView.Adapter<MultiGoalSelect
         return (goals != null) ? goals.size() : 0;
     }
 
-    public ArrayList<GoalItemSelection> getAll() {
-        return goals;
-    }
-
     public ArrayList<GoalItemSelection> getSelected() {
         ArrayList<GoalItemSelection> selected = new ArrayList<>();
-        for(int i = 0; i < goals.size(); i++){
-            if(goals.get(i).isChecked()){
-                selected.add(goals.get(i));
+        if(goals != null){
+            for(int i = 0; i < goals.size(); i++){
+                if(goals.get(i).isChecked()){
+                    selected.add(goals.get(i));
+                }
             }
         }
         return selected;
-    }
-
-    public void setSelected(String[] selectedGoals){
-        for(GoalItemSelection goalItem : goals){
-            for(int i = 0; i < selectedGoals.length; i++){
-                if(goalItem.getTag().equals(selectedGoals[i]))
-                    goalItem.setChecked(true);
-            }
-        }
-        notifyDataSetChanged();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{

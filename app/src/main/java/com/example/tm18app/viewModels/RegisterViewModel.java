@@ -20,6 +20,7 @@ import com.example.tm18app.pojos.Goal;
 import com.example.tm18app.pojos.User;
 import com.example.tm18app.repository.GoalsItemRepository;
 import com.example.tm18app.repository.UserRepository;
+import com.example.tm18app.util.SingleLiveEvent;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -42,6 +43,7 @@ public class RegisterViewModel extends ViewModel {
     public LiveData<HashMap<Integer, User>> getUserLiveData(){
         return userLiveData;
     }
+    public SingleLiveEvent<Boolean> triggerLoadingBtn = new SingleLiveEvent<>();
 
     private Context ctx;
     private MultiGoalSelectAdapter adapter;
@@ -79,17 +81,10 @@ public class RegisterViewModel extends ViewModel {
              user.setGoalTags(goalTags);
              UserRepository userRepository = new UserRepository();
              userRepository.registerUser(user, (MutableLiveData<HashMap<Integer, User>>) userLiveData);
-             cleanValues();
+            triggerLoadingBtn.call();
         }
     }
 
-    private void cleanValues() {
-        name.setValue("");
-        lastname.setValue("");
-        email.setValue("");
-        password.setValue("");
-        passwordConf.setValue("");
-    }
 
     private boolean isRegisterValid() {
         if(name.getValue() == null

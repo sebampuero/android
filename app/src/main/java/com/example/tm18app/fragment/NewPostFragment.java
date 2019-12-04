@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -37,6 +38,8 @@ public class NewPostFragment extends Fragment {
     private MyViewModel mainModel;
     private NewPostViewModel model;
     private FragmentNewPostBinding binding;
+    private EditText postTitle;
+    private EditText postContent;
 
     public NewPostFragment() {
         // Required empty public constructor
@@ -52,6 +55,8 @@ public class NewPostFragment extends Fragment {
         binding.setMyVM(model);
         binding.setLifecycleOwner(this);
         model.setContext(getActivity());
+        postContent = binding.inputTextEdit;
+        postTitle = binding.postTitle;
         setSpinner(binding.goalTagsSpinner);
         model.getPostLiveDataResponse().observe(this, new Observer<HashMap<Integer, String>>() {
             @Override
@@ -67,10 +72,16 @@ public class NewPostFragment extends Fragment {
             Toast.makeText(this.getContext(), this.getContext().getString(R.string.post_successfully_created), Toast.LENGTH_SHORT).show();
             mainModel.getNavController().navigate(R.id.action_newPostFragment_to_feedFragment);
             model.getPostLiveDataResponse().getValue().clear();
+            cleanInputs();
         }
         else if(statusCode.containsKey(500)) {
             Toast.makeText(this.getContext(), this.getContext().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void cleanInputs() {
+        postTitle.setText("");
+        postContent.setText("");
     }
 
     private void setSpinner(Spinner goalTagsSpinner) {

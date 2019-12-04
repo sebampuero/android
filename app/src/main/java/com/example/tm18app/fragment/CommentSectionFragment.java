@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import com.example.tm18app.R;
 import com.example.tm18app.adapters.CommentsAdapter;
@@ -38,6 +39,7 @@ public class CommentSectionFragment extends Fragment {
     private RecyclerView recyclerView;
     private CommentsAdapter adapter;
     private List<Comment> commentsList = new ArrayList<>();
+    private EditText input;
 
     public CommentSectionFragment() {
         // Required empty public constructor
@@ -52,6 +54,7 @@ public class CommentSectionFragment extends Fragment {
         binding.setMyVM(model);
         model.setPostID(getArguments().getString("postID"));
         model.setAppContext(getActivity());
+        input = binding.commentInputField;
         setupRecyclerView();
         fetchData();
         return binding.getRoot();
@@ -66,6 +69,7 @@ public class CommentSectionFragment extends Fragment {
                     commentsList.addAll(comments);
                     Collections.sort(commentsList);
                     adapter.notifyDataSetChanged();
+                    input.setText("");
                 }
             }
         });
