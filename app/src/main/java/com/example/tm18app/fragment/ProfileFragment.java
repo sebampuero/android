@@ -29,13 +29,10 @@ import java.util.List;
 
 
 /**
- * A simple {@link Fragment} subclass responsible for managing the Profile.
- *
- * @author Sebastian Ampuero
- * @version 1.0
- * @since 03.12.2019
+ * A simple {@link Fragment} subclass.
  */
 public class ProfileFragment extends Fragment {
+
 
     private MyViewModel mainModel;
     private ProfileViewModel model;
@@ -70,9 +67,6 @@ public class ProfileFragment extends Fragment {
     }
 
 
-    /**
-     * Setups the {@link RecyclerView} that displays User's posts
-     */
     private void setupRecyclerView() {
         recyclerView = binding.goalsUserRv;
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -82,15 +76,10 @@ public class ProfileFragment extends Fragment {
         recyclerView.setAdapter(adapter);
     }
 
-    /**
-     * Fetches the Posts of the API using the Repository
-     * @see com.example.tm18app.repository.PostItemRepository
-     */
     private void fetchData() {
         model.getPostLiveData().observe(this, new Observer<List<Post>>() {
             @Override
             public void onChanged(List<Post> posts) {
-                // method gets called when there is new data in the list of posts
                 if(posts != null){
                     if(posts.size() > 0){
                         postsModelLists.clear();

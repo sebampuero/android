@@ -42,7 +42,7 @@ public class IntroActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN); // request full screen
 
-        if (isNotFirstTime()) { // if it is not the first time the user is opening the app
+        if (restorePrefData()) { // if it is not the first time the user is opening the app
             // redirect to main activity
             Intent mainActivity = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(mainActivity);
@@ -56,7 +56,6 @@ public class IntroActivity extends AppCompatActivity {
         btnAnim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.button_animatiom);
         tvSkip = findViewById(R.id.tv_skip);
 
-        // add display data to the array of screen items
         final List<ScreenItem> screenList = new ArrayList<>();
         screenList.add(new ScreenItem(getString(R.string.motivate_yourself), getString(R.string.motivation_desc), R.drawable.fox));
         screenList.add(new ScreenItem(getString(R.string.do_it_along_others), getString(R.string.do_it_along_others_desc), R.drawable.community));
@@ -66,8 +65,8 @@ public class IntroActivity extends AppCompatActivity {
         screenPager =findViewById(R.id.screen_viewpager);
         IntroViewPagerAdapter introViewPagerAdapter = new IntroViewPagerAdapter(this, screenList);
         screenPager.setAdapter(introViewPagerAdapter);
-        tabIndicator.setupWithViewPager(screenPager);
 
+        tabIndicator.setupWithViewPager(screenPager);
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,19 +118,12 @@ public class IntroActivity extends AppCompatActivity {
 
     }
 
-    /**
-     * Checks whether the user already saw the intro pages
-     * @return true if already seen, false otherwise
-     */
-    private boolean isNotFirstTime() {
+    private boolean restorePrefData() {
         SharedPreferences pref = getApplicationContext().getSharedPreferences(Constant.FIRST_TIME_INTRO,MODE_PRIVATE);
         Boolean isIntroActivityOpnendBefore = pref.getBoolean(Constant.INTRO_OPENED,false);
         return  isIntroActivityOpnendBefore;
     }
 
-    /**
-     * Gets to the last Page of the {@link ViewPager}
-     */
     private void loadLastScreen() {
         btnNext.setVisibility(View.INVISIBLE);
         btnGetStarted.setVisibility(View.VISIBLE);
