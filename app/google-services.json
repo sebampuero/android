@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "489490245132",
+    "firebase_url": "https://goalsapp-dd279.firebaseio.com",
+    "project_id": "goalsapp-dd279",
+    "storage_bucket": "goalsapp-dd279.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:489490245132:android:6a9f24b5576b49211bf029",
+        "android_client_info": {
+          "package_name": "com.example.tm18app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "489490245132-3rmenq48o3bvn3kiu68pj64dnur41dr9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDajk8fftoS7izhql7hRHRrNrxIdvJZ9fs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "489490245132-3rmenq48o3bvn3kiu68pj64dnur41dr9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

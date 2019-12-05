@@ -3,9 +3,11 @@ package com.example.tm18app;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
@@ -23,7 +25,12 @@ import androidx.navigation.ui.NavigationUI;
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.ActivityMainBinding;
 import com.example.tm18app.viewModels.MyViewModel;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 /**
  * MainActivity
@@ -125,6 +132,25 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        handleFirebaseToken();
+
+    }
+
+    private void handleFirebaseToken() {
+        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+            @Override
+            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                if (!task.isSuccessful()) {
+                    Log.e("TAG", "getInstanceId failed", task.getException());
+                    return;
+                }
+
+                // Get new Instance ID token
+                String token = task.getResult().getToken();
+
+                Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
