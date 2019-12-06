@@ -1,17 +1,24 @@
 package com.example.tm18app;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
@@ -24,6 +31,10 @@ import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.ActivityMainBinding;
 import com.example.tm18app.viewModels.MyViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.net.URL;
+
+import me.pushy.sdk.Pushy;
 
 /**
  * MainActivity
@@ -44,20 +55,25 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //get a new or already existing ViewModel that survived a possible rotation
+
+        Pushy.listen(this);
+        //TODO: Add a dialog to explain the user why external storage is needed
+
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            // Request both READ_EXTERNAL_STORAGE and WRITE_EXTERNAL_STORAGE so that the
+            // Pushy SDK will be able to persist the device token in the external storage
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+        }
         MyViewModel model = ViewModelProviders.of(this).get(MyViewModel.class);
-        //get the automatically generated binding class for MainActivity
+
         ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        //connects the ViewModel with the binding class and it's internal objects
+
         binding.setMyVM(model);
 
-        //let the binding class get notified about the activities lifecycle to be able to notify the UI
-        //components when new values or initial values need to be set
         binding.setLifecycleOwner(this);
 
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
 
-        //hand the navcontroller to the viewmodel for navigating
         model.setNavController( navController);
         model.setContext(this.getApplication());
         model.checkLoginStatus();
@@ -68,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
         NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration);
+
         navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
             @Override
             public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
@@ -105,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences preferences = getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
                 SharedPreferences.Editor e = preferences.edit();
                 e.clear().apply(); // clear SharedPreferences info
+                Pushy.unregister(getApplicationContext());
                 switch (navController.getCurrentDestination().getId()){
                     case R.id.feedFragment: // depending on location log out navigate to main page
                         navController.navigate(R.id.action_feedFragment_to_ftime_nav);
@@ -127,10 +145,5 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        return NavigationUI.navigateUp(navController, appBarConfiguration)
-                || super.onSupportNavigateUp();
-    }
+
 }

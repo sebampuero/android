@@ -1,10 +1,15 @@
 package com.example.tm18app.fragment;
 
 
+import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -19,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.R;
@@ -29,9 +35,17 @@ import com.example.tm18app.viewModels.FeedViewModel;
 import com.example.tm18app.viewModels.MyViewModel;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.lang.ref.WeakReference;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import me.pushy.sdk.Pushy;
+import me.pushy.sdk.config.PushyPreferenceKeys;
+import me.pushy.sdk.config.PushySDK;
+import me.pushy.sdk.model.PushyDeviceCredentials;
+import me.pushy.sdk.util.PushyAuthentication;
 
 
 /**
@@ -78,6 +92,15 @@ public class FeedFragment extends Fragment {
             progressBar.setVisibility(View.GONE);
         }
         return binding.getRoot();
+    }
+
+    //TODO: take to login fragment and register fragment. Login fragment fetches token from DB and Registerfragment creates new one
+    // save token and auth key to db when registering and fetch both when login , create PushyCredentials object
+    // and use Pushy.setCredentials()
+    private void handlePushyServices() {
+        if (!Pushy.isRegistered(getActivity().getApplicationContext())) {
+            new RegisterForPushNotificationsAsync(getActivity().getApplicationContext()).execute();
+        }
     }
 
     private void checkIfGoalsExist() {
@@ -144,4 +167,39 @@ public class FeedFragment extends Fragment {
         recyclerView.setAdapter(adapter);
     }
 
+    private static class RegisterForPushNotificationsAsync extends AsyncTask<Void, Void, Exception> {
+
+        WeakReference<Context> appContext;
+
+        RegisterForPushNotificationsAsync(Context applicationContext) {
+            this.appContext = new WeakReference<>(applicationContext);
+        }
+
+        protected Exception doInBackground(Void... params) {
+            try {
+                // Assign a unique token to this device
+                String deviceToken = Pushy.register(appContext.get());
+                // Log it for debugging purposes
+                Log.e("TAG", "Pushy device token: " + deviceToken);
+                Log.e("TAG", "Pushy auth key: " + Pushy.getDeviceCredentials(appContext.get()).authKey);
+            }
+            catch (Exception exc) {
+                // Return exc to onPostExecute
+                return exc;
+            }
+
+            // Success
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Exception exc) {
+            // Failed?
+            if (exc != null) {
+                // Show error as toast message
+                Toast.makeText(appContext.get(), exc.toString(), Toast.LENGTH_LONG).show();
+            }
+            // Succeeded, optionally do something to alert the user
+        }
+    }
 }
