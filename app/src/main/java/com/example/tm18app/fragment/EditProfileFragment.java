@@ -35,7 +35,7 @@ import java.util.List;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link Fragment} subclass. Responsible for UI and events for the profile edition UI.
  */
 public class EditProfileFragment extends Fragment {
 
@@ -60,16 +60,18 @@ public class EditProfileFragment extends Fragment {
         binding.setMyVM(model);
         binding.setLifecycleOwner(this);
         setupGoalsBoxRecyclerView();
+        // Observe for clicks on the button that triggers the DialogFragment to request goal tags
         model.navigateToDialog.observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 FragmentManager fm = getFragmentManager();
                 NewGoalsDialogFragment frag = NewGoalsDialogFragment.newInstance();
                 frag.setTargetFragment(EditProfileFragment.this, 0);
-                frag.show(fm, "fragment_create_goal");
+                frag.show(fm, "fragment_create_goal"); // start dialog fragment
             }
         });
 
+        // Fetch goal tags with the observer
         model.getGoalLiveData().observe(this, new Observer<List<Goal>>() {
             @Override
             public void onChanged(List<Goal> goals) {
@@ -77,6 +79,7 @@ public class EditProfileFragment extends Fragment {
             }
         });
 
+        // Observe for changes when the user edits his/her info
         model.getUserLiveData().observe(this, new Observer<HashMap<Integer, User>>() {
             @Override
             public void onChanged(HashMap<Integer, User> integerUserHashMap) {
@@ -87,17 +90,24 @@ public class EditProfileFragment extends Fragment {
         return binding.getRoot();
     }
 
+    /**
+     * Evaluates the info that came from the database and show corresponding feedback messages
+     * to the user about the edition process.
+     * @param integerUserHashMap {@link HashMap} containing the HTTP Status code of the operation
+     *                                          and the user's information
+     */
     private void evaluateEditUser(HashMap<Integer, User> integerUserHashMap) {
-        if(integerUserHashMap.containsKey(500)){
+        if(integerUserHashMap.containsKey(500)){ // error from server
             Toast.makeText(this.getContext(), this.getContext().getString(R.string.server_error), Toast.LENGTH_LONG).show();
-        }else if(integerUserHashMap.containsKey(400)){
+        }else if(integerUserHashMap.containsKey(400)){ // email address exists already, bad request
             Toast.makeText(this.getContext(), this.getContext().getString(R.string.email_already_exists), Toast.LENGTH_LONG).show();
-        }else if(integerUserHashMap.containsKey(200)){
+        }else if(integerUserHashMap.containsKey(200)){ // everything ok
             SharedPreferences preferences =
                     this.getActivity().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = preferences.edit();
             User user = integerUserHashMap.get(200);
             editor.clear();
+            // Update local user info
             editor.putBoolean(Constant.LOGGED_IN, true);
             editor.putString(Constant.NAME, user.getName());
             editor.putString(Constant.LASTNAME, user.getLastname());
@@ -115,26 +125,35 @@ public class EditProfileFragment extends Fragment {
             }
             editor.apply();
             Toast.makeText(this.getContext(), this.getContext().getString(R.string.profile_edit_success_msg), Toast.LENGTH_SHORT).show();
+            // reset HashMap otherwise the fragment keeps thinking there are changes every time it
+            // is opened
             model.getUserLiveData().getValue().clear();
             mainModel.getNavController().navigate(R.id.action_editProfileFragment_to_profileFragment);
         }
     }
 
+    /**
+     * Process the fetched goals list
+     * @param goals {@link List} of {@link Goal} items
+     */
     private void prepareDataForAdapter(List<Goal> goals) {
         SharedPreferences preferences = getActivity()
                 .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
+        // Populate a list of GoalItemSelection items for the Adapter to handle the goals displaying
+        // correctly
         ArrayList<GoalItemSelection> goalItemSelections = new ArrayList<>();
         GoalItemSelection goalItemSelection;
         for(Goal goal : goals){
             goalItemSelection = new GoalItemSelection(goal.getTag(), false, goal.getId());
             goalItemSelections.add(goalItemSelection);
         }
-        if(preferences.getString(Constant.GOAL_TAGS, null) != null){
-            List<String> selectedGoals = Arrays.asList(preferences.getString(Constant.GOAL_TAGS, null).split(","));
+        if(preferences.getString(Constant.GOAL_TAGS, null) != null){ // if user has checked goals
+            List<String> selectedGoals =
+                    Arrays.asList(preferences.getString(Constant.GOAL_TAGS, null).split(","));
             for(String goalTag : selectedGoals){
                 for(GoalItemSelection item : goalItemSelections){
                     if(goalTag.equals(item.getTag())){
-                        item.setChecked(true);
+                        item.setChecked(true); // display checked user's goals in the recycler view
                     }
                 }
             }
@@ -142,6 +161,9 @@ public class EditProfileFragment extends Fragment {
         adapter.setGoals(goalItemSelections);
     }
 
+    /**
+     * Sets up the {@link RecyclerView} for the Goals
+     */
     private void setupGoalsBoxRecyclerView() {
         RecyclerView recyclerView = binding.goalsComboBoxEditProfile;
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

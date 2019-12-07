@@ -1,8 +1,10 @@
 package com.example.tm18app;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -17,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -40,7 +43,7 @@ import java.net.URL;
 import me.pushy.sdk.Pushy;
 
 /**
- * MainActivity
+ * MainActivity.
  *
  * @author Sebastian Ampuero
  * @version 1.0
@@ -60,25 +63,45 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Make Pushy listen for incoming MQTT Notification messages. It only works if writing and
+        // reading permissions are granted
         Pushy.listen(this);
-        //TODO: Add a dialog to explain the user why external storage is needed
 
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            // Request both READ_EXTERNAL_STORAGE and WRITE_EXTERNAL_STORAGE so that the
-            // Pushy SDK will be able to persist the device token in the external storage
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+        if (ContextCompat.checkSelfPermission(getApplicationContext(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+                alertBuilder.setCancelable(true);
+                alertBuilder.setTitle(getString(R.string.permission_necessary));
+                alertBuilder.setMessage(getString(R.string.permission_necessary_explanation));
+                alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int which) {
+                        ActivityCompat.requestPermissions(MainActivity.this,
+                                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                                        Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+                    }
+                });
+                AlertDialog alert = alertBuilder.create();
+                alert.show();
+            } else {
+                // No explanation needed; request the permission
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+            }
         }
 
         MyViewModel model = ViewModelProviders.of(this).get(MyViewModel.class);
-
         ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-
         binding.setMyVM(model);
-
         binding.setLifecycleOwner(this);
 
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-
         model.setNavController( navController);
         model.setContext(this.getApplication());
         model.checkLoginStatus();
@@ -128,7 +151,8 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences preferences = getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
                 SharedPreferences.Editor e = preferences.edit();
                 e.clear().apply(); // clear SharedPreferences info
-                Pushy.unregister(getApplicationContext());
+                Pushy.unregister(getApplicationContext()); // wipe user token and auth key info
+                // Navigate to the main fragment
                 PendingIntent pendingIntent = new NavDeepLinkBuilder(getApplicationContext())
                         .setComponentName(MainActivity.class)
                         .setGraph(R.navigation.nav_graph)

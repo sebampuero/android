@@ -33,7 +33,13 @@ import java.util.HashMap;
 
 import br.com.simplepass.loading_button_lib.customViews.CircularProgressButton;
 
-
+/**
+ * A simple {@link Fragment} subclass. Responsible for UI and events for the login UI.
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public class LoginFragment extends Fragment {
 
     private LoginViewModel model;
@@ -57,12 +63,14 @@ public class LoginFragment extends Fragment {
         loginBtn = binding.loginBtn;
         email = binding.emailAddressInput;
         password = binding.passwordInput;
+        // Observe for response when the user logs in
         model.getUserLiveData().observe(this, new Observer<HashMap<Integer, User>>() {
             @Override
             public void onChanged(HashMap<Integer, User> integerUserHashMap) {
                 evaluateLogin(integerUserHashMap);
             }
         });
+        // Observer to trigger the loading login button animation
         model.triggerLoadingBtn.observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
@@ -72,14 +80,19 @@ public class LoginFragment extends Fragment {
         return binding.getRoot();
     }
 
+    /**
+     * Evaluates the log in process. Shows feedback to the user accordingly.
+     * @param integerUserHashMap {@link HashMap} containing the HTTP Status code of the operation
+     *                                         and the user's information
+     */
     private void evaluateLogin(HashMap<Integer, User> integerUserHashMap) {
-        if(integerUserHashMap.containsKey(403)){
+        if(integerUserHashMap.containsKey(403)){ // not authenticated, invalid credentials
             Toast.makeText(this.getContext(),
                     this.getContext().getString(R.string.invalid_credentials),
                     Toast.LENGTH_SHORT).show();
             loginBtn.revertAnimation();
         }
-        else if(integerUserHashMap.containsKey(500)){
+        else if(integerUserHashMap.containsKey(500)){ // error from server
             Toast.makeText(this.getContext(),
                     this.getContext().getString(R.string.server_error),
                     Toast.LENGTH_SHORT).show();
@@ -92,6 +105,10 @@ public class LoginFragment extends Fragment {
 
     }
 
+    /**
+     * Sets the user's data locally after a successful login
+     * @param user {@link User} the logged in user info
+     */
     private void handleSuccessLogin(User user) {
         SharedPreferences introPreferences = this.getActivity().
                 getSharedPreferences(Constant.FIRST_TIME_INTRO,Context.MODE_PRIVATE);
@@ -123,6 +140,9 @@ public class LoginFragment extends Fragment {
         cleanInputs();
     }
 
+    /**
+     * Empties input fields
+     */
     private void cleanInputs() {
         email.setText("");
         password.setText("");

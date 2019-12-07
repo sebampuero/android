@@ -24,6 +24,10 @@ import java.util.List;
 
 /**
  * IntroActivity for the intro pages
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
  */
 public class IntroActivity extends AppCompatActivity {
 
@@ -118,12 +122,18 @@ public class IntroActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Check whether the user already watched the intro pages
+     * @return true if intro was already seen, false otherwise
+     */
     private boolean restorePrefData() {
         SharedPreferences pref = getApplicationContext().getSharedPreferences(Constant.FIRST_TIME_INTRO,MODE_PRIVATE);
-        Boolean isIntroActivityOpnendBefore = pref.getBoolean(Constant.INTRO_OPENED,false);
-        return  isIntroActivityOpnendBefore;
+        return pref.getBoolean(Constant.INTRO_OPENED,false);
     }
 
+    /**
+     * Loads the last screen of the {@link  ViewPager}
+     */
     private void loadLastScreen() {
         btnNext.setVisibility(View.INVISIBLE);
         btnGetStarted.setVisibility(View.VISIBLE);

@@ -20,7 +20,8 @@ import com.example.tm18app.network.PasswordResetAsyncTask;
 import com.example.tm18app.pojos.PasswordReset;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link Fragment} subclass. Responsible for UI and events for the password edition UI.
+ * No need to attach a View Model for this {@link Fragment}
  */
 public class EditPasswordFragment extends Fragment {
 

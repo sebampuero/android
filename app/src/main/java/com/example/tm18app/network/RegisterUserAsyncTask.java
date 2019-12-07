@@ -15,6 +15,11 @@ import me.pushy.sdk.Pushy;
 import me.pushy.sdk.util.exceptions.PushyException;
 import retrofit2.Response;
 
+/**
+ * RegisterUserAsyncTask is responsible for handling the asynchronous registration of the user.
+ * In addition to that, the token and auth key for {@link Pushy} notifications services are retrieved
+ * and stored in the database
+ */
 public class RegisterUserAsyncTask extends AsyncTask<Void, Void, User> {
 
     private WeakReference<Context> appContext;
@@ -32,8 +37,8 @@ public class RegisterUserAsyncTask extends AsyncTask<Void, Void, User> {
 
     protected User doInBackground(Void... params) {
         try {
-            // Assign a unique token to this device
             try{
+                // Assign a unique token to the device and user
                 String deviceToken = Pushy.register(appContext.get());
                 user.setPushyAuthKey(Pushy.getDeviceCredentials(appContext.get()).authKey);
                 user.setPushyToken(deviceToken);
@@ -54,10 +59,11 @@ public class RegisterUserAsyncTask extends AsyncTask<Void, Void, User> {
 
     @Override
     protected void onPostExecute(User user) {
-        if(user != null){
-            HashMap<Integer, User> responseCodeMapping = new HashMap<>();
-            responseCodeMapping.put(statusCode, user);
-            responseMappingMutableLiveData.setValue(responseCodeMapping);
-        }
+        // Creates a mapping containing the corresponding status code and user
+        // status code will never be 0 if there is connection. However, user can be null
+        // and that means an error identified with the status code will be shown
+        HashMap<Integer, User> responseCodeMapping = new HashMap<>();
+        responseCodeMapping.put(statusCode, user);
+        responseMappingMutableLiveData.setValue(responseCodeMapping);
     }
 }

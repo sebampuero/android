@@ -1,15 +1,15 @@
 package com.example.tm18app.fragment;
 
 
-import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -18,43 +18,21 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.Toast;
-
-import com.example.tm18app.constants.Constant;
 import com.example.tm18app.R;
 import com.example.tm18app.adapters.PostItemAdapter;
+import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.FragmentFeedBinding;
 import com.example.tm18app.network.UserPushyTokenAsyncTask;
 import com.example.tm18app.pojos.Post;
 import com.example.tm18app.viewModels.FeedViewModel;
 import com.example.tm18app.viewModels.MyViewModel;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.gson.Gson;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.lang.ref.WeakReference;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import me.pushy.sdk.Pushy;
-import me.pushy.sdk.config.PushyPreferenceKeys;
-import me.pushy.sdk.config.PushySDK;
-import me.pushy.sdk.model.PushyDeviceCredentials;
-import me.pushy.sdk.util.PushyAuthentication;
-import me.pushy.sdk.util.exceptions.PushyException;
 
 
 /**

@@ -30,7 +30,11 @@ import java.util.List;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link Fragment} subclass. Responsible for UI and events for the comment section UI.
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
  */
 public class CommentSectionFragment extends Fragment {
 
@@ -60,13 +64,18 @@ public class CommentSectionFragment extends Fragment {
         return binding.getRoot();
     }
 
+    /**
+     * Starts the observer for the {@link androidx.lifecycle.LiveData} object that contains changes
+     * of comments. When changes occur, they appear on screen.
+     */
     private void fetchData() {
         model.getCommentLiveData().observe(this, new Observer<List<Comment>>() {
             @Override
-            public void onChanged(List<Comment> comments) { ;
+            public void onChanged(List<Comment> comments) {
                 if(comments != null){
                     commentsList.clear();
                     commentsList.addAll(comments);
+                    // sort comments by creation date
                     Collections.sort(commentsList);
                     adapter.notifyDataSetChanged();
                     input.setText("");
@@ -75,7 +84,9 @@ public class CommentSectionFragment extends Fragment {
         });
     }
 
-
+    /**
+     * Sets up the {@link RecyclerView} for this {@link Fragment}
+     */
     private void setupRecyclerView() {
         recyclerView = binding.commentsRv;
         LinearLayoutManager manager = new LinearLayoutManager(getActivity());

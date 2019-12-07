@@ -15,6 +15,10 @@ import java.net.URL;
 import me.pushy.sdk.Pushy;
 import me.pushy.sdk.model.PushyDeviceCredentials;
 
+/**
+ * UserPushyTokenAsyncTask retrieves the {@link Pushy} credentials associated with the user
+ * @see PushyDeviceCredentials
+ */
 public class UserPushyTokenAsyncTask extends AsyncTask<String, Void, String> {
 
     private WeakReference<Context> appContext;
@@ -38,6 +42,7 @@ public class UserPushyTokenAsyncTask extends AsyncTask<String, Void, String> {
                     response.append(inputLine);
                 }
                 in.close();
+                // Schema of the received information is in JSON format and has to be formatted
                 JSONObject jsonObject = new JSONObject(response.toString());
                 String token = jsonObject.getString("pushy_token");
                 String authKey = jsonObject.getString("pushy_auth_key");
@@ -51,13 +56,9 @@ public class UserPushyTokenAsyncTask extends AsyncTask<String, Void, String> {
             }
         }
         catch (Exception exc) {
-            // Return exc to onPostExecute
+            exc.printStackTrace();
         }
         return null;
     }
 
-    @Override
-    protected void onPostExecute(String result) {
-
-    }
 }

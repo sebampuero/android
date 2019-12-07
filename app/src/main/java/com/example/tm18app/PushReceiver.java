@@ -13,6 +13,13 @@ import androidx.navigation.NavDeepLinkBuilder;
 
 import me.pushy.sdk.Pushy;
 
+/**
+ * The PushReceiver class is responsible for handling the incoming push notifications.
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public class PushReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -25,9 +32,7 @@ public class PushReceiver extends BroadcastReceiver {
             postID = intent.getIntExtra("message", 0);
         }
 
-        // Prepare a notification with vibration, sound and lights
-
-
+        // Build a pending intent to navigate to the comment section containing the new comment
         Bundle bundle = new Bundle();
         bundle.putString("postID", String.valueOf(postID));
         PendingIntent pendingIntent = new NavDeepLinkBuilder(context)
@@ -37,6 +42,7 @@ public class PushReceiver extends BroadcastReceiver {
                 .setArguments(bundle)
                 .createPendingIntent();
 
+        // Configure the notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setAutoCancel(true)
                 .setSmallIcon(android.R.drawable.star_on)
@@ -53,6 +59,5 @@ public class PushReceiver extends BroadcastReceiver {
 
         // Build the notification and display it
         notificationManager.notify(1, builder.build());
-
     }
 }
