@@ -80,5 +80,9 @@
     <string name="get_started">Starten</string>
     <string name="skip">Überspringen</string>
     <string name="next">Next</string>
+    <string name="new_comment_notification">Jemand hat kommentiert in deinem Post!</string>
+    <string name="new_comment_notification_subtext">Neues Kommentar in einem deiner Posts</string>
+    <string name="disable_notifications">Benachrichtigungen deaktivieren</string>
+    <string name="notifications">Benachrichtigungen</string>
 
 </resources>

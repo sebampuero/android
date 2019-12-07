@@ -1,8 +1,10 @@
 package com.example.tm18app.repository;
 
-import androidx.lifecycle.LiveData;
+import android.content.Context;
+
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.tm18app.network.RegisterUserAsyncTask;
 import com.example.tm18app.network.RetrofitNetworkConnectionSingleton;
 import com.example.tm18app.network.UserRestInterface;
 import com.example.tm18app.pojos.User;
@@ -58,22 +60,9 @@ public class UserRepository {
      * @param user {@link User} the user to be registered
      * @param userLiveData {@link MutableLiveData} containing a {@link HashMap} for the HTTP Status code and response body that contains information about the registered user
      */
-    public void registerUser(User user, MutableLiveData<HashMap<Integer, User>> userLiveData){
-        final MutableLiveData<HashMap<Integer, User>> responseCode = userLiveData;
-        userRestInterface.registerUser(user).enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                HashMap<Integer, User> hashMap = new HashMap<>();
-                // response.body() is the serialized User Model containing the information sent from the API
-                hashMap.put(response.code(), response.body());
-                responseCode.setValue(hashMap);
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-
-            }
-        });
+    public void registerUser(User user, MutableLiveData<HashMap<Integer, User>> userLiveData, Context ctx){
+        final MutableLiveData<HashMap<Integer, User>> responseMappingMutableLiveData = userLiveData;
+        new RegisterUserAsyncTask(ctx, user, userRestInterface, responseMappingMutableLiveData).execute();
     }
 
 

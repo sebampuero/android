@@ -27,6 +27,8 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 
+import me.pushy.sdk.Pushy;
+import me.pushy.sdk.util.exceptions.PushyException;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -79,8 +81,8 @@ public class RegisterViewModel extends ViewModel {
              }
              user.setGoals(goalIds);
              user.setGoalTags(goalTags);
-             UserRepository userRepository = new UserRepository();
-             userRepository.registerUser(user, (MutableLiveData<HashMap<Integer, User>>) userLiveData);
+            UserRepository userRepository = new UserRepository();
+             userRepository.registerUser(user, (MutableLiveData<HashMap<Integer, User>>) userLiveData, this.ctx);
             triggerLoadingBtn.call();
         }
     }

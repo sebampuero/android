@@ -30,12 +30,20 @@ import com.example.tm18app.constants.Constant;
 import com.example.tm18app.R;
 import com.example.tm18app.adapters.PostItemAdapter;
 import com.example.tm18app.databinding.FragmentFeedBinding;
+import com.example.tm18app.network.UserPushyTokenAsyncTask;
 import com.example.tm18app.pojos.Post;
 import com.example.tm18app.viewModels.FeedViewModel;
 import com.example.tm18app.viewModels.MyViewModel;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,6 +54,7 @@ import me.pushy.sdk.config.PushyPreferenceKeys;
 import me.pushy.sdk.config.PushySDK;
 import me.pushy.sdk.model.PushyDeviceCredentials;
 import me.pushy.sdk.util.PushyAuthentication;
+import me.pushy.sdk.util.exceptions.PushyException;
 
 
 /**
@@ -72,6 +81,7 @@ public class FeedFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        checkBackFromMainFragment();
         mainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
         model = ViewModelProviders.of(getActivity()).get(FeedViewModel.class);
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_feed, container, false);
@@ -85,6 +95,7 @@ public class FeedFragment extends Fragment {
         setupRecyclerView();
         model.setContext(getActivity());
         checkIfGoalsExist();
+        requestPushyCreds();
         if(goalsExist){
             model.fetchData();
             fetchData();
@@ -94,12 +105,18 @@ public class FeedFragment extends Fragment {
         return binding.getRoot();
     }
 
-    //TODO: take to login fragment and register fragment. Login fragment fetches token from DB and Registerfragment creates new one
-    // save token and auth key to db when registering and fetch both when login , create PushyCredentials object
-    // and use Pushy.setCredentials()
-    private void handlePushyServices() {
+    private void checkBackFromMainFragment() {
+        SharedPreferences preferences = getActivity().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
+        if(!preferences.getBoolean(Constant.LOGGED_IN, false)){
+            getActivity().finish();
+        }
+    }
+
+    private void requestPushyCreds() {
         if (!Pushy.isRegistered(getActivity().getApplicationContext())) {
-            new RegisterForPushNotificationsAsync(getActivity().getApplicationContext()).execute();
+            SharedPreferences preferences = getActivity().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
+            int userID = preferences.getInt(Constant.USER_ID, 0);
+            new UserPushyTokenAsyncTask(getActivity().getApplicationContext()).execute(Constant.PUSHY_CREDS_ENDPOINT + userID);
         }
     }
 
@@ -165,41 +182,5 @@ public class FeedFragment extends Fragment {
         adapter = new PostItemAdapter((ArrayList<Post>) postsModelLists,
                 mainModel.getNavController(), this);
         recyclerView.setAdapter(adapter);
-    }
-
-    private static class RegisterForPushNotificationsAsync extends AsyncTask<Void, Void, Exception> {
-
-        WeakReference<Context> appContext;
-
-        RegisterForPushNotificationsAsync(Context applicationContext) {
-            this.appContext = new WeakReference<>(applicationContext);
-        }
-
-        protected Exception doInBackground(Void... params) {
-            try {
-                // Assign a unique token to this device
-                String deviceToken = Pushy.register(appContext.get());
-                // Log it for debugging purposes
-                Log.e("TAG", "Pushy device token: " + deviceToken);
-                Log.e("TAG", "Pushy auth key: " + Pushy.getDeviceCredentials(appContext.get()).authKey);
-            }
-            catch (Exception exc) {
-                // Return exc to onPostExecute
-                return exc;
-            }
-
-            // Success
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Exception exc) {
-            // Failed?
-            if (exc != null) {
-                // Show error as toast message
-                Toast.makeText(appContext.get(), exc.toString(), Toast.LENGTH_LONG).show();
-            }
-            // Succeeded, optionally do something to alert the user
-        }
     }
 }

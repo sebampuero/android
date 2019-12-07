@@ -18,4 +18,6 @@ public class Constant {
     public static final String USER_ID = "id";
     public static final String GOAL_IDS = "goalIds";
     public static final String GOAL_TAGS = "goalTags";
+
+    public static final String PUSHY_CREDS_ENDPOINT = "https://goalsapp-api.herokuapp.com/api/goals/pushycreds/";
 }

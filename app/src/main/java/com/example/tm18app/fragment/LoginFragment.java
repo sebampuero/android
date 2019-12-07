@@ -117,7 +117,7 @@ public class LoginFragment extends Fragment {
             editor.putString(Constant.GOAL_TAGS, sb1.toString());
         }
         editor.apply();
-        mainModel.getNavController().navigate(R.id.action_global_feedFragment);
+        mainModel.getNavController().navigate(R.id.action_loginFragment_to_feedFragment);
         model.getUserLiveData().getValue().clear();
         loginBtn.revertAnimation();
         cleanInputs();

@@ -18,6 +18,8 @@ public class User {
    private String password;
    private Integer[] goals;
    private String[] goalTags;
+   private String pushyToken;
+   private String pushyAuthKey;
 
     public User() {
 
@@ -88,6 +90,22 @@ public class User {
         this.goalTags = goalTags;
     }
 
+    public String getPushyToken() {
+        return pushyToken;
+    }
+
+    public void setPushyToken(String pushyToken) {
+        this.pushyToken = pushyToken;
+    }
+
+    public String getPushyAuthKey() {
+        return pushyAuthKey;
+    }
+
+    public void setPushyAuthKey(String pushyAuthKey) {
+        this.pushyAuthKey = pushyAuthKey;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -98,6 +116,8 @@ public class User {
                 ", password='" + password + '\'' +
                 ", goals=" + Arrays.toString(goals) +
                 ", goalTags=" + Arrays.toString(goalTags) +
+                ", pushyToken='" + pushyToken + '\'' +
+                ", pushyAuthKey='" + pushyAuthKey + '\'' +
                 '}';
     }
 }

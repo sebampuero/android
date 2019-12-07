@@ -146,7 +146,7 @@ public class RegistrationFragment extends Fragment {
             editor.putString(Constant.GOAL_TAGS, sb1.toString());
         }
         editor.apply();
-        mainModel.getNavController().navigate(R.id.action_global_feedFragment);
+        mainModel.getNavController().navigate(R.id.action_registrationFragment_to_feedFragment);
         model.getUserLiveData().getValue().clear();
         registrationBtn.stopAnimation();
         cleanValues();

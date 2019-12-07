@@ -9,6 +9,8 @@ import androidx.preference.PreferenceFragmentCompat;
 
 import com.example.tm18app.R;
 
+import me.pushy.sdk.Pushy;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,6 +40,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-
+        if(key.equals("notifications"))
+            Pushy.toggleNotifications(!sharedPreferences.getBoolean(key, false), getActivity().getApplicationContext());
     }
 }

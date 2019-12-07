@@ -1,7 +1,9 @@
 package com.example.tm18app;
 
 import android.Manifest;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
@@ -22,6 +24,7 @@ import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDeepLinkBuilder;
 import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -48,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private NavController navController;
     private Toolbar toolbar;
     private AppBarConfiguration appBarConfiguration;
+    private ImageButton logoutBtn;
     private BottomNavigationView bottomNavigationView;
     private TextView toolbarTitle;
 
@@ -64,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
             // Pushy SDK will be able to persist the device token in the external storage
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
         }
+
         MyViewModel model = ViewModelProviders.of(this).get(MyViewModel.class);
 
         ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
@@ -77,9 +82,10 @@ public class MainActivity extends AppCompatActivity {
         model.setNavController( navController);
         model.setContext(this.getApplication());
         model.checkLoginStatus();
+
         toolbar = findViewById(R.id.toolbar);
         bottomNavigationView = findViewById(R.id.bottomNavView);
-        ImageButton logoutBtn = findViewById(R.id.logoutBtn);
+        logoutBtn = findViewById(R.id.logoutBtn);
         toolbarTitle = findViewById(R.id.toolbarTitle);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
@@ -123,22 +129,15 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences.Editor e = preferences.edit();
                 e.clear().apply(); // clear SharedPreferences info
                 Pushy.unregister(getApplicationContext());
-                switch (navController.getCurrentDestination().getId()){
-                    case R.id.feedFragment: // depending on location log out navigate to main page
-                        navController.navigate(R.id.action_feedFragment_to_ftime_nav);
-                        break;
-                    case R.id.profileFragment:
-                        navController.navigate(R.id.action_profileFragment_to_ftime_nav);
-                        break;
-                    case R.id.settingsFragment:
-                        navController.navigate(R.id.action_settingsFragment_to_ftime_nav);
-                        break;
-                    case R.id.commentSectionFragment:
-                        navController.navigate(R.id.action_commentSectionFragment_to_ftime_nav);
-                        break;
-                    case R.id.newPostFragment:
-                        navController.navigate(R.id.action_newPostFragment_to_ftime_nav);
-                        break;
+                PendingIntent pendingIntent = new NavDeepLinkBuilder(getApplicationContext())
+                        .setComponentName(MainActivity.class)
+                        .setGraph(R.navigation.nav_graph)
+                        .setDestination(R.id.mainFragment)
+                        .createPendingIntent();
+                try {
+                    pendingIntent.send();
+                } catch (PendingIntent.CanceledException ex) {
+                    ex.printStackTrace();
                 }
             }
         });
