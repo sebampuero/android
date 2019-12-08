@@ -82,7 +82,7 @@
     <string name="skip">Saltar</string>
     <string name="next">Siguiente</string>
     <string name="new_comment_notification">Alguien comentó en tu post!</string>
-    <string name="new_comment_notification_subtext">Nuevo comentario en uno de tus posts</string>
+    <string name="new_comment_notification_subtext"> comentó en tu post</string>
     <string name="disable_notifications">Desactivar notificaciones</string>
     <string name="notifications">Notificaciones</string>
     <string name="permission_necessary">Permisos necesarios</string>

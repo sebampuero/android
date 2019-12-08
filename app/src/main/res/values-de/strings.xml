@@ -81,7 +81,7 @@
     <string name="skip">Überspringen</string>
     <string name="next">Next</string>
     <string name="new_comment_notification">Jemand hat kommentiert in deinem Post!</string>
-    <string name="new_comment_notification_subtext">Neues Kommentar in einem deiner Posts</string>
+    <string name="new_comment_notification_subtext"> hat in deinem Post kommentiert</string>
     <string name="disable_notifications">Benachrichtigungen deaktivieren</string>
     <string name="notifications">Benachrichtigungen</string>
     <string name="permission_necessary">Genehmigung benötigt</string>

@@ -81,7 +81,7 @@
     <string name="skip">Skip</string>
     <string name="next">Next</string>
     <string name="new_comment_notification">Someone commented on your post!</string>
-    <string name="new_comment_notification_subtext">A new comment on one of your posts</string>
+    <string name="new_comment_notification_subtext"> commented on your post</string>
     <string name="disable_notifications">Disable notifications</string>
     <string name="notifications">Notifications</string>
     <string name="permission_necessary">Permission necessary</string>

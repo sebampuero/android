@@ -1,5 +1,6 @@
 package com.example.tm18app.network;
 
+import com.example.tm18app.constants.Constant;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -25,7 +26,7 @@ public class RetrofitNetworkConnectionSingleton {
                 .setLenient()
                 .create();
         retrofit = new Retrofit.Builder()
-                .baseUrl("https://goalsapp-api.herokuapp.com")
+                .baseUrl(Constant.API_ENDPOINT)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
     }
