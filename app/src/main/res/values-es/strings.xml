@@ -85,7 +85,7 @@
     <string name="new_comment_notification_subtext">Nuevo comentario en uno de tus posts</string>
     <string name="disable_notifications">Desactivar notificaciones</string>
     <string name="notifications">Notificaciones</string>
-    <string name="permission_necessary">Permission necessary</string>
-    <string name="permission_necessary_explanation">Permission to read and write to the device\'s storage is needed for the notification system to work properly. If denied, notifications won\'t be able to work.</string>
+    <string name="permission_necessary">Permisos necesarios</string>
+    <string name="permission_necessary_explanation">Permisos para leer y escribir en el almacenamiento son necesarios para el servicio de notificaciones. Sin el permiso las notificaciones no funcionarán</string>
 
 </resources>

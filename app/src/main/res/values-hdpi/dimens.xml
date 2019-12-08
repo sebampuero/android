@@ -14,7 +14,7 @@
     <dimen name="margin_10_3">25dp</dimen>
     <dimen name="margin_10_5">40dp</dimen>
     <dimen name="margin_10_6">50dp</dimen>
-    <dimen name="height_10_10">80dp</dimen>
+    <dimen name="height_10_10">110dp</dimen>
     <dimen name="margin_10_12">100dp</dimen>
     <dimen name="margin_10_18">150dp</dimen>
 </resources>

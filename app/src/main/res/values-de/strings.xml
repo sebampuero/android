@@ -84,7 +84,7 @@
     <string name="new_comment_notification_subtext">Neues Kommentar in einem deiner Posts</string>
     <string name="disable_notifications">Benachrichtigungen deaktivieren</string>
     <string name="notifications">Benachrichtigungen</string>
-    <string name="permission_necessary">Permission necessary</string>
-    <string name="permission_necessary_explanation">Permission to read and write to the device\'s storage is needed for the notification system to work properly. If denied, notifications won\'t be able to work.</string>
+    <string name="permission_necessary">Genehmigung benötigt</string>
+    <string name="permission_necessary_explanation">Genehmigung um auf die Speicher zu lesen und schreiben wird vom Benachrichtigungsdienst verwendet. Ohne Genehmigung werden keine Benachrichtigungen gezeigt.</string>
 
 </resources>
