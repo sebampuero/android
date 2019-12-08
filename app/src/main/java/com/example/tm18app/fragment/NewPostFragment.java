@@ -70,7 +70,7 @@ public class NewPostFragment extends Fragment {
     private void evaluatePostResponse(HashMap<Integer, String> statusCode) {
         if(statusCode.containsKey(200)){
             Toast.makeText(this.getContext(), this.getContext().getString(R.string.post_successfully_created), Toast.LENGTH_SHORT).show();
-            mainModel.getNavController().navigate(R.id.action_newPostFragment_to_feedFragment);
+            mainModel.getNavController().navigateUp();
             model.getPostLiveDataResponse().getValue().clear();
             cleanInputs();
         }

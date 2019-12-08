@@ -35,12 +35,13 @@ public class EditPasswordFragment extends Fragment {
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        mainModel = ViewModelProviders.of(this).get(MyViewModel.class);
+        mainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
         model = ViewModelProviders.of(this).get(PasswordEditViewModel.class);
         model.setContext(getActivity());
         FragmentEditPasswordBinding binding = DataBindingUtil.inflate(inflater,
                 R.layout.fragment_edit_password, container, false);
+        binding.setMyVM(model);
+        binding.setLifecycleOwner(this);
         model.getStatusCodeResponseLiveData().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer responseStatusCode) {

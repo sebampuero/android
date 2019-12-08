@@ -128,7 +128,7 @@ public class EditProfileFragment extends Fragment {
             // reset HashMap otherwise the fragment keeps thinking there are changes every time it
             // is opened
             model.getUserLiveData().getValue().clear();
-            mainModel.getNavController().navigate(R.id.action_editProfileFragment_to_profileFragment);
+            mainModel.getNavController().navigateUp();
         }
     }
 
