@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.tm18app.network.RegisterUserAsyncTask;
 import com.example.tm18app.network.RetrofitNetworkConnectionSingleton;
 import com.example.tm18app.network.UserRestInterface;
+import com.example.tm18app.pojos.PasswordReset;
 import com.example.tm18app.pojos.User;
 
 import java.util.HashMap;
@@ -85,6 +86,21 @@ public class UserRepository {
             @Override
             public void onFailure(Call<User> call, Throwable t) {
 
+            }
+        });
+    }
+
+    public void changeUserPassword(PasswordReset passwordReset, MutableLiveData<Integer> statusCodeResponseLiveData){
+        final MutableLiveData<Integer> statusCodeRespIntegerMutableLiveData = statusCodeResponseLiveData;
+        userRestInterface.updatePassword(passwordReset).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                statusCodeRespIntegerMutableLiveData.setValue(response.code());
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                statusCodeRespIntegerMutableLiveData.setValue(0);
             }
         });
     }

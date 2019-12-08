@@ -47,10 +47,6 @@ public class PostItemRepository {
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                 if(response.body() != null){
                     data.setValue(response.body());
-                    Log.e("TAG", "repo not null");
-                }
-                else{
-                    Log.e("TAG", "repo null");
                 }
             }
 

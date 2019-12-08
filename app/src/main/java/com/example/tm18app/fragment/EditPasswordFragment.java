@@ -1,23 +1,22 @@
 package com.example.tm18app.fragment;
 
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+
 import com.example.tm18app.R;
-import com.example.tm18app.constants.Constant;
-import com.example.tm18app.network.PasswordResetAsyncTask;
-import com.example.tm18app.pojos.PasswordReset;
+import com.example.tm18app.databinding.FragmentEditPasswordBinding;
+import com.example.tm18app.viewModels.MyViewModel;
+import com.example.tm18app.viewModels.PasswordEditViewModel;
 
 /**
  * A simple {@link Fragment} subclass. Responsible for UI and events for the password edition UI.
@@ -25,11 +24,8 @@ import com.example.tm18app.pojos.PasswordReset;
  */
 public class EditPasswordFragment extends Fragment {
 
-    private TextView oldPassword;
-    private TextView newPassword;
-    private TextView newPasswordConf;
-    private Button saveBtn;
-    private int userID;
+    private MyViewModel mainModel;
+    private PasswordEditViewModel model;
 
     public EditPasswordFragment() {
         // Required empty public constructor
@@ -37,55 +33,37 @@ public class EditPasswordFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        SharedPreferences preferences = getActivity()
-                .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
-        userID = preferences.getInt(Constant.USER_ID, 0);
-        View rootView = inflater.inflate(R.layout.fragment_edit_password, container, false);
-        oldPassword = rootView.findViewById(R.id.oldPassword);
-        newPassword = rootView.findViewById(R.id.newPassword);
-        newPasswordConf = rootView.findViewById(R.id.newPasswordConf);
-        saveBtn = rootView.findViewById(R.id.saveNewPasswordBtn);
-        saveNewPassword();
-        return rootView;
-    }
 
-    private void saveNewPassword() {
-        saveBtn.setOnClickListener(new View.OnClickListener() {
+        mainModel = ViewModelProviders.of(this).get(MyViewModel.class);
+        model = ViewModelProviders.of(this).get(PasswordEditViewModel.class);
+        model.setContext(getActivity());
+        FragmentEditPasswordBinding binding = DataBindingUtil.inflate(inflater,
+                R.layout.fragment_edit_password, container, false);
+        model.getStatusCodeResponseLiveData().observe(this, new Observer<Integer>() {
             @Override
-            public void onClick(View view) {
-                if(validFields()){
-                    PasswordReset pass = new PasswordReset(userID,
-                            oldPassword.getText().toString(),
-                            newPassword.getText().toString());
-                    new PasswordResetAsyncTask(getActivity(), pass).execute();
-                    cleanValues();
-                }
+            public void onChanged(Integer responseStatusCode) {
+                handleResponse(responseStatusCode);
             }
         });
+        return binding.getRoot();
     }
 
-    private void cleanValues() {
-        oldPassword.setText("");
-        newPasswordConf.setText("");
-        newPassword.setText("");
-    }
-
-    private boolean validFields() {
-        if(oldPassword.getText().toString().trim().equals("")
-                || newPassword.getText().toString().trim().equals("")
-                || newPasswordConf.getText().toString().trim().equals("")){
+    private void handleResponse(Integer responseStatusCode) {
+        if(responseStatusCode == 500){
             Toast.makeText(getActivity(),
-                    getActivity().getString(R.string.empty_fields), Toast.LENGTH_LONG).show();
-            return false;
-        }else if(!newPassword.getText().toString().trim()
-                .equals(newPasswordConf.getText().toString().trim())){
+                    getActivity().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
+        }else if(responseStatusCode == 400){
             Toast.makeText(getActivity(),
-                    getActivity().getString(R.string.pass_dont_match), Toast.LENGTH_LONG).show();
-            return false;
+                    getActivity().getString(R.string.old_password_error), Toast.LENGTH_SHORT).show();
+        }else if(responseStatusCode == 200){
+            Toast.makeText(getActivity(),
+                    getActivity().getString(R.string.password_update_success), Toast.LENGTH_SHORT).show();
+            mainModel.getNavController().navigateUp();
+            model.getStatusCodeResponseLiveData().setValue(0);
         }
-        return true;
     }
+
 
 }

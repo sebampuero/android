@@ -17,4 +17,6 @@
     <dimen name="height_10_10">110dp</dimen>
     <dimen name="margin_10_12">100dp</dimen>
     <dimen name="margin_10_18">150dp</dimen>
+    <dimen name="height_10_5">40dp</dimen>
+    <dimen name="height_10_2">20dp</dimen>
 </resources>

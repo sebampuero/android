@@ -8,34 +8,39 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragment.CommentSectionFragment">
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="0.8"
             android:id="@+id/commentsRv"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_alignParentBottom="true">
+            android:padding="@dimen/padding_10">
             <EditText
                 android:id="@+id/commentInputField"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:inputType="text"
+                android:padding="@dimen/padding_10"
+                android:background="@drawable/custom_comment_edit_text"
                 android:text="@={myVM.inputComment}"
-                android:layout_weight="0.9" />
+                android:layout_weight="0.85" />
             <ImageButton
                 android:id="@+id/commentInputBtn"
                 android:layout_width="0dp"
                 android:layout_height="fill_parent"
+                android:background="@color/inAppBackgroundColor"
                 android:src="@drawable/ic_send_black_24dp"
                 android:onClick="@{() -> myVM.onPostComment()}"
-                android:layout_weight="0.1" />
+                android:layout_weight="0.15" />
         </LinearLayout>
-    </RelativeLayout>
+    </LinearLayout>
 
 
 </FrameLayout>
