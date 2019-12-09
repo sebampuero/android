@@ -148,7 +148,7 @@ public class PostItemRepository {
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-
+                responseCode.setValue(0);
             }
         });
     }

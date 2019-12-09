@@ -80,12 +80,12 @@ public class NewPostFragment extends Fragment {
         if(statusCode == 200){
             Toast.makeText(this.getContext(), this.getContext().getString(R.string.post_successfully_created), Toast.LENGTH_SHORT).show();
             mainModel.getNavController().navigateUp();
+            model.getPostLiveDataResponse().setValue(0);
             cleanInputs();
         }
         else if(statusCode == 500) {
             Toast.makeText(this.getContext(), this.getContext().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
         }
-        model.getPostLiveDataResponse().setValue(0);
     }
 
     /**
