@@ -86,5 +86,6 @@
     <string name="notifications">Benachrichtigungen</string>
     <string name="permission_necessary">Genehmigung benötigt</string>
     <string name="permission_necessary_explanation">Genehmigung um auf die Speicher zu lesen und schreiben wird vom Benachrichtigungsdienst verwendet. Ohne Genehmigung werden keine Benachrichtigungen gezeigt.</string>
+    <string name="post_a_comment">Poste ein Kommentar</string>
 
 </resources>

@@ -27,6 +27,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:inputType="text"
+                android:hint="@string/post_a_comment"
                 android:padding="@dimen/padding_10"
                 android:background="@drawable/custom_comment_edit_text"
                 android:text="@={myVM.inputComment}"

@@ -86,5 +86,6 @@
     <string name="notifications">Notifications</string>
     <string name="permission_necessary">Permission necessary</string>
     <string name="permission_necessary_explanation">Permission to read and write to the device\'s storage is needed for the notification system to work properly. If denied, notifications won\'t be able to work.</string>
+    <string name="post_a_comment">Post a comment</string>
 
 </resources>
