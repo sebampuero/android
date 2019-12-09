@@ -16,6 +16,13 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.tm18app.R;
 
+/**
+ * A {@link DialogFragment} that contains the input to request new goal tags.
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public class NewGoalsDialogFragment extends DialogFragment {
 
     private EditText goalsText;
@@ -25,7 +32,7 @@ public class NewGoalsDialogFragment extends DialogFragment {
 
     }
 
-    public static NewGoalsDialogFragment newInstance(){
+    static NewGoalsDialogFragment newInstance(){
         return new NewGoalsDialogFragment();
     }
 
@@ -47,7 +54,7 @@ public class NewGoalsDialogFragment extends DialogFragment {
         sendReqBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(validInputs()){
+                if(validInputs()){ // TODO: add real functionality
                     Toast.makeText(getActivity(),
                             getActivity().getString(R.string.goal_request_toast_msg),
                             Toast.LENGTH_LONG).show();
@@ -57,6 +64,10 @@ public class NewGoalsDialogFragment extends DialogFragment {
         });
     }
 
+    /**
+     * Checks if the input fields is valid
+     * @return true if input valid, false otherwise
+     */
     private boolean validInputs() {
         if(goalsText.getText().toString().trim().contains(" ")){
             Toast.makeText(getActivity(),

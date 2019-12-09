@@ -20,7 +20,6 @@ import com.example.tm18app.viewModels.PasswordEditViewModel;
 
 /**
  * A simple {@link Fragment} subclass. Responsible for UI and events for the password edition UI.
- * No need to attach a View Model for this {@link Fragment}
  */
 public class EditPasswordFragment extends Fragment {
 
@@ -42,6 +41,7 @@ public class EditPasswordFragment extends Fragment {
                 R.layout.fragment_edit_password, container, false);
         binding.setMyVM(model);
         binding.setLifecycleOwner(this);
+        // Set observer for the status of the password change feedback
         model.getStatusCodeResponseLiveData().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer responseStatusCode) {
@@ -51,6 +51,10 @@ public class EditPasswordFragment extends Fragment {
         return binding.getRoot();
     }
 
+    /**
+     * Handle the response from the server about the password change
+     * @param responseStatusCode {@link Integer} that represents the HTTP Status Code of the response
+     */
     private void handleResponse(Integer responseStatusCode) {
         if(responseStatusCode == 500){
             Toast.makeText(getActivity(),
@@ -61,7 +65,9 @@ public class EditPasswordFragment extends Fragment {
         }else if(responseStatusCode == 200){
             Toast.makeText(getActivity(),
                     getActivity().getString(R.string.password_update_success), Toast.LENGTH_SHORT).show();
+            // Navigate back to the edit profile UI
             mainModel.getNavController().navigateUp();
+            // Reset the status code to 0 to prevent observer to be called again
             model.getStatusCodeResponseLiveData().setValue(0);
         }
     }

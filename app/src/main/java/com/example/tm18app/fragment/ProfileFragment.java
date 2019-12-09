@@ -29,10 +29,13 @@ import java.util.List;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link Fragment} subclass. Responsible for UI and events for the profile UI.
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
  */
 public class ProfileFragment extends Fragment {
-
 
     private MyViewModel mainModel;
     private ProfileViewModel model;
@@ -47,7 +50,6 @@ public class ProfileFragment extends Fragment {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -60,13 +62,15 @@ public class ProfileFragment extends Fragment {
         model.setNavController(mainModel.getNavController());
         model.setContext(getActivity());
         progressBar = binding.progressBar;
-        progressBar.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE); // show loading animation when posts are being loaded
         setupRecyclerView();
         fetchData();
         return binding.getRoot();
     }
 
-
+    /**
+     * Sets up the {@link RecyclerView} for the user's Posts list in the profile
+     */
     private void setupRecyclerView() {
         recyclerView = binding.goalsUserRv;
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -76,6 +80,9 @@ public class ProfileFragment extends Fragment {
         recyclerView.setAdapter(adapter);
     }
 
+    /**
+     * Fetches the {@link List} of {@link Post} items from the server.
+     */
     private void fetchData() {
         model.getPostLiveData().observe(this, new Observer<List<Post>>() {
             @Override

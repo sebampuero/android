@@ -37,7 +37,7 @@ public class FeedViewModel extends ViewModel {
         this.appContext = activity.getApplicationContext();
     }
 
-    public void fetchData() {
+    public void callRepository() {
         postItemRepository = new PostItemRepository();
         SharedPreferences preferences = appContext
                 .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);

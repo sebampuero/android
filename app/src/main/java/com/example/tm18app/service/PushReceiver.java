@@ -31,7 +31,7 @@ public class PushReceiver extends BroadcastReceiver {
         int postID = 0;
         String userName = "";
 
-        // Attempt to extract the "message" property from the payload:
+        // Attempt to extract the property from the payload:
         if (intent.getIntExtra("postId", 0) != 0) {
             postID = intent.getIntExtra("postId", 0);
             userName = intent.getStringExtra("userName");

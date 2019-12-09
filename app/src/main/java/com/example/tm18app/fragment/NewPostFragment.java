@@ -31,7 +31,11 @@ import java.util.HashMap;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link Fragment} subclass. Responsible for UI and events for the new post UI.
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
  */
 public class NewPostFragment extends Fragment {
 
@@ -57,34 +61,46 @@ public class NewPostFragment extends Fragment {
         model.setContext(getActivity());
         postContent = binding.inputTextEdit;
         postTitle = binding.postTitle;
-        setSpinner(binding.goalTagsSpinner);
-        model.getPostLiveDataResponse().observe(this, new Observer<HashMap<Integer, String>>() {
+        setSpinner();
+        // set observer for new post response feedback
+        model.getPostLiveDataResponse().observe(this, new Observer<Integer>() {
             @Override
-            public void onChanged(HashMap<Integer, String> statusCode) {
+            public void onChanged(Integer statusCode) {
                 evaluatePostResponse(statusCode);
             }
         });
         return binding.getRoot();
     }
 
-    private void evaluatePostResponse(HashMap<Integer, String> statusCode) {
-        if(statusCode.containsKey(200)){
+    /**
+     * Evaluate the status of the procedure of creating a new Post. Show feedback to the user.
+     * @param statusCode {@link Integer} HTTP status code of the response from the server
+     */
+    private void evaluatePostResponse(Integer statusCode) {
+        if(statusCode == 200){
             Toast.makeText(this.getContext(), this.getContext().getString(R.string.post_successfully_created), Toast.LENGTH_SHORT).show();
             mainModel.getNavController().navigateUp();
-            model.getPostLiveDataResponse().getValue().clear();
             cleanInputs();
         }
-        else if(statusCode.containsKey(500)) {
+        else if(statusCode == 500) {
             Toast.makeText(this.getContext(), this.getContext().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
         }
+        model.getPostLiveDataResponse().setValue(0);
     }
 
+    /**
+     * Empties the input fields for the Post
+     */
     private void cleanInputs() {
         postTitle.setText("");
         postContent.setText("");
     }
 
-    private void setSpinner(Spinner goalTagsSpinner) {
+    /**
+     * Sets up the {@link Spinner} that contains the goal tags.
+     */
+    private void setSpinner() {
+        Spinner goalTagsSpinner = binding.goalTagsSpinner;
         SharedPreferences preferences = getActivity().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
         if(preferences.getString(Constant.GOAL_TAGS, null) != null){
             final ArrayList<String> goalTags = new ArrayList<>(Arrays.asList(preferences.getString(Constant.GOAL_TAGS, null).split(",")));

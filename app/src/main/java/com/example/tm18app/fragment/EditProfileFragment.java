@@ -36,6 +36,10 @@ import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass. Responsible for UI and events for the profile edition UI.
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
  */
 public class EditProfileFragment extends Fragment {
 
@@ -47,7 +51,6 @@ public class EditProfileFragment extends Fragment {
     public EditProfileFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

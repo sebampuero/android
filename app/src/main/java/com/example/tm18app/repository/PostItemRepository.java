@@ -138,17 +138,12 @@ public class PostItemRepository {
      * @param postLiveData {@link MutableLiveData} containing a {@link HashMap} of the {@link Integer} HTTP Status code and a {@link String} message.
      * The {@link com.example.tm18app.fragment.NewPostFragment} observes the parameter to display changes according to the received HTTP Status code
      */
-    public void createPost(Post post, MutableLiveData<HashMap<Integer, String>> postLiveData){
-        final MutableLiveData<HashMap<Integer, String>> responseCode = postLiveData;
+    public void createPost(Post post, MutableLiveData<Integer> postLiveData){
+        final MutableLiveData<Integer> responseCode = postLiveData;
         postRestInterface.newPost(post).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-                HashMap<Integer, String> hashMap = new HashMap<>();
-                if(response.code() == 500)
-                    hashMap.put(response.code(), "Server error");
-                else if(response.code() == 200)
-                    hashMap.put(response.code(), "Ok");
-                responseCode.setValue(hashMap);
+                responseCode.setValue(response.code());
             }
 
             @Override

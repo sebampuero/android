@@ -15,7 +15,11 @@ import com.example.tm18app.databinding.FragmentMainBinding;
 import com.example.tm18app.viewModels.MyViewModel;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link Fragment} subclass. Main Fragment contains the initial view of the App.
+ *
+ * @author Sebastian Ampuero
+ * @since 03.12.2019
+ * @version 1.0
  */
 public class MainFragment extends Fragment {
 
@@ -32,6 +36,5 @@ public class MainFragment extends Fragment {
         binding.setLifecycleOwner(this);
         return binding.getRoot();
     }
-
 
 }

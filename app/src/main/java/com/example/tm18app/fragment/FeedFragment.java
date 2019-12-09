@@ -36,7 +36,11 @@ import me.pushy.sdk.Pushy;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link Fragment} subclass. Responsible for UI and events for the feed section UI.
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
  */
 public class FeedFragment extends Fragment {
 
@@ -49,7 +53,6 @@ public class FeedFragment extends Fragment {
     private List<Post> postsModelLists = new ArrayList<>();
     private ProgressBar progressBar;
     private boolean goalsExist = true;
-
     private LinearLayout feedLinearLayout;
 
     public FeedFragment() {
@@ -59,7 +62,7 @@ public class FeedFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        checkBackFromMainFragment();
+        checkBackBtnPressedFromMainFragment();
         mainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
         model = ViewModelProviders.of(getActivity()).get(FeedViewModel.class);
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_feed, container, false);
@@ -67,15 +70,15 @@ public class FeedFragment extends Fragment {
         binding.setLifecycleOwner(this);
         progressBar = binding.progressBarFeed;
         feedLinearLayout = binding.feedLinearLayout;
-        progressBar.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE); // to show that posts are loading
         model.setNavController(mainModel.getNavController());
-        setupSwipeRefreshLayout();
+        setupSwipeRefreshLayout(); // swipe refresh for the possibility to reload posts
         setupRecyclerView();
         model.setContext(getActivity());
         checkIfGoalsExist();
         requestPushyCreds();
-        if(goalsExist){
-            model.fetchData();
+        if(goalsExist){ // if user has selected goals, fetch posts
+            model.callRepository();
             fetchData();
         }else{
             progressBar.setVisibility(View.GONE);
@@ -83,14 +86,27 @@ public class FeedFragment extends Fragment {
         return binding.getRoot();
     }
 
-    private void checkBackFromMainFragment() {
+    /**
+     * Temporary method to prevent going back to the {@link FeedFragment} when the user logs out.
+     * This is  a workaround and wouldn't be propery to keep on production
+     */
+    private void checkBackBtnPressedFromMainFragment() {
+        //TODO: Find alternative
         SharedPreferences preferences = getActivity().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
         if(!preferences.getBoolean(Constant.LOGGED_IN, false)){
-            getActivity().finish();
+            getActivity().finish(); // closes the activity when the app detects the user swipes back
+            // when logged out
         }
     }
 
+    /**
+     * Requests the user's {@link me.pushy.sdk.model.PushyDeviceCredentials} from the database to
+     * later store them on the device's internal storage.
+     * @see me.pushy.sdk.util.PushyPersistence
+     */
     private void requestPushyCreds() {
+        // Only requests pushy creds then there are no credentials stored on the device.
+        // Do not waste network resources
         if (!Pushy.isRegistered(getActivity().getApplicationContext())) {
             SharedPreferences preferences = getActivity().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
             int userID = preferences.getInt(Constant.USER_ID, 0);
@@ -98,6 +114,10 @@ public class FeedFragment extends Fragment {
         }
     }
 
+    /**
+     * Checks if the user has selected goals. If otherwise, a {@link Snackbar} is shown explaining
+     * that goals can be selected on the Profile.
+     */
     private void checkIfGoalsExist() {
         SharedPreferences preferences = getActivity().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
         if(preferences.getString(Constant.GOAL_TAGS, null) == null){
@@ -109,6 +129,9 @@ public class FeedFragment extends Fragment {
         }
     }
 
+    /**
+     * Sets up the {@link SwipeRefreshLayout} for the Feed UI.
+     */
     private void setupSwipeRefreshLayout() {
         swipeRefreshLayout = binding.swipeRefreshLayout;
         final Fragment fragment = this;
@@ -118,7 +141,7 @@ public class FeedFragment extends Fragment {
                 if(model.getPostLiveData() != null && goalsExist){
                     model.getPostLiveData().removeObservers(fragment);
                     fetchData();
-                    model.fetchData();
+                    model.callRepository();
                 }else{
                     swipeRefreshLayout.setRefreshing(false);
                 }
@@ -126,6 +149,10 @@ public class FeedFragment extends Fragment {
         });
     }
 
+    /**
+     * Sets up Observer to observe changes on the {@link androidx.lifecycle.LiveData} containing
+     * a {@link List} of Posts
+     */
     private void fetchData() {
         if(model.getPostLiveData() != null){
             model.getPostLiveData().observe(this, new Observer<List<Post>>() {
@@ -153,6 +180,9 @@ public class FeedFragment extends Fragment {
         }
     }
 
+    /**
+     * Sets up the {@link RecyclerView} for the Feed UI.
+     */
     private void setupRecyclerView() {
         recyclerView = binding.rvFeed;
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());

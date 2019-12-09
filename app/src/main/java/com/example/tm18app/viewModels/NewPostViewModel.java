@@ -26,9 +26,9 @@ public class NewPostViewModel extends ViewModel {
     private Context appContext;
     private String selectedGoal;
 
-    private LiveData<HashMap<Integer, String>> postLiveDataResponse = new MutableLiveData<>();
+    private MutableLiveData<Integer> postLiveDataResponse = new MutableLiveData<>();
 
-    public LiveData<HashMap<Integer, String>> getPostLiveDataResponse(){
+    public MutableLiveData<Integer> getPostLiveDataResponse(){
         return postLiveDataResponse;
     }
 
@@ -50,7 +50,7 @@ public class NewPostViewModel extends ViewModel {
             int goalID = Integer.valueOf(userGoalIds.get(userGoalTags.indexOf(selectedGoal)));
             PostItemRepository repository = new PostItemRepository();
             repository.createPost(new Post(title.getValue(), content.getValue(), userID, goalID),
-                    (MutableLiveData<HashMap<Integer, String>>) postLiveDataResponse);
+                    postLiveDataResponse);
         }
     }
 
