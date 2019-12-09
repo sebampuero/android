@@ -19,6 +19,10 @@ import retrofit2.Response;
  * RegisterUserAsyncTask is responsible for handling the asynchronous registration of the user.
  * In addition to that, the token and auth key for {@link Pushy} notifications services are retrieved
  * and stored in the database
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
  */
 public class RegisterUserAsyncTask extends AsyncTask<Void, Void, User> {
 

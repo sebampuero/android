@@ -32,6 +32,13 @@ import me.pushy.sdk.util.exceptions.PushyException;
 import retrofit2.Call;
 import retrofit2.Response;
 
+/**
+ * A {@link ViewModel} class representing the ViewModel for the {@link com.example.tm18app.fragment.RegistrationFragment} View
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public class RegisterViewModel extends ViewModel {
 
     public MutableLiveData<String> name = new MutableLiveData<>();
@@ -39,12 +46,6 @@ public class RegisterViewModel extends ViewModel {
     public MutableLiveData<String> email = new MutableLiveData<>();
     public MutableLiveData<String> password = new MutableLiveData<>();
     public MutableLiveData<String> passwordConf = new MutableLiveData<>();
-    public LiveData<List<Goal>> getGoalLiveData() {
-        return goalItemsLiveData;
-    }
-    public LiveData<HashMap<Integer, User>> getUserLiveData(){
-        return userLiveData;
-    }
     public SingleLiveEvent<Boolean> triggerLoadingBtn = new SingleLiveEvent<>();
 
     private Context ctx;
@@ -56,16 +57,42 @@ public class RegisterViewModel extends ViewModel {
     public RegisterViewModel(){
     }
 
+    /**
+     * Getter for the goals list {@link LiveData}
+     * @return {@link LiveData}
+     */
+    public LiveData<List<Goal>> getGoalLiveData() {
+        return goalItemsLiveData;
+    }
+
+    /**
+     * Getter for the user {@link LiveData} response status
+     * @return {@link LiveData}
+     */
+    public LiveData<HashMap<Integer, User>> getUserLiveData(){
+        return userLiveData;
+    }
+
+    /**
+     * Calls repository and fetches goals from the server
+     */
     private void fetchGoals() {
         GoalsItemRepository goalsItemRepository = new GoalsItemRepository();
         this.goalItemsLiveData = goalsItemRepository.getGoals();
     }
 
+    /**
+     * Sets the {@link Context} for this ViewModel
+     * @param context {@link Context}
+     */
     public void setContext(Context context) {
         this.ctx = context;
         fetchGoals();
     }
 
+    /**
+     * Event method for when the register button is pressed
+     */
     public void onRegister(){
         if(isRegisterValid()){
             User user = new User();
@@ -82,12 +109,16 @@ public class RegisterViewModel extends ViewModel {
              user.setGoals(goalIds);
              user.setGoalTags(goalTags);
             UserRepository userRepository = new UserRepository();
+            // pass MutableLiveData to the repository to change for when status of response updates
              userRepository.registerUser(user, (MutableLiveData<HashMap<Integer, User>>) userLiveData, this.ctx);
             triggerLoadingBtn.call();
         }
     }
 
-
+    /**
+     * Checks whether the input fields for the registration are valid
+     * @return true if valid, false otherwise
+     */
     private boolean isRegisterValid() {
         if(name.getValue() == null
                 || lastname.getValue() == null
@@ -108,12 +139,16 @@ public class RegisterViewModel extends ViewModel {
         else if(!passwordConf.getValue().equals(password.getValue())){
             Toast.makeText(ctx, ctx.getString(R.string.pass_dont_match), Toast.LENGTH_SHORT).show();
             return false;
-        }else if(!email.getValue().contains("@")){
+        }else if(!email.getValue().contains("@")){ // vague verification, dont use in production
             Toast.makeText(ctx, ctx.getString(R.string.invalid_email), Toast.LENGTH_SHORT).show();
         }
         return true;
     }
 
+    /**
+     * Sets the {@link MultiGoalSelectAdapter} for this ViewModel
+     * @param adapter {@link MultiGoalSelectAdapter}
+     */
     public void setGoalsAdapter(MultiGoalSelectAdapter adapter) {
         this.adapter = adapter;
     }

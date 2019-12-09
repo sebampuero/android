@@ -16,6 +16,13 @@ import com.example.tm18app.repository.PostItemRepository;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * A {@link ViewModel} class representing the ViewModel for the {@link com.example.tm18app.fragment.FeedFragment} View
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public class FeedViewModel extends ViewModel {
 
     private NavController navController;
@@ -24,19 +31,33 @@ public class FeedViewModel extends ViewModel {
     private PostItemRepository postItemRepository;
     private LiveData<List<Post>> postLiveData;
 
-
+    /**
+     * Getter for the {@link LiveData}
+     * @return {@link LiveData}
+     */
     public LiveData<List<Post>> getPostLiveData() {
         return postLiveData;
     }
 
+    /**
+     * Sets the {@link NavController} for this ViewModel
+     * @param navController {@link NavController}
+     */
     public void setNavController(NavController navController) {
         this.navController = navController;
     }
 
-    public void setContext(FragmentActivity activity) {
-        this.appContext = activity.getApplicationContext();
+    /**
+     * Sets the {@link Context} for this ViewModel
+     * @param context {@link Context}
+     */
+    public void setContext(Context context) {
+        this.appContext = context;
     }
 
+    /**
+     * Calls the repository to fetch and/or update the Posts
+     */
     public void callRepository() {
         postItemRepository = new PostItemRepository();
         SharedPreferences preferences = appContext
@@ -47,6 +68,9 @@ public class FeedViewModel extends ViewModel {
         }
     }
 
+    /**
+     * Navigates to the UI for Post creation
+     */
     public void onNewPostButtonClicked() {
         navController.navigate(R.id.action_feedFragment_to_newPostFragment);
     }

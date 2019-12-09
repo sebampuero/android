@@ -18,6 +18,10 @@ import me.pushy.sdk.model.PushyDeviceCredentials;
 /**
  * UserPushyTokenAsyncTask retrieves the {@link Pushy} credentials associated with the user
  * @see PushyDeviceCredentials
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
  */
 public class UserPushyTokenAsyncTask extends AsyncTask<String, Void, String> {
 

@@ -21,6 +21,13 @@ import com.example.tm18app.util.SingleLiveEvent;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * A {@link ViewModel} class representing the ViewModel for the {@link com.example.tm18app.fragment.EditProfileFragment} View
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public class EditViewModel extends ViewModel {
 
     public MutableLiveData<String> name = new MutableLiveData<>();
@@ -42,11 +49,17 @@ public class EditViewModel extends ViewModel {
     private SharedPreferences preferences;
     private NavController navController;
 
+    /**
+     * Call repository and fetch goals from the server
+     */
     private void fetchGoals() {
         GoalsItemRepository goalsItemRepository = new GoalsItemRepository();
         this.goalItemsLiveData = goalsItemRepository.getGoals();
     }
 
+    /**
+     * Event method called when the save button is pressed
+     */
     public void onSaveClicked() {
         if(isFormValid()){
             User user = new User();
@@ -63,19 +76,31 @@ public class EditViewModel extends ViewModel {
             user.setGoals(goalIds);
             user.setGoalTags(goalTags);
             UserRepository userRepository = new UserRepository();
+            // call the editUser method in repository and pass the MutableLiveData for the UI
+            // to observe for changes and show feedback accordingly
             userRepository.editUser(user, (MutableLiveData<HashMap<Integer, User>>) userLiveData);
         }
     }
 
-
+    /**
+     * Initiates the {@link androidx.fragment.app.DialogFragment} for goals requests
+     * @see com.example.tm18app.fragment.NewGoalsDialogFragment
+     */
     public void onNewGoalsClicked() {
         navigateToDialog.call();
     }
 
+    /**
+     * Navigates to the UI for password change
+     */
     public void onChangePasswordClicked() {
         navController.navigate(R.id.action_editProfileFragment_to_editPasswordFragment);
     }
 
+    /**
+     * Checks whether the input fields are valid
+     * @return true if valid, false otherwise
+     */
     private boolean isFormValid() {
         if(name.getValue() == null
                 || lastname.getValue() == null
@@ -95,7 +120,10 @@ public class EditViewModel extends ViewModel {
         return true;
     }
 
-
+    /**
+     * Sets the {@link Context} for this ViewModel
+     * @param context {@link Context}
+     */
     public void setContext(Context context) {
         this.appContext = context;
         preferences = appContext.getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
@@ -103,6 +131,9 @@ public class EditViewModel extends ViewModel {
         fetchGoals();
     }
 
+    /**
+     * Fills the input fields with the user's info
+     */
     private void fillUserData() {
         userID = preferences.getInt(Constant.USER_ID, 0);
         name.setValue(preferences.getString(Constant.NAME, null));

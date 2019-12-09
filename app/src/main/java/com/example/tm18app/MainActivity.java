@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                 SharedPreferences.Editor e = preferences.edit();
                 e.clear().apply(); // clear SharedPreferences info
                 Pushy.unregister(getApplicationContext()); // wipe user token and auth key info
-                // Navigate to the main fragment
+                // Navigate to the main fragment with a deep link
                 PendingIntent pendingIntent = new NavDeepLinkBuilder(getApplicationContext())
                         .setComponentName(MainActivity.class)
                         .setGraph(R.navigation.nav_graph)
@@ -157,6 +157,5 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
 
 }

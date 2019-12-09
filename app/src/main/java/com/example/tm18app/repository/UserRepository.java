@@ -90,6 +90,11 @@ public class UserRepository {
         });
     }
 
+    /**
+     * Makes a request to the server to change the user's password
+     * @param passwordReset {@link PasswordReset} containing old password, new password and user id
+     * @param statusCodeResponseLiveData {@link MutableLiveData} to emit status response to the UI
+     */
     public void changeUserPassword(PasswordReset passwordReset, MutableLiveData<Integer> statusCodeResponseLiveData){
         final MutableLiveData<Integer> statusCodeRespIntegerMutableLiveData = statusCodeResponseLiveData;
         userRestInterface.updatePassword(passwordReset).enqueue(new Callback<Void>() {

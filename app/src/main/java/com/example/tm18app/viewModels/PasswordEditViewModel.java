@@ -14,11 +14,23 @@ import com.example.tm18app.constants.Constant;
 import com.example.tm18app.pojos.PasswordReset;
 import com.example.tm18app.repository.UserRepository;
 
+/**
+ * A {@link ViewModel} class representing the ViewModel for the {@link com.example.tm18app.fragment.EditPasswordFragment} View
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public class PasswordEditViewModel extends ViewModel {
 
     public MutableLiveData<String> oldPassword = new MutableLiveData<>();
     public MutableLiveData<String> newPassword = new MutableLiveData<>();
     public MutableLiveData<String> newPasswordConf = new MutableLiveData<>();
+
+    /**
+     * Getter for the {@link MutableLiveData} of the response status
+     * @return {@link MutableLiveData}
+     */
     public MutableLiveData<Integer> getStatusCodeResponseLiveData() {
         return statusCodeResponseLiveData;
     }
@@ -26,6 +38,9 @@ public class PasswordEditViewModel extends ViewModel {
     private MutableLiveData<Integer> statusCodeResponseLiveData = new MutableLiveData<>();
     private Context appContext;
 
+    /**
+     * Event method for when the save buttton is clicked
+     */
     public void onSaveBtnClicked() {
         if(areFieldsValid()){
             SharedPreferences preferences = appContext.getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
@@ -36,10 +51,18 @@ public class PasswordEditViewModel extends ViewModel {
         }
     }
 
-    public void setContext(FragmentActivity activity) {
-        appContext = activity;
+    /**
+     * Sets the {@link Context} for this ViewModel
+     * @param context {@link Context}
+     */
+    public void setContext(Context context) {
+        appContext = context;
     }
 
+    /**
+     * Checks whether the input fields are valid
+     * @return true if valid, false otherwise
+     */
     private boolean areFieldsValid() {
         if(oldPassword.getValue() == null || newPassword.getValue() == null || newPasswordConf.getValue() == null){
             Toast.makeText(appContext, appContext.getString(R.string.empty_fields), Toast.LENGTH_SHORT).show();

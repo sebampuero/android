@@ -36,7 +36,7 @@ public class EditPasswordFragment extends Fragment {
                              Bundle savedInstanceState) {
         mainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
         model = ViewModelProviders.of(this).get(PasswordEditViewModel.class);
-        model.setContext(getActivity());
+        model.setContext(getContext());
         FragmentEditPasswordBinding binding = DataBindingUtil.inflate(inflater,
                 R.layout.fragment_edit_password, container, false);
         binding.setMyVM(model);

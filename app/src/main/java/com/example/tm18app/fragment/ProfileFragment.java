@@ -60,7 +60,7 @@ public class ProfileFragment extends Fragment {
         noPostsLayout = binding.noPostsLayout;
         binding.setLifecycleOwner(this);
         model.setNavController(mainModel.getNavController());
-        model.setContext(getActivity());
+        model.setContext(getContext());
         progressBar = binding.progressBar;
         progressBar.setVisibility(View.VISIBLE); // show loading animation when posts are being loaded
         setupRecyclerView();

@@ -74,7 +74,7 @@ public class FeedFragment extends Fragment {
         model.setNavController(mainModel.getNavController());
         setupSwipeRefreshLayout(); // swipe refresh for the possibility to reload posts
         setupRecyclerView();
-        model.setContext(getActivity());
+        model.setContext(getContext());
         checkIfGoalsExist();
         requestPushyCreds();
         if(goalsExist){ // if user has selected goals, fetch posts

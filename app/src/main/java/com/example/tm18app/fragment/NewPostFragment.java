@@ -58,7 +58,7 @@ public class NewPostFragment extends Fragment {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_new_post, container, false);
         binding.setMyVM(model);
         binding.setLifecycleOwner(this);
-        model.setContext(getActivity());
+        model.setContext(getContext());
         postContent = binding.inputTextEdit;
         postTitle = binding.postTitle;
         setSpinner();

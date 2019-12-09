@@ -37,7 +37,11 @@ import br.com.simplepass.loading_button_lib.customViews.CircularProgressButton;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link Fragment} subclass. Responsible for UI and events for the registration UI.
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
  */
 public class RegistrationFragment extends Fragment {
 
@@ -68,6 +72,7 @@ public class RegistrationFragment extends Fragment {
         binding.setLifecycleOwner(this);
         setupViews();
         setupGoalsBoxRecyclerView();
+        // Observe to fetch goal items
         model.getGoalLiveData().observe(this, new Observer<List<Goal>>() {
             @Override
             public void onChanged(List<Goal> goals) {
@@ -76,12 +81,14 @@ public class RegistrationFragment extends Fragment {
                 recyclerView.setVisibility(View.VISIBLE);
             }
         });
+        // Observe the status of the response of registration process
         model.getUserLiveData().observe(this, new Observer<HashMap<Integer, User>>() {
             @Override
             public void onChanged(HashMap<Integer, User> integerUserHashMap) {
                 evaluateRegistration(integerUserHashMap);
             }
         });
+        // Observe the events on the registration button
         model.triggerLoadingBtn.observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
@@ -92,6 +99,9 @@ public class RegistrationFragment extends Fragment {
         return binding.getRoot();
     }
 
+    /**
+     * Sets up views for this {@link Fragment}
+     */
     private void setupViews() {
         progressBar = binding.progressBarRegistration;
         registrationBtn = binding.registrationBtn;
@@ -102,6 +112,11 @@ public class RegistrationFragment extends Fragment {
         passwordConf = binding.passwordInputRegisterConf;
     }
 
+    /**
+     * Evaluates the registration process and shows feedback to the user
+     * @param integerUserHashMap {@link HashMap} map that contains user's info and http
+     *                                          response code
+     */
     private void evaluateRegistration(HashMap<Integer, User> integerUserHashMap) {
         if(integerUserHashMap.containsKey(500)){
             Toast.makeText(this.getContext(),
@@ -121,6 +136,10 @@ public class RegistrationFragment extends Fragment {
         }
     }
 
+    /**
+     * Handle the successful registration. Store relevant user*s info in {@link SharedPreferences}
+     * @param user {@link User} containing the registered user's info
+     */
     private void handleRegisterSuccess(User user) {
         SharedPreferences introPreferences = this.getActivity().
                 getSharedPreferences(Constant.FIRST_TIME_INTRO,Context.MODE_PRIVATE);
@@ -152,6 +171,9 @@ public class RegistrationFragment extends Fragment {
         cleanValues();
     }
 
+    /**
+     * Empties input fields
+     */
     private void cleanValues() {
         name.setText("");
         lastname.setText("");
@@ -160,6 +182,10 @@ public class RegistrationFragment extends Fragment {
         password.setText("");
     }
 
+    /**
+     * Prepares the fetched goals data for the adapter.
+     * @param goals {@link List} containing the fetched goals from the server
+     */
     private void prepareDataForAdapter(List<Goal> goals) {
         ArrayList<GoalItemSelection> goalItemSelections = new ArrayList<>();
         GoalItemSelection goalItemSelection;
@@ -170,6 +196,9 @@ public class RegistrationFragment extends Fragment {
         adapter.setGoals(goalItemSelections);
     }
 
+    /**
+     * Sets up the {@link RecyclerView} for the adapter
+     */
     private void setupGoalsBoxRecyclerView() {
         recyclerView = binding.goalsComboBox;
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

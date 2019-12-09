@@ -50,7 +50,7 @@ public class PushReceiver extends BroadcastReceiver {
         // Configure the notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setAutoCancel(true)
-                .setSmallIcon(android.R.drawable.star_on)
+                .setSmallIcon(R.drawable.goalsappicon100100)
                 .setContentTitle(notificationTitle)
                 .setContentText(userName + " " + notificationText)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))

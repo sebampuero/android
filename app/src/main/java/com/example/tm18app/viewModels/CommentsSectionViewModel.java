@@ -12,6 +12,13 @@ import com.example.tm18app.repository.PostItemRepository;
 
 import java.util.List;
 
+/**
+ * A {@link ViewModel} class representing the ViewModel for the {@link com.example.tm18app.fragment.CommentSectionFragment} View
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public class CommentsSectionViewModel extends ViewModel {
 
     public MutableLiveData<String> inputComment = new MutableLiveData<>();
@@ -20,11 +27,17 @@ public class CommentsSectionViewModel extends ViewModel {
     private String postID;
     private MutableLiveData<List<Comment>> commentLiveData;
 
+    /**
+     * Getter for the {@link MutableLiveData} that reveals changes for the status of a comment creation
+     * @return {@link MutableLiveData}
+     */
     public MutableLiveData<List<Comment>> getCommentLiveData() {
         return commentLiveData;
     }
 
-
+    /**
+     * Event method that gets called when a comment is created
+     */
     public void onPostComment() {
         if(inputComment.getValue() != null){
             if(!inputComment.getValue().trim().equals("")){
@@ -40,16 +53,27 @@ public class CommentsSectionViewModel extends ViewModel {
         }
     }
 
+    /**
+     * Sets the {@link Context} for this ViewModel
+     * @param appContext {@link Context}
+     */
     public void setAppContext(Context appContext) {
         this.appContext = appContext;
         fetchData();
     }
 
+    /**
+     * Calls the {@link PostItemRepository} and fetches the data from the server
+     */
     private void fetchData() {
         PostItemRepository postItemRepository = new PostItemRepository();
         this.commentLiveData = postItemRepository.getComments(postID);
     }
 
+    /**
+     * Sets the post id this comment belongs to
+     * @param postID {@link String}
+     */
     public void setPostID(String postID) {
         this.postID = postID;
     }

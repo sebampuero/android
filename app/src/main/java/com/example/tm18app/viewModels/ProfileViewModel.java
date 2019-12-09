@@ -3,7 +3,6 @@ package com.example.tm18app.viewModels;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -16,6 +15,13 @@ import com.example.tm18app.repository.PostItemRepository;
 
 import java.util.List;
 
+/**
+ * A {@link ViewModel} class representing the ViewModel for the {@link com.example.tm18app.fragment.ProfileFragment} View
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public class ProfileViewModel extends ViewModel {
 
     public MutableLiveData<String> names = new MutableLiveData<>();
@@ -28,21 +34,36 @@ public class ProfileViewModel extends ViewModel {
     private PostItemRepository postItemRepository;
     private LiveData<List<Post>> postLiveData;
 
+    /**
+     * Sets the {@link NavController} for this ViewModel
+     * @param navController {@link NavController}
+     */
     public void setNavController(NavController navController) {
         this.navController = navController;
     }
 
+    /**
+     * Getter for the {@link LiveData} for the user's posts that show on the profile
+     * @return {@link LiveData}
+     */
     public LiveData<List<Post>> getPostLiveData() {
         return postLiveData;
     }
 
-    public void setContext(FragmentActivity activity) {
-        this.appContext = activity.getApplicationContext();
+    /**
+     * Sets the {@link Context} for this ViewModel
+     * @param context {@link Context}
+     */
+    public void setContext(Context context) {
+        this.appContext = context;
         fetchData();
-        populateInfo();
+        fillUserData();
     }
 
-    private void populateInfo() {
+    /**
+     * Populates the {@link android.widget.TextView} on the profile UI with the user's data
+     */
+    private void fillUserData() {
         SharedPreferences preferences = appContext
                 .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
         String name = preferences.getString(Constant.NAME, null);
@@ -52,6 +73,9 @@ public class ProfileViewModel extends ViewModel {
         goalsList.setValue(preferences.getString(Constant.GOAL_TAGS, null));
     }
 
+    /**
+     * Calls the repository and fetches the user's posts from the server
+     */
     private void fetchData() {
         postItemRepository = new PostItemRepository();
         SharedPreferences preferences = appContext
@@ -60,6 +84,10 @@ public class ProfileViewModel extends ViewModel {
         this.postLiveData = postItemRepository.getUserPosts(userId);
     }
 
+    /**
+     * Navigate to the edit profile UI
+     * @see com.example.tm18app.fragment.EditProfileFragment
+     */
     public void onEditInfoClicked() {
         navController.navigate(R.id.action_profileFragment_to_editProfileFragment);
     }

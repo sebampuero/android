@@ -63,7 +63,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
                 bundle.putString("postID", String.valueOf(post.getId()));
-                // Distinguish between feedfragment and profile fragment for nav controller to
+                // Distinguish between feed fragment and profile fragment for nav controller to
                 // correctly navigate to the comment section
                 if(currentFragment instanceof FeedFragment)
                     navController.navigate(R.id.action_feedFragment_to_commentSectionFragment, bundle);

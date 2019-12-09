@@ -13,7 +13,11 @@ import me.pushy.sdk.Pushy;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link Fragment} subclass. Responsible for UI and events of the settings section.
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
  */
 public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -28,13 +32,13 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
     @Override
     public void onResume() {
-        super.onResume();
+        super.onResume(); // register the listener for changes when app in foreground
         getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
     public void onPause() {
-        super.onPause();
+        super.onPause(); // unregister the listener for changes when app in background
         getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
     }
 
