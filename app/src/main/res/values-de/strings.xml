@@ -27,7 +27,7 @@
     <!-- Toasts infos -->
 
     <string name="post_successfully_created">Post erfolgreich erstellt</string>
-    <string name="server_error">Server Fehler</string>
+    <string name="server_error">Es gab ein Fehler, bitte versuchen Sie es später nochmal</string>
     <string name="no_int_connection">Keine Internetverbindung</string>
     <string name="empty_fields">Eingabefelder können nicht leer sein</string>
     <string name="goal_select_for_post">Bitte, ein Ziel für das Post auswählen</string>
@@ -87,5 +87,7 @@
     <string name="permission_necessary">Genehmigung benötigt</string>
     <string name="permission_necessary_explanation">Genehmigung um auf die Speicher zu lesen und schreiben wird vom Benachrichtigungsdienst verwendet. Ohne Genehmigung werden keine Benachrichtigungen gezeigt.</string>
     <string name="post_a_comment">Poste ein Kommentar</string>
+    <string name="delete_post_dialog_title">Post löschen</string>
+    <string name="delete_post_conf_message">Bist du sicher, dass du diesen Post löschen willst?</string>
 
 </resources>

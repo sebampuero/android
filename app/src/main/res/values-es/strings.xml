@@ -28,7 +28,7 @@
     <!-- Toasts infos -->
 
     <string name="post_successfully_created">Post creado con exito</string>
-    <string name="server_error">Error del server</string>
+    <string name="server_error">Error del server, por favor, intentalo mas tarde</string>
     <string name="no_int_connection">No hay conexion a internet</string>
     <string name="empty_fields">Los campos no deben estar vacios</string>
     <string name="goal_select_for_post">Por favor elige una meta para el post</string>
@@ -88,5 +88,7 @@
     <string name="permission_necessary">Permisos necesarios</string>
     <string name="permission_necessary_explanation">Permisos para leer y escribir en el almacenamiento son necesarios para el servicio de notificaciones. Sin el permiso las notificaciones no funcionarán</string>
     <string name="post_a_comment">Postea un comentario</string>
+    <string name="delete_post_dialog_title">Borrar post</string>
+    <string name="delete_post_conf_message">Seguro/a que quieres borrar este post?</string>
 
 </resources>

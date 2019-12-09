@@ -152,4 +152,18 @@ public class PostItemRepository {
             }
         });
     }
+
+    public void deletePost(int postID, final MutableLiveData<Integer> statusCode){
+        postRestInterface.deletePost(String.valueOf(postID)).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                statusCode.setValue(response.code());
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                statusCode.setValue(0);
+            }
+        });
+    }
 }

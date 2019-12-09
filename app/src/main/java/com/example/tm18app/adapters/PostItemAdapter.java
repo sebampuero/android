@@ -1,6 +1,12 @@
 package com.example.tm18app.adapters;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,15 +14,22 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
+import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.PostCardviewBinding;
 import com.example.tm18app.fragment.FeedFragment;
 import com.example.tm18app.fragment.ProfileFragment;
 import com.example.tm18app.pojos.Post;
+import com.example.tm18app.repository.PostItemRepository;
 import com.example.tm18app.util.TimeUtils;
 
 import java.util.ArrayList;
@@ -79,7 +92,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
     }
 
 
-    class MyViewHolder extends RecyclerView.ViewHolder {
+    class MyViewHolder extends RecyclerView.ViewHolder{
 
         TextView nameLastname;
         TextView postTitle;
@@ -89,7 +102,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
         LinearLayout commentsSection;
         TextView timestamp;
 
-        MyViewHolder(PostCardviewBinding binding) {
+        MyViewHolder(final PostCardviewBinding binding) {
             super(binding.getRoot());
 
             nameLastname = binding.nameLastnameCardviewTv;
@@ -99,8 +112,51 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
             commentCount = binding.commentCountTv;
             commentsSection = binding.commentSectionLayout;
             timestamp = binding.timestamp;
+
+            binding.getRoot().setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    buildDeletionAlertDialog();
+                    return false;
+                }
+            });
         }
 
+        /**
+         * Shows an alert dialog to the user to confirm the deletion of a Post. Upon acceptance,
+         * the post gets deleted.
+         */
+        private void buildDeletionAlertDialog() {
+            SharedPreferences preferences = currentFragment.getContext()
+                    .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
+            int userID = preferences.getInt(Constant.USER_ID, 0);
+            final int position = getAdapterPosition();
+            final Post postToDelete = postsList.get(position);
+            if(userID == postToDelete.getUserID()){
+                final MutableLiveData<Integer> statusCode = new MutableLiveData<>();
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(currentFragment.getContext());
+                alertBuilder.setCancelable(true);
+                alertBuilder.setTitle(currentFragment.getContext().getString(R.string.delete_post_dialog_title));
+                alertBuilder.setMessage(currentFragment.getContext().getString(R.string.delete_post_conf_message));
+                alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int which) {
+                        PostItemRepository repository = new PostItemRepository();
+                        repository.deletePost(postToDelete.getId(), statusCode);
+                        if(currentFragment instanceof FeedFragment){
+                            FeedFragment feed = (FeedFragment) currentFragment;
+                            feed.onPostDeleted(statusCode);
+                        }else if(currentFragment instanceof ProfileFragment){
+                            ProfileFragment profile = (ProfileFragment) currentFragment;
+                            profile.onPostDeleted(statusCode);
+                        }
+                        notifyItemRemoved(position);
+                    }
+                });
+                AlertDialog alert = alertBuilder.create();
+                alert.show();
+            }
+        }
 
     }
 }

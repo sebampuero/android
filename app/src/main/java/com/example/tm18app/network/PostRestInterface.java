@@ -7,6 +7,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -38,4 +39,6 @@ public interface PostRestInterface {
     @GET("api/goals/comments/{postId}")
     Call<List<Comment>> getCommentsByPostId(@Path("postId") String postId);
 
+    @DELETE("api/goals/post/{postId}")
+    Call<Void> deletePost(@Path("postId") String postId);
 }

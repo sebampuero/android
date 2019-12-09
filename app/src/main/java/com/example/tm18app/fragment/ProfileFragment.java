@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.tm18app.R;
 import com.example.tm18app.adapters.PostItemAdapter;
@@ -35,7 +37,7 @@ import java.util.List;
  * @version 1.0
  * @since 03.12.2019
  */
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment implements OnPostDeleteListener{
 
     private MyViewModel mainModel;
     private ProfileViewModel model;
@@ -104,5 +106,25 @@ public class ProfileFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onPostDeleted(MutableLiveData<Integer> statusCode) {
+        statusCode.observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer statusCode) {
+                handlePostDeletion(statusCode);
+            }
+        });
+    }
 
+    /**
+     * Shows feedback to the user about the deletion of the post
+     * @param statusCode {@link Integer} status code of the operation
+     */
+    private void handlePostDeletion(Integer statusCode) {
+        if(statusCode == 500){
+            Toast.makeText(getContext(), getContext().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
+        }else if(statusCode == 200){
+            Toast.makeText(getContext(), "Post deleted", Toast.LENGTH_SHORT).show();
+        }
+    }
 }
