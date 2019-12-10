@@ -5,78 +5,84 @@
     <data>
         <variable name="myVM" type="com.example.tm18app.viewModels.LoginViewModel" />
     </data>
-<FrameLayout
+<RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.LoginFragment"
     android:background="@drawable/main_pages_background">
-
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center_vertical">
-        <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="@dimen/margin_10"
+        android:layout_marginBottom="@dimen/margin_10">
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center_horizontal">
-            <TextView
-                android:id="@+id/appNameTv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_10_3"
-                android:text="@string/app_name"
-                android:textSize="@dimen/big_ass_text_size"
-                android:typeface="normal" />
+            tools:context=".fragment.LoginFragment">
 
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_marginBottom="@dimen/margin_10_3"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/fox" />
+                android:orientation="vertical"
+                android:gravity="center_horizontal">
+                <TextView
+                    android:id="@+id/appNameTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_10_3"
+                    android:text="@string/app_name"
+                    android:textSize="@dimen/big_ass_text_size"
+                    android:typeface="normal" />
 
-            <EditText
-                android:id="@+id/emailAddressInput"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:padding="@dimen/padding_10"
-                android:inputType="textEmailAddress"
-                android:text="@={myVM.email}"
-                android:hint="@string/emailAddrInput"
-                android:layout_marginBottom="@dimen/margin_10"
-                android:background="@drawable/custom_edit_text_forms"
-                 />
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_marginBottom="@dimen/margin_10_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/fox" />
 
-            <EditText
-                android:id="@+id/passwordInput"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:padding="@dimen/padding_10"
-                android:hint="@string/password"
-                android:text="@={myVM.password}"
-                android:inputType="textPassword"
-                android:layout_marginBottom="@dimen/margin_10"
-                android:background="@drawable/custom_edit_text_forms"
-                />
+                <EditText
+                    android:id="@+id/emailAddressInput"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:padding="@dimen/padding_10"
+                    android:inputType="textEmailAddress"
+                    android:text="@={myVM.email}"
+                    android:hint="@string/emailAddrInput"
+                    android:layout_marginBottom="@dimen/margin_10"
+                    android:background="@drawable/custom_edit_text_forms"
+                    />
 
-            <br.com.simplepass.loading_button_lib.customViews.CircularProgressButton
-                android:id="@+id/loginBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/padding_10_5"
-                android:paddingRight="@dimen/padding_10_5"
-                android:text="@string/loginBtn"
-                app:spinning_bar_color="#FFF"
-                app:spinning_bar_padding="6dp"
-                app:spinning_bar_width="4dp"
-                android:background="@drawable/custom_btn_form"
-                android:onClick="@{() -> myVM.onLogin()}"
-                />
-        </LinearLayout>
-    </LinearLayout>
+                <EditText
+                    android:id="@+id/passwordInput"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:padding="@dimen/padding_10"
+                    android:hint="@string/password"
+                    android:text="@={myVM.password}"
+                    android:inputType="textPassword"
+                    android:layout_marginBottom="@dimen/margin_10"
+                    android:background="@drawable/custom_edit_text_forms"
+                    />
 
-</FrameLayout></layout>
+                <br.com.simplepass.loading_button_lib.customViews.CircularProgressButton
+                    android:id="@+id/loginBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/padding_10_5"
+                    android:paddingRight="@dimen/padding_10_5"
+                    android:text="@string/loginBtn"
+                    app:spinning_bar_color="#FFF"
+                    app:spinning_bar_padding="6dp"
+                    app:spinning_bar_width="4dp"
+                    android:background="@drawable/custom_btn_form"
+                    android:onClick="@{() -> myVM.onLogin()}"
+                    />
+            </LinearLayout>
+
+        </FrameLayout>
+    </ScrollView>
+</RelativeLayout>
+</layout>

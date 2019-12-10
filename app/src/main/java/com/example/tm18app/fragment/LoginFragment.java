@@ -2,24 +2,17 @@ package com.example.tm18app.fragment;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.icu.text.UnicodeSetSpanner;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.navigation.NavController;
-import androidx.navigation.NavDestination;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
-import android.widget.Toolbar;
+
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.example.tm18app.R;
 import com.example.tm18app.constants.Constant;
@@ -27,7 +20,6 @@ import com.example.tm18app.databinding.FragmentLoginBinding;
 import com.example.tm18app.pojos.User;
 import com.example.tm18app.viewModels.LoginViewModel;
 import com.example.tm18app.viewModels.MyViewModel;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.net.HttpURLConnection;
 import java.util.HashMap;
