@@ -92,5 +92,9 @@
     <string name="delete_comment_title">Kommentar löschen</string>
     <string name="delete_comment_conf_message">Bist du sicher, dass du dieses Kommentar löschen willst?</string>
     <string name="post_deleted_msg">Post wurde gelöscht</string>
+    <string name="new_post_in_group_notification">New post</string>
+    <string name="new_post_in_group_notification_subtext">There is a new post on your group</string>
+    <string name="disable_comment_notifications">Kommentare Benachrichtigungen deaktivieren</string>
+    <string name="disable_post_notifications">Posts Benachrichtigungen deaktivieren</string>
 
 </resources>

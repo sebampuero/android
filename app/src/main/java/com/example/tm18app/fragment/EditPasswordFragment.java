@@ -18,6 +18,8 @@ import com.example.tm18app.databinding.FragmentEditPasswordBinding;
 import com.example.tm18app.viewModels.MyViewModel;
 import com.example.tm18app.viewModels.PasswordEditViewModel;
 
+import java.net.HttpURLConnection;
+
 /**
  * A simple {@link Fragment} subclass. Responsible for UI and events for the password edition UI.
  */
@@ -56,13 +58,13 @@ public class EditPasswordFragment extends Fragment {
      * @param responseStatusCode {@link Integer} that represents the HTTP Status Code of the response
      */
     private void handleResponse(Integer responseStatusCode) {
-        if(responseStatusCode == 500){
+        if(responseStatusCode == HttpURLConnection.HTTP_INTERNAL_ERROR){
             Toast.makeText(getActivity(),
                     getActivity().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
-        }else if(responseStatusCode == 400){
+        }else if(responseStatusCode == HttpURLConnection.HTTP_BAD_REQUEST){
             Toast.makeText(getActivity(),
                     getActivity().getString(R.string.old_password_error), Toast.LENGTH_SHORT).show();
-        }else if(responseStatusCode == 200){
+        }else if(responseStatusCode == HttpURLConnection.HTTP_OK){
             Toast.makeText(getActivity(),
                     getActivity().getString(R.string.password_update_success), Toast.LENGTH_SHORT).show();
             // Navigate back to the edit profile UI

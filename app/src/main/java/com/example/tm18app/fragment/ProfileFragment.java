@@ -25,6 +25,7 @@ import com.example.tm18app.pojos.Post;
 import com.example.tm18app.viewModels.MyViewModel;
 import com.example.tm18app.viewModels.ProfileViewModel;
 
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -37,7 +38,7 @@ import java.util.List;
  * @version 1.0
  * @since 03.12.2019
  */
-public class ProfileFragment extends Fragment implements OnPostDeleteListener{
+public class ProfileFragment extends Fragment implements PostItemAdapter.OnPostDeleteListener{
 
     private MyViewModel mainModel;
     private ProfileViewModel model;
@@ -121,9 +122,9 @@ public class ProfileFragment extends Fragment implements OnPostDeleteListener{
      * @param statusCode {@link Integer} status code of the operation
      */
     private void handlePostDeletion(Integer statusCode) {
-        if(statusCode == 500){
+        if(statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR){
             Toast.makeText(getContext(), getContext().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
-        }else if(statusCode == 200){
+        }else if(statusCode == HttpURLConnection.HTTP_OK){
             Toast.makeText(getContext(), getContext().getString(R.string.post_deleted_msg), Toast.LENGTH_SHORT).show();
         }
     }

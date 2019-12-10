@@ -48,6 +48,17 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
     private NavController navController;
     private Fragment currentFragment;
 
+    public interface OnPostDeleteListener {
+
+        /**
+         * Listener method for when a Post is deleted
+         * @param statusCode {@link MutableLiveData} that represents changes of the response's status
+         *                                          code.
+         */
+        void onPostDeleted(MutableLiveData<Integer> statusCode);
+
+    }
+
     public PostItemAdapter(ArrayList<Post> posts, NavController navController, Fragment fragment) {
         this.postsList = posts;
         this.navController = navController;

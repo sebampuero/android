@@ -4,7 +4,6 @@ package com.example.tm18app.fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +30,7 @@ import com.example.tm18app.viewModels.FeedViewModel;
 import com.example.tm18app.viewModels.MyViewModel;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -45,7 +45,7 @@ import me.pushy.sdk.Pushy;
  * @version 1.0
  * @since 03.12.2019
  */
-public class FeedFragment extends Fragment implements OnPostDeleteListener{
+public class FeedFragment extends Fragment implements PostItemAdapter.OnPostDeleteListener{
 
     private MyViewModel mainModel;
     private FeedViewModel model;
@@ -108,7 +108,7 @@ public class FeedFragment extends Fragment implements OnPostDeleteListener{
      * @see me.pushy.sdk.util.PushyPersistence
      */
     private void requestPushyCreds() {
-        // Only requests pushy creds then there are no credentials stored on the device.
+        // Only requests pushy creds when there are no credentials stored on the device.
         // Do not waste network resources
         if (!Pushy.isRegistered(getActivity().getApplicationContext())) {
             SharedPreferences preferences = getActivity().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
@@ -208,9 +208,9 @@ public class FeedFragment extends Fragment implements OnPostDeleteListener{
      * @param statusCode {@link Integer} status code of the operation
      */
     private void handlePostDeletion(Integer statusCode) {
-        if(statusCode == 500){
+        if(statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR){
             Toast.makeText(getContext(), getContext().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
-        }else if(statusCode == 200){
+        }else if(statusCode == HttpURLConnection.HTTP_OK){
             Toast.makeText(getContext(), getContext().getString(R.string.post_deleted_msg), Toast.LENGTH_SHORT).show();
         }
     }

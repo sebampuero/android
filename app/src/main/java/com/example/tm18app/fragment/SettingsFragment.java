@@ -21,12 +21,17 @@ import me.pushy.sdk.Pushy;
  */
 public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 
+    private final static String TAG = SettingsFragment.class.getName();
+    public final static String SETTINGS_SHARED_PREFERENCES_FILE_NAME = TAG + ".SETTINGS_SHARED_PREFERENCES_FILE_NAME";
+
     public SettingsFragment() {
         // Required empty public constructor
     }
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+        // set a name to these shared preferences to access them outside
+        getPreferenceManager().setSharedPreferencesName(SETTINGS_SHARED_PREFERENCES_FILE_NAME);
         setPreferencesFromResource(R.xml.settings_pref, rootKey);
     }
 

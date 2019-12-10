@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.os.Bundle;
 
@@ -13,6 +14,7 @@ import androidx.navigation.NavDeepLinkBuilder;
 
 import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
+import com.example.tm18app.fragment.SettingsFragment;
 
 import me.pushy.sdk.Pushy;
 
@@ -24,35 +26,86 @@ import me.pushy.sdk.Pushy;
  * @since 03.12.2019
  */
 public class PushReceiver extends BroadcastReceiver {
+
     @Override
     public void onReceive(Context context, Intent intent) {
-        String notificationTitle = context.getString(R.string.new_comment_notification);
-        String notificationText = context.getString(R.string.new_comment_notification_subtext);
-        int postID = 0;
-        String userName = "";
-
+        // get shared preferences that are set from configuration view
+        SharedPreferences pref =
+                context.getSharedPreferences(SettingsFragment.SETTINGS_SHARED_PREFERENCES_FILE_NAME,
+                        Context.MODE_PRIVATE);
         // Attempt to extract the property from the payload:
         if (intent.getIntExtra("postId", 0) != 0) {
-            postID = intent.getIntExtra("postId", 0);
-            userName = intent.getStringExtra("userName");
+            if(!pref.getBoolean("comment_notifications", false)){
+                processCommentNotification(context,
+                        intent.getIntExtra("postId", 0),
+                        intent.getStringExtra("userName"));
+            }
+        }else if(intent.getStringExtra("newPostNotificationTag") != null){
+            if(!pref.getBoolean("post_notifications", false)){
+                processPostNotification(context, intent.getStringExtra("newPostNotificationTag"));
+            }
         }
+    }
 
-        // Build a pending intent to navigate to the comment section containing the new comment
+    /**
+     * Processes an incoming comment notification
+     * @param context {@link Context}
+     * @param postId {@link Integer} the post id the comment belongs to
+     * @param userName {@link String} the name of the user the comment belongs to
+     */
+    private void processCommentNotification(Context context, int postId, String userName) {
         Bundle bundle = new Bundle();
-        bundle.putString("postID", String.valueOf(postID));
+        bundle.putString("postID", String.valueOf(postId));
         PendingIntent pendingIntent = new NavDeepLinkBuilder(context)
                 .setComponentName(MainActivity.class)
                 .setGraph(R.navigation.nav_graph)
                 .setDestination(R.id.commentSectionFragment)
-                .setArguments(bundle)
+                .setArguments(bundle) // so that comment fragment knows what comments to load
                 .createPendingIntent();
 
+        String notificationTitle = context.getString(R.string.new_comment_notification);
+        String notificationText = userName + " " + context.getString(R.string.new_comment_notification_subtext);
+
+        buildNotification(context, notificationText, notificationTitle, pendingIntent);
+    }
+
+    /**
+     * Processes an incoming new post notification
+     * @param context {@link Context}
+     * @param goalTag {@link String} the goal tag that the new post corresponds to
+     */
+    private void processPostNotification(Context context, String goalTag) {
+        PendingIntent pendingIntent = new NavDeepLinkBuilder(context)
+                .setComponentName(MainActivity.class)
+                .setGraph(R.navigation.nav_graph)
+                .setDestination(R.id.feedFragment)
+                .createPendingIntent();
+
+        String notificationTitle = context.getString(R.string.new_post_in_group_notification);
+        String notificationText =
+                context.getString(R.string.new_post_in_group_notification_subtext) + " " + goalTag;
+
+        buildNotification(context, notificationText, notificationTitle, pendingIntent);
+    }
+
+    /**
+     * Builds the notification
+     * @param context {@link Context}
+     * @param notificationText {@link String} the subtext to show on the notification
+     * @param notificationTitle {@link String} the title to show on the notification
+     * @param pendingIntent {@link PendingIntent} that shows the view when the user clicks on
+     *                                           the notification
+     */
+    private void buildNotification(Context context,
+                                   String notificationText,
+                                   String notificationTitle,
+                                   PendingIntent pendingIntent) {
         // Configure the notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setAutoCancel(true)
                 .setSmallIcon(R.drawable.goalsappicon100100)
                 .setContentTitle(notificationTitle)
-                .setContentText(userName + " " + notificationText)
+                .setContentText(notificationText)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                 .setContentIntent(pendingIntent);
 
@@ -60,7 +113,8 @@ public class PushReceiver extends BroadcastReceiver {
         Pushy.setNotificationChannel(builder, context);
 
         // Get an instance of the NotificationManager service
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         // Build the notification and display it
         notificationManager.notify(1, builder.build());

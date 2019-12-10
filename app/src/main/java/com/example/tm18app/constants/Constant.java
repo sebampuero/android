@@ -22,4 +22,5 @@ public class Constant {
     public static final String GOAL_TAGS = "goalTags";
 
     public static final String PUSHY_CREDS_ENDPOINT = API_ENDPOINT + "/api/goals/pushycreds/";
+
 }

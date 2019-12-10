@@ -6,6 +6,12 @@
         <SwitchPreference
             app:key="notifications"
             app:title="@string/disable_notifications"/>
+        <SwitchPreference
+            app:key="comment_notifications"
+            app:title="@string/disable_comment_notifications"/>
+        <SwitchPreference
+            app:key="post_notifications"
+            app:title="@string/disable_post_notifications"/>
     </PreferenceCategory>
 
 

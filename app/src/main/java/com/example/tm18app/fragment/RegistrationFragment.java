@@ -29,6 +29,7 @@ import com.example.tm18app.pojos.User;
 import com.example.tm18app.viewModels.MyViewModel;
 import com.example.tm18app.viewModels.RegisterViewModel;
 
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -118,20 +119,21 @@ public class RegistrationFragment extends Fragment {
      *                                          response code
      */
     private void evaluateRegistration(HashMap<Integer, User> integerUserHashMap) {
-        if(integerUserHashMap.containsKey(500)){
+        if(integerUserHashMap.containsKey(HttpURLConnection.HTTP_INTERNAL_ERROR)){
             Toast.makeText(this.getContext(),
                     this.getContext().getString(R.string.server_error),
                     Toast.LENGTH_SHORT).show();
-            registrationBtn.stopAnimation();
+            registrationBtn.revertAnimation();
         }
-        else if(integerUserHashMap.containsKey(400)){
+        else if(integerUserHashMap.containsKey(HttpURLConnection.HTTP_BAD_REQUEST)){
             registrationBtn.stopAnimation();
             Toast.makeText(this.getContext(),
                     this.getContext().getString(R.string.email_already_exists),
                     Toast.LENGTH_SHORT).show();
+            registrationBtn.revertAnimation();
         }
-        else if(integerUserHashMap.containsKey(200)){
-            User user = integerUserHashMap.get(200);
+        else if(integerUserHashMap.containsKey(HttpURLConnection.HTTP_OK)){
+            User user = integerUserHashMap.get(HttpURLConnection.HTTP_OK);
             handleRegisterSuccess(user);
         }
     }
@@ -167,7 +169,7 @@ public class RegistrationFragment extends Fragment {
         editor.apply();
         mainModel.getNavController().navigate(R.id.action_registrationFragment_to_feedFragment);
         model.getUserLiveData().getValue().clear();
-        registrationBtn.stopAnimation();
+        registrationBtn.revertAnimation();
         cleanValues();
     }
 

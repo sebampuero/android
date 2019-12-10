@@ -28,6 +28,7 @@ import com.example.tm18app.pojos.User;
 import com.example.tm18app.viewModels.EditViewModel;
 import com.example.tm18app.viewModels.MyViewModel;
 
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -100,15 +101,15 @@ public class EditProfileFragment extends Fragment {
      *                                          and the user's information
      */
     private void evaluateEditUser(HashMap<Integer, User> integerUserHashMap) {
-        if(integerUserHashMap.containsKey(500)){ // error from server
+        if(integerUserHashMap.containsKey(HttpURLConnection.HTTP_INTERNAL_ERROR)){ // error from server
             Toast.makeText(this.getContext(), this.getContext().getString(R.string.server_error), Toast.LENGTH_LONG).show();
-        }else if(integerUserHashMap.containsKey(400)){ // email address exists already, bad request
+        }else if(integerUserHashMap.containsKey(HttpURLConnection.HTTP_BAD_REQUEST)){ // email address exists already, bad request
             Toast.makeText(this.getContext(), this.getContext().getString(R.string.email_already_exists), Toast.LENGTH_LONG).show();
-        }else if(integerUserHashMap.containsKey(200)){ // everything ok
+        }else if(integerUserHashMap.containsKey(HttpURLConnection.HTTP_OK)){ // everything ok
             SharedPreferences preferences =
                     this.getActivity().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = preferences.edit();
-            User user = integerUserHashMap.get(200);
+            User user = integerUserHashMap.get(HttpURLConnection.HTTP_OK);
             editor.clear();
             // Update local user info
             editor.putBoolean(Constant.LOGGED_IN, true);

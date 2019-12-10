@@ -1,7 +1,5 @@
 package com.example.tm18app.repository;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -153,6 +151,11 @@ public class PostItemRepository {
         });
     }
 
+    /**
+     * Deletes a {@link Post} from the server.
+     * @param postID {@link Integer} the post id of the post to be deleted
+     * @param statusCode {@link MutableLiveData} containing the response status code
+     */
     public void deletePost(int postID, final MutableLiveData<Integer> statusCode){
         postRestInterface.deletePost(String.valueOf(postID)).enqueue(new Callback<Void>() {
             @Override
@@ -162,21 +165,23 @@ public class PostItemRepository {
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                statusCode.setValue(0);
+
             }
         });
     }
 
+    /**
+     * Deletes a {@link Comment} from the server.
+     * @param commentID {@link Integer} the comment id of the comment to be deleted
+     */
     public void deleteComment(int commentID) {
         postRestInterface.deleteComment(String.valueOf(commentID)).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-
             }
         });
     }

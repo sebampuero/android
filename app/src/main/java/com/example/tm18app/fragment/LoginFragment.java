@@ -29,6 +29,7 @@ import com.example.tm18app.viewModels.LoginViewModel;
 import com.example.tm18app.viewModels.MyViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.net.HttpURLConnection;
 import java.util.HashMap;
 
 import br.com.simplepass.loading_button_lib.customViews.CircularProgressButton;
@@ -86,20 +87,20 @@ public class LoginFragment extends Fragment {
      *                                         and the user's information
      */
     private void evaluateLogin(HashMap<Integer, User> integerUserHashMap) {
-        if(integerUserHashMap.containsKey(403)){ // not authenticated, invalid credentials
+        if(integerUserHashMap.containsKey(HttpURLConnection.HTTP_FORBIDDEN)){ // not authenticated, invalid credentials
             Toast.makeText(this.getContext(),
                     this.getContext().getString(R.string.invalid_credentials),
                     Toast.LENGTH_SHORT).show();
             loginBtn.revertAnimation();
         }
-        else if(integerUserHashMap.containsKey(500)){ // error from server
+        else if(integerUserHashMap.containsKey(HttpURLConnection.HTTP_INTERNAL_ERROR)){ // error from server
             Toast.makeText(this.getContext(),
                     this.getContext().getString(R.string.server_error),
                     Toast.LENGTH_SHORT).show();
             loginBtn.revertAnimation();
         }
-        else if(integerUserHashMap.containsKey(200)){
-            User user = integerUserHashMap.get(200);
+        else if(integerUserHashMap.containsKey(HttpURLConnection.HTTP_OK)){
+            User user = integerUserHashMap.get(HttpURLConnection.HTTP_OK);
             handleSuccessLogin(user);
         }
 
