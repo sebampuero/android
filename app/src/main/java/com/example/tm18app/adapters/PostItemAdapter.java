@@ -150,6 +150,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
                             ProfileFragment profile = (ProfileFragment) currentFragment;
                             profile.onPostDeleted(statusCode);
                         }
+                        postsList.remove(position);
                         notifyItemRemoved(position);
                     }
                 });

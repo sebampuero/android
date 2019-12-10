@@ -91,5 +91,6 @@
     <string name="delete_post_conf_message">Bist du sicher, dass du diesen Post löschen willst?</string>
     <string name="delete_comment_title">Kommentar löschen</string>
     <string name="delete_comment_conf_message">Bist du sicher, dass du dieses Kommentar löschen willst?</string>
+    <string name="post_deleted_msg">Post wurde gelöscht</string>
 
 </resources>

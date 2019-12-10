@@ -3,6 +3,7 @@ package com.example.tm18app.adapters;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,6 +90,10 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
             });
         }
 
+        /**
+         * Shows an alert dialog to the user to confirm the deletion of a comment. Upon acceptance,
+         * the comment gets deleted.
+         */
         private void buildDeletionAlertDialog() {
             SharedPreferences preferences = appContext
                     .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
@@ -105,6 +110,7 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
                     public void onClick(DialogInterface dialogInterface, int which) {
                         PostItemRepository repository = new PostItemRepository();
                         repository.deleteComment(commentToDelete.getId());
+                        commentsList.remove(position);
                         notifyItemRemoved(position);
                     }
                 });

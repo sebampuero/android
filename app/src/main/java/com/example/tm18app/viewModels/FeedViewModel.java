@@ -3,8 +3,10 @@ package com.example.tm18app.viewModels;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import androidx.fragment.app.FragmentActivity;
+import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 import androidx.navigation.NavController;
 
@@ -28,8 +30,26 @@ public class FeedViewModel extends ViewModel {
     private NavController navController;
     private Context appContext;
 
-    private PostItemRepository postItemRepository;
-    private LiveData<List<Post>> postLiveData;
+    private MutableLiveData<Boolean> swipeReloadTrigger = new MutableLiveData<>();
+
+    /**
+     * Upon change on the {@link MutableLiveData} swipeReloadTrigger, the postLiveData is created
+     * or updated. The swipeReloadTrigger is actuated when the Feed is loaded and reloaded
+     * by a swipe.
+     */
+    private LiveData<List<Post>> postLiveData = Transformations.switchMap(swipeReloadTrigger, new Function<Boolean, LiveData<List<Post>>>() {
+        @Override
+        public LiveData<List<Post>> apply(Boolean input) {
+            PostItemRepository postItemRepository = new PostItemRepository();
+            SharedPreferences preferences = appContext
+                    .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
+            if(preferences.getString(Constant.GOAL_IDS, null) != null){
+                String[] goalIds = preferences.getString(Constant.GOAL_IDS, null).split(",");
+                return postItemRepository.getPosts(Arrays.asList(goalIds));
+            }
+            return null;
+        }
+    });
 
     /**
      * Getter for the {@link LiveData}
@@ -59,14 +79,9 @@ public class FeedViewModel extends ViewModel {
      * Calls the repository to fetch and/or update the Posts
      */
     public void callRepository() {
-        postItemRepository = new PostItemRepository();
-        SharedPreferences preferences = appContext
-                .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
-        if(preferences.getString(Constant.GOAL_IDS, null) != null){
-            String[] goalIds = preferences.getString(Constant.GOAL_IDS, null).split(",");
-            this.postLiveData = postItemRepository.getPosts(Arrays.asList(goalIds));
-        }
+        swipeReloadTrigger.setValue(true);
     }
+
 
     /**
      * Navigates to the UI for Post creation

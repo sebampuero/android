@@ -137,13 +137,10 @@ public class FeedFragment extends Fragment implements OnPostDeleteListener{
      */
     private void setupSwipeRefreshLayout() {
         swipeRefreshLayout = binding.swipeRefreshLayout;
-        Fragment fragment = this;
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 if(model.getPostLiveData() != null && goalsExist){
-                    //model.getPostLiveData().removeObservers(fragment);
-                    //fetchData();
                     model.callRepository();
                 }else{
                     swipeRefreshLayout.setRefreshing(false);
@@ -167,7 +164,6 @@ public class FeedFragment extends Fragment implements OnPostDeleteListener{
                             postsModelLists.addAll(posts);
                             Collections.sort(postsModelLists);
                             adapter.notifyDataSetChanged();
-                            swipeRefreshLayout.setRefreshing(false);
                             feedLinearLayout.setVisibility(View.GONE);
                             recyclerView.setVisibility(View.VISIBLE);
                         }
@@ -176,10 +172,12 @@ public class FeedFragment extends Fragment implements OnPostDeleteListener{
                         recyclerView.setVisibility(View.GONE);
                     }
                     progressBar.setVisibility(View.GONE);
+                    swipeRefreshLayout.setRefreshing(false);
                 }
             });
         }else{
             progressBar.setVisibility(View.GONE);
+            swipeRefreshLayout.setRefreshing(false);
         }
     }
 
@@ -213,7 +211,7 @@ public class FeedFragment extends Fragment implements OnPostDeleteListener{
         if(statusCode == 500){
             Toast.makeText(getContext(), getContext().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
         }else if(statusCode == 200){
-            Toast.makeText(getContext(), "Post deleted", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getContext().getString(R.string.post_deleted_msg), Toast.LENGTH_SHORT).show();
         }
     }
 }

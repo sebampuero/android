@@ -124,7 +124,7 @@ public class ProfileFragment extends Fragment implements OnPostDeleteListener{
         if(statusCode == 500){
             Toast.makeText(getContext(), getContext().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
         }else if(statusCode == 200){
-            Toast.makeText(getContext(), "Post deleted", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getContext().getString(R.string.post_deleted_msg), Toast.LENGTH_SHORT).show();
         }
     }
 }
