@@ -4,6 +4,7 @@ package com.example.tm18app.fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -136,13 +137,13 @@ public class FeedFragment extends Fragment implements OnPostDeleteListener{
      */
     private void setupSwipeRefreshLayout() {
         swipeRefreshLayout = binding.swipeRefreshLayout;
-        final Fragment fragment = this;
+        Fragment fragment = this;
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 if(model.getPostLiveData() != null && goalsExist){
-                    model.getPostLiveData().removeObservers(fragment);
-                    fetchData();
+                    //model.getPostLiveData().removeObservers(fragment);
+                    //fetchData();
                     model.callRepository();
                 }else{
                     swipeRefreshLayout.setRefreshing(false);
