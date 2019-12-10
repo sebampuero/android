@@ -1,16 +1,27 @@
 package com.example.tm18app.adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.tm18app.R;
+import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.CommentItemBinding;
+import com.example.tm18app.fragment.FeedFragment;
+import com.example.tm18app.fragment.ProfileFragment;
 import com.example.tm18app.pojos.Comment;
+import com.example.tm18app.pojos.Post;
+import com.example.tm18app.repository.PostItemRepository;
 import com.example.tm18app.util.TimeUtils;
 
 import java.util.ArrayList;
@@ -65,11 +76,41 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
 
         MyViewHolder(CommentItemBinding binding) {
             super(binding.getRoot());
-
             name = binding.name;
             lastname = binding.lastname;
             content = binding.commentContent;
             timestamp = binding.timestamp;
+            binding.getRoot().setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    buildDeletionAlertDialog();
+                    return false;
+                }
+            });
+        }
+
+        private void buildDeletionAlertDialog() {
+            SharedPreferences preferences = appContext
+                    .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
+            int userID = preferences.getInt(Constant.USER_ID, 0);
+            final int position = getAdapterPosition();
+            final Comment commentToDelete = commentsList.get(position);
+            if(userID == commentToDelete.getUserID()){
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(appContext);
+                alertBuilder.setCancelable(true);
+                alertBuilder.setTitle(appContext.getString(R.string.delete_comment_title));
+                alertBuilder.setMessage(appContext.getString(R.string.delete_comment_conf_message));
+                alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int which) {
+                        PostItemRepository repository = new PostItemRepository();
+                        repository.deleteComment(commentToDelete.getId());
+                        notifyItemRemoved(position);
+                    }
+                });
+                AlertDialog alert = alertBuilder.create();
+                alert.show();
+            }
         }
 
 

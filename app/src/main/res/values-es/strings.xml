@@ -90,5 +90,7 @@
     <string name="post_a_comment">Postea un comentario</string>
     <string name="delete_post_dialog_title">Borrar post</string>
     <string name="delete_post_conf_message">Seguro/a que quieres borrar este post?</string>
+    <string name="delete_comment_title">Borrar comentario</string>
+    <string name="delete_comment_conf_message">Estas seguro/a de borrar este comentario?</string>
 
 </resources>

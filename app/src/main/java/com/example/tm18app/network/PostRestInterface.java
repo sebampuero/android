@@ -41,4 +41,7 @@ public interface PostRestInterface {
 
     @DELETE("api/goals/post/{postId}")
     Call<Void> deletePost(@Path("postId") String postId);
+
+    @DELETE("api/goals/comment/{commentId}")
+    Call<Void> deleteComment(@Path("commentId") String commentId);
 }

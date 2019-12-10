@@ -89,5 +89,7 @@
     <string name="post_a_comment">Poste ein Kommentar</string>
     <string name="delete_post_dialog_title">Post löschen</string>
     <string name="delete_post_conf_message">Bist du sicher, dass du diesen Post löschen willst?</string>
+    <string name="delete_comment_title">Kommentar löschen</string>
+    <string name="delete_comment_conf_message">Bist du sicher, dass du dieses Kommentar löschen willst?</string>
 
 </resources>
