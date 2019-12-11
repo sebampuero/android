@@ -35,6 +35,9 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.ActivityMainBinding;
+import com.example.tm18app.fragment.FeedFragment;
+import com.example.tm18app.fragment.ProfileFragment;
+import com.example.tm18app.repository.PostItemRepository;
 import com.example.tm18app.viewModels.MyViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -142,21 +145,33 @@ public class MainActivity extends AppCompatActivity {
         logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPreferences preferences = getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
-                SharedPreferences.Editor e = preferences.edit();
-                e.clear().apply(); // clear SharedPreferences info
-                Pushy.unregister(getApplicationContext()); // wipe user token and auth key info
-                // Navigate to the main fragment with a deep link
-                PendingIntent pendingIntent = new NavDeepLinkBuilder(getApplicationContext())
-                        .setComponentName(MainActivity.class)
-                        .setGraph(R.navigation.nav_graph)
-                        .setDestination(R.id.mainFragment)
-                        .createPendingIntent();
-                try {
-                    pendingIntent.send();
-                } catch (PendingIntent.CanceledException ex) {
-                    ex.printStackTrace();
-                }
+                // Show a dialog
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(MainActivity.this);
+                alertBuilder.setCancelable(true);
+                alertBuilder.setTitle(getApplicationContext().getString(R.string.log_out_alert_title));
+                alertBuilder.setMessage(getApplicationContext().getString(R.string.log_out_conf_message));
+                alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int which) {
+                        SharedPreferences preferences = getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
+                        SharedPreferences.Editor e = preferences.edit();
+                        e.clear().apply(); // clear SharedPreferences info
+                        Pushy.unregister(getApplicationContext()); // wipe user token and auth key info
+                        // Navigate to the main fragment with a deep link
+                        PendingIntent pendingIntent = new NavDeepLinkBuilder(getApplicationContext())
+                                .setComponentName(MainActivity.class)
+                                .setGraph(R.navigation.nav_graph)
+                                .setDestination(R.id.mainFragment)
+                                .createPendingIntent();
+                        try {
+                            pendingIntent.send();
+                        } catch (PendingIntent.CanceledException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                });
+                AlertDialog alert = alertBuilder.create();
+                alert.show();
             }
         });
 

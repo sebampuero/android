@@ -97,5 +97,7 @@
     <string name="new_post_in_group_notification_subtext">There is a new post on your group</string>
     <string name="disable_comment_notifications">Desactivar notificaciones de nuevos comentarios</string>
     <string name="disable_post_notifications">Desactivar notificaciones de nuevos posts</string>
+    <string name="log_out_alert_title">Salir</string>
+    <string name="log_out_conf_message">Desear realmente cerrar tu sesión?</string>
 
 </resources>

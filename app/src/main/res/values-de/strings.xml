@@ -96,5 +96,7 @@
     <string name="new_post_in_group_notification_subtext">There is a new post on your group</string>
     <string name="disable_comment_notifications">Kommentare Benachrichtigungen deaktivieren</string>
     <string name="disable_post_notifications">Posts Benachrichtigungen deaktivieren</string>
+    <string name="log_out_alert_title">Ausloggen</string>
+    <string name="log_out_conf_message">Willst du wirklich ausloggen?</string>
 
 </resources>
