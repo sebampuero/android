@@ -94,6 +94,9 @@ public class EditViewModel extends ViewModel {
         navigateToDialog.call();
     }
 
+    /**
+     * Triggers the observer to open the gallery
+     */
     public void onProfilePicUploadClicked() {
         selectProfilePic.call();
     }
@@ -150,14 +153,27 @@ public class EditViewModel extends ViewModel {
         email.setValue(preferences.getString(Constant.EMAIL, null));
     }
 
+    /**
+     * Setter for {@link NavController}
+     * @param navController
+     */
     public void setNavController(NavController navController) {
         this.navController = navController;
     }
 
+    /**
+     * Setter for {@link androidx.recyclerview.widget.RecyclerView.Adapter}
+     * @param adapter
+     */
     public void setAdapter(MultiGoalSelectAdapter adapter) {
         this.adapter = adapter;
     }
 
+    /**
+     * Sets the {@link String} base64 data of the profile picture that is later uploaded to the
+     * server
+     * @param data {@link String} base64 encoded image data
+     */
     public void setProfilePicBase64Data(String data) {
         profilePicBase64Data = data;
     }

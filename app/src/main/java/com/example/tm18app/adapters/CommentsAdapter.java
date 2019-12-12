@@ -64,10 +64,10 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
         holder.timestamp.setText(TimeUtils.parseTimestampToLocaleDatetime(comment.getTimestamp()));
         // TODO: use dimens values
         if(comment.getCommentatorPicUrl() != null)
-            if(!comment.getCommentatorPicUrl().equals(""))
+            if(!comment.getCommentatorPicUrl().equals("")) // get image from cloudinary
                 Picasso.get().load(comment.getCommentatorPicUrl())
                         .resize(50,50).centerCrop().into(holder.commenterPic);
-            // load default drawable
+            // load default drawable if no image set
     }
 
     @Override

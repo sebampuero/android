@@ -107,6 +107,11 @@ public class NewPostViewModel extends ViewModel {
         this.selectedGoal = goalTag;
     }
 
+    /**
+     * Sets the {@link String} base64 data of the post picture that is later uploaded to the
+     * server
+     * @param contentImageBase64Data {@link String} base64 encoded image data
+     */
     public void setContentImageBase64Data(String contentImageBase64Data) {
         this.contentImageBase64Data = contentImageBase64Data;
     }

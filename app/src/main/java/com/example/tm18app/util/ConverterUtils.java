@@ -1,16 +1,24 @@
 package com.example.tm18app.util;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.provider.MediaStore;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * Utility class for data type conversions
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public class ConverterUtils {
 
+    /**
+     * Get bytes from an {@link InputStream}
+     * @param inputStream {@link InputStream}
+     * @return array of bytes
+     * @throws IOException
+     */
     public static byte[] getBytes(InputStream inputStream) throws IOException {
         ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
         int bufferSize = 1024;
@@ -23,12 +31,4 @@ public class ConverterUtils {
         return byteBuffer.toByteArray();
     }
 
-
-    public static Uri getImageUri(Context inContext, Bitmap inImage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(),
-                inImage, "Title", null);
-        return Uri.parse(path);
-    }
 }

@@ -52,7 +52,7 @@ import static android.app.Activity.RESULT_OK;
  * @version 1.0
  * @since 03.12.2019
  */
-public class EditProfileFragment extends BaseFragmentPictureSelecter implements BaseFragmentPictureSelecter.FromBitmapToUriCallbackInterface {
+public class EditProfileFragment extends BaseFragmentPictureSelecter{
 
     private FragmentEditProfileBinding binding;
     private MultiGoalSelectAdapter adapter;
@@ -74,7 +74,6 @@ public class EditProfileFragment extends BaseFragmentPictureSelecter implements 
         model.setNavController(mainModel.getNavController());
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_edit_profile, container, false);
         binding.setMyVM(model);
-        setIc(this);
         binding.setLifecycleOwner(this);
         setupGoalsBoxRecyclerView();
         profilePic = binding.profilePic;
@@ -104,7 +103,7 @@ public class EditProfileFragment extends BaseFragmentPictureSelecter implements 
                 evaluateEditUser(integerUserHashMap);
             }
         });
-
+        // Observe for when the button to open gallery is clicked
         model.selectProfilePic.observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
@@ -116,6 +115,10 @@ public class EditProfileFragment extends BaseFragmentPictureSelecter implements 
         return binding.getRoot();
     }
 
+    /**
+     * Fetches the profile pic with {@link Picasso} and sets it into the {@link ImageView} profile
+     * pic
+     */
     private void fetchProfilePic() {
         SharedPreferences prefs =
                 getContext().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
@@ -134,20 +137,17 @@ public class EditProfileFragment extends BaseFragmentPictureSelecter implements 
         if (resultCode == RESULT_OK && requestCode == PICK_IMAGE){
             imageUri = data.getData();
             applyImageUriToImageView(imageUri, profilePic, 300, 300);
+            try {
+                InputStream iStream = getActivity().getContentResolver().openInputStream(imageUri);
+                byte[] profilePicByteArray = ConverterUtils.getBytes(iStream);
+                model.setProfilePicBase64Data(Base64.encodeToString(profilePicByteArray, Base64.DEFAULT));
+            }catch (Exception e){
+                e.printStackTrace();
+                profilePic.setVisibility(View.GONE);
+            }
         }
     }
 
-    @Override
-    public void uriResultCallback(Uri imageUri) {
-        try {
-            InputStream iStream = getActivity().getContentResolver().openInputStream(imageUri);
-            byte[] profilePicByteArray = ConverterUtils.getBytes(iStream);
-            model.setProfilePicBase64Data(Base64.encodeToString(profilePicByteArray, Base64.DEFAULT));
-        }catch (Exception e){
-            e.printStackTrace();
-            profilePic.setVisibility(View.GONE);
-        }
-    }
 
     /**
      * Evaluates the info that came from the database and show corresponding feedback messages

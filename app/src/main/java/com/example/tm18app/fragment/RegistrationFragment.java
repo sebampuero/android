@@ -53,7 +53,7 @@ import static android.app.Activity.RESULT_OK;
  * @version 1.0
  * @since 03.12.2019
  */
-public class RegistrationFragment extends BaseFragmentPictureSelecter implements BaseFragmentPictureSelecter.FromBitmapToUriCallbackInterface {
+public class RegistrationFragment extends BaseFragmentPictureSelecter{
 
     private MultiGoalSelectAdapter adapter;
     private FragmentRegistrationBinding binding;
@@ -82,7 +82,6 @@ public class RegistrationFragment extends BaseFragmentPictureSelecter implements
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_registration, container, false);
         binding.setMyVM(model);
         binding.setLifecycleOwner(this);
-        setIc(this);
         setupViews();
         setupGoalsBoxRecyclerView();
         // Observe to fetch goal items
@@ -108,7 +107,7 @@ public class RegistrationFragment extends BaseFragmentPictureSelecter implements
                 registrationBtn.startAnimation();
             }
         });
-
+        // Observe for when the open gallery button is clicked
         model.selectProfilePic.observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
@@ -125,18 +124,14 @@ public class RegistrationFragment extends BaseFragmentPictureSelecter implements
         if (resultCode == RESULT_OK && requestCode == PICK_IMAGE){
             imageUri = data.getData();
             applyImageUriToImageView(imageUri, profilePic, 300, 300);
-        }
-    }
-
-    @Override
-    public void uriResultCallback(Uri imageUri) {
-        try {
-            InputStream iStream = getActivity().getContentResolver().openInputStream(imageUri);
-            byte[] profilePicByteArray = ConverterUtils.getBytes(iStream);
-            model.setProfilePicBase64Data(Base64.encodeToString(profilePicByteArray, Base64.DEFAULT));
-        }catch (Exception e){
-            e.printStackTrace();
-            profilePic.setVisibility(View.GONE);
+            try {
+                InputStream iStream = getActivity().getContentResolver().openInputStream(imageUri);
+                byte[] profilePicByteArray = ConverterUtils.getBytes(iStream);
+                model.setProfilePicBase64Data(Base64.encodeToString(profilePicByteArray, Base64.DEFAULT));
+            }catch (Exception e){
+                e.printStackTrace();
+                profilePic.setVisibility(View.GONE);
+            }
         }
     }
 

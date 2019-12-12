@@ -106,6 +106,9 @@ public class RegisterViewModel extends ViewModel {
         }
     }
 
+    /**
+     * Triggers the observer to open gallery
+     */
     public void onSelectProfilePic() {
         selectProfilePic.call();
     }
@@ -148,6 +151,11 @@ public class RegisterViewModel extends ViewModel {
         this.adapter = adapter;
     }
 
+    /**
+     * Sets the {@link String} base64 data of the profile picture that is later uploaded to the
+     * server
+     * @param data {@link String} base64 encoded image data
+     */
     public void setProfilePicBase64Data(String data) {
         profilePicBase64Data = data;
     }

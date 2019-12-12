@@ -113,6 +113,7 @@ public class ProfileFragment extends Fragment implements PostItemAdapter.OnPostD
                 }
             }
         });
+        // Set the profile picture
         SharedPreferences prefs =
                 getContext().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
         String imgUrl = prefs.getString(Constant.PROFILE_PIC_URL, null);
