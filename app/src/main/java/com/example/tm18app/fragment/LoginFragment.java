@@ -116,6 +116,8 @@ public class LoginFragment extends Fragment {
         editor.putString(Constant.LASTNAME, user.getLastname());
         editor.putString(Constant.EMAIL, user.getEmail());
         editor.putInt(Constant.USER_ID, user.getId());
+        if(user.getProfilePicUrl() != null)
+            editor.putString(Constant.PROFILE_PIC_URL, user.getProfilePicUrl());
         StringBuilder sb = new StringBuilder();
         StringBuilder sb1 = new StringBuilder();
         for (int i = 0; i < user.getGoals().length; i++) {

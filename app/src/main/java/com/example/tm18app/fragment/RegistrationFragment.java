@@ -2,15 +2,22 @@ package com.example.tm18app.fragment;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -26,15 +33,19 @@ import com.example.tm18app.databinding.FragmentRegistrationBinding;
 import com.example.tm18app.pojos.Goal;
 import com.example.tm18app.pojos.GoalItemSelection;
 import com.example.tm18app.pojos.User;
+import com.example.tm18app.util.ConverterUtils;
 import com.example.tm18app.viewModels.MyViewModel;
 import com.example.tm18app.viewModels.RegisterViewModel;
 
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import br.com.simplepass.loading_button_lib.customViews.CircularProgressButton;
+
+import static android.app.Activity.RESULT_OK;
 
 
 /**
@@ -44,7 +55,7 @@ import br.com.simplepass.loading_button_lib.customViews.CircularProgressButton;
  * @version 1.0
  * @since 03.12.2019
  */
-public class RegistrationFragment extends Fragment {
+public class RegistrationFragment extends BaseFragmentPictureSelecter implements BaseFragmentPictureSelecter.FromBitmapToUriCallbackInterface {
 
     private MultiGoalSelectAdapter adapter;
     private FragmentRegistrationBinding binding;
@@ -58,6 +69,8 @@ public class RegistrationFragment extends Fragment {
     private EditText password;
     private EditText passwordConf;
     private EditText email;
+    private ImageView profilePic;
+    private Uri imageUri;
 
     public RegistrationFragment() {
     }
@@ -71,6 +84,7 @@ public class RegistrationFragment extends Fragment {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_registration, container, false);
         binding.setMyVM(model);
         binding.setLifecycleOwner(this);
+        setIc(this);
         setupViews();
         setupGoalsBoxRecyclerView();
         // Observe to fetch goal items
@@ -96,8 +110,36 @@ public class RegistrationFragment extends Fragment {
                 registrationBtn.startAnimation();
             }
         });
+
+        model.selectProfilePic.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                openGallery();
+            }
+        });
         model.setGoalsAdapter(adapter);
         return binding.getRoot();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == PICK_IMAGE){
+            imageUri = data.getData();
+            applyImageUriToImageView(imageUri, profilePic, 300, 300);
+        }
+    }
+
+    @Override
+    public void uriResultCallback(Uri imageUri) {
+        try {
+            InputStream iStream = getActivity().getContentResolver().openInputStream(imageUri);
+            byte[] profilePicByteArray = ConverterUtils.getBytes(iStream);
+            model.setProfilePicData(Base64.encodeToString(profilePicByteArray, Base64.DEFAULT));
+        }catch (Exception e){
+            e.printStackTrace();
+            profilePic.setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -111,6 +153,7 @@ public class RegistrationFragment extends Fragment {
         email = binding.emailAddresInputRegister;
         password = binding.passwordInputRegister;
         passwordConf = binding.passwordInputRegisterConf;
+        profilePic = binding.profilePicRegistration;
     }
 
     /**
@@ -156,6 +199,8 @@ public class RegistrationFragment extends Fragment {
         editor.putString(Constant.LASTNAME, user.getLastname());
         editor.putString(Constant.EMAIL, user.getEmail());
         editor.putInt(Constant.USER_ID, user.getId());
+        if(user.getProfilePicUrl() != null)
+            editor.putString(Constant.PROFILE_PIC_URL, user.getProfilePicUrl());
         if(user.getGoals().length > 0 && user.getGoalTags().length > 0){
             StringBuilder sb = new StringBuilder();
             StringBuilder sb1 = new StringBuilder();

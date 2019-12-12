@@ -24,6 +24,7 @@ import com.example.tm18app.util.SingleLiveEvent;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -47,11 +48,13 @@ public class RegisterViewModel extends ViewModel {
     public MutableLiveData<String> password = new MutableLiveData<>();
     public MutableLiveData<String> passwordConf = new MutableLiveData<>();
     public SingleLiveEvent<Boolean> triggerLoadingBtn = new SingleLiveEvent<>();
+    public SingleLiveEvent<Boolean> selectProfilePic = new SingleLiveEvent<>();
 
     private Context ctx;
     private MultiGoalSelectAdapter adapter;
     private LiveData<List<Goal>> goalItemsLiveData;
     private LiveData<HashMap<Integer, User>> userLiveData = new MutableLiveData<>();
+    private String profilePicData;
 
 
     public RegisterViewModel(){
@@ -108,11 +111,16 @@ public class RegisterViewModel extends ViewModel {
              }
              user.setGoals(goalIds);
              user.setGoalTags(goalTags);
+             user.setBase64ProfilePic(profilePicData);
             UserRepository userRepository = new UserRepository();
             // pass MutableLiveData to the repository to change for when status of response updates
              userRepository.registerUser(user, (MutableLiveData<HashMap<Integer, User>>) userLiveData, this.ctx);
             triggerLoadingBtn.call();
         }
+    }
+
+    public void onSelectProfilePic() {
+        selectProfilePic.call();
     }
 
     /**
@@ -153,4 +161,7 @@ public class RegisterViewModel extends ViewModel {
         this.adapter = adapter;
     }
 
+    public void setProfilePicData(String data) {
+        profilePicData = data;
+    }
 }

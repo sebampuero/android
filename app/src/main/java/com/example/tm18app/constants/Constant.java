@@ -7,7 +7,7 @@ package com.example.tm18app.constants;
  * @since 03.12.2019
  */
 public class Constant {
-    public static final String API_ENDPOINT = "https://goalsapp-api.herokuapp.com";
+    public static final String API_ENDPOINT = "http://192.168.0.100:5000";
 
     public static final String USER_INFO = "UserInfos";
     public static final String FIRST_TIME_INTRO = "FirstTimeIntro";
@@ -20,6 +20,7 @@ public class Constant {
     public static final String USER_ID = "id";
     public static final String GOAL_IDS = "goalIds";
     public static final String GOAL_TAGS = "goalTags";
+    public static final String PROFILE_PIC_URL = "profile_pic_url";
 
     public static final String PUSHY_CREDS_ENDPOINT = API_ENDPOINT + "/api/goals/pushycreds/";
 

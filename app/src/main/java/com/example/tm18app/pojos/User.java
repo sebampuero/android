@@ -20,18 +20,11 @@ public class User {
    private String[] goalTags;
    private String pushyToken;
    private String pushyAuthKey;
+   private String profilePicUrl;
+   private String base64ProfilePic;
 
     public User() {
 
-    }
-
-    public User(int id, String name, String lastname, String email, String password, Integer[] goals) {
-        this.id = id;
-        this.name = name;
-        this.lastname = lastname;
-        this.email = email;
-        this.password = password;
-        this.goals = goals;
     }
 
     public int getId() {
@@ -106,6 +99,22 @@ public class User {
         this.pushyAuthKey = pushyAuthKey;
     }
 
+    public String getProfilePicUrl() {
+        return profilePicUrl;
+    }
+
+    public void setProfilePicUrl(String profilePicUrl) {
+        this.profilePicUrl = profilePicUrl;
+    }
+
+    public String getBase64ProfilePic() {
+        return base64ProfilePic;
+    }
+
+    public void setBase64ProfilePic(String base64ProfilePic) {
+        this.base64ProfilePic = base64ProfilePic;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -118,6 +127,8 @@ public class User {
                 ", goalTags=" + Arrays.toString(goalTags) +
                 ", pushyToken='" + pushyToken + '\'' +
                 ", pushyAuthKey='" + pushyAuthKey + '\'' +
+                ", profilePicUrl='" + profilePicUrl + '\'' +
+                ", base64ProfilePic='" + base64ProfilePic + '\'' +
                 '}';
     }
 }

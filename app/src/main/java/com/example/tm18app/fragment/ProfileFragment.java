@@ -1,6 +1,8 @@
 package com.example.tm18app.fragment;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.databinding.DataBindingUtil;
@@ -11,19 +13,23 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.tm18app.R;
 import com.example.tm18app.adapters.PostItemAdapter;
+import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.FragmentProfileBinding;
 import com.example.tm18app.pojos.Post;
 import com.example.tm18app.viewModels.MyViewModel;
 import com.example.tm18app.viewModels.ProfileViewModel;
+import com.squareup.picasso.Picasso;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
@@ -48,6 +54,7 @@ public class ProfileFragment extends Fragment implements PostItemAdapter.OnPostD
     private List<Post> postsModelLists = new ArrayList<>();
     private ProgressBar progressBar;
     private LinearLayout noPostsLayout;
+    private ImageView profilePic;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -65,6 +72,7 @@ public class ProfileFragment extends Fragment implements PostItemAdapter.OnPostD
         model.setNavController(mainModel.getNavController());
         model.setContext(getContext());
         progressBar = binding.progressBar;
+        profilePic = binding.profilePic;
         progressBar.setVisibility(View.VISIBLE); // show loading animation when posts are being loaded
         setupRecyclerView();
         fetchData();
@@ -105,6 +113,12 @@ public class ProfileFragment extends Fragment implements PostItemAdapter.OnPostD
                 }
             }
         });
+        SharedPreferences prefs =
+                getContext().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
+        if(prefs.getString(Constant.PROFILE_PIC_URL, null) != null){
+            Picasso.get().load(prefs.getString(Constant.PROFILE_PIC_URL, null))
+                    .resize(300, 300).centerCrop().into(profilePic);
+        }
     }
 
     @Override
