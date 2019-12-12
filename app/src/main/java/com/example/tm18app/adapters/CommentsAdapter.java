@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -24,6 +25,7 @@ import com.example.tm18app.pojos.Comment;
 import com.example.tm18app.pojos.Post;
 import com.example.tm18app.repository.PostItemRepository;
 import com.example.tm18app.util.TimeUtils;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +62,8 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
         holder.lastname.setText(comment.getLastname());
         holder.content.setText(comment.getContent());
         holder.timestamp.setText(TimeUtils.parseTimestampToLocaleDatetime(comment.getTimestamp()));
+        Picasso.get().load(comment.getCommentatorPicUrl())
+                .resize(50,50).centerCrop().into(holder.commenterPic);
     }
 
     @Override
@@ -74,6 +78,7 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
         TextView lastname;
         TextView content;
         TextView timestamp;
+        ImageView commenterPic;
 
         MyViewHolder(CommentItemBinding binding) {
             super(binding.getRoot());
@@ -81,6 +86,7 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
             lastname = binding.lastname;
             content = binding.commentContent;
             timestamp = binding.timestamp;
+            commenterPic = binding.commenterPic;
             binding.getRoot().setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {

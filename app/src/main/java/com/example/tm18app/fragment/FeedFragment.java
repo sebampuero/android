@@ -56,7 +56,7 @@ public class FeedFragment extends Fragment implements PostItemAdapter.OnPostDele
     private List<Post> postsModelLists = new ArrayList<>();
     private ProgressBar progressBar;
     private boolean goalsExist = true;
-    private LinearLayout feedLinearLayout;
+    private LinearLayout feedLinearLayoutNoPosts;
 
     public FeedFragment() {
         // Required empty public constructor
@@ -72,7 +72,7 @@ public class FeedFragment extends Fragment implements PostItemAdapter.OnPostDele
         binding.setMyVM(model);
         binding.setLifecycleOwner(this);
         progressBar = binding.progressBarFeed;
-        feedLinearLayout = binding.feedLinearLayout;
+        feedLinearLayoutNoPosts = binding.feedLinearLayout;
         progressBar.setVisibility(View.VISIBLE); // to show that posts are loading
         model.setNavController(mainModel.getNavController());
         setupSwipeRefreshLayout(); // swipe refresh for the possibility to reload posts
@@ -125,7 +125,7 @@ public class FeedFragment extends Fragment implements PostItemAdapter.OnPostDele
         SharedPreferences preferences = getActivity().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
         if(preferences.getString(Constant.GOAL_TAGS, null) == null){
             Snackbar.make(binding.getRoot(), getActivity().getString(R.string.no_goals_msg), Snackbar.LENGTH_LONG).show();
-            feedLinearLayout.setVisibility(View.VISIBLE);
+            feedLinearLayoutNoPosts.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
             postsModelLists.clear();
             goalsExist = false;
@@ -164,11 +164,11 @@ public class FeedFragment extends Fragment implements PostItemAdapter.OnPostDele
                             postsModelLists.addAll(posts);
                             Collections.sort(postsModelLists);
                             adapter.notifyDataSetChanged();
-                            feedLinearLayout.setVisibility(View.GONE);
+                            feedLinearLayoutNoPosts.setVisibility(View.GONE);
                             recyclerView.setVisibility(View.VISIBLE);
                         }
                     }else{
-                        feedLinearLayout.setVisibility(View.VISIBLE);
+                        feedLinearLayoutNoPosts.setVisibility(View.VISIBLE);
                         recyclerView.setVisibility(View.GONE);
                     }
                     progressBar.setVisibility(View.GONE);

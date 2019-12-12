@@ -23,8 +23,10 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
                 <ImageView
+                    android:id="@+id/posterPic"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
                     android:src="@drawable/ic_person_black_24dp"/>
                 <TextView
                     android:id="@+id/nameLastnameCardviewTv"

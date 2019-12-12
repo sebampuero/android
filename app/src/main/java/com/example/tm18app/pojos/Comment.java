@@ -16,6 +16,7 @@ public class Comment implements Comparable<Comment>{
     private int userID;
     private int postID;
     private long timestamp;
+    private String commentatorPicUrl;
 
     public Comment() {
     }
@@ -77,6 +78,14 @@ public class Comment implements Comparable<Comment>{
         this.timestamp = timestamp;
     }
 
+    public String getCommentatorPicUrl() {
+        return commentatorPicUrl;
+    }
+
+    public void setCommentatorPicUrl(String commentatorPicUrl) {
+        this.commentatorPicUrl = commentatorPicUrl;
+    }
+
     @Override
     public String toString() {
         return "Comment{" +
@@ -86,6 +95,8 @@ public class Comment implements Comparable<Comment>{
                 ", lastname='" + lastname + '\'' +
                 ", userID=" + userID +
                 ", postID=" + postID +
+                ", timestamp=" + timestamp +
+                ", commentatorPicUrl='" + commentatorPicUrl + '\'' +
                 '}';
     }
 

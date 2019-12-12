@@ -19,6 +19,8 @@ public class Post implements Comparable<Post>{
     private int goalId;
     private int commentCount;
     private long timestamp;
+    private String posterPicUrl;
+    private String contentPicUrl;
 
     public Post() {
     }
@@ -111,6 +113,22 @@ public class Post implements Comparable<Post>{
         this.timestamp = timestamp;
     }
 
+    public String getPosterPicUrl() {
+        return posterPicUrl;
+    }
+
+    public void setPosterPicUrl(String posterPicUrl) {
+        this.posterPicUrl = posterPicUrl;
+    }
+
+    public String getContentPicUrl() {
+        return contentPicUrl;
+    }
+
+    public void setContentPicUrl(String contentPicUrl) {
+        this.contentPicUrl = contentPicUrl;
+    }
+
     @Override
     public String toString() {
         return "Post{" +
@@ -123,9 +141,11 @@ public class Post implements Comparable<Post>{
                 ", goalTag='" + goalTag + '\'' +
                 ", goalId=" + goalId +
                 ", commentCount=" + commentCount +
+                ", timestamp=" + timestamp +
+                ", posterPicUrl='" + posterPicUrl + '\'' +
+                ", contentPicUrl='" + contentPicUrl + '\'' +
                 '}';
     }
-
 
     @Override
     public int compareTo(Post post) {

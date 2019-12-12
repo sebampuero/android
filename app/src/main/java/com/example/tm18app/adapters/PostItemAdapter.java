@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -31,6 +32,7 @@ import com.example.tm18app.fragment.ProfileFragment;
 import com.example.tm18app.pojos.Post;
 import com.example.tm18app.repository.PostItemRepository;
 import com.example.tm18app.util.TimeUtils;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -95,6 +97,8 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
                     navController.navigate(R.id.action_profileFragment_to_commentSectionFragment, bundle);
             }
         });
+        Picasso.get().load(post.getPosterPicUrl())
+                .resize(70, 70).centerCrop().into(holder.posterPicUrl);
     }
 
     @Override
@@ -112,6 +116,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
         TextView commentCount;
         LinearLayout commentsSection;
         TextView timestamp;
+        ImageView posterPicUrl;
 
         MyViewHolder(final PostCardviewBinding binding) {
             super(binding.getRoot());
@@ -123,6 +128,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
             commentCount = binding.commentCountTv;
             commentsSection = binding.commentSectionLayout;
             timestamp = binding.timestamp;
+            posterPicUrl = binding.posterPic;
 
             binding.getRoot().setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
