@@ -38,7 +38,9 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Upload image"
+                android:background="@drawable/custom_btn_form"
+                android:padding="@dimen/padding_10"
+                android:text="@string/upload_image"
                 android:onClick="@{() -> myVM.onUploadImageClicked()}"
                 android:layout_centerHorizontal="true"
                 android:id="@+id/uploadImageBtn"

@@ -99,5 +99,7 @@
     <string name="disable_post_notifications">Desactivar notificaciones de nuevos posts</string>
     <string name="log_out_alert_title">Salir</string>
     <string name="log_out_conf_message">Desear realmente cerrar tu sesión?</string>
+    <string name="upload_profile_picture">Subir foto de perfil</string>
+    <string name="upload_image">Añadir imagen</string>
 
 </resources>

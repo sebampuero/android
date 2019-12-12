@@ -115,9 +115,12 @@ public class ProfileFragment extends Fragment implements PostItemAdapter.OnPostD
         });
         SharedPreferences prefs =
                 getContext().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
-        if(prefs.getString(Constant.PROFILE_PIC_URL, null) != null){
-            Picasso.get().load(prefs.getString(Constant.PROFILE_PIC_URL, null))
-                    .resize(300, 300).centerCrop().into(profilePic);
+        String imgUrl = prefs.getString(Constant.PROFILE_PIC_URL, null);
+        if(imgUrl != null){
+            if(!imgUrl.equals("")){
+                Picasso.get().load(prefs.getString(Constant.PROFILE_PIC_URL, null))
+                        .resize(300, 300).centerCrop().into(profilePic);
+            }
         }
     }
 

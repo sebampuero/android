@@ -98,5 +98,7 @@
     <string name="disable_post_notifications">Disable post notifications</string>
     <string name="log_out_alert_title">Log out</string>
     <string name="log_out_conf_message">Do you really want to log out?</string>
+    <string name="upload_profile_picture">Upload profile picture</string>
+    <string name="upload_image">Upload image</string>
 
 </resources>

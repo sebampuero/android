@@ -24,6 +24,16 @@
                     android:layout_marginBottom="@dimen/margin_10"
                     android:layout_marginTop="@dimen/margin_10"/>
 
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_margin="@dimen/margin_10"
+                    android:padding="@dimen/margin_10"
+                    android:background="@drawable/custom_btn_form"
+                    android:layout_height="wrap_content"
+                    android:text="@string/upload_profile_picture"
+                    android:onClick="@{() -> myVM.onProfilePicUploadClicked()}"
+                    android:id="@+id/uploadPictureBtn"/>
+
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

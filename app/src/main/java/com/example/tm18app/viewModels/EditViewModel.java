@@ -34,6 +34,7 @@ public class EditViewModel extends ViewModel {
     public MutableLiveData<String> lastname = new MutableLiveData<>();
     public MutableLiveData<String> email = new MutableLiveData<>();
     public SingleLiveEvent<Boolean> navigateToDialog = new SingleLiveEvent<>(); // https://medium.com/androiddevelopers/livedata-with-snackbar-navigation-and-other-events-the-singleliveevent-case-ac2622673150
+    public SingleLiveEvent<Boolean> selectProfilePic = new SingleLiveEvent<>();
     public LiveData<List<Goal>> getGoalLiveData() {
         return goalItemsLiveData;
     }
@@ -48,6 +49,7 @@ public class EditViewModel extends ViewModel {
     private Context appContext;
     private SharedPreferences preferences;
     private NavController navController;
+    private String profilePicBase64Data;
 
     /**
      * Call repository and fetch goals from the server
@@ -75,6 +77,8 @@ public class EditViewModel extends ViewModel {
             }
             user.setGoals(goalIds);
             user.setGoalTags(goalTags);
+            if(profilePicBase64Data != null)
+                user.setBase64ProfilePic(profilePicBase64Data);
             UserRepository userRepository = new UserRepository();
             // call the editUser method in repository and pass the MutableLiveData for the UI
             // to observe for changes and show feedback accordingly
@@ -88,6 +92,10 @@ public class EditViewModel extends ViewModel {
      */
     public void onNewGoalsClicked() {
         navigateToDialog.call();
+    }
+
+    public void onProfilePicUploadClicked() {
+        selectProfilePic.call();
     }
 
     /**
@@ -129,6 +137,7 @@ public class EditViewModel extends ViewModel {
         preferences = appContext.getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
         fillUserData();
         fetchGoals();
+        profilePicBase64Data = null;
     }
 
     /**
@@ -147,5 +156,9 @@ public class EditViewModel extends ViewModel {
 
     public void setAdapter(MultiGoalSelectAdapter adapter) {
         this.adapter = adapter;
+    }
+
+    public void setProfilePicBase64Data(String data) {
+        profilePicBase64Data = data;
     }
 }

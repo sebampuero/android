@@ -30,14 +30,14 @@ public class FeedViewModel extends ViewModel {
     private NavController navController;
     private Context appContext;
 
-    private MutableLiveData<Boolean> swipeReloadTrigger = new MutableLiveData<>();
+    private MutableLiveData<Boolean> reloadTrigger = new MutableLiveData<>();
 
     /**
-     * Upon change on the {@link MutableLiveData} swipeReloadTrigger, the postLiveData is created
-     * or updated. The swipeReloadTrigger is actuated when the Feed is loaded and reloaded
-     * by a swipe.
+     * Upon change on the {@link MutableLiveData} reloadTrigger, the postLiveData is created
+     * or updated. The reloadTrigger is actuated when the Feed is loaded and reloaded
+     * by a swipe. (Can also be programatically called)
      */
-    private LiveData<List<Post>> postLiveData = Transformations.switchMap(swipeReloadTrigger, new Function<Boolean, LiveData<List<Post>>>() {
+    private LiveData<List<Post>> postLiveData = Transformations.switchMap(reloadTrigger, new Function<Boolean, LiveData<List<Post>>>() {
         @Override
         public LiveData<List<Post>> apply(Boolean input) {
             PostItemRepository postItemRepository = new PostItemRepository();
@@ -79,7 +79,7 @@ public class FeedViewModel extends ViewModel {
      * Calls the repository to fetch and/or update the Posts
      */
     public void callRepository() {
-        swipeReloadTrigger.setValue(true);
+        reloadTrigger.setValue(true);
     }
 
 

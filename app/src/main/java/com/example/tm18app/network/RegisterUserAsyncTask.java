@@ -41,7 +41,6 @@ public class RegisterUserAsyncTask extends AsyncTask<Void, Void, User> {
 
     protected User doInBackground(Void... params) {
         try {
-            /*
             try{
                 // Assign a unique token to the device and user
                 String deviceToken = Pushy.register(appContext.get());
@@ -52,7 +51,6 @@ public class RegisterUserAsyncTask extends AsyncTask<Void, Void, User> {
             } catch (PushyException e){
                 e.printStackTrace();
             }
-             */
             Response<User> response = userRestInterface.registerUser(user).execute();
             statusCode = response.code();
             return response.body();

@@ -2,13 +2,18 @@ package com.example.tm18app.fragment;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -25,14 +30,19 @@ import com.example.tm18app.databinding.FragmentEditProfileBinding;
 import com.example.tm18app.pojos.Goal;
 import com.example.tm18app.pojos.GoalItemSelection;
 import com.example.tm18app.pojos.User;
+import com.example.tm18app.util.ConverterUtils;
 import com.example.tm18app.viewModels.EditViewModel;
 import com.example.tm18app.viewModels.MyViewModel;
+import com.squareup.picasso.Picasso;
 
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+
+import static android.app.Activity.RESULT_OK;
 
 
 /**
@@ -42,12 +52,14 @@ import java.util.List;
  * @version 1.0
  * @since 03.12.2019
  */
-public class EditProfileFragment extends Fragment {
+public class EditProfileFragment extends BaseFragmentPictureSelecter implements BaseFragmentPictureSelecter.FromBitmapToUriCallbackInterface {
 
     private FragmentEditProfileBinding binding;
     private MultiGoalSelectAdapter adapter;
     private MyViewModel mainModel;
     private EditViewModel model;
+    private Uri imageUri;
+    private ImageView profilePic;
 
     public EditProfileFragment() {
         // Required empty public constructor
@@ -62,8 +74,10 @@ public class EditProfileFragment extends Fragment {
         model.setNavController(mainModel.getNavController());
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_edit_profile, container, false);
         binding.setMyVM(model);
+        setIc(this);
         binding.setLifecycleOwner(this);
         setupGoalsBoxRecyclerView();
+        profilePic = binding.profilePic;
         // Observe for clicks on the button that triggers the DialogFragment to request goal tags
         model.navigateToDialog.observe(this, new Observer<Boolean>() {
             @Override
@@ -90,8 +104,49 @@ public class EditProfileFragment extends Fragment {
                 evaluateEditUser(integerUserHashMap);
             }
         });
+
+        model.selectProfilePic.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                openGallery();
+            }
+        });
         model.setAdapter(adapter);
+        fetchProfilePic();
         return binding.getRoot();
+    }
+
+    private void fetchProfilePic() {
+        SharedPreferences prefs =
+                getContext().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
+        String imgUrl = prefs.getString(Constant.PROFILE_PIC_URL, null);
+        if(imgUrl != null){
+            if(!imgUrl.equals("")){
+                Picasso.get().load(prefs.getString(Constant.PROFILE_PIC_URL, null))
+                        .resize(300, 300).centerCrop().into(profilePic);
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == PICK_IMAGE){
+            imageUri = data.getData();
+            applyImageUriToImageView(imageUri, profilePic, 300, 300);
+        }
+    }
+
+    @Override
+    public void uriResultCallback(Uri imageUri) {
+        try {
+            InputStream iStream = getActivity().getContentResolver().openInputStream(imageUri);
+            byte[] profilePicByteArray = ConverterUtils.getBytes(iStream);
+            model.setProfilePicBase64Data(Base64.encodeToString(profilePicByteArray, Base64.DEFAULT));
+        }catch (Exception e){
+            e.printStackTrace();
+            profilePic.setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -117,6 +172,7 @@ public class EditProfileFragment extends Fragment {
             editor.putString(Constant.LASTNAME, user.getLastname());
             editor.putString(Constant.EMAIL, user.getEmail());
             editor.putInt(Constant.USER_ID, user.getId());
+            editor.putString(Constant.PROFILE_PIC_URL, user.getProfilePicUrl());
             if(user.getGoals().length > 0 && user.getGoalTags().length > 0){
                 StringBuilder sb = new StringBuilder();
                 StringBuilder sb1 = new StringBuilder();
@@ -175,6 +231,5 @@ public class EditProfileFragment extends Fragment {
         adapter = new MultiGoalSelectAdapter();
         recyclerView.setAdapter(adapter);
     }
-
 
 }

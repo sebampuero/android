@@ -63,8 +63,11 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
         holder.content.setText(comment.getContent());
         holder.timestamp.setText(TimeUtils.parseTimestampToLocaleDatetime(comment.getTimestamp()));
         // TODO: use dimens values
-        Picasso.get().load(comment.getCommentatorPicUrl())
-                .resize(50,50).centerCrop().into(holder.commenterPic);
+        if(comment.getCommentatorPicUrl() != null)
+            if(!comment.getCommentatorPicUrl().equals(""))
+                Picasso.get().load(comment.getCommentatorPicUrl())
+                        .resize(50,50).centerCrop().into(holder.commenterPic);
+            // load default drawable
     }
 
     @Override
