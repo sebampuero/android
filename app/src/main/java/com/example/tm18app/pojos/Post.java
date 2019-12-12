@@ -19,6 +19,7 @@ public class Post implements Comparable<Post>{
     private int goalId;
     private int commentCount;
     private long timestamp;
+    private String base64Image;
     private String posterPicUrl;
     private String contentPicUrl;
 
@@ -129,6 +130,14 @@ public class Post implements Comparable<Post>{
         this.contentPicUrl = contentPicUrl;
     }
 
+    public String getBase64Image() {
+        return base64Image;
+    }
+
+    public void setBase64Image(String base64Image) {
+        this.base64Image = base64Image;
+    }
+
     @Override
     public String toString() {
         return "Post{" +
@@ -142,6 +151,7 @@ public class Post implements Comparable<Post>{
                 ", goalId=" + goalId +
                 ", commentCount=" + commentCount +
                 ", timestamp=" + timestamp +
+                ", base64Image='" + base64Image + '\'' +
                 ", posterPicUrl='" + posterPicUrl + '\'' +
                 ", contentPicUrl='" + contentPicUrl + '\'' +
                 '}';

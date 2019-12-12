@@ -11,6 +11,7 @@ import com.example.tm18app.R;
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.pojos.Post;
 import com.example.tm18app.repository.PostItemRepository;
+import com.example.tm18app.util.SingleLiveEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,9 +27,11 @@ public class NewPostViewModel extends ViewModel {
 
     public MutableLiveData<String> title = new MutableLiveData<>();
     public MutableLiveData<String> content = new MutableLiveData<>();
+    public SingleLiveEvent<Boolean> selectContentImage = new SingleLiveEvent<>();
 
     private Context appContext;
     private String selectedGoal;
+    private String contentImageBase64Data;
 
     private MutableLiveData<Integer> postLiveDataResponse = new MutableLiveData<>();
 
@@ -46,6 +49,7 @@ public class NewPostViewModel extends ViewModel {
      */
     public void setContext(Context context) {
         this.appContext = context;
+        contentImageBase64Data = null;
     }
 
     /**
@@ -64,9 +68,16 @@ public class NewPostViewModel extends ViewModel {
                             .getString(Constant.GOAL_IDS, null).split(",")));
             int goalID = Integer.valueOf(userGoalIds.get(userGoalTags.indexOf(selectedGoal)));
             PostItemRepository repository = new PostItemRepository();
-            repository.createPost(new Post(title.getValue(), content.getValue(), userID, goalID),
+            Post post = new Post(title.getValue(), content.getValue(), userID, goalID);
+            if(contentImageBase64Data != null)
+                post.setBase64Image(contentImageBase64Data);
+            repository.createPost(post,
                     postLiveDataResponse);
         }
+    }
+
+    public void onUploadImageClicked() {
+        selectContentImage.call();
     }
 
     /**
@@ -94,5 +105,9 @@ public class NewPostViewModel extends ViewModel {
      */
     public void setSelectedGoalForPost(String goalTag) {
         this.selectedGoal = goalTag;
+    }
+
+    public void setContentImageBase64Data(String contentImageBase64Data) {
+        this.contentImageBase64Data = contentImageBase64Data;
     }
 }

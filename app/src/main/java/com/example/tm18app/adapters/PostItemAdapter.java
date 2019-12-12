@@ -97,8 +97,20 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
                     navController.navigate(R.id.action_profileFragment_to_commentSectionFragment, bundle);
             }
         });
-        Picasso.get().load(post.getPosterPicUrl())
-                .resize(70, 70).centerCrop().into(holder.posterPicUrl);
+        if(post.getPosterPicUrl() != null){
+            if(!post.getPosterPicUrl().equals(""))
+                Picasso.get().load(post.getPosterPicUrl()) //TODO: use dimens values
+                        .resize(70, 70).centerCrop().into(holder.posterPicUrl);
+            // else , set drawable as default for person black
+        }
+        if(post.getContentPicUrl() != null){
+            if(!post.getContentPicUrl().equals("")){
+                Picasso.get().load(post.getContentPicUrl()) //TODO: use dimens values
+                        .resize(0, 500).into(holder.contentImage);
+            }else{
+                holder.contentImage.setVisibility(View.GONE);
+            }
+        }
     }
 
     @Override
@@ -117,6 +129,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
         LinearLayout commentsSection;
         TextView timestamp;
         ImageView posterPicUrl;
+        ImageView contentImage;
 
         MyViewHolder(final PostCardviewBinding binding) {
             super(binding.getRoot());
@@ -129,6 +142,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
             commentsSection = binding.commentSectionLayout;
             timestamp = binding.timestamp;
             posterPicUrl = binding.posterPic;
+            contentImage = binding.contentImage;
 
             binding.getRoot().setOnLongClickListener(new View.OnLongClickListener() {
                 @Override

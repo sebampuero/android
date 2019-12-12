@@ -1,37 +1,22 @@
 package com.example.tm18app.viewModels;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import androidx.navigation.NavController;
 
-import com.example.tm18app.constants.Constant;
 import com.example.tm18app.R;
 import com.example.tm18app.adapters.MultiGoalSelectAdapter;
-import com.example.tm18app.network.RetrofitNetworkConnectionSingleton;
-import com.example.tm18app.network.UserRestInterface;
 import com.example.tm18app.pojos.Goal;
 import com.example.tm18app.pojos.User;
 import com.example.tm18app.repository.GoalsItemRepository;
 import com.example.tm18app.repository.UserRepository;
 import com.example.tm18app.util.SingleLiveEvent;
 
-import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-
-import me.pushy.sdk.Pushy;
-import me.pushy.sdk.util.exceptions.PushyException;
-import retrofit2.Call;
-import retrofit2.Response;
 
 /**
  * A {@link ViewModel} class representing the ViewModel for the {@link com.example.tm18app.fragment.RegistrationFragment} View
@@ -54,7 +39,7 @@ public class RegisterViewModel extends ViewModel {
     private MultiGoalSelectAdapter adapter;
     private LiveData<List<Goal>> goalItemsLiveData;
     private LiveData<HashMap<Integer, User>> userLiveData = new MutableLiveData<>();
-    private String profilePicData;
+    private String profilePicBase64Data;
 
 
     public RegisterViewModel(){
@@ -91,6 +76,7 @@ public class RegisterViewModel extends ViewModel {
     public void setContext(Context context) {
         this.ctx = context;
         fetchGoals();
+        profilePicBase64Data = null;
     }
 
     /**
@@ -111,7 +97,8 @@ public class RegisterViewModel extends ViewModel {
              }
              user.setGoals(goalIds);
              user.setGoalTags(goalTags);
-             user.setBase64ProfilePic(profilePicData);
+             if(profilePicBase64Data != null)
+                 user.setBase64ProfilePic(profilePicBase64Data);
             UserRepository userRepository = new UserRepository();
             // pass MutableLiveData to the repository to change for when status of response updates
              userRepository.registerUser(user, (MutableLiveData<HashMap<Integer, User>>) userLiveData, this.ctx);
@@ -161,7 +148,7 @@ public class RegisterViewModel extends ViewModel {
         this.adapter = adapter;
     }
 
-    public void setProfilePicData(String data) {
-        profilePicData = data;
+    public void setProfilePicBase64Data(String data) {
+        profilePicBase64Data = data;
     }
 }

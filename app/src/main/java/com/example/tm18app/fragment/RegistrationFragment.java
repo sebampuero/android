@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -135,7 +133,7 @@ public class RegistrationFragment extends BaseFragmentPictureSelecter implements
         try {
             InputStream iStream = getActivity().getContentResolver().openInputStream(imageUri);
             byte[] profilePicByteArray = ConverterUtils.getBytes(iStream);
-            model.setProfilePicData(Base64.encodeToString(profilePicByteArray, Base64.DEFAULT));
+            model.setProfilePicBase64Data(Base64.encodeToString(profilePicByteArray, Base64.DEFAULT));
         }catch (Exception e){
             e.printStackTrace();
             profilePic.setVisibility(View.GONE);

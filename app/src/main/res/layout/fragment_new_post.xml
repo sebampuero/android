@@ -27,10 +27,27 @@
                 android:textStyle="bold"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
 
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="@dimen/margin_10"
+                android:layout_below="@id/newPostTv"
+                android:id="@+id/contentImage"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Upload image"
+                android:onClick="@{() -> myVM.onUploadImageClicked()}"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/uploadImageBtn"
+                android:layout_below="@id/contentImage"/>
+
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/newPostTv"
+                android:layout_below="@id/uploadImageBtn"
                 android:hint="@string/post_title_label"
                 android:id="@+id/postTitle"
                 android:text="@={myVM.title}"

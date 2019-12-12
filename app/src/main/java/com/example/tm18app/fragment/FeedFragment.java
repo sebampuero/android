@@ -213,5 +213,6 @@ public class FeedFragment extends Fragment implements PostItemAdapter.OnPostDele
         }else if(statusCode == HttpURLConnection.HTTP_OK){
             Toast.makeText(getContext(), getContext().getString(R.string.post_deleted_msg), Toast.LENGTH_SHORT).show();
         }
+        model.callRepository(); // mimic a reload
     }
 }
