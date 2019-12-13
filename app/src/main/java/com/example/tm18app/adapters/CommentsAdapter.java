@@ -98,6 +98,29 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
                     return false;
                 }
             });
+
+            binding.getRoot().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    buildOpenProfileAlertDialog();
+                }
+            });
+        }
+
+        private void buildOpenProfileAlertDialog() {
+            Comment comment = commentsList.get(getAdapterPosition());
+            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(appContext);
+            alertBuilder.setCancelable(true);
+            alertBuilder.setTitle(appContext.getString(R.string.open_profile_alert_title));
+            alertBuilder.setMessage(appContext.getString(R.string.open_profile_alert_text) + comment.getName() +" ?");
+            alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int which) {
+
+                }
+            });
+            AlertDialog alert = alertBuilder.create();
+            alert.show();
         }
 
         /**

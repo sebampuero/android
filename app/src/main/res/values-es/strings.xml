@@ -101,5 +101,9 @@
     <string name="log_out_conf_message">Desear realmente cerrar tu sesión?</string>
     <string name="upload_profile_picture">Subir foto de perfil</string>
     <string name="upload_image">Añadir imagen</string>
+    <string name="open_img_alert_title">Abrir imagen</string>
+    <string name="open_img_alert_text">Abrir imagen?</string>
+    <string name="open_profile_alert_title">Ver perfil</string>
+    <string name="open_profile_alert_text">Deseas ver el perfil de </string>
 
 </resources>

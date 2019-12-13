@@ -2,6 +2,7 @@ package com.example.tm18app.viewModels;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -10,6 +11,7 @@ import androidx.navigation.NavController;
 
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.R;
+import com.example.tm18app.fragment.WebviewFragment;
 import com.example.tm18app.pojos.Post;
 import com.example.tm18app.repository.PostItemRepository;
 
@@ -90,6 +92,15 @@ public class ProfileViewModel extends ViewModel {
      */
     public void onEditInfoClicked() {
         navController.navigate(R.id.action_profileFragment_to_editProfileFragment);
+    }
+
+    public void onProfilePicClicked() {
+        SharedPreferences preferences = appContext
+                .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
+        Bundle bundle = new Bundle();
+        bundle.putString(WebviewFragment.IMG_URL,
+                preferences.getString(Constant.PROFILE_PIC_URL, ""));
+        navController.navigate(R.id.action_profileFragment_to_webviewFragment, bundle);
     }
 }
 

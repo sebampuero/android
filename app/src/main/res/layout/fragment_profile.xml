@@ -21,6 +21,7 @@
             <ImageView
                 android:id="@+id/profilePic"
                 android:layout_width="match_parent"
+                android:onClick="@{() -> myVM.onProfilePicClicked()}"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_person_black_80dp"
                 android:layout_marginTop="@dimen/margin_10"/>

@@ -100,5 +100,9 @@
     <string name="log_out_conf_message">Willst du wirklich ausloggen?</string>
     <string name="upload_profile_picture">Profilbild hochladen</string>
     <string name="upload_image">Bild hinzufügen</string>
+    <string name="open_img_alert_title">Bild öffnen</string>
+    <string name="open_img_alert_text">Bild öffnen?</string>
+    <string name="open_profile_alert_title">Profil ansehen</string>
+    <string name="open_profile_alert_text">Profil ansehen von </string>
 
 </resources>

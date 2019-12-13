@@ -137,6 +137,9 @@ public class MainActivity extends AppCompatActivity {
                         case R.id.newPostFragment:
                             toolbarTitle.setText(R.string.newpost_toolbar_title);
                             break;
+                        case R.id.webviewFragment:
+                            toolbarTitle.setText("");
+                            break;
                     }
                 }
             }

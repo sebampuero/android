@@ -1,12 +1,9 @@
 package com.example.tm18app.adapters;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,19 +13,17 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.PostCardviewBinding;
 import com.example.tm18app.fragment.FeedFragment;
 import com.example.tm18app.fragment.ProfileFragment;
+import com.example.tm18app.fragment.WebviewFragment;
 import com.example.tm18app.pojos.Post;
 import com.example.tm18app.repository.PostItemRepository;
 import com.example.tm18app.util.TimeUtils;
@@ -151,6 +146,35 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
                     return false;
                 }
             });
+
+            binding.getRoot().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(postsList.get(getAdapterPosition()).getContentPicUrl() != null)
+                        buildDialogToOpenWV();
+                }
+            });
+        }
+
+        private void buildDialogToOpenWV() {
+            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(currentFragment.getContext());
+            alertBuilder.setCancelable(true);
+            alertBuilder.setTitle(currentFragment.getContext().getString(R.string.open_img_alert_title));
+            alertBuilder.setMessage(currentFragment.getContext().getString(R.string.open_img_alert_text));
+            alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int which) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(WebviewFragment.IMG_URL,
+                            postsList.get(getAdapterPosition()).getContentPicUrl());
+                    if(currentFragment instanceof FeedFragment)
+                        navController.navigate(R.id.action_feedFragment_to_webviewFragment, bundle);
+                    else if(currentFragment instanceof ProfileFragment)
+                        navController.navigate(R.id.action_profileFragment_to_webviewFragment, bundle);
+                }
+            });
+            AlertDialog alert = alertBuilder.create();
+            alert.show();
         }
 
         /**

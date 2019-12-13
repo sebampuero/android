@@ -21,6 +21,7 @@ public class Constant {
     public static final String GOAL_IDS = "goalIds";
     public static final String GOAL_TAGS = "goalTags";
     public static final String PROFILE_PIC_URL = "profile_pic_url";
+    public static final String IMAGE_URL = "IMAGE_URL";
 
     public static final String PUSHY_CREDS_ENDPOINT = API_ENDPOINT + "/api/goals/pushycreds/";
 
