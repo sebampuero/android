@@ -15,27 +15,6 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/navBottomBackgroundColor">
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="13dp"
-                android:text="Text"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:id="@+id/toolbarTitle"
-                />
-            <ImageButton
-                android:id="@+id/logoutBtn"
-                android:layout_width="wrap_content"
-                android:layout_marginTop="3dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:backgroundTint="@color/navBottomBackgroundColor"
-                android:src="@drawable/ic_exit_to_app_black_24dp"/>
-        </RelativeLayout>
     </androidx.appcompat.widget.Toolbar>
     <fragment
         android:id="@+id/nav_host_fragment"

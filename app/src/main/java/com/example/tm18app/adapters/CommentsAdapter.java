@@ -3,6 +3,7 @@ package com.example.tm18app.adapters;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,16 +14,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.MutableLiveData;
+import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tm18app.R;
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.CommentItemBinding;
-import com.example.tm18app.fragment.FeedFragment;
-import com.example.tm18app.fragment.ProfileFragment;
 import com.example.tm18app.pojos.Comment;
-import com.example.tm18app.pojos.Post;
 import com.example.tm18app.repository.PostItemRepository;
 import com.example.tm18app.util.TimeUtils;
 import com.squareup.picasso.Picasso;
@@ -41,10 +39,16 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
 
     private Context appContext;
     private ArrayList<Comment> commentsList;
+    private int currentUserId;
+    private NavController navController;
 
-    public CommentsAdapter(FragmentActivity activity, List<Comment> comments) {
+    public CommentsAdapter(FragmentActivity activity, List<Comment> comments, NavController navController) {
         this.appContext = activity;
         this.commentsList = (ArrayList<Comment>) comments;
+        SharedPreferences preferences = appContext
+                .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
+        this.currentUserId = preferences.getInt(Constant.USER_ID, 0);
+        this.navController = navController;
     }
 
     @NonNull
@@ -109,18 +113,22 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
 
         private void buildOpenProfileAlertDialog() {
             Comment comment = commentsList.get(getAdapterPosition());
-            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(appContext);
-            alertBuilder.setCancelable(true);
-            alertBuilder.setTitle(appContext.getString(R.string.open_profile_alert_title));
-            alertBuilder.setMessage(appContext.getString(R.string.open_profile_alert_text) + comment.getName() +" ?");
-            alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int which) {
-
-                }
-            });
-            AlertDialog alert = alertBuilder.create();
-            alert.show();
+            if(comment.getUserID() != currentUserId){
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(appContext);
+                alertBuilder.setCancelable(true);
+                alertBuilder.setTitle(appContext.getString(R.string.open_profile_alert_title));
+                alertBuilder.setMessage(appContext.getString(R.string.open_profile_alert_text) + comment.getName() +" ?");
+                alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int which) {
+                        int commentUserId = commentsList.get(getAdapterPosition()).getUserID();
+                        Bundle b = new Bundle();
+                        b.putString("otherUserID", String.valueOf(commentUserId));
+                    }
+                });
+                AlertDialog alert = alertBuilder.create();
+                alert.show();
+            }
         }
 
         /**
@@ -128,12 +136,9 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
          * the comment gets deleted.
          */
         private void buildDeletionAlertDialog() {
-            SharedPreferences preferences = appContext
-                    .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
-            int userID = preferences.getInt(Constant.USER_ID, 0);
             final int position = getAdapterPosition();
             final Comment commentToDelete = commentsList.get(position);
-            if(userID == commentToDelete.getUserID()){
+            if(currentUserId == commentToDelete.getUserID()){
                 AlertDialog.Builder alertBuilder = new AlertDialog.Builder(appContext);
                 alertBuilder.setCancelable(true);
                 alertBuilder.setTitle(appContext.getString(R.string.delete_comment_title));

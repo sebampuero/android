@@ -13,7 +13,9 @@ import com.example.tm18app.constants.Constant;
 import com.example.tm18app.R;
 import com.example.tm18app.fragment.WebviewFragment;
 import com.example.tm18app.pojos.Post;
+import com.example.tm18app.pojos.User;
 import com.example.tm18app.repository.PostItemRepository;
+import com.example.tm18app.repository.UserRepository;
 
 import java.util.List;
 
@@ -33,7 +35,6 @@ public class ProfileViewModel extends ViewModel {
     private NavController navController;
     private Context appContext;
 
-    private PostItemRepository postItemRepository;
     private LiveData<List<Post>> postLiveData;
 
     /**
@@ -51,6 +52,7 @@ public class ProfileViewModel extends ViewModel {
     public LiveData<List<Post>> getPostLiveData() {
         return postLiveData;
     }
+
 
     /**
      * Sets the {@link Context} for this ViewModel
@@ -79,12 +81,13 @@ public class ProfileViewModel extends ViewModel {
      * Calls the repository and fetches the user's posts from the server
      */
     private void fetchData() {
-        postItemRepository = new PostItemRepository();
+        PostItemRepository postItemRepository = new PostItemRepository();
         SharedPreferences preferences = appContext
                 .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
         String userId = String.valueOf(preferences.getInt(Constant.USER_ID, 0));
         this.postLiveData = postItemRepository.getUserPosts(userId);
     }
+
 
     /**
      * Navigate to the edit profile UI
@@ -102,5 +105,6 @@ public class ProfileViewModel extends ViewModel {
                 preferences.getString(Constant.PROFILE_PIC_URL, ""));
         navController.navigate(R.id.action_profileFragment_to_webviewFragment, bundle);
     }
+
 }
 

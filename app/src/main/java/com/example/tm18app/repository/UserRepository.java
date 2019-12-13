@@ -2,6 +2,7 @@ package com.example.tm18app.repository;
 
 import android.content.Context;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.tm18app.network.RegisterUserAsyncTask;
@@ -108,5 +109,23 @@ public class UserRepository {
                 statusCodeRespIntegerMutableLiveData.setValue(0);
             }
         });
+    }
+
+    public LiveData<User> getUser(String id) {
+        final MutableLiveData<User> data = new MutableLiveData<>();
+        userRestInterface.getUserById(id).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if(response.body() != null){
+                    data.setValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+
+            }
+        });
+        return data;
     }
 }

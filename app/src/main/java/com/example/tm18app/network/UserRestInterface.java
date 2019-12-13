@@ -9,7 +9,9 @@ import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 /**
  * {@link retrofit2.Retrofit} Interface for User endpoints
@@ -31,4 +33,7 @@ public interface UserRestInterface {
 
     @POST("api/goals/update/password")
     Call<Void> updatePassword(@Body PasswordReset passwordReset);
+
+    @GET("api/goals/user/{userId}")
+    Call<User> getUserById(@Path("userId") String userId);
 }

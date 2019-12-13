@@ -40,7 +40,7 @@ public class CommentSectionFragment extends Fragment {
 
     private FragmentCommentSectionBinding binding;
     private CommentsSectionViewModel model;
-    private RecyclerView recyclerView;
+    private MyViewModel mainModel;
     private CommentsAdapter adapter;
     private List<Comment> commentsList = new ArrayList<>();
     private EditText input;
@@ -53,6 +53,7 @@ public class CommentSectionFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         model = ViewModelProviders.of(getActivity()).get(CommentsSectionViewModel.class);
+        mainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_comment_section, container, false);
         binding.setLifecycleOwner(this);
         binding.setMyVM(model);
@@ -88,10 +89,10 @@ public class CommentSectionFragment extends Fragment {
      * Sets up the {@link RecyclerView} for this {@link Fragment}
      */
     private void setupRecyclerView() {
-        recyclerView = binding.commentsRv;
+        RecyclerView recyclerView = binding.commentsRv;
         LinearLayoutManager manager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(manager);
-        adapter = new CommentsAdapter(getActivity(), commentsList);
+        adapter = new CommentsAdapter(getActivity(), commentsList, mainModel.getNavController());
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(),
                 manager.getOrientation()));

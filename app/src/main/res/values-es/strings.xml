@@ -98,12 +98,16 @@
     <string name="disable_comment_notifications">Desactivar notificaciones de nuevos comentarios</string>
     <string name="disable_post_notifications">Desactivar notificaciones de nuevos posts</string>
     <string name="log_out_alert_title">Salir</string>
-    <string name="log_out_conf_message">Desear realmente cerrar tu sesión?</string>
+    <string name="log_out_conf_message">Deseas realmente cerrar tu sesión?</string>
     <string name="upload_profile_picture">Subir foto de perfil</string>
     <string name="upload_image">Añadir imagen</string>
     <string name="open_img_alert_title">Abrir imagen</string>
     <string name="open_img_alert_text">Abrir imagen?</string>
     <string name="open_profile_alert_title">Ver perfil</string>
     <string name="open_profile_alert_text">Deseas ver el perfil de </string>
+    <string name="edit_profile_toolbar_title">Editar perfil</string>
+    <string name="edit_password_toolbar_title">Cambiar contraseña</string>
+    <string name="session_settings_title">Sesión</string>
+    <string name="logout_settings_btn_text">Cerrar sesión</string>
 
 </resources>

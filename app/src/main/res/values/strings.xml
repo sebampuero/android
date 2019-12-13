@@ -107,5 +107,9 @@
     <string name="open_img_alert_text">Open image?</string>
     <string name="open_profile_alert_title">Open profile</string>
     <string name="open_profile_alert_text">Open profile of</string>
+    <string name="edit_profile_toolbar_title">Edit profile</string>
+    <string name="edit_password_toolbar_title">Edit password</string>
+    <string name="session_settings_title">Session</string>
+    <string name="logout_settings_btn_text">Logout</string>
 
 </resources>

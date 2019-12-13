@@ -104,5 +104,9 @@
     <string name="open_img_alert_text">Bild öffnen?</string>
     <string name="open_profile_alert_title">Profil ansehen</string>
     <string name="open_profile_alert_text">Profil ansehen von </string>
+    <string name="edit_profile_toolbar_title">Profil bearbeiten</string>
+    <string name="edit_password_toolbar_title">Passwort bearbeiten</string>
+    <string name="session_settings_title">Sitzung</string>
+    <string name="logout_settings_btn_text">Ausloggen</string>
 
 </resources>

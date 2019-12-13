@@ -54,13 +54,8 @@ import me.pushy.sdk.Pushy;
  */
 public class MainActivity extends AppCompatActivity {
 
-    private NavController navController;
     private Toolbar toolbar;
-    private AppBarConfiguration appBarConfiguration;
-    private ImageButton logoutBtn;
     private BottomNavigationView bottomNavigationView;
-    private TextView toolbarTitle;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,16 +93,14 @@ public class MainActivity extends AppCompatActivity {
         binding.setMyVM(model);
         binding.setLifecycleOwner(this);
 
-        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        model.setNavController( navController);
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        model.setNavController(navController);
         model.setContext(this.getApplication());
         model.checkLoginStatus();
 
         toolbar = findViewById(R.id.toolbar);
         bottomNavigationView = findViewById(R.id.bottomNavView);
-        logoutBtn = findViewById(R.id.logoutBtn);
-        toolbarTitle = findViewById(R.id.toolbarTitle);
-        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
         NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration);
 
@@ -121,63 +114,9 @@ public class MainActivity extends AppCompatActivity {
                 }else{
                     toolbar.setVisibility(View.VISIBLE);
                     bottomNavigationView.setVisibility(View.VISIBLE);
-                    switch (destination.getId()){ // set corresponding title to fragments depending on nav controller location
-                        case R.id.feedFragment:
-                            toolbarTitle.setText(R.string.feed_toolbar_title);
-                            break;
-                        case R.id.profileFragment:
-                            toolbarTitle.setText(R.string.profile_toolbar_title);
-                            break;
-                        case R.id.settingsFragment:
-                            toolbarTitle.setText(R.string.settings_toolbar_title);
-                            break;
-                        case R.id.commentSectionFragment:
-                            toolbarTitle.setText(R.string.comments_toolbar_title);
-                            break;
-                        case R.id.newPostFragment:
-                            toolbarTitle.setText(R.string.newpost_toolbar_title);
-                            break;
-                        case R.id.webviewFragment:
-                            toolbarTitle.setText("");
-                            break;
-                    }
                 }
             }
         });
-        // handle logout action
-        logoutBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Show a dialog
-                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(MainActivity.this);
-                alertBuilder.setCancelable(true);
-                alertBuilder.setTitle(getApplicationContext().getString(R.string.log_out_alert_title));
-                alertBuilder.setMessage(getApplicationContext().getString(R.string.log_out_conf_message));
-                alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int which) {
-                        SharedPreferences preferences = getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
-                        SharedPreferences.Editor e = preferences.edit();
-                        e.clear().apply(); // clear SharedPreferences info
-                        Pushy.unregister(getApplicationContext()); // wipe user token and auth key info
-                        // Navigate to the main fragment with a deep link
-                        PendingIntent pendingIntent = new NavDeepLinkBuilder(getApplicationContext())
-                                .setComponentName(MainActivity.class)
-                                .setGraph(R.navigation.nav_graph)
-                                .setDestination(R.id.mainFragment)
-                                .createPendingIntent();
-                        try {
-                            pendingIntent.send();
-                        } catch (PendingIntent.CanceledException ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                });
-                AlertDialog alert = alertBuilder.create();
-                alert.show();
-            }
-        });
-
     }
 
 }

@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.tm18app.R;
@@ -27,12 +28,14 @@ import com.example.tm18app.adapters.PostItemAdapter;
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.FragmentProfileBinding;
 import com.example.tm18app.pojos.Post;
+import com.example.tm18app.pojos.User;
 import com.example.tm18app.viewModels.MyViewModel;
 import com.example.tm18app.viewModels.ProfileViewModel;
 import com.squareup.picasso.Picasso;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -55,6 +58,7 @@ public class ProfileFragment extends Fragment implements PostItemAdapter.OnPostD
     private ProgressBar progressBar;
     private LinearLayout noPostsLayout;
     private ImageView profilePic;
+    private SharedPreferences prefs;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -63,20 +67,26 @@ public class ProfileFragment extends Fragment implements PostItemAdapter.OnPostD
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
         model = ViewModelProviders.of(getActivity()).get(ProfileViewModel.class);
+        prefs = getContext().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
+        mainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false);
         binding.setMyVM(model);
-        noPostsLayout = binding.noPostsLayout;
         binding.setLifecycleOwner(this);
         model.setNavController(mainModel.getNavController());
+        setupViews();
         model.setContext(getContext());
-        progressBar = binding.progressBar;
-        profilePic = binding.profilePic;
-        progressBar.setVisibility(View.VISIBLE); // show loading animation when posts are being loaded
         setupRecyclerView();
         fetchData();
         return binding.getRoot();
+    }
+
+
+    private void setupViews() {
+        noPostsLayout = binding.noPostsLayout;
+        progressBar = binding.progressBar;
+        profilePic = binding.profilePic;
+        progressBar.setVisibility(View.VISIBLE); // show loading animation when posts are being loaded
     }
 
     /**
@@ -113,9 +123,10 @@ public class ProfileFragment extends Fragment implements PostItemAdapter.OnPostD
                 }
             }
         });
-        // Set the profile picture
-        SharedPreferences prefs =
-                getContext().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
+        setProfilePic();
+    }
+
+    private void setProfilePic() {
         String imgUrl = prefs.getString(Constant.PROFILE_PIC_URL, null);
         if(imgUrl != null){
             if(!imgUrl.equals("")){
