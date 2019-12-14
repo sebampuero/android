@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,18 +37,18 @@ import java.util.List;
  */
 public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyViewHolder> {
 
-    private Context appContext;
-    private ArrayList<Comment> commentsList;
-    private int currentUserId;
-    private NavController navController;
+    private Context mContext;
+    private ArrayList<Comment> mCommentsList;
+    private int mCurrentUserId;
+    private NavController mNavController;
 
-    public CommentsAdapter(FragmentActivity activity, List<Comment> comments, NavController navController) {
-        this.appContext = activity;
-        this.commentsList = (ArrayList<Comment>) comments;
-        SharedPreferences preferences = appContext
+    public CommentsAdapter(FragmentActivity activity, List<Comment> comments, NavController mNavController) {
+        this.mContext = activity;
+        this.mCommentsList = (ArrayList<Comment>) comments;
+        SharedPreferences preferences = mContext
                 .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
-        this.currentUserId = preferences.getInt(Constant.USER_ID, 0);
-        this.navController = navController;
+        this.mCurrentUserId = preferences.getInt(Constant.USER_ID, 0);
+        this.mNavController = mNavController;
     }
 
     @NonNull
@@ -62,7 +61,7 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Comment comment = commentsList.get(position);
+        Comment comment = mCommentsList.get(position);
         holder.name.setText(comment.getName());
         holder.lastname.setText(comment.getLastname());
         holder.content.setText(comment.getContent());
@@ -77,7 +76,7 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
 
     @Override
     public int getItemCount() {
-        return (commentsList != null) ? commentsList.size() : 0;
+        return (mCommentsList != null) ? mCommentsList.size() : 0;
     }
 
 
@@ -113,19 +112,19 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
         }
 
         private void buildOpenProfileAlertDialog() {
-            Comment comment = commentsList.get(getAdapterPosition());
-            if(comment.getUserID() != currentUserId){
-                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(appContext);
+            Comment comment = mCommentsList.get(getAdapterPosition());
+            if(comment.getUserID() != mCurrentUserId){
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(mContext);
                 alertBuilder.setCancelable(true);
-                alertBuilder.setTitle(appContext.getString(R.string.open_profile_alert_title));
-                alertBuilder.setMessage(appContext.getString(R.string.open_profile_alert_text) + " " + comment.getName() +" ?");
+                alertBuilder.setTitle(mContext.getString(R.string.open_profile_alert_title));
+                alertBuilder.setMessage(mContext.getString(R.string.open_profile_alert_text) + " " + comment.getName() +" ?");
                 alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int which) {
-                        int commentUserId = commentsList.get(getAdapterPosition()).getUserID();
+                        int commentUserId = mCommentsList.get(getAdapterPosition()).getUserID();
                         Bundle b = new Bundle();
                         b.putString(OtherProfileFragment.OTHER_USER_ID, String.valueOf(commentUserId));
-                        navController
+                        mNavController
                                 .navigate(R.id.action_commentSectionFragment_to_otherProfileFragment, b);
                     }
                 });
@@ -140,18 +139,18 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
          */
         private void buildDeletionAlertDialog() {
             final int position = getAdapterPosition();
-            final Comment commentToDelete = commentsList.get(position);
-            if(currentUserId == commentToDelete.getUserID()){
-                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(appContext);
+            final Comment commentToDelete = mCommentsList.get(position);
+            if(mCurrentUserId == commentToDelete.getUserID()){
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(mContext);
                 alertBuilder.setCancelable(true);
-                alertBuilder.setTitle(appContext.getString(R.string.delete_comment_title));
-                alertBuilder.setMessage(appContext.getString(R.string.delete_comment_conf_message));
+                alertBuilder.setTitle(mContext.getString(R.string.delete_comment_title));
+                alertBuilder.setMessage(mContext.getString(R.string.delete_comment_conf_message));
                 alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int which) {
                         PostItemRepository repository = new PostItemRepository();
                         repository.deleteComment(commentToDelete.getId());
-                        commentsList.remove(position);
+                        mCommentsList.remove(position);
                         notifyItemRemoved(position);
                     }
                 });

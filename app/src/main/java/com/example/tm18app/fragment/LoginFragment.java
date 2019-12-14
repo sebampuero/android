@@ -35,11 +35,11 @@ import br.com.simplepass.loading_button_lib.customViews.CircularProgressButton;
  */
 public class LoginFragment extends Fragment {
 
-    private LoginViewModel model;
-    private MyViewModel mainModel;
-    private CircularProgressButton loginBtn;
-    private EditText email;
-    private EditText password;
+    private LoginViewModel mModel;
+    private MyViewModel mMainModel;
+    private CircularProgressButton mLoginBtn;
+    private EditText mEmailEditText;
+    private EditText mPasswordEditText;
 
     public LoginFragment() {
     }
@@ -47,27 +47,28 @@ public class LoginFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        model = ViewModelProviders.of(getActivity()).get(LoginViewModel.class);
-        model.setContext(getContext());
-        mainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
-        FragmentLoginBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_login, container, false);
-        binding.setMyVM(model);
+        mModel = ViewModelProviders.of(getActivity()).get(LoginViewModel.class);
+        mModel.setContext(getContext());
+        mMainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
+        FragmentLoginBinding binding = DataBindingUtil.inflate(inflater,
+                R.layout.fragment_login, container, false);
+        binding.setMyVM(mModel);
         binding.setLifecycleOwner(this);
-        loginBtn = binding.loginBtn;
-        email = binding.emailAddressInput;
-        password = binding.passwordInput;
+        mLoginBtn = binding.loginBtn;
+        mEmailEditText = binding.emailAddressInput;
+        mPasswordEditText = binding.passwordInput;
         // Observe for response when the user logs in
-        model.getUserLiveData().observe(this, new Observer<HashMap<Integer, User>>() {
+        mModel.getUserLiveData().observe(this, new Observer<HashMap<Integer, User>>() {
             @Override
             public void onChanged(HashMap<Integer, User> integerUserHashMap) {
                 evaluateLogin(integerUserHashMap);
             }
         });
         // Observer to trigger the loading login button animation
-        model.triggerLoadingBtn.observe(this, new Observer<Boolean>() {
+        mModel.triggerLoadingBtn.observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                loginBtn.startAnimation();
+                mLoginBtn.startAnimation();
             }
         });
         return binding.getRoot();
@@ -83,13 +84,13 @@ public class LoginFragment extends Fragment {
             Toast.makeText(this.getContext(),
                     this.getContext().getString(R.string.invalid_credentials),
                     Toast.LENGTH_SHORT).show();
-            loginBtn.revertAnimation();
+            mLoginBtn.revertAnimation();
         }
         else if(integerUserHashMap.containsKey(HttpURLConnection.HTTP_INTERNAL_ERROR)){ // error from server
             Toast.makeText(this.getContext(),
                     this.getContext().getString(R.string.server_error),
                     Toast.LENGTH_SHORT).show();
-            loginBtn.revertAnimation();
+            mLoginBtn.revertAnimation();
         }
         else if(integerUserHashMap.containsKey(HttpURLConnection.HTTP_OK)){
             User user = integerUserHashMap.get(HttpURLConnection.HTTP_OK);
@@ -129,9 +130,9 @@ public class LoginFragment extends Fragment {
             editor.putString(Constant.GOAL_TAGS, sb1.toString());
         }
         editor.apply();
-        mainModel.getNavController().navigate(R.id.action_loginFragment_to_feedFragment);
-        model.getUserLiveData().getValue().clear();
-        loginBtn.revertAnimation();
+        mMainModel.getNavController().navigate(R.id.action_loginFragment_to_feedFragment);
+        mModel.getUserLiveData().getValue().clear();
+        mLoginBtn.revertAnimation();
         cleanInputs();
     }
 
@@ -139,8 +140,8 @@ public class LoginFragment extends Fragment {
      * Empties input fields
      */
     private void cleanInputs() {
-        email.setText("");
-        password.setText("");
+        mEmailEditText.setText("");
+        mPasswordEditText.setText("");
     }
 
 

@@ -49,14 +49,14 @@ import static android.app.Activity.RESULT_OK;
  */
 public class NewPostFragment extends BaseFragmentPictureSelecter{
 
-    private MyViewModel mainModel;
-    private NewPostViewModel model;
-    private FragmentNewPostBinding binding;
-    private EditText postTitle;
-    private EditText postContent;
-    private ImageView contentImage;
-    private Uri imageUri;
-    private CircularProgressButton postBtn;
+    private MyViewModel mMainModel;
+    private NewPostViewModel mModel;
+    private FragmentNewPostBinding mBinding;
+    private EditText mPostTitleEditText;
+    private EditText mPostContentEditText;
+    private ImageView mContentIW;
+    private Uri mContentImageURI;
+    private CircularProgressButton mPostBtn;
 
     public NewPostFragment() {
         // Required empty public constructor
@@ -66,54 +66,54 @@ public class NewPostFragment extends BaseFragmentPictureSelecter{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
-        model = ViewModelProviders.of(getActivity()).get(NewPostViewModel.class);
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_new_post, container, false);
-        binding.setMyVM(model);
-        binding.setLifecycleOwner(this);
-        model.setContext(getContext());
-        postContent = binding.inputTextEdit;
-        postTitle = binding.postTitle;
-        contentImage = binding.contentImage;
-        postBtn = binding.newPostBtn;
+        mMainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
+        mModel = ViewModelProviders.of(getActivity()).get(NewPostViewModel.class);
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_new_post, container, false);
+        mBinding.setMyVM(mModel);
+        mBinding.setLifecycleOwner(this);
+        mModel.setContext(getContext());
+        mPostContentEditText = mBinding.inputTextEdit;
+        mPostTitleEditText = mBinding.postTitle;
+        mContentIW = mBinding.contentImage;
+        mPostBtn = mBinding.newPostBtn;
         setSpinner();
         // set observer for new post response feedback
-        model.getPostLiveDataResponse().observe(this, new Observer<Integer>() {
+        mModel.getPostLiveDataResponse().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer statusCode) {
                 evaluatePostResponse(statusCode);
             }
         });
         // Observe for when the open gallery button is clicked
-        model.selectContentImage.observe(this, new Observer<Boolean>() {
+        mModel.selectContentImage.observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 openGallery();
             }
         });
         // Trigger loading button for new post
-        model.triggerLoadingBtn.observe(this, new Observer<Boolean>() {
+        mModel.triggerLoadingBtn.observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                postBtn.startAnimation();
+                mPostBtn.startAnimation();
             }
         });
-        return binding.getRoot();
+        return mBinding.getRoot();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == PICK_IMAGE){
-            imageUri = data.getData();
-            applyImageUriToImageView(imageUri, contentImage, 0, 500);
+            mContentImageURI = data.getData();
+            applyImageUriToImageView(mContentImageURI, mContentIW, 0, 500);
             try {
-                InputStream iStream = getActivity().getContentResolver().openInputStream(imageUri);
+                InputStream iStream = getActivity().getContentResolver().openInputStream(mContentImageURI);
                 byte[] profilePicByteArray = ConverterUtils.getBytes(iStream);
-                model.setContentImageBase64Data(Base64.encodeToString(profilePicByteArray, Base64.DEFAULT));
+                mModel.setContentImageBase64Data(Base64.encodeToString(profilePicByteArray, Base64.DEFAULT));
             }catch (Exception e){
                 e.printStackTrace();
-                contentImage.setVisibility(View.GONE);
+                mContentIW.setVisibility(View.GONE);
             }
         }
     }
@@ -125,10 +125,10 @@ public class NewPostFragment extends BaseFragmentPictureSelecter{
     private void evaluatePostResponse(Integer statusCode) {
         if(statusCode == 200){
             Toast.makeText(this.getContext(), this.getContext().getString(R.string.post_successfully_created), Toast.LENGTH_SHORT).show();
-            mainModel.getNavController().navigateUp();
-            model.getPostLiveDataResponse().setValue(0);
+            mMainModel.getNavController().navigateUp();
+            mModel.getPostLiveDataResponse().setValue(0);
             cleanInputs();
-            postBtn.revertAnimation();
+            mPostBtn.revertAnimation();
         }
         else if(statusCode == 500) {
             Toast.makeText(this.getContext(), this.getContext().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
@@ -139,15 +139,15 @@ public class NewPostFragment extends BaseFragmentPictureSelecter{
      * Empties the input fields for the Post
      */
     private void cleanInputs() {
-        postTitle.setText("");
-        postContent.setText("");
+        mPostTitleEditText.setText("");
+        mPostContentEditText.setText("");
     }
 
     /**
      * Sets up the {@link Spinner} that contains the goal tags.
      */
     private void setSpinner() {
-        Spinner goalTagsSpinner = binding.goalTagsSpinner;
+        Spinner goalTagsSpinner = mBinding.goalTagsSpinner;
         SharedPreferences preferences = getActivity().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
         if(preferences.getString(Constant.GOAL_TAGS, null) != null){
             final ArrayList<String> goalTags = new ArrayList<>(Arrays.asList(preferences.getString(Constant.GOAL_TAGS, null).split(",")));
@@ -157,12 +157,12 @@ public class NewPostFragment extends BaseFragmentPictureSelecter{
             goalTagsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    model.setSelectedGoalForPost(goalTags.get(i));
+                    mModel.setSelectedGoalForPost(goalTags.get(i));
                 }
 
                 @Override
                 public void onNothingSelected(AdapterView<?> adapterView) {
-                    model.setSelectedGoalForPost(goalTags.get(0));
+                    mModel.setSelectedGoalForPost(goalTags.get(0));
                 }
             });
         }

@@ -23,14 +23,14 @@ import java.util.ArrayList;
  */
 public class MultiGoalSelectAdapter extends RecyclerView.Adapter<MultiGoalSelectAdapter.ViewHolder> {
 
-    private ArrayList<GoalItemSelection> goals;
+    private ArrayList<GoalItemSelection> mGoals;
 
     public MultiGoalSelectAdapter() {
     }
 
     public void setGoals(ArrayList<GoalItemSelection> goals) {
-        this.goals = new ArrayList<>();
-        this.goals = goals;
+        this.mGoals = new ArrayList<>();
+        this.mGoals = goals;
         notifyDataSetChanged();
     }
 
@@ -43,12 +43,12 @@ public class MultiGoalSelectAdapter extends RecyclerView.Adapter<MultiGoalSelect
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.bind(goals.get(position));
+        holder.bind(mGoals.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return (goals != null) ? goals.size() : 0;
+        return (mGoals != null) ? mGoals.size() : 0;
     }
 
     /**
@@ -57,10 +57,10 @@ public class MultiGoalSelectAdapter extends RecyclerView.Adapter<MultiGoalSelect
      */
     public ArrayList<GoalItemSelection> getSelected() {
         ArrayList<GoalItemSelection> selected = new ArrayList<>();
-        if(goals != null){
-            for(int i = 0; i < goals.size(); i++){
-                if(goals.get(i).isChecked()){
-                    selected.add(goals.get(i));
+        if(mGoals != null){
+            for(int i = 0; i < mGoals.size(); i++){
+                if(mGoals.get(i).isChecked()){
+                    selected.add(mGoals.get(i));
                 }
             }
         }

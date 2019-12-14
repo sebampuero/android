@@ -25,10 +25,10 @@ import me.pushy.sdk.model.PushyDeviceCredentials;
  */
 public class UserPushyTokenAsyncTask extends AsyncTask<String, Void, String> {
 
-    private WeakReference<Context> appContext;
+    private WeakReference<Context> mContext;
 
     public UserPushyTokenAsyncTask(Context applicationContext) {
-        this.appContext = new WeakReference<>(applicationContext);
+        this.mContext = new WeakReference<>(applicationContext);
     }
 
     protected String doInBackground(String... params) {
@@ -51,9 +51,7 @@ public class UserPushyTokenAsyncTask extends AsyncTask<String, Void, String> {
                 String token = jsonObject.getString("pushy_token");
                 String authKey = jsonObject.getString("pushy_auth_key");
                 PushyDeviceCredentials credentials = new PushyDeviceCredentials(token, authKey);
-                Pushy.setDeviceCredentials(credentials, appContext.get());
-                Log.d("Pushy", "Token" + token);
-                Log.d("Pushy", "Authkey" + authKey);
+                Pushy.setDeviceCredentials(credentials, mContext.get());
                 return "OK";
             } else {
                 return null;

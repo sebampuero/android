@@ -47,16 +47,16 @@ import me.pushy.sdk.Pushy;
  */
 public class FeedFragment extends Fragment implements PostItemAdapter.OnPostDeleteListener{
 
-    private MyViewModel mainModel;
-    private FeedViewModel model;
-    private FragmentFeedBinding binding;
-    private SwipeRefreshLayout swipeRefreshLayout;
-    private RecyclerView recyclerView;
-    private PostItemAdapter adapter;
-    private List<Post> postsModelLists = new ArrayList<>();
-    private ProgressBar progressBar;
-    private boolean goalsExist = true;
-    private LinearLayout feedLinearLayoutNoPosts;
+    private MyViewModel mMainModel;
+    private FeedViewModel mModel;
+    private FragmentFeedBinding mBinding;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private RecyclerView mRecyclerView;
+    private PostItemAdapter mAdapter;
+    private List<Post> mPostsList = new ArrayList<>();
+    private ProgressBar mProgressBar;
+    private boolean doGoalsExist = true;
+    private LinearLayout mNoPostsView;
 
     public FeedFragment() {
         // Required empty public constructor
@@ -66,27 +66,27 @@ public class FeedFragment extends Fragment implements PostItemAdapter.OnPostDele
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         checkBackBtnPressedFromMainFragment();
-        mainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
-        model = ViewModelProviders.of(getActivity()).get(FeedViewModel.class);
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_feed, container, false);
-        binding.setMyVM(model);
-        binding.setLifecycleOwner(this);
-        progressBar = binding.progressBarFeed;
-        feedLinearLayoutNoPosts = binding.feedLinearLayout;
-        progressBar.setVisibility(View.VISIBLE); // to show that posts are loading
-        model.setNavController(mainModel.getNavController());
+        mMainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
+        mModel = ViewModelProviders.of(getActivity()).get(FeedViewModel.class);
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_feed, container, false);
+        mBinding.setMyVM(mModel);
+        mBinding.setLifecycleOwner(this);
+        mProgressBar = mBinding.progressBarFeed;
+        mNoPostsView = mBinding.feedLinearLayout;
+        mProgressBar.setVisibility(View.VISIBLE); // to show that posts are loading
+        mModel.setNavController(mMainModel.getNavController());
         setupSwipeRefreshLayout(); // swipe refresh for the possibility to reload posts
         setupRecyclerView();
-        model.setContext(getContext());
+        mModel.setContext(getContext());
         checkIfGoalsExist();
         requestPushyCreds();
-        if(goalsExist){ // if user has selected goals, fetch posts
-            model.callRepository();
+        if(doGoalsExist){ // if user has selected goals, fetch posts
+            mModel.callRepository();
             fetchData();
         }else{
-            progressBar.setVisibility(View.GONE);
+            mProgressBar.setVisibility(View.GONE);
         }
-        return binding.getRoot();
+        return mBinding.getRoot();
     }
 
     /**
@@ -124,11 +124,11 @@ public class FeedFragment extends Fragment implements PostItemAdapter.OnPostDele
     private void checkIfGoalsExist() {
         SharedPreferences preferences = getActivity().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
         if(preferences.getString(Constant.GOAL_TAGS, null) == null){
-            Snackbar.make(binding.getRoot(), getActivity().getString(R.string.no_goals_msg), Snackbar.LENGTH_LONG).show();
-            feedLinearLayoutNoPosts.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.GONE);
-            postsModelLists.clear();
-            goalsExist = false;
+            Snackbar.make(mBinding.getRoot(), getActivity().getString(R.string.no_goals_msg), Snackbar.LENGTH_LONG).show();
+            mNoPostsView.setVisibility(View.VISIBLE);
+            mRecyclerView.setVisibility(View.GONE);
+            mPostsList.clear();
+            doGoalsExist = false;
         }
     }
 
@@ -136,14 +136,14 @@ public class FeedFragment extends Fragment implements PostItemAdapter.OnPostDele
      * Sets up the {@link SwipeRefreshLayout} for the Feed UI.
      */
     private void setupSwipeRefreshLayout() {
-        swipeRefreshLayout = binding.swipeRefreshLayout;
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        mSwipeRefreshLayout = mBinding.swipeRefreshLayout;
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if(model.getPostLiveData() != null && goalsExist){
-                    model.callRepository();
+                if(mModel.getPostLiveData() != null && doGoalsExist){
+                    mModel.callRepository();
                 }else{
-                    swipeRefreshLayout.setRefreshing(false);
+                    mSwipeRefreshLayout.setRefreshing(false);
                 }
             }
         });
@@ -154,30 +154,30 @@ public class FeedFragment extends Fragment implements PostItemAdapter.OnPostDele
      * a {@link List} of Posts
      */
     private void fetchData() {
-        if(model.getPostLiveData() != null){
-            model.getPostLiveData().observe(this, new Observer<List<Post>>() {
+        if(mModel.getPostLiveData() != null){
+            mModel.getPostLiveData().observe(this, new Observer<List<Post>>() {
                 @Override
                 public void onChanged(List<Post> posts) {
                     if(posts.size() > 0){
-                        if(goalsExist){
-                            postsModelLists.clear();
-                            postsModelLists.addAll(posts);
-                            Collections.sort(postsModelLists);
-                            adapter.notifyDataSetChanged();
-                            feedLinearLayoutNoPosts.setVisibility(View.GONE);
-                            recyclerView.setVisibility(View.VISIBLE);
+                        if(doGoalsExist){
+                            mPostsList.clear();
+                            mPostsList.addAll(posts);
+                            Collections.sort(mPostsList);
+                            mAdapter.notifyDataSetChanged();
+                            mNoPostsView.setVisibility(View.GONE);
+                            mRecyclerView.setVisibility(View.VISIBLE);
                         }
                     }else{
-                        feedLinearLayoutNoPosts.setVisibility(View.VISIBLE);
-                        recyclerView.setVisibility(View.GONE);
+                        mNoPostsView.setVisibility(View.VISIBLE);
+                        mRecyclerView.setVisibility(View.GONE);
                     }
-                    progressBar.setVisibility(View.GONE);
-                    swipeRefreshLayout.setRefreshing(false);
+                    mProgressBar.setVisibility(View.GONE);
+                    mSwipeRefreshLayout.setRefreshing(false);
                 }
             });
         }else{
-            progressBar.setVisibility(View.GONE);
-            swipeRefreshLayout.setRefreshing(false);
+            mProgressBar.setVisibility(View.GONE);
+            mSwipeRefreshLayout.setRefreshing(false);
         }
     }
 
@@ -185,12 +185,12 @@ public class FeedFragment extends Fragment implements PostItemAdapter.OnPostDele
      * Sets up the {@link RecyclerView} for the Feed UI.
      */
     private void setupRecyclerView() {
-        recyclerView = binding.rvFeed;
+        mRecyclerView = mBinding.rvFeed;
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(layoutManager);
-        adapter = new PostItemAdapter((ArrayList<Post>) postsModelLists,
-                mainModel.getNavController(), this);
-        recyclerView.setAdapter(adapter);
+        mRecyclerView.setLayoutManager(layoutManager);
+        mAdapter = new PostItemAdapter((ArrayList<Post>) mPostsList,
+                mMainModel.getNavController(), this);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -213,6 +213,6 @@ public class FeedFragment extends Fragment implements PostItemAdapter.OnPostDele
         }else if(statusCode == HttpURLConnection.HTTP_OK){
             Toast.makeText(getContext(), getContext().getString(R.string.post_deleted_msg), Toast.LENGTH_SHORT).show();
         }
-        model.callRepository(); // mimic a reload for data
+        mModel.callRepository(); // mimic a reload for data
     }
 }

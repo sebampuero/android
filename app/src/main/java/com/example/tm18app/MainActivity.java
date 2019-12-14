@@ -1,20 +1,10 @@
 package com.example.tm18app;
 
 import android.Manifest;
-import android.app.Activity;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.ImageButton;
-import android.widget.TextView;
-import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
@@ -27,21 +17,14 @@ import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDeepLinkBuilder;
 import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.ActivityMainBinding;
-import com.example.tm18app.fragment.FeedFragment;
-import com.example.tm18app.fragment.ProfileFragment;
-import com.example.tm18app.repository.PostItemRepository;
 import com.example.tm18app.viewModels.MyViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import java.net.URL;
 
 import me.pushy.sdk.Pushy;
 
@@ -54,8 +37,8 @@ import me.pushy.sdk.Pushy;
  */
 public class MainActivity extends AppCompatActivity {
 
-    private Toolbar toolbar;
-    private BottomNavigationView bottomNavigationView;
+    private Toolbar mToolbar;
+    private BottomNavigationView mBottonNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,28 +81,28 @@ public class MainActivity extends AppCompatActivity {
         model.setContext(this.getApplication());
         model.checkLoginStatus();
 
-        toolbar = findViewById(R.id.toolbar);
-        bottomNavigationView = findViewById(R.id.bottomNavView);
+        mToolbar = findViewById(R.id.toolbar);
+        mBottonNavigationView = findViewById(R.id.bottomNavView);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-        NavigationUI.setupWithNavController(bottomNavigationView, navController);
-        NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration);
+        NavigationUI.setupWithNavController(mBottonNavigationView, navController);
+        NavigationUI.setupWithNavController(mToolbar, navController, appBarConfiguration);
 
         navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
             @Override
             public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
                 if(destination.getId() == R.id.mainFragment || destination.getId() == R.id.loginFragment || destination.getId() == R.id.registrationFragment){
-                    // disable toolbar where Fragments don't need it
-                    toolbar.setVisibility(View.GONE);
-                    bottomNavigationView.setVisibility(View.GONE);
+                    // disable mToolbar where Fragments don't need it
+                    mToolbar.setVisibility(View.GONE);
+                    mBottonNavigationView.setVisibility(View.GONE);
                 }else{
-                    toolbar.setVisibility(View.VISIBLE);
-                    bottomNavigationView.setVisibility(View.VISIBLE);
+                    mToolbar.setVisibility(View.VISIBLE);
+                    mBottonNavigationView.setVisibility(View.VISIBLE);
                 }
             }
         });
     }
 
     public Toolbar getToolbar() {
-        return toolbar;
+        return mToolbar;
     }
 }

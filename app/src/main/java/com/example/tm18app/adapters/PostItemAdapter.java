@@ -44,10 +44,10 @@ import java.util.ArrayList;
  * @since 03.12.2019
  */
 public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyViewHolder> {
-    private ArrayList<Post> postsList;
-    private NavController navController;
-    private Fragment currentFragment;
-    private SharedPreferences prefs;
+    private ArrayList<Post> mPostsList;
+    private NavController mNavController;
+    private Fragment mCurrentFragment;
+    private SharedPreferences mPrefs;
 
     public interface OnPostDeleteListener {
 
@@ -60,11 +60,11 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
 
     }
 
-    public PostItemAdapter(ArrayList<Post> posts, NavController navController, Fragment fragment) {
-        this.postsList = posts;
-        this.navController = navController;
-        this.currentFragment = fragment;
-        prefs = currentFragment.getContext().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
+    public PostItemAdapter(ArrayList<Post> posts, NavController mNavController, Fragment fragment) {
+        this.mPostsList = posts;
+        this.mNavController = mNavController;
+        this.mCurrentFragment = fragment;
+        mPrefs = mCurrentFragment.getContext().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
     }
 
     @NonNull
@@ -77,7 +77,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        final Post post = postsList.get(position);
+        final Post post = mPostsList.get(position);
         holder.nameLastname.setText(String.format("%s %s", post.getName(), post.getLastname()));
         holder.postTitle.setText(post.getTitle());
         holder.postContent.setText(post.getContent());
@@ -89,7 +89,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
                 bundle.putString(CommentSectionFragment.POST_ID, String.valueOf(post.getId()));
-                navController.navigate(R.id.commentSectionFragment, bundle);
+                mNavController.navigate(R.id.commentSectionFragment, bundle);
             }
         });
         holder.posterPicUrl.setOnClickListener(new View.OnClickListener() {
@@ -97,10 +97,10 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
             public void onClick(View view) {
                 Bundle b = new Bundle();
                 b.putString(OtherProfileFragment.OTHER_USER_ID, String.valueOf(post.getUserID()));
-                if(post.getUserID() != prefs.getInt(Constant.USER_ID, 0))
-                    navController.navigate(R.id.action_feedFragment_to_otherProfileFragment, b);
+                if(post.getUserID() != mPrefs.getInt(Constant.USER_ID, 0))
+                    mNavController.navigate(R.id.action_feedFragment_to_otherProfileFragment, b);
                 else
-                    navController.navigate(R.id.profileFragment);
+                    mNavController.navigate(R.id.profileFragment);
             }
         });
         if(post.getPosterPicUrl() != null){
@@ -110,7 +110,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
         }else{
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 holder.posterPicUrl
-                        .setImageDrawable(currentFragment.getContext()
+                        .setImageDrawable(mCurrentFragment.getContext()
                                 .getDrawable(R.drawable.ic_person_black_24dp));
             }
         }
@@ -126,7 +126,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
 
     @Override
     public int getItemCount() {
-        return (postsList != null) ? postsList.size() : 0;
+        return (mPostsList != null) ? mPostsList.size() : 0;
     }
 
 
@@ -166,24 +166,24 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
             binding.getRoot().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(postsList.get(getAdapterPosition()).getContentPicUrl() != null)
+                    if(mPostsList.get(getAdapterPosition()).getContentPicUrl() != null)
                         buildDialogToOpenWV();
                 }
             });
         }
 
         private void buildDialogToOpenWV() {
-            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(currentFragment.getContext());
+            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(mCurrentFragment.getContext());
             alertBuilder.setCancelable(true);
-            alertBuilder.setTitle(currentFragment.getContext().getString(R.string.open_img_alert_title));
-            alertBuilder.setMessage(currentFragment.getContext().getString(R.string.open_img_alert_text));
+            alertBuilder.setTitle(mCurrentFragment.getContext().getString(R.string.open_img_alert_title));
+            alertBuilder.setMessage(mCurrentFragment.getContext().getString(R.string.open_img_alert_text));
             alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int which) {
                     Bundle bundle = new Bundle();
                     bundle.putString(WebviewFragment.IMG_URL,
-                            postsList.get(getAdapterPosition()).getContentPicUrl());
-                    navController.navigate(R.id.webviewFragment, bundle);
+                            mPostsList.get(getAdapterPosition()).getContentPicUrl());
+                    mNavController.navigate(R.id.webviewFragment, bundle);
                 }
             });
             AlertDialog alert = alertBuilder.create();
@@ -195,28 +195,28 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
          * the post gets deleted.
          */
         private void buildDeletionAlertDialog() {
-            int userID = prefs.getInt(Constant.USER_ID, 0);
+            int userID = mPrefs.getInt(Constant.USER_ID, 0);
             final int position = getAdapterPosition();
-            final Post postToDelete = postsList.get(position);
+            final Post postToDelete = mPostsList.get(position);
             if(userID == postToDelete.getUserID()){
                 final MutableLiveData<Integer> statusCode = new MutableLiveData<>();
-                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(currentFragment.getContext());
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(mCurrentFragment.getContext());
                 alertBuilder.setCancelable(true);
-                alertBuilder.setTitle(currentFragment.getContext().getString(R.string.delete_post_dialog_title));
-                alertBuilder.setMessage(currentFragment.getContext().getString(R.string.delete_post_conf_message));
+                alertBuilder.setTitle(mCurrentFragment.getContext().getString(R.string.delete_post_dialog_title));
+                alertBuilder.setMessage(mCurrentFragment.getContext().getString(R.string.delete_post_conf_message));
                 alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int which) {
                         PostItemRepository repository = new PostItemRepository();
                         repository.deletePost(postToDelete.getId(), statusCode);
-                        if(currentFragment instanceof FeedFragment){
-                            FeedFragment feed = (FeedFragment) currentFragment;
+                        if(mCurrentFragment instanceof FeedFragment){
+                            FeedFragment feed = (FeedFragment) mCurrentFragment;
                             feed.onPostDeleted(statusCode);
-                        }else if(currentFragment instanceof ProfileFragment){
-                            ProfileFragment profile = (ProfileFragment) currentFragment;
+                        }else if(mCurrentFragment instanceof ProfileFragment){
+                            ProfileFragment profile = (ProfileFragment) mCurrentFragment;
                             profile.onPostDeleted(statusCode);
                         }
-                        postsList.remove(position);
+                        mPostsList.remove(position);
                         notifyItemRemoved(position);
                     }
                 });

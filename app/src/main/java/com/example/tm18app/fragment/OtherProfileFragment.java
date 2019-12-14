@@ -1,10 +1,8 @@
 package com.example.tm18app.fragment;
 
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -23,13 +21,11 @@ import android.widget.TextView;
 import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
 import com.example.tm18app.adapters.PostItemAdapter;
-import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.FragmentOtherProfileBinding;
 import com.example.tm18app.pojos.Post;
 import com.example.tm18app.pojos.User;
 import com.example.tm18app.viewModels.MyViewModel;
 import com.example.tm18app.viewModels.OtherUserProfileViewModel;
-import com.example.tm18app.viewModels.ProfileViewModel;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -44,18 +40,18 @@ public class OtherProfileFragment extends Fragment {
 
     public static final String OTHER_USER_ID = "otherUserID";
 
-    private MyViewModel mainModel;
-    private OtherUserProfileViewModel model;
-    private FragmentOtherProfileBinding binding;
-    private RecyclerView recyclerView;
-    private PostItemAdapter adapter;
-    private List<Post> postsModelLists = new ArrayList<>();
-    private ProgressBar progressBar;
-    private LinearLayout noPostsLayout;
-    private ImageView profilePic;
-    private TextView namesTv;
-    private TextView emailTv;
-    private TextView goalsTv;
+    private MyViewModel mMainModel;
+    private OtherUserProfileViewModel mModel;
+    private FragmentOtherProfileBinding mBinding;
+    private RecyclerView mRecyclerView;
+    private PostItemAdapter mAdapter;
+    private List<Post> mPostsList = new ArrayList<>();
+    private ProgressBar mProgressBar;
+    private LinearLayout mNoPostsView;
+    private ImageView mProfilePicIW;
+    private TextView mNamesTV;
+    private TextView mEmailTV;
+    private TextView mGoalsTV;
 
     public OtherProfileFragment() {
         // Required empty public constructor
@@ -65,64 +61,64 @@ public class OtherProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        model = ViewModelProviders.of(getActivity()).get(OtherUserProfileViewModel.class);
-        mainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_other_profile, container, false);
-        binding.setMyVM(model);
-        binding.setLifecycleOwner(this);
+        mModel = ViewModelProviders.of(getActivity()).get(OtherUserProfileViewModel.class);
+        mMainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_other_profile, container, false);
+        mBinding.setMyVM(mModel);
+        mBinding.setLifecycleOwner(this);
         setupViews();
-        model.setNavController(mainModel.getNavController());
-        model.callRepositoryForUser(getArguments().getString(OTHER_USER_ID));
-        model.getUserLiveData().observe(this, new Observer<User>() {
+        mModel.setNavController(mMainModel.getNavController());
+        mModel.callRepositoryForUser(getArguments().getString(OTHER_USER_ID));
+        mModel.getUserLiveData().observe(this, new Observer<User>() {
             @Override
             public void onChanged(User user) {
                 ((MainActivity)getActivity()).getToolbar().setTitle(user.getName());
                 fillUserData(user);
-                model.setOtherUser(user);
-                model.callRepositoryForPosts();
+                mModel.setOtherUser(user);
+                mModel.callRepositoryForPosts();
                 fetchData();
             }
         });
         setupRecyclerView();
-        return binding.getRoot();
+        return mBinding.getRoot();
     }
 
     private void fetchData() {
-        model.getPostLiveData().observe(this, new Observer<List<Post>>() {
+        mModel.getPostLiveData().observe(this, new Observer<List<Post>>() {
             @Override
             public void onChanged(List<Post> posts) {
                 if(posts != null){
                     if(posts.size() > 0){
-                        postsModelLists.clear();
-                        postsModelLists.addAll(posts);
-                        Collections.sort(postsModelLists);
-                        adapter.notifyDataSetChanged();
-                        recyclerView.setVisibility(View.VISIBLE);
+                        mPostsList.clear();
+                        mPostsList.addAll(posts);
+                        Collections.sort(mPostsList);
+                        mAdapter.notifyDataSetChanged();
+                        mRecyclerView.setVisibility(View.VISIBLE);
                     }else{
-                        noPostsLayout.setVisibility(View.VISIBLE);
-                        recyclerView.setVisibility(View.GONE);
+                        mNoPostsView.setVisibility(View.VISIBLE);
+                        mRecyclerView.setVisibility(View.GONE);
                     }
-                    progressBar.setVisibility(View.GONE);
+                    mProgressBar.setVisibility(View.GONE);
                 }
             }
         });
     }
 
     private void setupViews() {
-        noPostsLayout = binding.noPostsLayout;
-        progressBar = binding.progressBar;
-        profilePic = binding.profilePic;
-        progressBar.setVisibility(View.VISIBLE); // show loading animation when posts are being loaded
-        namesTv = binding.namesTv;
-        emailTv = binding.emailTv;
-        goalsTv = binding.goalsInfoTv;
+        mNoPostsView = mBinding.noPostsLayout;
+        mProgressBar = mBinding.progressBar;
+        mProfilePicIW = mBinding.profilePic;
+        mProgressBar.setVisibility(View.VISIBLE); // show loading animation when posts are being loaded
+        mNamesTV = mBinding.namesTv;
+        mEmailTV = mBinding.emailTv;
+        mGoalsTV = mBinding.goalsInfoTv;
     }
 
     private void fillUserData(User user) {
         String names = user.getName() + " " + user.getLastname();
-        namesTv.setText(names);
-        emailTv.setText(user.getEmail());
-        goalsTv.setText(Arrays.toString(user.getGoalTags()));
+        mNamesTV.setText(names);
+        mEmailTV.setText(user.getEmail());
+        mGoalsTV.setText(Arrays.toString(user.getGoalTags()));
         setProfilePic(user);
     }
 
@@ -131,18 +127,18 @@ public class OtherProfileFragment extends Fragment {
         if(imgUrl != null){
             if(!imgUrl.equals("")){
                 Picasso.get().load(imgUrl)
-                        .resize(300, 300).centerCrop().into(profilePic);
+                        .resize(300, 300).centerCrop().into(mProfilePicIW);
             }
         }
     }
 
     private void setupRecyclerView() {
-        recyclerView = binding.goalsUserRv;
+        mRecyclerView = mBinding.goalsUserRv;
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(layoutManager);
-        adapter = new PostItemAdapter((ArrayList<Post>) postsModelLists,
-                mainModel.getNavController(), this);
-        recyclerView.setAdapter(adapter);
+        mRecyclerView.setLayoutManager(layoutManager);
+        mAdapter = new PostItemAdapter((ArrayList<Post>) mPostsList,
+                mMainModel.getNavController(), this);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
 }

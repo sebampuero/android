@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,8 +24,8 @@ import com.example.tm18app.R;
  */
 public class NewGoalsDialogFragment extends DialogFragment {
 
-    private EditText goalsText;
-    private Button sendReqBtn;
+    private EditText mGoalsEditText;
+    private Button mSendRequestBtn;
 
     public NewGoalsDialogFragment() {
 
@@ -46,12 +45,12 @@ public class NewGoalsDialogFragment extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        goalsText = view.findViewById(R.id.goalsEditText);
-        sendReqBtn = view.findViewById(R.id.sendGoalsReqBtn);
-        goalsText.requestFocus();
+        mGoalsEditText = view.findViewById(R.id.goalsEditText);
+        mSendRequestBtn = view.findViewById(R.id.sendGoalsReqBtn);
+        mGoalsEditText.requestFocus();
         getDialog().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-        sendReqBtn.setOnClickListener(new View.OnClickListener() {
+        mSendRequestBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(validInputs()){ // TODO: add real functionality
@@ -69,7 +68,7 @@ public class NewGoalsDialogFragment extends DialogFragment {
      * @return true if input valid, false otherwise
      */
     private boolean validInputs() {
-        if(goalsText.getText().toString().trim().contains(" ")){
+        if(mGoalsEditText.getText().toString().trim().contains(" ")){
             Toast.makeText(getActivity(),
                     getActivity().getString(R.string.goal_tip_msg),
                     Toast.LENGTH_LONG).show();

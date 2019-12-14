@@ -54,12 +54,12 @@ import static android.app.Activity.RESULT_OK;
  */
 public class EditProfileFragment extends BaseFragmentPictureSelecter{
 
-    private FragmentEditProfileBinding binding;
-    private MultiGoalSelectAdapter adapter;
-    private MyViewModel mainModel;
-    private EditViewModel model;
-    private Uri imageUri;
-    private ImageView profilePic;
+    private FragmentEditProfileBinding mBinding;
+    private MultiGoalSelectAdapter mAdapter;
+    private MyViewModel mMainModel;
+    private EditViewModel mModel;
+    private Uri mProfilePicURI;
+    private ImageView mProfilePicIW;
 
     public EditProfileFragment() {
         // Required empty public constructor
@@ -68,17 +68,17 @@ public class EditProfileFragment extends BaseFragmentPictureSelecter{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        model = ViewModelProviders.of(getActivity()).get(EditViewModel.class);
-        model.setContext(getContext());
-        mainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
-        model.setNavController(mainModel.getNavController());
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_edit_profile, container, false);
-        binding.setMyVM(model);
-        binding.setLifecycleOwner(this);
+        mModel = ViewModelProviders.of(getActivity()).get(EditViewModel.class);
+        mModel.setContext(getContext());
+        mMainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
+        mModel.setNavController(mMainModel.getNavController());
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_edit_profile, container, false);
+        mBinding.setMyVM(mModel);
+        mBinding.setLifecycleOwner(this);
         setupGoalsBoxRecyclerView();
-        profilePic = binding.profilePic;
+        mProfilePicIW = mBinding.profilePic;
         // Observe for clicks on the button that triggers the DialogFragment to request goal tags
-        model.navigateToDialog.observe(this, new Observer<Boolean>() {
+        mModel.navigateToDialog.observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 FragmentManager fm = getFragmentManager();
@@ -89,7 +89,7 @@ public class EditProfileFragment extends BaseFragmentPictureSelecter{
         });
 
         // Fetch goal tags with the observer
-        model.getGoalLiveData().observe(this, new Observer<List<Goal>>() {
+        mModel.getGoalLiveData().observe(this, new Observer<List<Goal>>() {
             @Override
             public void onChanged(List<Goal> goals) {
                 prepareDataForAdapter(goals);
@@ -97,22 +97,22 @@ public class EditProfileFragment extends BaseFragmentPictureSelecter{
         });
 
         // Observe for changes when the user edits his/her info
-        model.getUserLiveData().observe(this, new Observer<HashMap<Integer, User>>() {
+        mModel.getUserLiveData().observe(this, new Observer<HashMap<Integer, User>>() {
             @Override
             public void onChanged(HashMap<Integer, User> integerUserHashMap) {
                 evaluateEditUser(integerUserHashMap);
             }
         });
         // Observe for when the button to open gallery is clicked
-        model.selectProfilePic.observe(this, new Observer<Boolean>() {
+        mModel.selectProfilePic.observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 openGallery();
             }
         });
-        model.setAdapter(adapter);
+        mModel.setAdapter(mAdapter);
         fetchProfilePic();
-        return binding.getRoot();
+        return mBinding.getRoot();
     }
 
     /**
@@ -126,7 +126,7 @@ public class EditProfileFragment extends BaseFragmentPictureSelecter{
         if(imgUrl != null){
             if(!imgUrl.equals("")){
                 Picasso.get().load(prefs.getString(Constant.PROFILE_PIC_URL, null))
-                        .resize(300, 300).centerCrop().into(profilePic);
+                        .resize(300, 300).centerCrop().into(mProfilePicIW);
             }
         }
     }
@@ -135,15 +135,15 @@ public class EditProfileFragment extends BaseFragmentPictureSelecter{
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == PICK_IMAGE){
-            imageUri = data.getData();
-            applyImageUriToImageView(imageUri, profilePic, 300, 300);
+            mProfilePicURI = data.getData();
+            applyImageUriToImageView(mProfilePicURI, mProfilePicIW, 300, 300);
             try {
-                InputStream iStream = getActivity().getContentResolver().openInputStream(imageUri);
+                InputStream iStream = getActivity().getContentResolver().openInputStream(mProfilePicURI);
                 byte[] profilePicByteArray = ConverterUtils.getBytes(iStream);
-                model.setProfilePicBase64Data(Base64.encodeToString(profilePicByteArray, Base64.DEFAULT));
+                mModel.setProfilePicBase64Data(Base64.encodeToString(profilePicByteArray, Base64.DEFAULT));
             }catch (Exception e){
                 e.printStackTrace();
-                profilePic.setVisibility(View.GONE);
+                mProfilePicIW.setVisibility(View.GONE);
             }
         }
     }
@@ -187,8 +187,8 @@ public class EditProfileFragment extends BaseFragmentPictureSelecter{
             Toast.makeText(this.getContext(), this.getContext().getString(R.string.profile_edit_success_msg), Toast.LENGTH_SHORT).show();
             // reset HashMap otherwise the fragment keeps thinking there are changes every time it
             // is opened
-            model.getUserLiveData().getValue().clear();
-            mainModel.getNavController().navigateUp();
+            mModel.getUserLiveData().getValue().clear();
+            mMainModel.getNavController().navigateUp();
         }
     }
 
@@ -218,18 +218,18 @@ public class EditProfileFragment extends BaseFragmentPictureSelecter{
                 }
             }
         }
-        adapter.setGoals(goalItemSelections);
+        mAdapter.setGoals(goalItemSelections);
     }
 
     /**
      * Sets up the {@link RecyclerView} for the Goals
      */
     private void setupGoalsBoxRecyclerView() {
-        RecyclerView recyclerView = binding.goalsComboBoxEditProfile;
+        RecyclerView recyclerView = mBinding.goalsComboBoxEditProfile;
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
-        adapter = new MultiGoalSelectAdapter();
-        recyclerView.setAdapter(adapter);
+        mAdapter = new MultiGoalSelectAdapter();
+        recyclerView.setAdapter(mAdapter);
     }
 
 }

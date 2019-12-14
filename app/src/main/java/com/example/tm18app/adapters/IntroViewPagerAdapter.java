@@ -23,27 +23,27 @@ import java.util.List;
  */
 public class IntroViewPagerAdapter extends PagerAdapter {
 
-    private Context context;
-    private List<ScreenItem> screens;
+    private Context mContext;
+    private List<ScreenItem> mScreensList;
 
     public IntroViewPagerAdapter(Context mContext, List<ScreenItem> mListScreen) {
-        this.context = mContext;
-        this.screens = mListScreen;
+        this.mContext = mContext;
+        this.mScreensList = mListScreen;
     }
 
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View layoutScreen = inflater.inflate(R.layout.layout_screen,null);
 
         ImageView imgSlide = layoutScreen.findViewById(R.id.intro_img);
         TextView title = layoutScreen.findViewById(R.id.intro_title);
         TextView description = layoutScreen.findViewById(R.id.intro_description);
 
-        title.setText(screens.get(position).getTitle());
-        description.setText(screens.get(position).getDescription());
-        imgSlide.setImageResource(screens.get(position).getScreenImg());
+        title.setText(mScreensList.get(position).getTitle());
+        description.setText(mScreensList.get(position).getDescription());
+        imgSlide.setImageResource(mScreensList.get(position).getScreenImg());
 
         container.addView(layoutScreen);
 
@@ -52,7 +52,7 @@ public class IntroViewPagerAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return screens.size();
+        return mScreensList.size();
     }
 
     @Override

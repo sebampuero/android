@@ -55,20 +55,20 @@ import static android.app.Activity.RESULT_OK;
  */
 public class RegistrationFragment extends BaseFragmentPictureSelecter{
 
-    private MultiGoalSelectAdapter adapter;
-    private FragmentRegistrationBinding binding;
-    private ProgressBar progressBar;
-    private RecyclerView recyclerView;
-    private MyViewModel mainModel;
-    private RegisterViewModel model;
-    private CircularProgressButton registrationBtn;
-    private EditText name;
-    private EditText lastname;
-    private EditText password;
-    private EditText passwordConf;
-    private EditText email;
-    private ImageView profilePic;
-    private Uri imageUri;
+    private MultiGoalSelectAdapter mAdapter;
+    private FragmentRegistrationBinding mBinding;
+    private ProgressBar mProgressBar;
+    private RecyclerView mRecyclerView;
+    private MyViewModel mMainModel;
+    private RegisterViewModel mModel;
+    private CircularProgressButton mRegistrationBtn;
+    private EditText mNameEditText;
+    private EditText mLastnameEditText;
+    private EditText mPasswordEditText;
+    private EditText mPasswordConfEditText;
+    private EditText mEmailEditText;
+    private ImageView mProfilePicIW;
+    private Uri mProfilePicURI;
 
     public RegistrationFragment() {
     }
@@ -76,61 +76,61 @@ public class RegistrationFragment extends BaseFragmentPictureSelecter{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        model = ViewModelProviders.of(getActivity()).get(RegisterViewModel.class);
-        model.setContext(getContext());
-        mainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_registration, container, false);
-        binding.setMyVM(model);
-        binding.setLifecycleOwner(this);
+        mModel = ViewModelProviders.of(getActivity()).get(RegisterViewModel.class);
+        mModel.setContext(getContext());
+        mMainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_registration, container, false);
+        mBinding.setMyVM(mModel);
+        mBinding.setLifecycleOwner(this);
         setupViews();
         setupGoalsBoxRecyclerView();
         // Observe to fetch goal items
-        model.getGoalLiveData().observe(this, new Observer<List<Goal>>() {
+        mModel.getGoalLiveData().observe(this, new Observer<List<Goal>>() {
             @Override
             public void onChanged(List<Goal> goals) {
                 prepareDataForAdapter(goals);
-                progressBar.setVisibility(View.GONE);
-                recyclerView.setVisibility(View.VISIBLE);
+                mProgressBar.setVisibility(View.GONE);
+                mRecyclerView.setVisibility(View.VISIBLE);
             }
         });
         // Observe the status of the response of registration process
-        model.getUserLiveData().observe(this, new Observer<HashMap<Integer, User>>() {
+        mModel.getUserLiveData().observe(this, new Observer<HashMap<Integer, User>>() {
             @Override
             public void onChanged(HashMap<Integer, User> integerUserHashMap) {
                 evaluateRegistration(integerUserHashMap);
             }
         });
         // Observe the events on the registration button
-        model.triggerLoadingBtn.observe(this, new Observer<Boolean>() {
+        mModel.triggerLoadingBtn.observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                registrationBtn.startAnimation();
+                mRegistrationBtn.startAnimation();
             }
         });
         // Observe for when the open gallery button is clicked
-        model.selectProfilePic.observe(this, new Observer<Boolean>() {
+        mModel.selectProfilePic.observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
                 openGallery();
             }
         });
-        model.setGoalsAdapter(adapter);
-        return binding.getRoot();
+        mModel.setGoalsAdapter(mAdapter);
+        return mBinding.getRoot();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == PICK_IMAGE){
-            imageUri = data.getData();
-            applyImageUriToImageView(imageUri, profilePic, 300, 300);
+            mProfilePicURI = data.getData();
+            applyImageUriToImageView(mProfilePicURI, mProfilePicIW, 300, 300);
             try {
-                InputStream iStream = getActivity().getContentResolver().openInputStream(imageUri);
+                InputStream iStream = getActivity().getContentResolver().openInputStream(mProfilePicURI);
                 byte[] profilePicByteArray = ConverterUtils.getBytes(iStream);
-                model.setProfilePicBase64Data(Base64.encodeToString(profilePicByteArray, Base64.DEFAULT));
+                mModel.setProfilePicBase64Data(Base64.encodeToString(profilePicByteArray, Base64.DEFAULT));
             }catch (Exception e){
                 e.printStackTrace();
-                profilePic.setVisibility(View.GONE);
+                mProfilePicIW.setVisibility(View.GONE);
             }
         }
     }
@@ -139,14 +139,14 @@ public class RegistrationFragment extends BaseFragmentPictureSelecter{
      * Sets up views for this {@link Fragment}
      */
     private void setupViews() {
-        progressBar = binding.progressBarRegistration;
-        registrationBtn = binding.registrationBtn;
-        name = binding.nameInput;
-        lastname = binding.lastnameInput;
-        email = binding.emailAddresInputRegister;
-        password = binding.passwordInputRegister;
-        passwordConf = binding.passwordInputRegisterConf;
-        profilePic = binding.profilePicRegistration;
+        mProgressBar = mBinding.progressBarRegistration;
+        mRegistrationBtn = mBinding.registrationBtn;
+        mNameEditText = mBinding.nameInput;
+        mLastnameEditText = mBinding.lastnameInput;
+        mEmailEditText = mBinding.emailAddresInputRegister;
+        mPasswordEditText = mBinding.passwordInputRegister;
+        mPasswordConfEditText = mBinding.passwordInputRegisterConf;
+        mProfilePicIW = mBinding.profilePicRegistration;
     }
 
     /**
@@ -159,14 +159,14 @@ public class RegistrationFragment extends BaseFragmentPictureSelecter{
             Toast.makeText(this.getContext(),
                     this.getContext().getString(R.string.server_error),
                     Toast.LENGTH_SHORT).show();
-            registrationBtn.revertAnimation();
+            mRegistrationBtn.revertAnimation();
         }
         else if(integerUserHashMap.containsKey(HttpURLConnection.HTTP_BAD_REQUEST)){
-            registrationBtn.stopAnimation();
+            mRegistrationBtn.stopAnimation();
             Toast.makeText(this.getContext(),
                     this.getContext().getString(R.string.email_already_exists),
                     Toast.LENGTH_SHORT).show();
-            registrationBtn.revertAnimation();
+            mRegistrationBtn.revertAnimation();
         }
         else if(integerUserHashMap.containsKey(HttpURLConnection.HTTP_OK)){
             User user = integerUserHashMap.get(HttpURLConnection.HTTP_OK);
@@ -205,9 +205,9 @@ public class RegistrationFragment extends BaseFragmentPictureSelecter{
             editor.putString(Constant.GOAL_TAGS, sb1.toString());
         }
         editor.apply();
-        mainModel.getNavController().navigate(R.id.action_registrationFragment_to_feedFragment);
-        model.getUserLiveData().getValue().clear();
-        registrationBtn.revertAnimation();
+        mMainModel.getNavController().navigate(R.id.action_registrationFragment_to_feedFragment);
+        mModel.getUserLiveData().getValue().clear();
+        mRegistrationBtn.revertAnimation();
         cleanValues();
     }
 
@@ -215,15 +215,15 @@ public class RegistrationFragment extends BaseFragmentPictureSelecter{
      * Empties input fields
      */
     private void cleanValues() {
-        name.setText("");
-        lastname.setText("");
-        email.setText("");
-        passwordConf.setText("");
-        password.setText("");
+        mNameEditText.setText("");
+        mLastnameEditText.setText("");
+        mEmailEditText.setText("");
+        mPasswordConfEditText.setText("");
+        mPasswordEditText.setText("");
     }
 
     /**
-     * Prepares the fetched goals data for the adapter.
+     * Prepares the fetched goals data for the mAdapter.
      * @param goals {@link List} containing the fetched goals from the server
      */
     private void prepareDataForAdapter(List<Goal> goals) {
@@ -233,18 +233,18 @@ public class RegistrationFragment extends BaseFragmentPictureSelecter{
             goalItemSelection = new GoalItemSelection(goal.getTag(), false, goal.getId());
             goalItemSelections.add(goalItemSelection);
         }
-        adapter.setGoals(goalItemSelections);
+        mAdapter.setGoals(goalItemSelections);
     }
 
     /**
-     * Sets up the {@link RecyclerView} for the adapter
+     * Sets up the {@link RecyclerView} for the mAdapter
      */
     private void setupGoalsBoxRecyclerView() {
-        recyclerView = binding.goalsComboBox;
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
-        adapter = new MultiGoalSelectAdapter();
-        recyclerView.setAdapter(adapter);
+        mRecyclerView = mBinding.goalsComboBox;
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+        mAdapter = new MultiGoalSelectAdapter();
+        mRecyclerView.setAdapter(mAdapter);
     }
 
 }

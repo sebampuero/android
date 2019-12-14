@@ -12,7 +12,6 @@ import android.webkit.WebView;
 
 import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
-import com.example.tm18app.constants.Constant;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,7 +20,7 @@ public class WebviewFragment extends Fragment {
 
     public static final String IMG_URL = "IMG_URL";
 
-    private WebView webView;
+    private WebView mWebView;
     public WebviewFragment() {
         // Required empty public constructor
     }
@@ -32,7 +31,7 @@ public class WebviewFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_webview, container, false);
-        webView = view.findViewById(R.id.webview);
+        mWebView = view.findViewById(R.id.webview);
         loadPage();
         return view;
     }
@@ -40,9 +39,9 @@ public class WebviewFragment extends Fragment {
     private void loadPage() {
         String imageUrl = getArguments().getString(IMG_URL);
         ((MainActivity)getActivity()).getToolbar().setTitle(imageUrl);
-        webView.loadUrl(imageUrl);
-        webView.getSettings().setLoadWithOverviewMode(true);
-        webView.getSettings().setUseWideViewPort(true);
+        mWebView.loadUrl(imageUrl);
+        mWebView.getSettings().setLoadWithOverviewMode(true);
+        mWebView.getSettings().setUseWideViewPort(true);
     }
 
 }

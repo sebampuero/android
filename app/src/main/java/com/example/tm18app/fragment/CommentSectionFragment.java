@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,12 +39,12 @@ public class CommentSectionFragment extends Fragment {
 
     public static final String POST_ID = "postID";
 
-    private FragmentCommentSectionBinding binding;
-    private CommentsSectionViewModel model;
-    private MyViewModel mainModel;
-    private CommentsAdapter adapter;
-    private List<Comment> commentsList = new ArrayList<>();
-    private EditText input;
+    private FragmentCommentSectionBinding mBinding;
+    private CommentsSectionViewModel mModel;
+    private MyViewModel mMainModel;
+    private CommentsAdapter mAdapter;
+    private List<Comment> mCommentsList = new ArrayList<>();
+    private EditText mCommentInputEditText;
 
     public CommentSectionFragment() {
         // Required empty public constructor
@@ -54,17 +53,17 @@ public class CommentSectionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        model = ViewModelProviders.of(getActivity()).get(CommentsSectionViewModel.class);
-        mainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_comment_section, container, false);
-        binding.setLifecycleOwner(this);
-        binding.setMyVM(model);
-        model.setPostID(getArguments().getString(POST_ID));
-        model.setAppContext(getActivity());
-        input = binding.commentInputField;
+        mModel = ViewModelProviders.of(getActivity()).get(CommentsSectionViewModel.class);
+        mMainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_comment_section, container, false);
+        mBinding.setLifecycleOwner(this);
+        mBinding.setMyVM(mModel);
+        mModel.setPostID(getArguments().getString(POST_ID));
+        mModel.setAppContext(getActivity());
+        mCommentInputEditText = mBinding.commentInputField;
         setupRecyclerView();
         fetchData();
-        return binding.getRoot();
+        return mBinding.getRoot();
     }
 
     /**
@@ -72,16 +71,16 @@ public class CommentSectionFragment extends Fragment {
      * of comments. When changes occur, they appear on screen.
      */
     private void fetchData() {
-        model.getCommentLiveData().observe(this, new Observer<List<Comment>>() {
+        mModel.getCommentLiveData().observe(this, new Observer<List<Comment>>() {
             @Override
             public void onChanged(List<Comment> comments) {
                 if(comments != null){
-                    commentsList.clear();
-                    commentsList.addAll(comments);
+                    mCommentsList.clear();
+                    mCommentsList.addAll(comments);
                     // sort comments by creation date
-                    Collections.sort(commentsList);
-                    adapter.notifyDataSetChanged();
-                    input.setText("");
+                    Collections.sort(mCommentsList);
+                    mAdapter.notifyDataSetChanged();
+                    mCommentInputEditText.setText("");
                 }
             }
         });
@@ -91,11 +90,11 @@ public class CommentSectionFragment extends Fragment {
      * Sets up the {@link RecyclerView} for this {@link Fragment}
      */
     private void setupRecyclerView() {
-        RecyclerView recyclerView = binding.commentsRv;
+        RecyclerView recyclerView = mBinding.commentsRv;
         LinearLayoutManager manager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(manager);
-        adapter = new CommentsAdapter(getActivity(), commentsList, mainModel.getNavController());
-        recyclerView.setAdapter(adapter);
+        mAdapter = new CommentsAdapter(getActivity(), mCommentsList, mMainModel.getNavController());
+        recyclerView.setAdapter(mAdapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(),
                 manager.getOrientation()));
     }

@@ -2,7 +2,6 @@ package com.example.tm18app.fragment;
 
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,8 +24,8 @@ import java.net.HttpURLConnection;
  */
 public class EditPasswordFragment extends Fragment {
 
-    private MyViewModel mainModel;
-    private PasswordEditViewModel model;
+    private MyViewModel mMainModel;
+    private PasswordEditViewModel mModel;
 
     public EditPasswordFragment() {
         // Required empty public constructor
@@ -36,15 +35,15 @@ public class EditPasswordFragment extends Fragment {
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
-        model = ViewModelProviders.of(this).get(PasswordEditViewModel.class);
-        model.setContext(getContext());
+        mMainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
+        mModel = ViewModelProviders.of(this).get(PasswordEditViewModel.class);
+        mModel.setContext(getContext());
         FragmentEditPasswordBinding binding = DataBindingUtil.inflate(inflater,
                 R.layout.fragment_edit_password, container, false);
-        binding.setMyVM(model);
+        binding.setMyVM(mModel);
         binding.setLifecycleOwner(this);
         // Set observer for the status of the password change feedback
-        model.getStatusCodeResponseLiveData().observe(this, new Observer<Integer>() {
+        mModel.getStatusCodeResponseLiveData().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(Integer responseStatusCode) {
                 handleResponse(responseStatusCode);
@@ -68,9 +67,9 @@ public class EditPasswordFragment extends Fragment {
             Toast.makeText(getActivity(),
                     getActivity().getString(R.string.password_update_success), Toast.LENGTH_SHORT).show();
             // Navigate back to the edit profile UI
-            mainModel.getNavController().navigateUp();
+            mMainModel.getNavController().navigateUp();
             // Reset the status code to 0 to prevent observer to be called again
-            model.getStatusCodeResponseLiveData().setValue(0);
+            mModel.getStatusCodeResponseLiveData().setValue(0);
         }
     }
 
