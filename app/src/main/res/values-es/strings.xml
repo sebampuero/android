@@ -8,7 +8,7 @@
     <string name="name">Nombre</string>
     <string name="lastname">Apellido</string>
     <string name="new_post">Nuevo post</string>
-    <string name="new_post_btn">Post</string>
+    <string name="new_post_btn">Postear</string>
     <string name="goals_profile_tv">Metas</string>
     <string name="commentBtn">Comentario</string>
     <string name="logoutAction">Salir</string>

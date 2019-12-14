@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 
+import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
 import com.example.tm18app.constants.Constant;
 
@@ -38,6 +39,7 @@ public class WebviewFragment extends Fragment {
 
     private void loadPage() {
         String imageUrl = getArguments().getString(IMG_URL);
+        ((MainActivity)getActivity()).getToolbar().setTitle(imageUrl);
         webView.loadUrl(imageUrl);
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.getSettings().setUseWideViewPort(true);

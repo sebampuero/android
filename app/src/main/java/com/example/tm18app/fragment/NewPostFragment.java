@@ -35,6 +35,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import br.com.simplepass.loading_button_lib.customViews.CircularProgressButton;
+
 import static android.app.Activity.RESULT_OK;
 
 
@@ -54,6 +56,7 @@ public class NewPostFragment extends BaseFragmentPictureSelecter{
     private EditText postContent;
     private ImageView contentImage;
     private Uri imageUri;
+    private CircularProgressButton postBtn;
 
     public NewPostFragment() {
         // Required empty public constructor
@@ -72,6 +75,7 @@ public class NewPostFragment extends BaseFragmentPictureSelecter{
         postContent = binding.inputTextEdit;
         postTitle = binding.postTitle;
         contentImage = binding.contentImage;
+        postBtn = binding.newPostBtn;
         setSpinner();
         // set observer for new post response feedback
         model.getPostLiveDataResponse().observe(this, new Observer<Integer>() {
@@ -85,6 +89,13 @@ public class NewPostFragment extends BaseFragmentPictureSelecter{
             @Override
             public void onChanged(Boolean aBoolean) {
                 openGallery();
+            }
+        });
+        // Trigger loading button for new post
+        model.triggerLoadingBtn.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                postBtn.startAnimation();
             }
         });
         return binding.getRoot();
@@ -117,6 +128,7 @@ public class NewPostFragment extends BaseFragmentPictureSelecter{
             mainModel.getNavController().navigateUp();
             model.getPostLiveDataResponse().setValue(0);
             cleanInputs();
+            postBtn.revertAnimation();
         }
         else if(statusCode == 500) {
             Toast.makeText(this.getContext(), this.getContext().getString(R.string.server_error), Toast.LENGTH_SHORT).show();

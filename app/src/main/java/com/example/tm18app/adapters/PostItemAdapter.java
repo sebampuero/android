@@ -3,6 +3,7 @@ package com.example.tm18app.adapters;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +22,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.tm18app.R;
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.PostCardviewBinding;
+import com.example.tm18app.fragment.CommentSectionFragment;
 import com.example.tm18app.fragment.FeedFragment;
+import com.example.tm18app.fragment.OtherProfileFragment;
 import com.example.tm18app.fragment.ProfileFragment;
 import com.example.tm18app.fragment.WebviewFragment;
 import com.example.tm18app.pojos.Post;
@@ -44,6 +47,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
     private ArrayList<Post> postsList;
     private NavController navController;
     private Fragment currentFragment;
+    private SharedPreferences prefs;
 
     public interface OnPostDeleteListener {
 
@@ -60,6 +64,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
         this.postsList = posts;
         this.navController = navController;
         this.currentFragment = fragment;
+        prefs = currentFragment.getContext().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
     }
 
     @NonNull
@@ -83,28 +88,39 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
-                bundle.putString("postID", String.valueOf(post.getId()));
-                // Distinguish between feed fragment and profile fragment for nav controller to
-                // correctly navigate to the comment section
-                if(currentFragment instanceof FeedFragment)
-                    navController.navigate(R.id.action_feedFragment_to_commentSectionFragment, bundle);
-                else if(currentFragment instanceof ProfileFragment)
-                    navController.navigate(R.id.action_profileFragment_to_commentSectionFragment, bundle);
+                bundle.putString(CommentSectionFragment.POST_ID, String.valueOf(post.getId()));
+                navController.navigate(R.id.commentSectionFragment, bundle);
+            }
+        });
+        holder.posterPicUrl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle b = new Bundle();
+                b.putString(OtherProfileFragment.OTHER_USER_ID, String.valueOf(post.getUserID()));
+                if(post.getUserID() != prefs.getInt(Constant.USER_ID, 0))
+                    navController.navigate(R.id.action_feedFragment_to_otherProfileFragment, b);
+                else
+                    navController.navigate(R.id.profileFragment);
             }
         });
         if(post.getPosterPicUrl() != null){
             if(!post.getPosterPicUrl().equals(""))
                 Picasso.get().load(post.getPosterPicUrl()) //TODO: use dimens values
                         .resize(70, 70).centerCrop().into(holder.posterPicUrl);
-            // else , set drawable as default for person black
+        }else{
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                holder.posterPicUrl
+                        .setImageDrawable(currentFragment.getContext()
+                                .getDrawable(R.drawable.ic_person_black_24dp));
+            }
         }
         if(post.getContentPicUrl() != null){
             if(!post.getContentPicUrl().equals("")){
                 Picasso.get().load(post.getContentPicUrl()) //TODO: use dimens values
                         .resize(0, 500).into(holder.contentImage);
-            }else{
-                holder.contentImage.setVisibility(View.GONE);
             }
+        }else{
+            holder.contentImage.setVisibility(View.GONE);
         }
     }
 
@@ -167,10 +183,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
                     Bundle bundle = new Bundle();
                     bundle.putString(WebviewFragment.IMG_URL,
                             postsList.get(getAdapterPosition()).getContentPicUrl());
-                    if(currentFragment instanceof FeedFragment)
-                        navController.navigate(R.id.action_feedFragment_to_webviewFragment, bundle);
-                    else if(currentFragment instanceof ProfileFragment)
-                        navController.navigate(R.id.action_profileFragment_to_webviewFragment, bundle);
+                    navController.navigate(R.id.webviewFragment, bundle);
                 }
             });
             AlertDialog alert = alertBuilder.create();
@@ -182,9 +195,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
          * the post gets deleted.
          */
         private void buildDeletionAlertDialog() {
-            SharedPreferences preferences = currentFragment.getContext()
-                    .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
-            int userID = preferences.getInt(Constant.USER_ID, 0);
+            int userID = prefs.getInt(Constant.USER_ID, 0);
             final int position = getAdapterPosition();
             final Post postToDelete = postsList.get(position);
             if(userID == postToDelete.getUserID()){

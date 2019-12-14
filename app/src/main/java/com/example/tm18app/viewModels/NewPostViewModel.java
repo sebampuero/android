@@ -28,6 +28,7 @@ public class NewPostViewModel extends ViewModel {
     public MutableLiveData<String> title = new MutableLiveData<>();
     public MutableLiveData<String> content = new MutableLiveData<>();
     public SingleLiveEvent<Boolean> selectContentImage = new SingleLiveEvent<>();
+    public SingleLiveEvent<Boolean> triggerLoadingBtn = new SingleLiveEvent<>();
 
     private Context appContext;
     private String selectedGoal;
@@ -73,6 +74,7 @@ public class NewPostViewModel extends ViewModel {
                 post.setBase64Image(contentImageBase64Data);
             repository.createPost(post,
                     postLiveDataResponse);
+            triggerLoadingBtn.call();
         }
     }
 

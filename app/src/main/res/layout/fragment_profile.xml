@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
-        <variable name="myVM" type="com.example.tm18app.viewModels.ProfileViewModel" />
+        <variable name="myVM" type="com.example.tm18app.viewModels.CurrentProfileViewModel" />
     </data>
 <ScrollView
     android:layout_width="match_parent"
@@ -34,8 +34,7 @@
                 android:textStyle="bold"
                 android:textSize="15sp"
                 android:layout_marginTop="20dp"
-                android:paddingStart="10dp"
-                android:text="@{myVM.names}" />
+                android:paddingStart="10dp" />
 
             <TextView
                 android:id="@+id/emailTv"
@@ -45,8 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/namesTv"
                 android:layout_marginTop="20dp"
-                android:paddingStart="10dp"
-                android:text="@{myVM.email}" />
+                android:paddingStart="10dp" />
 
             <TextView
                 android:id="@+id/goalsTv"
@@ -64,8 +62,7 @@
                 android:layout_below="@id/goalsTv"
                 android:layout_marginTop="20dp"
                 android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:text="@{myVM.goalsList}" />
+                android:paddingEnd="10dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"

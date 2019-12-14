@@ -38,6 +38,8 @@ import java.util.List;
  */
 public class CommentSectionFragment extends Fragment {
 
+    public static final String POST_ID = "postID";
+
     private FragmentCommentSectionBinding binding;
     private CommentsSectionViewModel model;
     private MyViewModel mainModel;
@@ -57,7 +59,7 @@ public class CommentSectionFragment extends Fragment {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_comment_section, container, false);
         binding.setLifecycleOwner(this);
         binding.setMyVM(model);
-        model.setPostID(getArguments().getString("postID"));
+        model.setPostID(getArguments().getString(POST_ID));
         model.setAppContext(getActivity());
         input = binding.commentInputField;
         setupRecyclerView();

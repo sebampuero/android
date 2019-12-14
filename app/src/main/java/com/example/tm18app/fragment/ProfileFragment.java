@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,14 +27,13 @@ import com.example.tm18app.adapters.PostItemAdapter;
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.FragmentProfileBinding;
 import com.example.tm18app.pojos.Post;
-import com.example.tm18app.pojos.User;
+import com.example.tm18app.viewModels.CurrentProfileViewModel;
 import com.example.tm18app.viewModels.MyViewModel;
 import com.example.tm18app.viewModels.ProfileViewModel;
 import com.squareup.picasso.Picasso;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -50,7 +48,7 @@ import java.util.List;
 public class ProfileFragment extends Fragment implements PostItemAdapter.OnPostDeleteListener{
 
     private MyViewModel mainModel;
-    private ProfileViewModel model;
+    private CurrentProfileViewModel model;
     private FragmentProfileBinding binding;
     private RecyclerView recyclerView;
     private PostItemAdapter adapter;
@@ -59,6 +57,9 @@ public class ProfileFragment extends Fragment implements PostItemAdapter.OnPostD
     private LinearLayout noPostsLayout;
     private ImageView profilePic;
     private SharedPreferences prefs;
+    private TextView namesTv;
+    private TextView emailTv;
+    private TextView goalsTv;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -67,7 +68,7 @@ public class ProfileFragment extends Fragment implements PostItemAdapter.OnPostD
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        model = ViewModelProviders.of(getActivity()).get(ProfileViewModel.class);
+        model = ViewModelProviders.of(getActivity()).get(CurrentProfileViewModel.class);
         prefs = getContext().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
         mainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false);
@@ -75,10 +76,22 @@ public class ProfileFragment extends Fragment implements PostItemAdapter.OnPostD
         binding.setLifecycleOwner(this);
         model.setNavController(mainModel.getNavController());
         setupViews();
-        model.setContext(getContext());
+        fillUserData();
+        model.setPrefs(prefs);
+        model.callRepositoryForPosts();
         setupRecyclerView();
         fetchData();
         return binding.getRoot();
+    }
+
+    private void fillUserData() {
+        String names = prefs
+                .getString(Constant.NAME,"") + " " + prefs.getString(Constant.LASTNAME, "");
+        String email = prefs.getString(Constant.EMAIL, "");
+        String goals = prefs.getString(Constant.GOAL_TAGS, "");
+        namesTv.setText(names);
+        emailTv.setText(email);
+        goalsTv.setText(goals);
     }
 
 
@@ -87,6 +100,9 @@ public class ProfileFragment extends Fragment implements PostItemAdapter.OnPostD
         progressBar = binding.progressBar;
         profilePic = binding.profilePic;
         progressBar.setVisibility(View.VISIBLE); // show loading animation when posts are being loaded
+        namesTv = binding.namesTv;
+        emailTv = binding.emailTv;
+        goalsTv = binding.goalsInfoTv;
     }
 
     /**

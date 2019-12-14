@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.tm18app.R;
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.CommentItemBinding;
+import com.example.tm18app.fragment.OtherProfileFragment;
 import com.example.tm18app.pojos.Comment;
 import com.example.tm18app.repository.PostItemRepository;
 import com.example.tm18app.util.TimeUtils;
@@ -117,13 +118,15 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
                 AlertDialog.Builder alertBuilder = new AlertDialog.Builder(appContext);
                 alertBuilder.setCancelable(true);
                 alertBuilder.setTitle(appContext.getString(R.string.open_profile_alert_title));
-                alertBuilder.setMessage(appContext.getString(R.string.open_profile_alert_text) + comment.getName() +" ?");
+                alertBuilder.setMessage(appContext.getString(R.string.open_profile_alert_text) + " " + comment.getName() +" ?");
                 alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int which) {
                         int commentUserId = commentsList.get(getAdapterPosition()).getUserID();
                         Bundle b = new Bundle();
-                        b.putString("otherUserID", String.valueOf(commentUserId));
+                        b.putString(OtherProfileFragment.OTHER_USER_ID, String.valueOf(commentUserId));
+                        navController
+                                .navigate(R.id.action_commentSectionFragment_to_otherProfileFragment, b);
                     }
                 });
                 AlertDialog alert = alertBuilder.create();

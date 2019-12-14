@@ -119,4 +119,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public Toolbar getToolbar() {
+        return toolbar;
+    }
 }

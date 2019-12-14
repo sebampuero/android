@@ -87,13 +87,14 @@
                 android:layout_below="@id/goalSpinnerLabel"
                 android:id="@+id/goalTagsSpinner" />
 
-            <Button
+            <br.com.simplepass.loading_button_lib.customViews.CircularProgressButton
                 android:id="@+id/newPostBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_10"
                 android:layout_marginEnd="@dimen/margin_10"
                 android:textStyle="bold"
+                android:layout_centerHorizontal="true"
                 android:background="@drawable/custom_btn_form"
                 android:onClick="@{() -> myVM.onNewPostClicked()}"
                 android:layout_alignParentBottom="true"

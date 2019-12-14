@@ -14,11 +14,8 @@
             android:id="@+id/action_feedFragment_to_newPostFragment"
             app:destination="@id/newPostFragment" />
         <action
-            android:id="@+id/action_feedFragment_to_commentSectionFragment"
-            app:destination="@id/commentSectionFragment" />
-        <action
-            android:id="@+id/action_feedFragment_to_webviewFragment"
-            app:destination="@id/webviewFragment" />
+            android:id="@+id/action_feedFragment_to_otherProfileFragment"
+            app:destination="@id/otherProfileFragment" />
     </fragment>
     <fragment
         android:id="@+id/newPostFragment"
@@ -39,9 +36,6 @@
             android:id="@+id/action_profileFragment_to_editProfileFragment"
             app:destination="@id/editProfileFragment" />
         <action
-            android:id="@+id/action_profileFragment_to_commentSectionFragment"
-            app:destination="@id/commentSectionFragment" />
-        <action
             android:id="@+id/action_profileFragment_to_webviewFragment"
             app:destination="@id/webviewFragment" />
     </fragment>
@@ -49,7 +43,11 @@
         android:id="@+id/commentSectionFragment"
         android:name="com.example.tm18app.fragment.CommentSectionFragment"
         android:label="@string/comments_toolbar_title"
-        tools:layout="@layout/fragment_comment_section" />
+        tools:layout="@layout/fragment_comment_section" >
+        <action
+            android:id="@+id/action_commentSectionFragment_to_otherProfileFragment"
+            app:destination="@id/otherProfileFragment" />
+    </fragment>
     <fragment
         android:id="@+id/editProfileFragment"
         android:name="com.example.tm18app.fragment.EditProfileFragment"
@@ -103,4 +101,13 @@
         android:name="com.example.tm18app.fragment.WebviewFragment"
         android:label=""
         tools:layout="@layout/fragment_webview" />
+    <fragment
+        android:id="@+id/otherProfileFragment"
+        android:name="com.example.tm18app.fragment.OtherProfileFragment"
+        android:label=""
+        tools:layout="@layout/fragment_other_profile" >
+        <action
+            android:id="@+id/action_otherProfileFragment_to_webviewFragment"
+            app:destination="@id/webviewFragment" />
+    </fragment>
 </navigation>
