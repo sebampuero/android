@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.tm18app.network.NetworkConnectivity;
+
 public class ProfileImgWebviewFragment extends BaseWebviewFragment {
 
     public static final String IMG_URL = "IMG_URL";
@@ -24,7 +26,7 @@ public class ProfileImgWebviewFragment extends BaseWebviewFragment {
 
     @Override
     protected void loadPage() {
-        mWebView.loadUrl(mImageUrl);
+        mWebView.loadUrl(NetworkConnectivity.tweakImgQualityByNetworkType(getContext(), mImageUrl));
         mWebView.getSettings().setLoadWithOverviewMode(true);
         mWebView.getSettings().setUseWideViewPort(true);
         mWebView.getSettings().setBuiltInZoomControls(true);

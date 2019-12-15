@@ -3,6 +3,7 @@ package com.example.tm18app.adapters;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,12 +29,19 @@ import com.example.tm18app.fragment.FeedFragment;
 import com.example.tm18app.fragment.OtherProfileFragment;
 import com.example.tm18app.fragment.ProfileFragment;
 import com.example.tm18app.fragment.PostImgWebviewFragment;
+import com.example.tm18app.fragment.SettingsFragment;
+import com.example.tm18app.network.NetworkConnectivity;
 import com.example.tm18app.pojos.Post;
 import com.example.tm18app.repository.PostItemRepository;
 import com.example.tm18app.util.TimeUtils;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Adapter for the post items in Feed and Profile
@@ -106,10 +114,8 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
         });
         if(post.getPosterPicUrl() != null){
             holder.posterPicUrl.setVisibility(View.VISIBLE);
-            // known recyclerview / picasso bug
-            // workaround for pictures not disappearing on scroll
             Picasso.get()
-                    .load(post.getPosterPicUrl())
+                    .load(post.getPosterPicUrl()) // no need to tweak quality
                     .resize(70, 70)
                     .centerCrop()
                     .into(holder.posterPicUrl);
@@ -121,8 +127,11 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
         if(post.getContentPicUrl() != null){
             holder.contentImage.setVisibility(View.VISIBLE); // known recyclerview / picasso bug
             // workaround for pictures not disappearing on scroll
+            String imgUrl = NetworkConnectivity
+                    .tweakImgQualityByNetworkType(mCurrentFragment.getContext(),
+                            post.getContentPicUrl());
             Picasso.get()
-                    .load(post.getContentPicUrl())
+                    .load(imgUrl)
                     .resize(0, 500)
                     .placeholder(R.drawable.progress_img_animation)
                     .into(holder.contentImage);

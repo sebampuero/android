@@ -95,20 +95,20 @@ public class ProfileFragment extends Fragment implements PostItemAdapter.OnPostD
 
 
     private void setupViews() {
-        mNoPostsView = mBinding.noPostsLayout;
-        mProgressBar = mBinding.progressBar;
+        mNoPostsView = mBinding.getRoot().findViewById(R.id.noPostsLayout);
+        mProgressBar = mBinding.getRoot().findViewById(R.id.progressBar);
         mProfilePicIW = mBinding.profilePic;
         mProgressBar.setVisibility(View.VISIBLE); // show loading animation when posts are being loaded
-        mNamesTV = mBinding.namesTv;
-        mEmailTV = mBinding.emailTv;
-        mGoalsTV = mBinding.goalsInfoTv;
+        mNamesTV = mBinding.getRoot().findViewById(R.id.namesTv);
+        mEmailTV = mBinding.getRoot().findViewById(R.id.emailTv);
+        mGoalsTV = mBinding.getRoot().findViewById(R.id.goalsInfoTv);
     }
 
     /**
      * Sets up the {@link RecyclerView} for the user's Posts list in the profile
      */
     private void setupRecyclerView() {
-        mRecyclerView = mBinding.goalsUserRv;
+        mRecyclerView = mBinding.getRoot().findViewById(R.id.goalsUserRv);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layoutManager);
         mAdapter = new PostItemAdapter((ArrayList<Post>) mPostsList,

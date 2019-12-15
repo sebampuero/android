@@ -16,7 +16,7 @@
     <PreferenceCategory android:title="@string/downloads">
         <SwitchPreference
             app:key="allow_downloads_mobile_net"
-            app:title="@string/allow_downloads_mobile_net"/>
+            app:title="@string/img_downloads_mobile_low_quality"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/session_settings_title">
         <Preference android:title="@string/logout_settings_btn_text"

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/namesTv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/profilePic"
+        android:textStyle="bold"
+        android:textSize="15sp"
+        android:text="Name Lastname"
+        android:layout_marginTop="@dimen/margin_10_2"
+        android:paddingStart="@dimen/padding_10" />
+
+    <TextView
+        android:id="@+id/emailTv"
+        android:textStyle="bold"
+        android:textSize="13sp"
+        android:text="Email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/namesTv"
+        android:layout_marginTop="@dimen/margin_10_2"
+        android:paddingStart="@dimen/padding_10" />
+
+    <TextView
+        android:id="@+id/goalsTv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/emailTv"
+        android:layout_marginTop="@dimen/margin_10_2"
+        android:paddingStart="@dimen/padding_10"
+        android:text="@string/goals_colon" />
+
+    <TextView
+        android:id="@+id/goalsInfoTv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/goalsTv"
+        android:text="Goal1, Goal2, Goal3"
+        android:layout_marginTop="@dimen/margin_10_2"
+        android:paddingStart="@dimen/padding_10"
+        android:paddingEnd="@dimen/padding_10" />
+</LinearLayout>

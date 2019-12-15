@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
 import com.example.tm18app.network.DownloadsManager;
+import com.example.tm18app.network.NetworkConnectivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -81,7 +82,7 @@ public class PostImgWebviewFragment extends BaseWebviewFragment {
 
     @Override
     protected void loadPage() {
-        mWebView.loadUrl(mImageUrl);
+        mWebView.loadUrl(NetworkConnectivity.tweakImgQualityByNetworkType(getContext(), mImageUrl));
         mWebView.getSettings().setLoadWithOverviewMode(true);
         mWebView.getSettings().setUseWideViewPort(true);
         mWebView.getSettings().setBuiltInZoomControls(true);

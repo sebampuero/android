@@ -65,7 +65,7 @@
     <string name="no_feeds">Keine Posts</string>
     <string name="logging_in">Einloggen</string>
     <string name="registering">Registrieren</string>
-    <string name="you_have_no_posts">Du hast keine Posts</string>
+    <string name="you_have_no_posts">Keine Posts</string>
     <string name="language">Sprache</string>
     <string name="english">Englisch</string>
     <string name="deutsch">Deutsch</string>
@@ -114,7 +114,8 @@
     <string name="downloads">Downloads</string>
     <string name="disallow_downloads_mobile_net">Downloads mit mobilem Netzwerk nicht erlauben</string>
     <string name="allow_downloads_mobile_net">Downloads mit mobilem Netzwerk erlauben</string>
-    <string name="notifications_others">Other notifications</string>
+    <string name="notifications_others">Andere Benachrichtigungen</string>
+    <string name="img_downloads_mobile_low_quality">Bilder mit niedriger Qualität herunterladen mit mobilem Netz</string>
 
     <array name="notification_settings">
         <item>Alle Benachrichtigungen erlauben</item>

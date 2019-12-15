@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:layout_below="@id/editLayout"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editLayout"
+        android:layout_marginTop="@dimen/margin_10_2"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
+        android:id="@+id/goalsUserRv"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@id/editLayout"
+        android:id="@+id/noPostsLayout"
+        android:visibility="gone"
+        android:padding="@dimen/padding_10_2"
+        android:gravity="center">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_15"
+            android:text="@string/you_have_no_posts"/>
+    </LinearLayout>
+</LinearLayout>

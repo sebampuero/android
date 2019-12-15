@@ -14,6 +14,7 @@ import androidx.navigation.Navigation;
 
 import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
+import com.example.tm18app.network.NetworkConnectivity;
 
 public abstract class BaseWebviewFragment extends Fragment {
 

@@ -24,72 +24,19 @@
                     android:src="@drawable/ic_person_black_80dp"
                     android:layout_marginTop="@dimen/margin_10"/>
 
-                <TextView
-                    android:id="@+id/namesTv"
-                    android:layout_width="match_parent"
+                <include
                     android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_below="@id/profilePic"
-                    android:textStyle="bold"
-                    android:textSize="15sp"
-                    android:layout_marginTop="@dimen/margin_10_2"
-                    android:paddingStart="@dimen/padding_10" />
+                    android:id="@+id/info_layout"
+                    layout="@layout/profile_info_layout"/>
 
-                <TextView
-                    android:id="@+id/emailTv"
-                    android:textStyle="bold"
-                    android:textSize="13sp"
-                    android:layout_width="match_parent"
+                <include
+                    android:layout_below="@id/info_layout"
+                    layout="@layout/profile_posts_layout"
+                    android:id="@+id/postsLayout"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/namesTv"
-                    android:layout_marginTop="@dimen/margin_10_2"
-                    android:paddingStart="@dimen/padding_10" />
-
-                <TextView
-                    android:id="@+id/goalsTv"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/emailTv"
-                    android:layout_marginTop="@dimen/margin_10_2"
-                    android:paddingStart="@dimen/padding_10"
-                    android:text="@string/goals_colon" />
-
-                <TextView
-                    android:id="@+id/goalsInfoTv"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/goalsTv"
-                    android:layout_marginTop="@dimen/margin_10_2"
-                    android:paddingStart="@dimen/padding_10"
-                    android:paddingEnd="@dimen/padding_10" />
-
-                <ProgressBar
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/progressBar"
-                    android:layout_below="@id/goalsInfoTv"/>
-                <androidx.recyclerview.widget.RecyclerView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/goalsInfoTv"
-                    android:layout_marginTop="@dimen/margin_10_2"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"
-                    android:id="@+id/goalsUserRv"/>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_below="@id/goalsInfoTv"
-                    android:id="@+id/noPostsLayout"
-                    android:visibility="gone"
-                    android:padding="@dimen/padding_10_2"
-                    android:gravity="center">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/text_size_15"
-                        android:text="@string/you_have_no_posts"/>
-                </LinearLayout>
+                    android:layout_width="match_parent"/>
             </RelativeLayout>
         </FrameLayout>
     </ScrollView></layout>
