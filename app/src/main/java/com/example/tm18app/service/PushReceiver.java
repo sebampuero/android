@@ -92,7 +92,7 @@ public class PushReceiver extends BroadcastReceiver {
      * Builds the notification
      * @param context {@link Context}
      * @param notificationText {@link String} the subtext to show on the notification
-     * @param notificationTitle {@link String} the title to show on the notification
+     * @param notificationTitle {@link String} the setTitle to show on the notification
      * @param pendingIntent {@link PendingIntent} that shows the view when the user clicks on
      *                                           the notification
      */

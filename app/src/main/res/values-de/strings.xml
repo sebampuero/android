@@ -108,5 +108,8 @@
     <string name="edit_password_toolbar_title">Passwort bearbeiten</string>
     <string name="session_settings_title">Sitzung</string>
     <string name="logout_settings_btn_text">Ausloggen</string>
+    <string name="download">Herunterladen</string>
+    <string name="share_image">Teilen</string>
+    <string name="downloading_img_msg">Bild wird heruntergeladen</string>
 
 </resources>

@@ -142,7 +142,7 @@ public class Post implements Comparable<Post>{
     public String toString() {
         return "Post{" +
                 "id=" + id +
-                ", title='" + title + '\'' +
+                ", setTitle='" + title + '\'' +
                 ", content='" + content + '\'' +
                 ", userID=" + userID +
                 ", name='" + name + '\'' +

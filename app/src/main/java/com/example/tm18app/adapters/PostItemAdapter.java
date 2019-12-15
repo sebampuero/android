@@ -183,6 +183,8 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
                     Bundle bundle = new Bundle();
                     bundle.putString(WebviewFragment.IMG_URL,
                             mPostsList.get(getAdapterPosition()).getContentPicUrl());
+                    bundle.putString(WebviewFragment.IMG_NAME,
+                            String.valueOf(mPostsList.get(getAdapterPosition()).getId()));
                     mNavController.navigate(R.id.webviewFragment, bundle);
                 }
             });

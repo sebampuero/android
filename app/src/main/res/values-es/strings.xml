@@ -109,5 +109,8 @@
     <string name="edit_password_toolbar_title">Cambiar contraseña</string>
     <string name="session_settings_title">Sesión</string>
     <string name="logout_settings_btn_text">Cerrar sesión</string>
+    <string name="download">Descargar</string>
+    <string name="share_image">Compartir</string>
+    <string name="downloading_img_msg">Descargando imagen</string>
 
 </resources>

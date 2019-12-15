@@ -19,5 +19,7 @@
     <dimen name="margin_10_18">180dp</dimen>
     <dimen name="height_10_5">50dp</dimen>
     <dimen name="height_10_2">20dp</dimen>
+    <dimen name="margin_10_2">20dp</dimen>
+    <dimen name="padding_10_2">20dp</dimen>
 
 </resources>

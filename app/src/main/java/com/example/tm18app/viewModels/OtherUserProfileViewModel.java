@@ -40,8 +40,9 @@ public class OtherUserProfileViewModel extends ProfileViewModel {
     public void onProfilePicClicked() {
         Bundle bundle = new Bundle();
         String picUrl = otherUser.getProfilePicUrl();
-        bundle.putString(WebviewFragment.IMG_URL,
-                picUrl);
+        String picName = otherUser.getName() + otherUser.getId();
+        bundle.putString(WebviewFragment.IMG_URL, picUrl);
+        bundle.putString(WebviewFragment.IMG_NAME, picName);
         navController.navigate(R.id.action_otherProfileFragment_to_webviewFragment, bundle);
     }
 }

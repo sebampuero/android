@@ -28,8 +28,10 @@ public class CurrentProfileViewModel extends ProfileViewModel {
     public void onProfilePicClicked() {
         Bundle bundle = new Bundle();
         String picUrl = prefs.getString(Constant.PROFILE_PIC_URL, "");
-        bundle.putString(WebviewFragment.IMG_URL,
-                picUrl);
+        String picName = prefs.getString(Constant.NAME, "")
+                + prefs.getInt(Constant.USER_ID, 0);
+        bundle.putString(WebviewFragment.IMG_URL, picUrl);
+        bundle.putString(WebviewFragment.IMG_NAME, picName);
         navController.navigate(R.id.action_profileFragment_to_webviewFragment, bundle);
     }
 

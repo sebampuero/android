@@ -53,7 +53,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="15sp"
+                            android:textSize="@dimen/text_size_15"
                             android:text="@string/no_feeds"/>
 
                     </LinearLayout>
@@ -64,8 +64,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"
-            android:layout_marginBottom="30dp"
-            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="@dimen/margin_10_3"
+            android:layout_marginEnd="@dimen/margin_10_2"
             app:fabSize="auto"
             app:backgroundTint="@color/inAppBackgroundColor"
             android:onClick="@{() -> myVM.onNewPostButtonClicked()}"
