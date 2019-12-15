@@ -64,7 +64,6 @@ public class ProfileFragment extends Fragment implements PostItemAdapter.OnPostD
         // Required empty public constructor
     }
 
-    //TODO: consider adding a baseprofile fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -146,8 +145,12 @@ public class ProfileFragment extends Fragment implements PostItemAdapter.OnPostD
         String imgUrl = mPrefs.getString(Constant.PROFILE_PIC_URL, null);
         if(imgUrl != null){
             if(!imgUrl.equals("")){
-                Picasso.get().load(mPrefs.getString(Constant.PROFILE_PIC_URL, null))
-                        .resize(300, 300).centerCrop().into(mProfilePicIW);
+                Picasso.get()
+                        .load(mPrefs.getString(Constant.PROFILE_PIC_URL, null))
+                        .resize(300, 300)
+                        .centerCrop()
+                        .placeholder(R.drawable.progress_img_animation)
+                        .into(mProfilePicIW);
             }
         }
     }

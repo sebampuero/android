@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 import androidx.navigation.NavDeepLinkBuilder;
@@ -35,13 +36,13 @@ public class PushReceiver extends BroadcastReceiver {
                         Context.MODE_PRIVATE);
         // Attempt to extract the property from the payload:
         if (intent.getIntExtra("postId", 0) != 0) {
-            if(!pref.getBoolean("comment_notifications", false)){
+            if(!pref.getString("notifications_other", "").equals("comments")){
                 processCommentNotification(context,
                         intent.getIntExtra("postId", 0),
                         intent.getStringExtra("userName"));
             }
         }else if(intent.getStringExtra("newPostNotificationTag") != null){
-            if(!pref.getBoolean("post_notifications", false)){
+            if(!pref.getString("notifications_other", "").equals("posts")){
                 processPostNotification(context, intent.getStringExtra("newPostNotificationTag"));
             }
         }

@@ -6,12 +6,17 @@
         <SwitchPreference
             app:key="notifications"
             app:title="@string/disable_notifications"/>
+        <ListPreference
+            app:defaultValue="allow"
+            app:key="notifications_other"
+            app:title="@string/notifications_others"
+            app:entries="@array/notification_settings"
+            app:entryValues="@array/notification_settings_values"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/downloads">
         <SwitchPreference
-            app:key="comment_notifications"
-            app:title="@string/disable_comment_notifications"/>
-        <SwitchPreference
-            app:key="post_notifications"
-            app:title="@string/disable_post_notifications"/>
+            app:key="allow_downloads_mobile_net"
+            app:title="@string/allow_downloads_mobile_net"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/session_settings_title">
         <Preference android:title="@string/logout_settings_btn_text"

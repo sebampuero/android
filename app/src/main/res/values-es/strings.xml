@@ -112,5 +112,14 @@
     <string name="download">Descargar</string>
     <string name="share_image">Compartir</string>
     <string name="downloading_img_msg">Descargando imagen</string>
+    <string name="downloads">Descargas</string>
+    <string name="disallow_downloads_mobile_net">No permitir descargas con red mobil</string>
+    <string name="allow_downloads_mobile_net">Permitir descargas con red mobil</string>
+    <string name="notifications_others">Otras notificaciones</string>
 
+    <array name="notification_settings">
+        <item>Permitir todas las notificaciones</item>
+        <item>Desactivar notificaciones de posts</item>
+        <item>Desactivar notificaciones de comentarios</item>
+    </array>
 </resources>

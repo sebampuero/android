@@ -2,6 +2,7 @@ package com.example.tm18app.fragment;
 
 
 import android.app.DownloadManager;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.Toolbar;
@@ -22,17 +23,14 @@ import com.example.tm18app.network.DownloadsManager;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class WebviewFragment extends Fragment {
+public class PostImgWebviewFragment extends BaseWebviewFragment {
 
     public static final String IMG_URL = "IMG_URL";
     public static final String IMG_NAME = "IMG_NAME";
-
-    private WebView mWebView;
-    private Toolbar mToolbar;
     private String mImageUrl;
     private String mImageName;
 
-    public WebviewFragment() {
+    public PostImgWebviewFragment() {
         // Required empty public constructor
     }
 
@@ -41,20 +39,10 @@ public class WebviewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_webview, container, false);
+        View view = super.onCreateView(inflater, container, savedInstanceState);
         mImageUrl = getArguments().getString(IMG_URL);
         mImageName = getArguments().getString(IMG_NAME);
-        mWebView = view.findViewById(R.id.webview);
-        mToolbar = view.findViewById(R.id.toolbarWebView);
         mToolbar.inflateMenu(R.menu.webview_menu);
-        ((MainActivity)getActivity()).getToolbar().setVisibility(View.GONE);
-        mToolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_black_24dp));
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigateUp();
-            }
-        });
         mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -63,7 +51,7 @@ public class WebviewFragment extends Fragment {
                         setDownload();
                         break;
                     case R.id.share:
-                        //TODO: add something
+                        setShareIntent();
                         break;
                 }
                 return false;
@@ -73,9 +61,17 @@ public class WebviewFragment extends Fragment {
         return view;
     }
 
+    private void setShareIntent() {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, mImageUrl);
+        sendIntent.setType("text/plain");
+
+        Intent shareIntent = Intent.createChooser(sendIntent, null);
+        startActivity(shareIntent);
+    }
+
     private void setDownload() {
-        Toast.makeText(getContext(),
-                getResources().getString(R.string.downloading_img_msg), Toast.LENGTH_SHORT).show();
         new DownloadsManager(mImageUrl, getContext())
                 .setTitle(getResources().getString(R.string.downloading_img_msg))
                 .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
@@ -83,10 +79,11 @@ public class WebviewFragment extends Fragment {
                 .download();
     }
 
-    private void loadPage() {
+    @Override
+    protected void loadPage() {
         mWebView.loadUrl(mImageUrl);
         mWebView.getSettings().setLoadWithOverviewMode(true);
         mWebView.getSettings().setUseWideViewPort(true);
+        mWebView.getSettings().setBuiltInZoomControls(true);
     }
-
 }

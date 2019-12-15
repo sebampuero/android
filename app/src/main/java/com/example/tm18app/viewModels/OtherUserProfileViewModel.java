@@ -5,8 +5,8 @@ import android.os.Bundle;
 import androidx.lifecycle.LiveData;
 
 import com.example.tm18app.R;
-import com.example.tm18app.constants.Constant;
-import com.example.tm18app.fragment.WebviewFragment;
+import com.example.tm18app.fragment.PostImgWebviewFragment;
+import com.example.tm18app.fragment.ProfileImgWebviewFragment;
 import com.example.tm18app.pojos.User;
 import com.example.tm18app.repository.PostItemRepository;
 import com.example.tm18app.repository.UserRepository;
@@ -38,11 +38,11 @@ public class OtherUserProfileViewModel extends ProfileViewModel {
 
     @Override
     public void onProfilePicClicked() {
-        Bundle bundle = new Bundle();
-        String picUrl = otherUser.getProfilePicUrl();
-        String picName = otherUser.getName() + otherUser.getId();
-        bundle.putString(WebviewFragment.IMG_URL, picUrl);
-        bundle.putString(WebviewFragment.IMG_NAME, picName);
-        navController.navigate(R.id.action_otherProfileFragment_to_webviewFragment, bundle);
+        if(otherUser.getProfilePicUrl() != null){
+            Bundle bundle = new Bundle();
+            String picUrl = otherUser.getProfilePicUrl();
+            bundle.putString(ProfileImgWebviewFragment.IMG_URL, picUrl);
+            navController.navigate(R.id.action_otherProfileFragment_to_profileImgWebviewFragment, bundle);
+        }
     }
 }

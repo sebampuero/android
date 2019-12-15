@@ -91,7 +91,10 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if(key.equals("notifications"))
+        if(key.equals("notifications")){
             Pushy.toggleNotifications(!sharedPreferences.getBoolean(key, false), getActivity().getApplicationContext());
+            getPreferenceScreen().findPreference("notifications_other")
+                    .setEnabled(!sharedPreferences.getBoolean(key, false));
+        }
     }
 }

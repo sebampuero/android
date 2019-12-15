@@ -2,9 +2,12 @@ package com.example.tm18app.network;
 
 import android.app.DownloadManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
+
+import com.example.tm18app.fragment.SettingsFragment;
 
 import java.io.File;
 
@@ -48,6 +51,14 @@ public class DownloadsManager  {
     }
 
     public void download(){
+        SharedPreferences prefs =
+                mContext.getSharedPreferences(SettingsFragment.SETTINGS_SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
+        boolean allowedOnMobile = prefs.getBoolean("allow_downloads_mobile_net", false);
+        if(allowedOnMobile)
+            mRequest.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE
+                    | DownloadManager.Request.NETWORK_WIFI);
+        else
+            mRequest.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
         DownloadManager manager =
                 (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
         manager.enqueue(mRequest);

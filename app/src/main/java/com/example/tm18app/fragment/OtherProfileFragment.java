@@ -126,8 +126,12 @@ public class OtherProfileFragment extends Fragment {
         String imgUrl = user.getProfilePicUrl();
         if(imgUrl != null){
             if(!imgUrl.equals("")){
-                Picasso.get().load(imgUrl)
-                        .resize(300, 300).centerCrop().into(mProfilePicIW);
+                Picasso.get()
+                        .load(imgUrl)
+                        .resize(300, 300)
+                        .centerCrop()
+                        .placeholder(R.drawable.progress_img_animation)
+                        .into(mProfilePicIW);
             }
         }
     }

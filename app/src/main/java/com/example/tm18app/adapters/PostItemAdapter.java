@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +27,7 @@ import com.example.tm18app.fragment.CommentSectionFragment;
 import com.example.tm18app.fragment.FeedFragment;
 import com.example.tm18app.fragment.OtherProfileFragment;
 import com.example.tm18app.fragment.ProfileFragment;
-import com.example.tm18app.fragment.WebviewFragment;
+import com.example.tm18app.fragment.PostImgWebviewFragment;
 import com.example.tm18app.pojos.Post;
 import com.example.tm18app.repository.PostItemRepository;
 import com.example.tm18app.util.TimeUtils;
@@ -98,30 +99,36 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
                 Bundle b = new Bundle();
                 b.putString(OtherProfileFragment.OTHER_USER_ID, String.valueOf(post.getUserID()));
                 if(post.getUserID() != mPrefs.getInt(Constant.USER_ID, 0))
-                    mNavController.navigate(R.id.action_feedFragment_to_otherProfileFragment, b);
+                    mNavController.navigate(R.id.otherProfileFragment, b);
                 else
                     mNavController.navigate(R.id.profileFragment);
             }
         });
         if(post.getPosterPicUrl() != null){
-            if(!post.getPosterPicUrl().equals(""))
-                Picasso.get().load(post.getPosterPicUrl()) //TODO: use dimens values
-                        .resize(70, 70).centerCrop().into(holder.posterPicUrl);
-        }else{
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                holder.posterPicUrl
-                        .setImageDrawable(mCurrentFragment.getContext()
-                                .getDrawable(R.drawable.ic_person_black_24dp));
-            }
+            holder.posterPicUrl.setVisibility(View.VISIBLE);
+            // known recyclerview / picasso bug
+            // workaround for pictures not disappearing on scroll
+            Picasso.get()
+                    .load(post.getPosterPicUrl())
+                    .resize(70, 70)
+                    .centerCrop()
+                    .into(holder.posterPicUrl);
         }
+        else
+            holder.posterPicUrl
+                    .setImageDrawable(mCurrentFragment.getContext()
+                            .getDrawable(R.drawable.ic_person_black_24dp));
         if(post.getContentPicUrl() != null){
-            if(!post.getContentPicUrl().equals("")){
-                Picasso.get().load(post.getContentPicUrl()) //TODO: use dimens values
-                        .resize(0, 500).into(holder.contentImage);
-            }
-        }else{
-            holder.contentImage.setVisibility(View.GONE);
+            holder.contentImage.setVisibility(View.VISIBLE); // known recyclerview / picasso bug
+            // workaround for pictures not disappearing on scroll
+            Picasso.get()
+                    .load(post.getContentPicUrl())
+                    .resize(0, 500)
+                    .placeholder(R.drawable.progress_img_animation)
+                    .into(holder.contentImage);
         }
+        else
+            holder.contentImage.setVisibility(View.GONE);
     }
 
     @Override
@@ -181,11 +188,11 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
                 @Override
                 public void onClick(DialogInterface dialogInterface, int which) {
                     Bundle bundle = new Bundle();
-                    bundle.putString(WebviewFragment.IMG_URL,
+                    bundle.putString(PostImgWebviewFragment.IMG_URL,
                             mPostsList.get(getAdapterPosition()).getContentPicUrl());
-                    bundle.putString(WebviewFragment.IMG_NAME,
+                    bundle.putString(PostImgWebviewFragment.IMG_NAME,
                             String.valueOf(mPostsList.get(getAdapterPosition()).getId()));
-                    mNavController.navigate(R.id.webviewFragment, bundle);
+                    mNavController.navigate(R.id.postImgWebviewFragment, bundle);
                 }
             });
             AlertDialog alert = alertBuilder.create();

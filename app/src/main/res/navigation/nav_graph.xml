@@ -36,8 +36,8 @@
             android:id="@+id/action_profileFragment_to_editProfileFragment"
             app:destination="@id/editProfileFragment" />
         <action
-            android:id="@+id/action_profileFragment_to_webviewFragment"
-            app:destination="@id/webviewFragment" />
+            android:id="@+id/action_profileFragment_to_profileImgWebviewFragment"
+            app:destination="@id/profileImgWebviewFragment" />
     </fragment>
     <fragment
         android:id="@+id/commentSectionFragment"
@@ -97,8 +97,8 @@
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
-        android:id="@+id/webviewFragment"
-        android:name="com.example.tm18app.fragment.WebviewFragment"
+        android:id="@+id/postImgWebviewFragment"
+        android:name="com.example.tm18app.fragment.PostImgWebviewFragment"
         android:label=""
         tools:layout="@layout/fragment_webview" />
     <fragment
@@ -107,7 +107,11 @@
         android:label=""
         tools:layout="@layout/fragment_other_profile" >
         <action
-            android:id="@+id/action_otherProfileFragment_to_webviewFragment"
-            app:destination="@id/webviewFragment" />
+            android:id="@+id/action_otherProfileFragment_to_profileImgWebviewFragment"
+            app:destination="@id/profileImgWebviewFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/profileImgWebviewFragment"
+        android:name="com.example.tm18app.fragment.ProfileImgWebviewFragment"
+        android:label="ProfileImgWebviewFragment" />
 </navigation>

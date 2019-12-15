@@ -101,8 +101,6 @@
     <string name="upload_profile_picture">Upload profile picture</string>
     <string name="upload_image">Upload image</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="open_img_alert_title">Open image</string>
     <string name="open_img_alert_text">Open image?</string>
     <string name="open_profile_alert_title">Open profile</string>
@@ -114,5 +112,20 @@
     <string name="download">Download</string>
     <string name="share_image">Share</string>
     <string name="downloading_img_msg">Downloading item</string>
+    <string name="downloads">Downloads</string>
+    <string name="disallow_downloads_mobile_net">Don\'t allow downloads on mobile network</string>
+    <string name="allow_downloads_mobile_net">Allow downloads on mobile network</string>
+    <string name="notifications_others">Other notifications</string>
 
+    <array name="notification_settings">
+        <item>Allow all notifications</item>
+        <item>Disable comment notifications</item>
+        <item>Disable post notifications</item>
+    </array>
+
+    <array name="notification_settings_values">
+        <item>allow</item>
+        <item>comments</item>
+        <item>posts</item>
+    </array>
 </resources>

@@ -111,5 +111,15 @@
     <string name="download">Herunterladen</string>
     <string name="share_image">Teilen</string>
     <string name="downloading_img_msg">Bild wird heruntergeladen</string>
+    <string name="downloads">Downloads</string>
+    <string name="disallow_downloads_mobile_net">Downloads mit mobilem Netzwerk nicht erlauben</string>
+    <string name="allow_downloads_mobile_net">Downloads mit mobilem Netzwerk erlauben</string>
+    <string name="notifications_others">Other notifications</string>
+
+    <array name="notification_settings">
+        <item>Alle Benachrichtigungen erlauben</item>
+        <item>Kommentare Benachrichtigungen ausschalten</item>
+        <item>Posts Benachrichtigungen ausschalten</item>
+    </array>
 
 </resources>
