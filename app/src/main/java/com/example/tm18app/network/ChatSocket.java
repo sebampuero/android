@@ -33,9 +33,10 @@ public class ChatSocket {
         chatMessage.setRoomId(roomId);
         chatMessage.setSenderId(userId);
         chatMessage.setText(message);
+        chatMessage.setTimestamp( System.currentTimeMillis() / 1000L);
         chatMessagesAdapter.addChatMessage(chatMessage);
     }
-    
+
     //TODO: Add emitter for socket
 
 }
