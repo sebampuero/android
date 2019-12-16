@@ -1,9 +1,7 @@
 package com.example.tm18app.network;
 
-import com.example.tm18app.pojos.Goal;
-import com.example.tm18app.pojos.GoalItemSelection;
+import com.example.tm18app.model.Goal;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;

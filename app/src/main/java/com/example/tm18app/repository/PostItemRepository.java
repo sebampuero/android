@@ -1,17 +1,14 @@
 package com.example.tm18app.repository;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.tm18app.network.PostRestInterface;
 import com.example.tm18app.network.RetrofitNetworkConnectionSingleton;
-import com.example.tm18app.pojos.Comment;
-import com.example.tm18app.pojos.Post;
+import com.example.tm18app.model.Comment;
+import com.example.tm18app.model.Post;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -62,7 +59,7 @@ public class PostItemRepository {
     /**
      * Fetches a {@link List} of {@link Post} that correspond to a given userId
      * @param userId {@link Integer} the userId
-     * @return {@link LiveData} containing the {@link List} of {@link com.example.tm18app.pojos.User} items
+     * @return {@link LiveData} containing the {@link List} of {@link com.example.tm18app.model.User} items
      */
     public LiveData<List<Post>> getUserPosts(String userId) {
         final MutableLiveData<List<Post>> data = new MutableLiveData<>();

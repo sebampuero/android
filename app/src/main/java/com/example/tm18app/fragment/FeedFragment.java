@@ -25,7 +25,7 @@ import com.example.tm18app.adapters.PostItemAdapter;
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.FragmentFeedBinding;
 import com.example.tm18app.network.UserPushyTokenAsyncTask;
-import com.example.tm18app.pojos.Post;
+import com.example.tm18app.model.Post;
 import com.example.tm18app.viewModels.FeedViewModel;
 import com.example.tm18app.viewModels.MyViewModel;
 import com.google.android.material.snackbar.Snackbar;

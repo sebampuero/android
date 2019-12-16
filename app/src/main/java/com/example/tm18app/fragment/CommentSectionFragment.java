@@ -19,7 +19,7 @@ import android.widget.EditText;
 import com.example.tm18app.R;
 import com.example.tm18app.adapters.CommentsAdapter;
 import com.example.tm18app.databinding.FragmentCommentSectionBinding;
-import com.example.tm18app.pojos.Comment;
+import com.example.tm18app.model.Comment;
 import com.example.tm18app.viewModels.CommentsSectionViewModel;
 import com.example.tm18app.viewModels.MyViewModel;
 

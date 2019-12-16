@@ -10,6 +10,13 @@ import androidx.annotation.Nullable;
 
 import com.example.tm18app.network.NetworkConnectivity;
 
+/**
+ * A simple {@link BaseWebviewFragment}  subclass. This class loads Profile pictures
+ *
+ * @author Sebastian Ampuero
+ * @version  1.0
+ * @since 03.12.2019
+ */
 public class ProfileImgWebviewFragment extends BaseWebviewFragment {
 
     public static final String IMG_URL = "IMG_URL";

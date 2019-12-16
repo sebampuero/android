@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.tm18app.pojos.User;
+import com.example.tm18app.model.User;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;

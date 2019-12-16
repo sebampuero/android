@@ -3,10 +3,7 @@ package com.example.tm18app.adapters;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,19 +26,13 @@ import com.example.tm18app.fragment.FeedFragment;
 import com.example.tm18app.fragment.OtherProfileFragment;
 import com.example.tm18app.fragment.ProfileFragment;
 import com.example.tm18app.fragment.PostImgWebviewFragment;
-import com.example.tm18app.fragment.SettingsFragment;
 import com.example.tm18app.network.NetworkConnectivity;
-import com.example.tm18app.pojos.Post;
+import com.example.tm18app.model.Post;
 import com.example.tm18app.repository.PostItemRepository;
 import com.example.tm18app.util.TimeUtils;
 import com.squareup.picasso.Picasso;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Adapter for the post items in Feed and Profile
@@ -101,7 +92,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
                 mNavController.navigate(R.id.commentSectionFragment, bundle);
             }
         });
-        holder.posterPicUrl.setOnClickListener(new View.OnClickListener() {
+        holder.posterPicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Bundle b = new Bundle();
@@ -113,21 +104,21 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
             }
         });
         if(post.getPosterPicUrl() != null){
-            holder.posterPicUrl.setVisibility(View.VISIBLE);
+            holder.posterPicture.setVisibility(View.VISIBLE);
             Picasso.get()
                     .load(post.getPosterPicUrl()) // no need to tweak quality
                     .resize(70, 70)
                     .centerCrop()
-                    .into(holder.posterPicUrl);
+                    .into(holder.posterPicture);
         }
-        else
-            holder.posterPicUrl
+        else // if poster has no image, insert a placeholder instead
+            holder.posterPicture
                     .setImageDrawable(mCurrentFragment.getContext()
                             .getDrawable(R.drawable.ic_person_black_24dp));
         if(post.getContentPicUrl() != null){
             holder.contentImage.setVisibility(View.VISIBLE); // known recyclerview / picasso bug
             // workaround for pictures not disappearing on scroll
-            String imgUrl = NetworkConnectivity
+            String imgUrl = NetworkConnectivity // retrieve the image url to be downloaded by Picasso
                     .tweakImgQualityByNetworkType(mCurrentFragment.getContext(),
                             post.getContentPicUrl());
             Picasso.get()
@@ -136,7 +127,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
                     .placeholder(R.drawable.progress_img_animation)
                     .into(holder.contentImage);
         }
-        else
+        else // if no image for this post, display nothing
             holder.contentImage.setVisibility(View.GONE);
     }
 
@@ -155,7 +146,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
         TextView commentCount;
         LinearLayout commentsSection;
         TextView timestamp;
-        ImageView posterPicUrl;
+        ImageView posterPicture;
         ImageView contentImage;
 
         MyViewHolder(final PostCardviewBinding binding) {
@@ -168,7 +159,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
             commentCount = binding.commentCountTv;
             commentsSection = binding.commentSectionLayout;
             timestamp = binding.timestamp;
-            posterPicUrl = binding.posterPic;
+            posterPicture = binding.posterPic;
             contentImage = binding.contentImage;
 
             binding.getRoot().setOnLongClickListener(new View.OnLongClickListener() {
@@ -188,6 +179,11 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
             });
         }
 
+        /**
+         * Shows an {@link AlertDialog} to confirm whether to show the image of the Post. Upon acceptance,
+         * the user is navigated to the {@link android.webkit.WebView} showing the image
+         * @see PostImgWebviewFragment
+         */
         private void buildDialogToOpenWV() {
             AlertDialog.Builder alertBuilder = new AlertDialog.Builder(mCurrentFragment.getContext());
             alertBuilder.setCancelable(true);
@@ -209,7 +205,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
         }
 
         /**
-         * Shows an alert dialog to the user to confirm the deletion of a Post. Upon acceptance,
+         * Shows an {@link AlertDialog} to the user to confirm the deletion of a Post. Upon acceptance,
          * the post gets deleted.
          */
         private void buildDeletionAlertDialog() {

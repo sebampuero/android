@@ -38,6 +38,9 @@
         <action
             android:id="@+id/action_profileFragment_to_profileImgWebviewFragment"
             app:destination="@id/profileImgWebviewFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_chatsFragment"
+            app:destination="@id/chatsFragment" />
     </fragment>
     <fragment
         android:id="@+id/commentSectionFragment"
@@ -109,9 +112,26 @@
         <action
             android:id="@+id/action_otherProfileFragment_to_profileImgWebviewFragment"
             app:destination="@id/profileImgWebviewFragment" />
+        <action
+            android:id="@+id/action_otherProfileFragment_to_chatMessagesFragment"
+            app:destination="@id/chatMessagesFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileImgWebviewFragment"
         android:name="com.example.tm18app.fragment.ProfileImgWebviewFragment"
         android:label="ProfileImgWebviewFragment" />
+    <fragment
+        android:id="@+id/chatsFragment"
+        android:name="com.example.tm18app.fragment.ChatsFragment"
+        android:label="@string/chats"
+        tools:layout="@layout/fragment_chats" >
+        <action
+            android:id="@+id/action_chatsFragment_to_chatMessagesFragment"
+            app:destination="@id/chatMessagesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/chatMessagesFragment"
+        android:name="com.example.tm18app.fragment.ChatMessagesFragment"
+        android:label=""
+        tools:layout="@layout/fragment_chat_messages" />
 </navigation>

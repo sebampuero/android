@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable name="myVM" type="com.example.tm18app.viewModels.ChatMessagesViewModel" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".fragment.ChatMessagesFragment">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.9"
+                android:id="@+id/chatMessagesRv"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/padding_10">
+                <EditText
+                    android:id="@+id/chatMsgInputField"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:hint="@string/send_your_message"
+                    android:padding="@dimen/padding_10"
+                    android:background="@drawable/custom_comment_edit_text"
+                    android:text="@={myVM.inputMessage}"
+                    android:layout_weight="0.85" />
+                <ImageButton
+                    android:id="@+id/commentInputBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:background="@color/inAppBackgroundColor"
+                    android:src="@drawable/ic_send_black_24dp"
+                    android:onClick="@{() -> myVM.onSendMessage()}"
+                    android:layout_weight="0.15" />
+            </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+</layout>

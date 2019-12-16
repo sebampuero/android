@@ -1,4 +1,4 @@
-package com.example.tm18app.pojos;
+package com.example.tm18app.model;
 
 /**
  * Model that holds data of a comment

@@ -1,7 +1,7 @@
 package com.example.tm18app.network;
 
-import com.example.tm18app.pojos.Comment;
-import com.example.tm18app.pojos.Post;
+import com.example.tm18app.model.Comment;
+import com.example.tm18app.model.Post;
 
 import java.util.List;
 

@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.example.tm18app.adapters.IntroViewPagerAdapter;
 import com.example.tm18app.constants.Constant;
-import com.example.tm18app.pojos.ScreenItem;
+import com.example.tm18app.model.ScreenItem;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;

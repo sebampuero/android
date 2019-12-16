@@ -1,30 +1,18 @@
 package com.example.tm18app.viewModels;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import androidx.navigation.NavController;
 
-import com.example.tm18app.constants.Constant;
 import com.example.tm18app.R;
-import com.example.tm18app.network.RetrofitNetworkConnectionSingleton;
-import com.example.tm18app.network.UserRestInterface;
-import com.example.tm18app.pojos.User;
+import com.example.tm18app.model.User;
 import com.example.tm18app.repository.UserRepository;
 import com.example.tm18app.util.SingleLiveEvent;
 
-import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
-
-import retrofit2.Call;
-import retrofit2.Response;
 
 /**
  * A {@link ViewModel} class representing the ViewModel for the {@link com.example.tm18app.fragment.LoginFragment} View

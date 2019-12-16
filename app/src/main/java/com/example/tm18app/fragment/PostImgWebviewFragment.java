@@ -22,7 +22,11 @@ import com.example.tm18app.network.DownloadsManager;
 import com.example.tm18app.network.NetworkConnectivity;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link BaseWebviewFragment}  subclass. This class loads post pictures
+ *
+ * @author Sebastian Ampuero
+ * @version  1.0
+ * @since 03.12.2019
  */
 public class PostImgWebviewFragment extends BaseWebviewFragment {
 
@@ -43,7 +47,7 @@ public class PostImgWebviewFragment extends BaseWebviewFragment {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         mImageUrl = getArguments().getString(IMG_URL);
         mImageName = getArguments().getString(IMG_NAME);
-        mToolbar.inflateMenu(R.menu.webview_menu);
+        mToolbar.inflateMenu(R.menu.webview_menu); // this fragment loads a custom toolbar
         mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -62,6 +66,9 @@ public class PostImgWebviewFragment extends BaseWebviewFragment {
         return view;
     }
 
+    /**
+     * Sets the share {@link Intent} for when the share icon is pressed.
+     */
     private void setShareIntent() {
         Intent sendIntent = new Intent();
         sendIntent.setAction(Intent.ACTION_SEND);
@@ -72,6 +79,9 @@ public class PostImgWebviewFragment extends BaseWebviewFragment {
         startActivity(shareIntent);
     }
 
+    /**
+     * Sets the download for when the download icon is pressed.
+     */
     private void setDownload() {
         new DownloadsManager(mImageUrl, getContext())
                 .setTitle(getResources().getString(R.string.downloading_img_msg))

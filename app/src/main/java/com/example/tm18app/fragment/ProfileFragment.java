@@ -5,15 +5,18 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -22,11 +25,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
 import com.example.tm18app.adapters.PostItemAdapter;
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.FragmentProfileBinding;
-import com.example.tm18app.pojos.Post;
+import com.example.tm18app.model.Post;
 import com.example.tm18app.viewModels.CurrentProfileViewModel;
 import com.example.tm18app.viewModels.MyViewModel;
 import com.squareup.picasso.Picasso;
@@ -59,6 +63,7 @@ public class ProfileFragment extends Fragment implements PostItemAdapter.OnPostD
     private TextView mNamesTV;
     private TextView mEmailTV;
     private TextView mGoalsTV;
+    private Toolbar mToolbar;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -95,6 +100,25 @@ public class ProfileFragment extends Fragment implements PostItemAdapter.OnPostD
 
 
     private void setupViews() {
+        mToolbar = mBinding.getRoot().findViewById(R.id.toolbarProfile);
+        ((MainActivity)getActivity()).getToolbar().setVisibility(View.GONE);
+        mToolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_black_24dp));
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mMainModel.getNavController().navigateUp();
+            }
+        });
+        mToolbar.inflateMenu(R.menu.profile_menu);
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                if(menuItem.getItemId() == R.id.chatsIcon)
+                    mMainModel.getNavController().navigate(R.id.action_profileFragment_to_chatsFragment);
+                return false;
+            }
+        });
+        mToolbar.setTitle(getResources().getString(R.string.profile_toolbar_title));
         mNoPostsView = mBinding.getRoot().findViewById(R.id.noPostsLayout);
         mProgressBar = mBinding.getRoot().findViewById(R.id.progressBar);
         mProfilePicIW = mBinding.profilePic;

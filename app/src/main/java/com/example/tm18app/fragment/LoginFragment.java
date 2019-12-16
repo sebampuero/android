@@ -17,7 +17,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.tm18app.R;
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.FragmentLoginBinding;
-import com.example.tm18app.pojos.User;
+import com.example.tm18app.model.User;
 import com.example.tm18app.viewModels.LoginViewModel;
 import com.example.tm18app.viewModels.MyViewModel;
 

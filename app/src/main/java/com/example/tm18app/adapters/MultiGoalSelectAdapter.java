@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tm18app.R;
-import com.example.tm18app.pojos.GoalItemSelection;
+import com.example.tm18app.model.GoalItemSelection;
 
 import java.util.ArrayList;
 

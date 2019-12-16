@@ -9,8 +9,8 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.tm18app.R;
 import com.example.tm18app.adapters.MultiGoalSelectAdapter;
-import com.example.tm18app.pojos.Goal;
-import com.example.tm18app.pojos.User;
+import com.example.tm18app.model.Goal;
+import com.example.tm18app.model.User;
 import com.example.tm18app.repository.GoalsItemRepository;
 import com.example.tm18app.repository.UserRepository;
 import com.example.tm18app.util.SingleLiveEvent;

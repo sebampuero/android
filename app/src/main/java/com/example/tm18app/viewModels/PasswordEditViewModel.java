@@ -2,16 +2,14 @@ package com.example.tm18app.viewModels;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 import android.widget.Toast;
 
-import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.tm18app.R;
 import com.example.tm18app.constants.Constant;
-import com.example.tm18app.pojos.PasswordReset;
+import com.example.tm18app.model.PasswordReset;
 import com.example.tm18app.repository.UserRepository;
 
 /**

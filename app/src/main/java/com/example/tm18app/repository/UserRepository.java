@@ -8,8 +8,8 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.tm18app.network.RegisterUserAsyncTask;
 import com.example.tm18app.network.RetrofitNetworkConnectionSingleton;
 import com.example.tm18app.network.UserRestInterface;
-import com.example.tm18app.pojos.PasswordReset;
-import com.example.tm18app.pojos.User;
+import com.example.tm18app.model.PasswordReset;
+import com.example.tm18app.model.User;
 
 import java.util.HashMap;
 

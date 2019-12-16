@@ -116,6 +116,8 @@
     <string name="allow_downloads_mobile_net">Downloads mit mobilem Netzwerk erlauben</string>
     <string name="notifications_others">Andere Benachrichtigungen</string>
     <string name="img_downloads_mobile_low_quality">Bilder mit niedriger Qualität herunterladen mit mobilem Netz</string>
+    <string name="send_your_message">Send your message</string>
+    <string name="chats">Chats</string>
 
     <array name="notification_settings">
         <item>Alle Benachrichtigungen erlauben</item>

@@ -20,7 +20,7 @@ import com.example.tm18app.R;
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.CommentItemBinding;
 import com.example.tm18app.fragment.OtherProfileFragment;
-import com.example.tm18app.pojos.Comment;
+import com.example.tm18app.model.Comment;
 import com.example.tm18app.repository.PostItemRepository;
 import com.example.tm18app.util.TimeUtils;
 import com.squareup.picasso.Picasso;
@@ -66,11 +66,13 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
         holder.lastname.setText(comment.getLastname());
         holder.content.setText(comment.getContent());
         holder.timestamp.setText(TimeUtils.parseTimestampToLocaleDatetime(comment.getTimestamp()));
-        // TODO: use dimens values
         if(comment.getCommentatorPicUrl() != null)
             if(!comment.getCommentatorPicUrl().equals("")) // get image from cloudinary
-                Picasso.get().load(comment.getCommentatorPicUrl())
-                        .resize(50,50).centerCrop().into(holder.commenterPic);
+                Picasso.get()
+                        .load(comment.getCommentatorPicUrl())
+                        .resize(50,50)
+                        .centerCrop()
+                        .into(holder.commenterPic);
             // load default drawable if no image set
     }
 
@@ -111,6 +113,12 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
             });
         }
 
+        /**
+         * Builds an {@link AlertDialog} when the comment is clicked. Asks whether the user
+         * wants to see the comment's user profile. If accepted, the user is then navigated to
+         * the user's profile
+         * @see OtherProfileFragment
+         */
         private void buildOpenProfileAlertDialog() {
             Comment comment = mCommentsList.get(getAdapterPosition());
             if(comment.getUserID() != mCurrentUserId){

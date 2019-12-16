@@ -5,9 +5,8 @@ import android.os.Bundle;
 import androidx.lifecycle.LiveData;
 
 import com.example.tm18app.R;
-import com.example.tm18app.fragment.PostImgWebviewFragment;
 import com.example.tm18app.fragment.ProfileImgWebviewFragment;
-import com.example.tm18app.pojos.User;
+import com.example.tm18app.model.User;
 import com.example.tm18app.repository.PostItemRepository;
 import com.example.tm18app.repository.UserRepository;
 

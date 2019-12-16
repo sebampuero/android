@@ -1,4 +1,4 @@
-package com.example.tm18app.pojos;
+package com.example.tm18app.model;
 
 /**
  * Model that holds data for a {@link androidx.viewpager.widget.ViewPager} Screen

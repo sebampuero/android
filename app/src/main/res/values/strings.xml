@@ -117,6 +117,8 @@
     <string name="allow_downloads_mobile_net">Allow downloads on mobile network</string>
     <string name="notifications_others">Other notifications</string>
     <string name="img_downloads_mobile_low_quality">Download images on low quality when on mobile network</string>
+    <string name="send_your_message">Send your message</string>
+    <string name="chats">Chats</string>
 
     <array name="notification_settings">
         <item>Allow all notifications</item>
@@ -129,4 +131,6 @@
         <item>comments</item>
         <item>posts</item>
     </array>
+
+
 </resources>

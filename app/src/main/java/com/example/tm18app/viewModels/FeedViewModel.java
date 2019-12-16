@@ -12,7 +12,7 @@ import androidx.navigation.NavController;
 
 import com.example.tm18app.R;
 import com.example.tm18app.constants.Constant;
-import com.example.tm18app.pojos.Post;
+import com.example.tm18app.model.Post;
 import com.example.tm18app.repository.PostItemRepository;
 
 import java.util.Arrays;

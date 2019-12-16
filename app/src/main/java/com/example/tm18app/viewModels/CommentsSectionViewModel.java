@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.tm18app.constants.Constant;
-import com.example.tm18app.pojos.Comment;
+import com.example.tm18app.model.Comment;
 import com.example.tm18app.repository.PostItemRepository;
 
 import java.util.List;

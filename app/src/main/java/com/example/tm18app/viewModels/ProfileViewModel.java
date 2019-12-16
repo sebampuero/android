@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.navigation.NavController;
 
-import com.example.tm18app.pojos.Post;
+import com.example.tm18app.model.Post;
 
 import java.util.List;
 

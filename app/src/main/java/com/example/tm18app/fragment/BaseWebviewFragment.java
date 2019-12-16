@@ -14,8 +14,15 @@ import androidx.navigation.Navigation;
 
 import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
-import com.example.tm18app.network.NetworkConnectivity;
 
+/**
+ * A simple {@link Fragment} abstract subclass. This class is responsible for loading pages inside
+ * a {@link WebView}
+ *
+ * @author Sebastian Ampuero
+ * @version  1.0
+ * @since 03.12.2019
+ */
 public abstract class BaseWebviewFragment extends Fragment {
 
 
@@ -43,5 +50,8 @@ public abstract class BaseWebviewFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Loads the page with a given URL in the {@link WebView}
+     */
     protected abstract void loadPage();
 }
