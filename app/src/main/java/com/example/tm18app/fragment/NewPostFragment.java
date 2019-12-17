@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import android.os.Looper;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,7 +35,6 @@ import com.example.tm18app.util.ConverterUtils;
 import com.example.tm18app.viewModels.MyViewModel;
 import com.example.tm18app.viewModels.NewPostViewModel;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -52,7 +50,7 @@ import static android.app.Activity.RESULT_OK;
  * @version 1.0
  * @since 03.12.2019
  */
-public class NewPostFragment extends BaseFragmentPictureSelecter implements BaseFragmentPictureSelecter.BitmapLoadedInterface{
+public class NewPostFragment extends BaseFragmentPictureSelecter implements BaseFragmentPictureSelecter.BitmapLoaderInterface {
 
     private MyViewModel mMainModel;
     private NewPostViewModel mModel;
@@ -60,7 +58,6 @@ public class NewPostFragment extends BaseFragmentPictureSelecter implements Base
     private EditText mPostTitleEditText;
     private EditText mPostContentEditText;
     private ImageView mContentIW;
-    private Uri mContentImageURI;
     private CircularProgressButton mPostBtn;
 
     public NewPostFragment() {
@@ -117,17 +114,16 @@ public class NewPostFragment extends BaseFragmentPictureSelecter implements Base
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == PICK_IMAGE){
-            mContentImageURI = data.getData();
-            applyImageUriToImageView(mContentImageURI, mContentIW, 0, 500);
+            Uri contentImgUri = data.getData();
+            processImageURI(contentImgUri, 0, 500);
         }
     }
 
     @Override
     public void onBitmapLoaded(Bitmap bitmap) {
         try {
-            // InputStream iStream = getActivity().getContentResolver().openInputStream(mContentImageURI);
+            mContentIW.setImageBitmap(bitmap);
             byte[] profilePicByteArray = ConverterUtils.getBytes(bitmap);
-            Log.e("TAG", "Length " + profilePicByteArray);
             mModel.setContentImageBase64Data(Base64.encodeToString(profilePicByteArray, Base64.DEFAULT));
         }catch (Exception e){
             e.printStackTrace();

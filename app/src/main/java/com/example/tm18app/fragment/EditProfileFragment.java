@@ -38,7 +38,6 @@ import com.example.tm18app.viewModels.EditViewModel;
 import com.example.tm18app.viewModels.MyViewModel;
 import com.squareup.picasso.Picasso;
 
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,13 +56,12 @@ import static android.app.Activity.RESULT_OK;
  * @version 1.0
  * @since 03.12.2019
  */
-public class EditProfileFragment extends BaseFragmentPictureSelecter implements BaseFragmentPictureSelecter.BitmapLoadedInterface{
+public class EditProfileFragment extends BaseFragmentPictureSelecter implements BaseFragmentPictureSelecter.BitmapLoaderInterface {
 
     private FragmentEditProfileBinding mBinding;
     private MultiGoalSelectAdapter mAdapter;
     private MyViewModel mMainModel;
     private EditViewModel mModel;
-    private Uri mProfilePicURI;
     private ImageView mProfilePicIW;
     private CircularProgressButton mSaveBtn;
 
@@ -155,15 +153,15 @@ public class EditProfileFragment extends BaseFragmentPictureSelecter implements 
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == PICK_IMAGE){
-            mProfilePicURI = data.getData();
-            applyImageUriToImageView(mProfilePicURI, mProfilePicIW, 300, 300);
+            Uri profilePicUri = data.getData();
+            processImageURI(profilePicUri, 300, 300);
         }
     }
 
     @Override
     public void onBitmapLoaded(Bitmap bitmap) {
         try {
-            // InputStream iStream = getActivity().getContentResolver().openInputStream(mProfilePicURI);
+            mProfilePicIW.setImageBitmap(bitmap);
             byte[] profilePicByteArray = ConverterUtils.getBytes(bitmap);
             mModel.setProfilePicBase64Data(Base64.encodeToString(profilePicByteArray, Base64.DEFAULT));
         }catch (Exception e){

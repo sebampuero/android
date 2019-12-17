@@ -36,7 +36,6 @@ import com.example.tm18app.util.ConverterUtils;
 import com.example.tm18app.viewModels.MyViewModel;
 import com.example.tm18app.viewModels.RegisterViewModel;
 
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,7 +53,7 @@ import static android.app.Activity.RESULT_OK;
  * @version 1.0
  * @since 03.12.2019
  */
-public class RegistrationFragment extends BaseFragmentPictureSelecter implements BaseFragmentPictureSelecter.BitmapLoadedInterface{
+public class RegistrationFragment extends BaseFragmentPictureSelecter implements BaseFragmentPictureSelecter.BitmapLoaderInterface {
 
     private MultiGoalSelectAdapter mAdapter;
     private FragmentRegistrationBinding mBinding;
@@ -69,7 +68,6 @@ public class RegistrationFragment extends BaseFragmentPictureSelecter implements
     private EditText mPasswordConfEditText;
     private EditText mEmailEditText;
     private ImageView mProfilePicIW;
-    private Uri mProfilePicURI;
 
     public RegistrationFragment() {
     }
@@ -124,15 +122,15 @@ public class RegistrationFragment extends BaseFragmentPictureSelecter implements
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == PICK_IMAGE){
-            mProfilePicURI = data.getData();
-            applyImageUriToImageView(mProfilePicURI, mProfilePicIW, 300, 300);
+            Uri profilePicUri = data.getData();
+            processImageURI(profilePicUri, 300, 300);
         }
     }
 
     @Override
     public void onBitmapLoaded(Bitmap bitmap) {
         try {
-            // InputStream iStream = getActivity().getContentResolver().openInputStream(mProfilePicURI);
+            mProfilePicIW.setImageBitmap(bitmap);
             byte[] profilePicByteArray = ConverterUtils.getBytes(bitmap);
             mModel.setProfilePicBase64Data(Base64.encodeToString(profilePicByteArray, Base64.DEFAULT));
         }catch (Exception e){
