@@ -38,15 +38,7 @@ public abstract class BaseWebviewFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_webview, container, false);
         mWebView = view.findViewById(R.id.webview);
-        mToolbar = view.findViewById(R.id.toolbarWebView);
-        ((MainActivity)getActivity()).getToolbar().setVisibility(View.GONE);
-        mToolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_black_24dp));
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigateUp();
-            }
-        });
+        mToolbar = ((MainActivity)getActivity()).getToolbar();
         return view;
     }
 

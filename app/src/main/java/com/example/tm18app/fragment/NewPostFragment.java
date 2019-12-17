@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -24,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.tm18app.MainActivity;
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.R;
 import com.example.tm18app.databinding.FragmentNewPostBinding;
@@ -72,10 +74,7 @@ public class NewPostFragment extends BaseFragmentPictureSelecter{
         mBinding.setMyVM(mModel);
         mBinding.setLifecycleOwner(this);
         mModel.setContext(getContext());
-        mPostContentEditText = mBinding.inputTextEdit;
-        mPostTitleEditText = mBinding.postTitle;
-        mContentIW = mBinding.contentImage;
-        mPostBtn = mBinding.newPostBtn;
+        setupViews();
         setSpinner();
         // set observer for new post response feedback
         mModel.getPostLiveDataResponse().observe(this, new Observer<Integer>() {
@@ -99,6 +98,15 @@ public class NewPostFragment extends BaseFragmentPictureSelecter{
             }
         });
         return mBinding.getRoot();
+    }
+
+    private void setupViews() {
+        mPostContentEditText = mBinding.inputTextEdit;
+        mPostTitleEditText = mBinding.postTitle;
+        mContentIW = mBinding.contentImage;
+        mPostBtn = mBinding.newPostBtn;
+        Toolbar toolbar = ((MainActivity)getActivity()).getToolbar();
+        toolbar.getMenu().clear();
     }
 
     @Override

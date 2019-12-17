@@ -119,7 +119,7 @@
     <fragment
         android:id="@+id/profileImgWebviewFragment"
         android:name="com.example.tm18app.fragment.ProfileImgWebviewFragment"
-        android:label="ProfileImgWebviewFragment" />
+        android:label="" />
     <fragment
         android:id="@+id/chatsFragment"
         android:name="com.example.tm18app.fragment.ChatsFragment"

@@ -3,6 +3,7 @@ package com.example.tm18app.fragment;
 
 import android.os.Bundle;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -105,6 +106,8 @@ public class OtherProfileFragment extends Fragment {
     }
 
     private void setupViews() {
+        Toolbar toolbar = ((MainActivity)getActivity()).getToolbar();
+        toolbar.getMenu().clear();
         mNoPostsView = mBinding.getRoot().findViewById(R.id.noPostsLayout);
         mProgressBar = mBinding.getRoot().findViewById(R.id.progressBar);
         mProfilePicIW = mBinding.profilePic;

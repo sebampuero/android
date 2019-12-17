@@ -9,11 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbarWebView"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/navBottomBackgroundColor"/>
         <WebView
             android:id="@+id/webview"
             android:layout_width="match_parent"

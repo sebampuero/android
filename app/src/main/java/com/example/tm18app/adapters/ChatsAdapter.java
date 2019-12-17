@@ -15,6 +15,7 @@ import com.example.tm18app.R;
 import com.example.tm18app.databinding.RoomItemBinding;
 import com.example.tm18app.fragment.ChatMessagesFragment;
 import com.example.tm18app.model.Chat;
+import com.example.tm18app.model.ChatMessage;
 import com.example.tm18app.util.TimeUtils;
 import com.squareup.picasso.Picasso;
 
@@ -75,6 +76,10 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.MyViewHolder
                     Bundle bundle = new Bundle();
                     bundle.putString(ChatMessagesFragment.ROOM_ID,
                             String.valueOf(mChatsList.get(getAdapterPosition()).getId()));
+                    bundle.putString(ChatMessagesFragment.ROOM_NAME,
+                            mChatsList.get(getAdapterPosition()).getRoom());
+                    bundle.putString(ChatMessagesFragment.TO,
+                            String.valueOf(mChatsList.get(getAdapterPosition()).getReceiverId()));
                     mNavController.navigate(R.id.action_chatsFragment_to_chatMessagesFragment, bundle);
                 }
             });

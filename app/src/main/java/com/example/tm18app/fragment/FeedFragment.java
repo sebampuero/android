@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
 import com.example.tm18app.adapters.PostItemAdapter;
 import com.example.tm18app.constants.Constant;
@@ -71,9 +73,7 @@ public class FeedFragment extends Fragment implements PostItemAdapter.OnPostDele
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_feed, container, false);
         mBinding.setMyVM(mModel);
         mBinding.setLifecycleOwner(this);
-        mProgressBar = mBinding.progressBarFeed;
-        mNoPostsView = mBinding.feedLinearLayout;
-        mProgressBar.setVisibility(View.VISIBLE); // to show that posts are loading
+        setupViews();
         mModel.setNavController(mMainModel.getNavController());
         setupSwipeRefreshLayout(); // swipe refresh for the possibility to reload posts
         setupRecyclerView();
@@ -87,6 +87,14 @@ public class FeedFragment extends Fragment implements PostItemAdapter.OnPostDele
             mProgressBar.setVisibility(View.GONE);
         }
         return mBinding.getRoot();
+    }
+
+    private void setupViews() {
+        mProgressBar = mBinding.progressBarFeed;
+        mNoPostsView = mBinding.feedLinearLayout;
+        mProgressBar.setVisibility(View.VISIBLE); // to show that posts are loading
+        Toolbar toolbar = ((MainActivity)getActivity()).getToolbar();
+        toolbar.getMenu().clear();
     }
 
     /**

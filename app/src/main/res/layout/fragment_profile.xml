@@ -18,15 +18,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbarProfile"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@color/navBottomBackgroundColor"/>
-
             <ImageView
                 android:id="@+id/profilePic"
-                android:layout_below="@id/toolbarProfile"
+
                 android:layout_width="match_parent"
                 android:onClick="@{() -> myVM.onProfilePicClicked()}"
                 android:layout_height="wrap_content"

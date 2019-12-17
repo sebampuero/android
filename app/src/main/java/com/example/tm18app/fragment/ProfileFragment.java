@@ -63,7 +63,6 @@ public class ProfileFragment extends Fragment implements PostItemAdapter.OnPostD
     private TextView mNamesTV;
     private TextView mEmailTV;
     private TextView mGoalsTV;
-    private Toolbar mToolbar;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -100,17 +99,10 @@ public class ProfileFragment extends Fragment implements PostItemAdapter.OnPostD
 
 
     private void setupViews() {
-        mToolbar = mBinding.getRoot().findViewById(R.id.toolbarProfile);
-        ((MainActivity)getActivity()).getToolbar().setVisibility(View.GONE);
-        mToolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_black_24dp));
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mMainModel.getNavController().navigateUp();
-            }
-        });
-        mToolbar.inflateMenu(R.menu.profile_menu);
-        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+        Toolbar toolbar = ((MainActivity)getActivity()).getToolbar();
+        toolbar.getMenu().clear();
+        toolbar.inflateMenu(R.menu.profile_menu);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 if(menuItem.getItemId() == R.id.chatsIcon)
@@ -118,7 +110,7 @@ public class ProfileFragment extends Fragment implements PostItemAdapter.OnPostD
                 return false;
             }
         });
-        mToolbar.setTitle(getResources().getString(R.string.profile_toolbar_title));
+        //mToolbar.setTitle(getResources().getString(R.string.profile_toolbar_title));
         mNoPostsView = mBinding.getRoot().findViewById(R.id.noPostsLayout);
         mProgressBar = mBinding.getRoot().findViewById(R.id.progressBar);
         mProfilePicIW = mBinding.profilePic;

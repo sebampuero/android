@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -16,11 +17,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
 import com.example.tm18app.adapters.ChatMessagesAdapter;
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.FragmentChatMessagesBinding;
 import com.example.tm18app.model.ChatMessage;
+import com.example.tm18app.network.ChatSocket;
 import com.example.tm18app.viewModels.ChatMessagesViewModel;
 import com.example.tm18app.viewModels.MyViewModel;
 
@@ -34,12 +37,15 @@ import java.util.List;
 public class ChatMessagesFragment extends Fragment {
 
     public static final String ROOM_ID = "roomId";
+    public static final String ROOM_NAME = "roomName";
+    public static final String TO = "receiverId";
 
     private FragmentChatMessagesBinding mBinding;
     private MyViewModel mMainModel;
     private ChatMessagesViewModel mModel;
     private ChatMessagesAdapter mAdapter;
     private List<ChatMessage> mChatMessagesList = new ArrayList<>();
+    private ChatSocket socket;
 
     public ChatMessagesFragment() {
         // Required empty public constructor
@@ -54,10 +60,34 @@ public class ChatMessagesFragment extends Fragment {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_chat_messages, container, false);
         mBinding.setMyVM(mModel);
         mBinding.setLifecycleOwner(this);
-        mModel.setRoomId(getArguments().getString(ROOM_ID));
+        mModel.setRoomId(getArguments().getString(ROOM_ID, null));
+        mModel.setRoomName(getArguments().getString(ROOM_NAME, null));
+        SharedPreferences preferences = getActivity()
+                .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
+        mModel.setPrefs(preferences);
+        socket = new ChatSocket(mAdapter, (MainActivity) getActivity(), mModel);
+        socket.establishChat(mModel.getRoomName(),
+                preferences.getInt(Constant.USER_ID, 0),
+                Integer.parseInt(getArguments().getString(TO)));
+        mModel.setSocket(socket);
+        if(mModel.getRoomName() == null)
+            socket.attachRoomListener();
+        socket.attachMessageListener();
         fetchData();
+        setupViews();
         setupRecyclerView();
         return mBinding.getRoot();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        socket.detachListener();
+    }
+
+    private void setupViews() {
+        Toolbar toolbar = ((MainActivity)getActivity()).getToolbar();
+        toolbar.getMenu().clear();
     }
 
     private void fetchData() {

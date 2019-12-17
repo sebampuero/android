@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -16,8 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toolbar;
 
+import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
 import com.example.tm18app.adapters.ChatsAdapter;
 import com.example.tm18app.constants.Constant;
@@ -57,9 +58,15 @@ public class ChatsFragment extends Fragment {
         SharedPreferences prefs = getActivity()
                 .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
         mModel.setPrefs(prefs);
+        setupViews();
         setupRecyclerView();
         fetchData();
         return mBinding.getRoot();
+    }
+
+    private void setupViews() {
+        Toolbar toolbar = ((MainActivity)getActivity()).getToolbar();
+        toolbar.getMenu().clear();
     }
 
     private void fetchData() {

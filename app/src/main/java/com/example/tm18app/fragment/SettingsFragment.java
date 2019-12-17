@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavDeepLinkBuilder;
 import androidx.preference.Preference;
@@ -41,6 +42,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         // set a name to these shared preferences to access them outside
         getPreferenceManager().setSharedPreferencesName(SETTINGS_SHARED_PREFERENCES_FILE_NAME);
         setPreferencesFromResource(R.xml.settings_pref, rootKey);
+        setupViews();
         Preference button = findPreference("logout");
         button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -75,6 +77,11 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 return true;
             }
         });
+    }
+
+    private void setupViews() {
+        Toolbar toolbar = ((MainActivity)getActivity()).getToolbar();
+        toolbar.getMenu().clear();
     }
 
     @Override

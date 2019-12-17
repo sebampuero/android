@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -23,6 +24,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
 import com.example.tm18app.adapters.MultiGoalSelectAdapter;
 import com.example.tm18app.constants.Constant;
@@ -75,8 +77,8 @@ public class EditProfileFragment extends BaseFragmentPictureSelecter{
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_edit_profile, container, false);
         mBinding.setMyVM(mModel);
         mBinding.setLifecycleOwner(this);
+        setupViews();
         setupGoalsBoxRecyclerView();
-        mProfilePicIW = mBinding.profilePic;
         // Observe for clicks on the button that triggers the DialogFragment to request goal tags
         mModel.navigateToDialog.observe(this, new Observer<Boolean>() {
             @Override
@@ -113,6 +115,12 @@ public class EditProfileFragment extends BaseFragmentPictureSelecter{
         mModel.setAdapter(mAdapter);
         fetchProfilePic();
         return mBinding.getRoot();
+    }
+
+    private void setupViews() {
+        mProfilePicIW = mBinding.profilePic;
+        Toolbar toolbar = ((MainActivity)getActivity()).getToolbar();
+        toolbar.getMenu().clear();
     }
 
     /**

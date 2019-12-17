@@ -3,6 +3,7 @@ package com.example.tm18app.fragment;
 
 import android.os.Bundle;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
 import com.example.tm18app.adapters.CommentsAdapter;
 import com.example.tm18app.databinding.FragmentCommentSectionBinding;
@@ -60,10 +62,16 @@ public class CommentSectionFragment extends Fragment {
         mBinding.setMyVM(mModel);
         mModel.setPostID(getArguments().getString(POST_ID));
         mModel.setAppContext(getActivity());
-        mCommentInputEditText = mBinding.commentInputField;
+        setupViews();
         setupRecyclerView();
         fetchData();
         return mBinding.getRoot();
+    }
+
+    private void setupViews() {
+        mCommentInputEditText = mBinding.commentInputField;
+        Toolbar toolbar = ((MainActivity)getActivity()).getToolbar();
+        toolbar.getMenu().clear();
     }
 
     /**

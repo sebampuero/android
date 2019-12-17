@@ -7,7 +7,10 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
+import com.example.tm18app.R;
 import com.example.tm18app.network.NetworkConnectivity;
 
 /**
@@ -27,6 +30,7 @@ public class ProfileImgWebviewFragment extends BaseWebviewFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         mImageUrl = getArguments().getString(IMG_URL);
+        mToolbar.getMenu().clear();
         loadPage();
         return view;
     }
