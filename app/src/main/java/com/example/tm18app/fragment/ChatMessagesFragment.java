@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +34,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ChatMessagesFragment extends Fragment implements ChatSocket.IncomingMessagesListener{
+public class ChatMessagesFragment extends Fragment implements ChatSocket.SocketListener {
 
     public static final String ROOM_ID = "roomId";
     public static final String ROOM_NAME = "roomName";
@@ -69,7 +68,7 @@ public class ChatMessagesFragment extends Fragment implements ChatSocket.Incomin
         mModel.setPrefs(preferences);
         setupRecyclerView();
         socket = new ChatSocket(getActivity(), mModel);
-        socket.setIncomingMessagesListener(this);
+        socket.setSocketListener(this);
         socket.establishChat(mModel.getRoomName(),
                 preferences.getInt(Constant.USER_ID, 0),
                 Integer.parseInt(getArguments().getString(TO)));

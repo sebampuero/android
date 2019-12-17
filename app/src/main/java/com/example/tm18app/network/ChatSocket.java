@@ -1,10 +1,7 @@
 package com.example.tm18app.network;
 
 import android.app.Activity;
-import android.util.Log;
 
-import com.example.tm18app.MainActivity;
-import com.example.tm18app.adapters.ChatMessagesAdapter;
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.model.ChatMessage;
 import com.example.tm18app.viewModels.ChatMessagesViewModel;
@@ -16,11 +13,11 @@ import java.net.URISyntaxException;
 
 public class ChatSocket {
 
-    public interface IncomingMessagesListener {
+    public interface SocketListener {
         void onNewMessage(ChatMessage chatMessage);
     }
 
-    private IncomingMessagesListener incomingMessagesListener;
+    private SocketListener socketListener;
     private Socket socket;
     private Activity activity;
     private MessageListener messageListener;
@@ -38,8 +35,8 @@ public class ChatSocket {
         }
     }
 
-    public void setIncomingMessagesListener(IncomingMessagesListener listener){
-        this.incomingMessagesListener = listener;
+    public void setSocketListener(SocketListener listener){
+        this.socketListener = listener;
     }
 
     public void establishChat(String room, int senderId, int receiverId){
@@ -53,7 +50,7 @@ public class ChatSocket {
         chatMessage.setSenderId(userId);
         chatMessage.setText(message);
         chatMessage.setTimestamp( System.currentTimeMillis() / 1000L);
-        incomingMessagesListener.onNewMessage(chatMessage);
+        socketListener.onNewMessage(chatMessage);
     }
 
     public void attachMessageListener() {
@@ -92,7 +89,7 @@ public class ChatSocket {
                     message.setSenderId((Integer) args[1]);
                     message.setText((String) args[2]);
                     message.setTimestamp((Integer) args[3]);
-                    incomingMessagesListener.onNewMessage(message);
+                    socketListener.onNewMessage(message);
                 }
             });
         }
