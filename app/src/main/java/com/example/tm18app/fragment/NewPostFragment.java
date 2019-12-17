@@ -151,11 +151,11 @@ public class NewPostFragment extends BaseFragmentPictureSelecter implements Base
             mMainModel.getNavController().navigateUp();
             mModel.getPostLiveDataResponse().setValue(0);
             cleanInputs();
-            mPostBtn.revertAnimation();
         }
         else if(statusCode == 500) {
             Toast.makeText(this.getContext(), this.getContext().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
         }
+        mPostBtn.revertAnimation();
     }
 
     /**

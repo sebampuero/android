@@ -84,19 +84,17 @@ public class LoginFragment extends Fragment {
             Toast.makeText(this.getContext(),
                     this.getContext().getString(R.string.invalid_credentials),
                     Toast.LENGTH_SHORT).show();
-            mLoginBtn.revertAnimation();
         }
         else if(integerUserHashMap.containsKey(HttpURLConnection.HTTP_INTERNAL_ERROR)){ // error from server
             Toast.makeText(this.getContext(),
                     this.getContext().getString(R.string.server_error),
                     Toast.LENGTH_SHORT).show();
-            mLoginBtn.revertAnimation();
         }
         else if(integerUserHashMap.containsKey(HttpURLConnection.HTTP_OK)){
             User user = integerUserHashMap.get(HttpURLConnection.HTTP_OK);
             handleSuccessLogin(user);
         }
-
+        mLoginBtn.revertAnimation();
     }
 
     /**

@@ -45,6 +45,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import br.com.simplepass.loading_button_lib.customViews.CircularProgressButton;
+
 import static android.app.Activity.RESULT_OK;
 
 
@@ -63,6 +65,7 @@ public class EditProfileFragment extends BaseFragmentPictureSelecter implements 
     private EditViewModel mModel;
     private Uri mProfilePicURI;
     private ImageView mProfilePicIW;
+    private CircularProgressButton mSaveBtn;
 
     public EditProfileFragment() {
         // Required empty public constructor
@@ -114,12 +117,19 @@ public class EditProfileFragment extends BaseFragmentPictureSelecter implements 
                 openGallery();
             }
         });
+        mModel.triggerLoadingBtn.observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                mSaveBtn.startAnimation();
+            }
+        });
         mModel.setAdapter(mAdapter);
         fetchProfilePic();
         return mBinding.getRoot();
     }
 
     private void setupViews() {
+        mSaveBtn = mBinding.saveEditProfileBtn;
         mProfilePicIW = mBinding.profilePic;
         Toolbar toolbar = ((MainActivity)getActivity()).getToolbar();
         toolbar.getMenu().clear();
@@ -210,6 +220,7 @@ public class EditProfileFragment extends BaseFragmentPictureSelecter implements 
             mModel.getUserLiveData().getValue().clear();
             mMainModel.getNavController().navigateUp();
         }
+        mSaveBtn.revertAnimation();
     }
 
     /**

@@ -35,6 +35,7 @@ public class EditViewModel extends ViewModel {
     public MutableLiveData<String> email = new MutableLiveData<>();
     public SingleLiveEvent<Boolean> navigateToDialog = new SingleLiveEvent<>(); // https://medium.com/androiddevelopers/livedata-with-snackbar-navigation-and-other-events-the-singleliveevent-case-ac2622673150
     public SingleLiveEvent<Boolean> selectProfilePic = new SingleLiveEvent<>();
+    public SingleLiveEvent<Boolean> triggerLoadingBtn = new SingleLiveEvent<>();
     public LiveData<List<Goal>> getGoalLiveData() {
         return goalItemsLiveData;
     }
@@ -83,6 +84,7 @@ public class EditViewModel extends ViewModel {
             // call the editUser method in repository and pass the MutableLiveData for the UI
             // to observe for changes and show feedback accordingly
             userRepository.editUser(user, (MutableLiveData<HashMap<Integer, User>>) userLiveData);
+            triggerLoadingBtn.call();
         }
     }
 

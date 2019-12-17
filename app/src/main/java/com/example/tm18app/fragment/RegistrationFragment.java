@@ -184,6 +184,7 @@ public class RegistrationFragment extends BaseFragmentPictureSelecter implements
             User user = integerUserHashMap.get(HttpURLConnection.HTTP_OK);
             handleRegisterSuccess(user);
         }
+        mRegistrationBtn.revertAnimation();
     }
 
     /**
@@ -219,7 +220,6 @@ public class RegistrationFragment extends BaseFragmentPictureSelecter implements
         editor.apply();
         mMainModel.getNavController().navigate(R.id.action_registrationFragment_to_feedFragment);
         mModel.getUserLiveData().getValue().clear();
-        mRegistrationBtn.revertAnimation();
         cleanValues();
     }
 
