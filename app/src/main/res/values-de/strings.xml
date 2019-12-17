@@ -118,6 +118,7 @@
     <string name="img_downloads_mobile_low_quality">Bilder mit niedriger Qualität herunterladen mit mobilem Netz</string>
     <string name="send_your_message">Send your message</string>
     <string name="chats">Chats</string>
+    <string name="send_private_message">Send private message</string>
 
     <array name="notification_settings">
         <item>Alle Benachrichtigungen erlauben</item>

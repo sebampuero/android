@@ -111,24 +111,23 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
                     .centerCrop()
                     .into(holder.posterPicture);
         }
-        else // if poster has no image, insert a placeholder instead
-            holder.posterPicture
-                    .setImageDrawable(mCurrentFragment.getContext()
-                            .getDrawable(R.drawable.ic_person_black_24dp));
         if(post.getContentPicUrl() != null){
             holder.contentImage.setVisibility(View.VISIBLE); // known recyclerview / picasso bug
             // workaround for pictures not disappearing on scroll
-            String imgUrl = NetworkConnectivity // retrieve the image url to be downloaded by Picasso
-                    .tweakImgQualityByNetworkType(mCurrentFragment.getContext(),
-                            post.getContentPicUrl());
+            String imgUrl; //TODO: Remove after test
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                imgUrl = NetworkConnectivity // retrieve the image url to be downloaded by Picasso
+                        .tweakImgQualityByNetworkType(mCurrentFragment.getContext(),
+                                post.getContentPicUrl());
+            }else{
+                imgUrl = post.getContentPicUrl();
+            }
             Picasso.get()
                     .load(imgUrl)
                     .resize(0, 500)
                     .placeholder(R.drawable.progress_img_animation)
                     .into(holder.contentImage);
         }
-        else // if no image for this post, display nothing
-            holder.contentImage.setVisibility(View.GONE);
     }
 
     @Override

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -108,6 +109,19 @@ public class OtherProfileFragment extends Fragment {
     private void setupViews() {
         Toolbar toolbar = ((MainActivity)getActivity()).getToolbar();
         toolbar.getMenu().clear();
+        toolbar.inflateMenu(R.menu.other_profile_menu);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if(item.getItemId() == R.id.sendPM){
+                    Bundle b = new Bundle();
+                    b.putString(ChatMessagesFragment.TO, getArguments().getString(OTHER_USER_ID));
+                    mMainModel.getNavController()
+                            .navigate(R.id.action_otherProfileFragment_to_chatMessagesFragment, b);
+                }
+                return false;
+            }
+        });
         mNoPostsView = mBinding.getRoot().findViewById(R.id.noPostsLayout);
         mProgressBar = mBinding.getRoot().findViewById(R.id.progressBar);
         mProfilePicIW = mBinding.profilePic;
@@ -128,14 +142,12 @@ public class OtherProfileFragment extends Fragment {
     private void setProfilePic(User user) {
         String imgUrl = user.getProfilePicUrl();
         if(imgUrl != null){
-            if(!imgUrl.equals("")){
-                Picasso.get()
-                        .load(imgUrl)
-                        .resize(300, 300)
-                        .centerCrop()
-                        .placeholder(R.drawable.progress_img_animation)
-                        .into(mProfilePicIW);
-            }
+            Picasso.get()
+                    .load(imgUrl)
+                    .resize(300, 300)
+                    .centerCrop()
+                    .placeholder(R.drawable.progress_img_animation)
+                    .into(mProfilePicIW);
         }
     }
 

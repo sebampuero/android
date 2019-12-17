@@ -64,6 +64,6 @@ public class ChatMessage implements Comparable<ChatMessage>{
 
     @Override
     public int compareTo(ChatMessage chatMessage) {
-        return (int) (chatMessage.getTimestamp() - this.getTimestamp());
+        return (int) (this.getTimestamp() - chatMessage.getTimestamp());
     }
 }

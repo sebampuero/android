@@ -160,14 +160,12 @@ public class ProfileFragment extends Fragment implements PostItemAdapter.OnPostD
     private void setProfilePic() {
         String imgUrl = mPrefs.getString(Constant.PROFILE_PIC_URL, null);
         if(imgUrl != null){
-            if(!imgUrl.equals("")){
-                Picasso.get()
-                        .load(mPrefs.getString(Constant.PROFILE_PIC_URL, null))
-                        .resize(300, 300)
-                        .centerCrop()
-                        .placeholder(R.drawable.progress_img_animation)
-                        .into(mProfilePicIW);
-            }
+            Picasso.get()
+                    .load(mPrefs.getString(Constant.PROFILE_PIC_URL, null))
+                    .resize(300, 300)
+                    .centerCrop()
+                    .placeholder(R.drawable.progress_img_animation)
+                    .into(mProfilePicIW);
         }
     }
 

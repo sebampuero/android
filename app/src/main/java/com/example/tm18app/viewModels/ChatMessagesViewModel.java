@@ -33,6 +33,7 @@ public class ChatMessagesViewModel extends ViewModel {
                         Integer.parseInt(roomId),
                         roomName,
                         inputMessage.getValue());
+                inputMessage.setValue("");
             }
     }
 
@@ -48,6 +49,8 @@ public class ChatMessagesViewModel extends ViewModel {
         if(roomId != null){
             ChatsRepository repository = new ChatsRepository();
             this.messagesLiveData = repository.getChatsForRoom(this.roomId);
+        }else{
+            this.messagesLiveData = new MutableLiveData<>();
         }
     }
 

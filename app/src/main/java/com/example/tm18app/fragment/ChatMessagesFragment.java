@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +35,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ChatMessagesFragment extends Fragment {
+public class ChatMessagesFragment extends Fragment implements ChatSocket.IncomingMessagesListener{
 
     public static final String ROOM_ID = "roomId";
     public static final String ROOM_NAME = "roomName";
@@ -44,7 +45,7 @@ public class ChatMessagesFragment extends Fragment {
     private MyViewModel mMainModel;
     private ChatMessagesViewModel mModel;
     private ChatMessagesAdapter mAdapter;
-    private List<ChatMessage> mChatMessagesList = new ArrayList<>();
+    private ArrayList<ChatMessage> mChatMessagesList = new ArrayList<>();
     private ChatSocket socket;
 
     public ChatMessagesFragment() {
@@ -55,6 +56,7 @@ public class ChatMessagesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         mMainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
         mModel = ViewModelProviders.of(getActivity()).get(ChatMessagesViewModel.class);
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_chat_messages, container, false);
@@ -65,7 +67,9 @@ public class ChatMessagesFragment extends Fragment {
         SharedPreferences preferences = getActivity()
                 .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
         mModel.setPrefs(preferences);
-        socket = new ChatSocket(mAdapter, (MainActivity) getActivity(), mModel);
+        setupRecyclerView();
+        socket = new ChatSocket(getActivity(), mModel);
+        socket.setIncomingMessagesListener(this);
         socket.establishChat(mModel.getRoomName(),
                 preferences.getInt(Constant.USER_ID, 0),
                 Integer.parseInt(getArguments().getString(TO)));
@@ -105,6 +109,16 @@ public class ChatMessagesFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onNewMessage(ChatMessage chatMessage) {
+        ArrayList<ChatMessage> messages;
+        messages = (ArrayList<ChatMessage>) mChatMessagesList.clone();
+        messages.add(chatMessage);
+        mChatMessagesList.clear();
+        mChatMessagesList.addAll(messages);
+        mAdapter.notifyDataSetChanged();
+    }
+
     private void setupRecyclerView() {
         RecyclerView rv = mBinding.chatMessagesRv;
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
@@ -114,5 +128,6 @@ public class ChatMessagesFragment extends Fragment {
         mAdapter = new ChatMessagesAdapter(mChatMessagesList, prefs);
         rv.setAdapter(mAdapter);
     }
+
 
 }

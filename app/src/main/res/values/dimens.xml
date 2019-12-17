@@ -21,5 +21,6 @@
     <dimen name="height_10_2">20dp</dimen>
     <dimen name="margin_10_2">20dp</dimen>
     <dimen name="padding_10_2">20dp</dimen>
+    <dimen name="text_size_12">12sp</dimen>
 
 </resources>

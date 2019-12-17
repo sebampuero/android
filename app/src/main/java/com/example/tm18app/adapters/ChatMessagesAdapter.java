@@ -1,7 +1,7 @@
 package com.example.tm18app.adapters;
 
-import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +15,7 @@ import com.example.tm18app.constants.Constant;
 import com.example.tm18app.model.ChatMessage;
 import com.example.tm18app.util.TimeUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ChatMessagesAdapter  extends RecyclerView.Adapter<ChatMessagesAdapter.MyViewHolder> {
@@ -60,11 +61,6 @@ public class ChatMessagesAdapter  extends RecyclerView.Adapter<ChatMessagesAdapt
         holder.contentText.setText(chatMessage.getText());
     }
 
-    public void addChatMessage(ChatMessage chatMessage) {
-        this.mChatMessagesList.add(chatMessage);
-        notifyDataSetChanged();
-    }
-
     @Override
     public int getItemCount() {
         return mChatMessagesList.size();
@@ -77,7 +73,6 @@ public class ChatMessagesAdapter  extends RecyclerView.Adapter<ChatMessagesAdapt
 
         MyViewHolder(@NonNull View itemView) {
             super(itemView);
-
             contentText = itemView.findViewById(R.id.contentText);
             contentTs = itemView.findViewById(R.id.contentTimestamp);
         }
