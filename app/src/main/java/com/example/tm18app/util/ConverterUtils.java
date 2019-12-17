@@ -1,8 +1,11 @@
 package com.example.tm18app.util;
 
+import android.graphics.Bitmap;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 
 /**
  * Utility class for data type conversions
@@ -29,6 +32,24 @@ public class ConverterUtils {
             byteBuffer.write(buffer, 0, len);
         }
         return byteBuffer.toByteArray();
+    }
+
+    public static byte[] getBytes(Bitmap bitmap) {
+        ByteArrayOutputStream stream = null;
+        try{
+            stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            return stream.toByteArray();
+        }catch (Exception e){
+            e.printStackTrace();
+            return new byte[]{0};
+        }finally {
+            try {
+                stream.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }

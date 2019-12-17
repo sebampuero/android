@@ -4,6 +4,7 @@ package com.example.tm18app.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -14,7 +15,9 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.os.Looper;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,7 +52,7 @@ import static android.app.Activity.RESULT_OK;
  * @version 1.0
  * @since 03.12.2019
  */
-public class NewPostFragment extends BaseFragmentPictureSelecter{
+public class NewPostFragment extends BaseFragmentPictureSelecter implements BaseFragmentPictureSelecter.BitmapLoadedInterface{
 
     private MyViewModel mMainModel;
     private NewPostViewModel mModel;
@@ -68,6 +71,7 @@ public class NewPostFragment extends BaseFragmentPictureSelecter{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        setBitmapLoaderInterface(this);
         mMainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
         mModel = ViewModelProviders.of(getActivity()).get(NewPostViewModel.class);
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_new_post, container, false);
@@ -115,14 +119,25 @@ public class NewPostFragment extends BaseFragmentPictureSelecter{
         if (resultCode == RESULT_OK && requestCode == PICK_IMAGE){
             mContentImageURI = data.getData();
             applyImageUriToImageView(mContentImageURI, mContentIW, 0, 500);
-            try {
-                InputStream iStream = getActivity().getContentResolver().openInputStream(mContentImageURI);
-                byte[] profilePicByteArray = ConverterUtils.getBytes(iStream);
-                mModel.setContentImageBase64Data(Base64.encodeToString(profilePicByteArray, Base64.DEFAULT));
-            }catch (Exception e){
-                e.printStackTrace();
-                mContentIW.setVisibility(View.GONE);
-            }
+        }
+    }
+
+    @Override
+    public void onBitmapLoaded(Bitmap bitmap) {
+        try {
+            // InputStream iStream = getActivity().getContentResolver().openInputStream(mContentImageURI);
+            byte[] profilePicByteArray = ConverterUtils.getBytes(bitmap);
+            Log.e("TAG", "Length " + profilePicByteArray);
+            mModel.setContentImageBase64Data(Base64.encodeToString(profilePicByteArray, Base64.DEFAULT));
+        }catch (Exception e){
+            e.printStackTrace();
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
+                }
+            });
+            mContentIW.setVisibility(View.GONE);
         }
     }
 

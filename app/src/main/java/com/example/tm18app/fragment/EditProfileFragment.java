@@ -4,6 +4,7 @@ package com.example.tm18app.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
@@ -54,7 +55,7 @@ import static android.app.Activity.RESULT_OK;
  * @version 1.0
  * @since 03.12.2019
  */
-public class EditProfileFragment extends BaseFragmentPictureSelecter{
+public class EditProfileFragment extends BaseFragmentPictureSelecter implements BaseFragmentPictureSelecter.BitmapLoadedInterface{
 
     private FragmentEditProfileBinding mBinding;
     private MultiGoalSelectAdapter mAdapter;
@@ -70,6 +71,7 @@ public class EditProfileFragment extends BaseFragmentPictureSelecter{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        setBitmapLoaderInterface(this);
         mModel = ViewModelProviders.of(getActivity()).get(EditViewModel.class);
         mModel.setContext(getContext());
         mMainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
@@ -145,14 +147,24 @@ public class EditProfileFragment extends BaseFragmentPictureSelecter{
         if (resultCode == RESULT_OK && requestCode == PICK_IMAGE){
             mProfilePicURI = data.getData();
             applyImageUriToImageView(mProfilePicURI, mProfilePicIW, 300, 300);
-            try {
-                InputStream iStream = getActivity().getContentResolver().openInputStream(mProfilePicURI);
-                byte[] profilePicByteArray = ConverterUtils.getBytes(iStream);
-                mModel.setProfilePicBase64Data(Base64.encodeToString(profilePicByteArray, Base64.DEFAULT));
-            }catch (Exception e){
-                e.printStackTrace();
-                mProfilePicIW.setVisibility(View.GONE);
-            }
+        }
+    }
+
+    @Override
+    public void onBitmapLoaded(Bitmap bitmap) {
+        try {
+            // InputStream iStream = getActivity().getContentResolver().openInputStream(mProfilePicURI);
+            byte[] profilePicByteArray = ConverterUtils.getBytes(bitmap);
+            mModel.setProfilePicBase64Data(Base64.encodeToString(profilePicByteArray, Base64.DEFAULT));
+        }catch (Exception e){
+            e.printStackTrace();
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
+                }
+            });
+            mProfilePicIW.setVisibility(View.GONE);
         }
     }
 
@@ -239,5 +251,4 @@ public class EditProfileFragment extends BaseFragmentPictureSelecter{
         mAdapter = new MultiGoalSelectAdapter();
         recyclerView.setAdapter(mAdapter);
     }
-
 }
