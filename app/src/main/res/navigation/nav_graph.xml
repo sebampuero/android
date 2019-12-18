@@ -38,9 +38,6 @@
         <action
             android:id="@+id/action_profileFragment_to_profileImgWebviewFragment"
             app:destination="@id/profileImgWebviewFragment" />
-        <action
-            android:id="@+id/action_profileFragment_to_chatsFragment"
-            app:destination="@id/chatsFragment" />
     </fragment>
     <fragment
         android:id="@+id/commentSectionFragment"
@@ -123,7 +120,7 @@
     <fragment
         android:id="@+id/chatsFragment"
         android:name="com.example.tm18app.fragment.ChatsFragment"
-        android:label="@string/chats"
+        android:label="@string/chatRooms"
         tools:layout="@layout/fragment_chats" >
         <action
             android:id="@+id/action_chatsFragment_to_chatMessagesFragment"

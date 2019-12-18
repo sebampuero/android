@@ -1,6 +1,6 @@
 package com.example.tm18app.model;
 
-public class Chat implements Comparable<Chat>{
+public class ChatRoom implements Comparable<ChatRoom>{
 
     private int receiverId;
     private String profilePic;
@@ -9,7 +9,7 @@ public class Chat implements Comparable<Chat>{
     private String room;
     private long lastTimestamp;
 
-    public Chat() {
+    public ChatRoom() {
     }
 
     public int getReceiverId() {
@@ -62,7 +62,7 @@ public class Chat implements Comparable<Chat>{
 
     @Override
     public String toString() {
-        return "Chat{" +
+        return "ChatRoom{" +
                 "receiverId=" + receiverId +
                 ", profilePic='" + profilePic + '\'' +
                 ", receiverName='" + receiverName + '\'' +
@@ -73,7 +73,7 @@ public class Chat implements Comparable<Chat>{
     }
 
     @Override
-    public int compareTo(Chat chat) {
-        return (int) (chat.getLastTimestamp() - this.getLastTimestamp());
+    public int compareTo(ChatRoom chatRoom) {
+        return (int) (chatRoom.getLastTimestamp() - this.getLastTimestamp());
     }
 }

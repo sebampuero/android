@@ -15,6 +15,12 @@
         android:title="@string/profile_nav"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/chatsFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_chat_black_24dp"
+        app:showAsAction="ifRoom"
+        android:title="@string/chatRooms"/>
+    <item
         android:id="@+id/settingsFragment"
         android:enabled="true"
         android:icon="@drawable/ic_settings_black_24dp"

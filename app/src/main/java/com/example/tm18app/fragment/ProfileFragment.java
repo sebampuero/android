@@ -101,16 +101,6 @@ public class ProfileFragment extends Fragment implements PostItemAdapter.OnPostD
     private void setupViews() {
         Toolbar toolbar = ((MainActivity)getActivity()).getToolbar();
         toolbar.getMenu().clear();
-        toolbar.inflateMenu(R.menu.profile_menu);
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                if(menuItem.getItemId() == R.id.chatsIcon)
-                    mMainModel.getNavController().navigate(R.id.action_profileFragment_to_chatsFragment);
-                return false;
-            }
-        });
-        //mToolbar.setTitle(getResources().getString(R.string.profile_toolbar_title));
         mNoPostsView = mBinding.getRoot().findViewById(R.id.noPostsLayout);
         mProgressBar = mBinding.getRoot().findViewById(R.id.progressBar);
         mProfilePicIW = mBinding.profilePic;

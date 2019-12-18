@@ -14,8 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.tm18app.R;
 import com.example.tm18app.databinding.RoomItemBinding;
 import com.example.tm18app.fragment.ChatMessagesFragment;
-import com.example.tm18app.model.Chat;
-import com.example.tm18app.model.ChatMessage;
+import com.example.tm18app.model.ChatRoom;
 import com.example.tm18app.util.TimeUtils;
 import com.squareup.picasso.Picasso;
 
@@ -23,10 +22,10 @@ import java.util.List;
 
 public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.MyViewHolder> {
 
-    private List<Chat> mChatsList;
+    private List<ChatRoom> mChatsList;
     private NavController mNavController;
 
-    public ChatsAdapter(List<Chat> list, NavController navController) {
+    public ChatsAdapter(List<ChatRoom> list, NavController navController) {
         this.mChatsList = list;
         this.mNavController = navController;
     }
@@ -41,12 +40,12 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.MyViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        final Chat chat = mChatsList.get(position);
-        holder.name.setText(chat.getReceiverName());
-        holder.lastTs.setText(TimeUtils.parseTimestampToLocaleDatetime(chat.getLastTimestamp()));
-        if(chat.getProfilePic() != null)
+        final ChatRoom chatRoom = mChatsList.get(position);
+        holder.name.setText(chatRoom.getReceiverName());
+        holder.lastTs.setText(TimeUtils.parseTimestampToLocaleDatetime(chatRoom.getLastTimestamp()));
+        if(chatRoom.getProfilePic() != null)
             Picasso.get()
-                    .load(chat.getProfilePic())
+                    .load(chatRoom.getProfilePic())
                     .resize(70, 70)
                     .centerCrop()
                     .into(holder.profilePic);

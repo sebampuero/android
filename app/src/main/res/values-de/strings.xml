@@ -116,9 +116,11 @@
     <string name="allow_downloads_mobile_net">Downloads mit mobilem Netzwerk erlauben</string>
     <string name="notifications_others">Andere Benachrichtigungen</string>
     <string name="img_downloads_mobile_low_quality">Bilder mit niedriger Qualität herunterladen mit mobilem Netz</string>
-    <string name="send_your_message">Send your message</string>
-    <string name="chats">Chats</string>
-    <string name="send_private_message">Send private message</string>
+    <string name="send_your_message">Schicke deine Nachricht</string>
+    <string name="chatRooms">Chats</string>
+    <string name="send_private_message">Private Nachricht senden</string>
+    <string name="no_chats">Du hast keine Chats</string>
+    <string name="loading_messages">Lade Nachrichten…</string>
 
     <array name="notification_settings">
         <item>Alle Benachrichtigungen erlauben</item>

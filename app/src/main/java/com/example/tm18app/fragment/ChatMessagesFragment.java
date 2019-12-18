@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
@@ -45,6 +46,7 @@ public class ChatMessagesFragment extends Fragment implements ChatSocket.SocketL
     private ChatMessagesViewModel mModel;
     private ChatMessagesAdapter mAdapter;
     private ArrayList<ChatMessage> mChatMessagesList = new ArrayList<>();
+    private TextView mLoadingMessagesTv;
     private ChatSocket socket;
 
     public ChatMessagesFragment() {
@@ -66,15 +68,17 @@ public class ChatMessagesFragment extends Fragment implements ChatSocket.SocketL
         SharedPreferences preferences = getActivity()
                 .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
         mModel.setPrefs(preferences);
-        setupRecyclerView();
         socket = new ChatSocket(getActivity(), mModel);
+        if(mModel.getRoomName() == null){
+            socket.attachRoomListener();
+        }else{
+            mModel.callRepository();
+        }
         socket.setSocketListener(this);
         socket.establishChat(mModel.getRoomName(),
                 preferences.getInt(Constant.USER_ID, 0),
                 Integer.parseInt(getArguments().getString(TO)));
         mModel.setSocket(socket);
-        if(mModel.getRoomName() == null)
-            socket.attachRoomListener();
         socket.attachMessageListener();
         fetchData();
         setupViews();
@@ -91,19 +95,22 @@ public class ChatMessagesFragment extends Fragment implements ChatSocket.SocketL
     private void setupViews() {
         Toolbar toolbar = ((MainActivity)getActivity()).getToolbar();
         toolbar.getMenu().clear();
+        mLoadingMessagesTv = mBinding.loadingMessagesTv;
     }
 
     private void fetchData() {
-        mModel.callRepository();
         mModel.getMessagesLiveData().observe(this, new Observer<List<ChatMessage>>() {
             @Override
             public void onChanged(List<ChatMessage> chatMessages) {
-                if(chatMessages.size() > 0){
-                    mChatMessagesList.clear();
-                    mChatMessagesList.addAll(chatMessages);
-                    Collections.sort(mChatMessagesList);
-                    mAdapter.notifyDataSetChanged();
+                if(chatMessages != null){
+                    if(chatMessages.size() > 0){
+                        mChatMessagesList.clear();
+                        mChatMessagesList.addAll(chatMessages);
+                        Collections.sort(mChatMessagesList);
+                        mAdapter.notifyDataSetChanged();
+                    }
                 }
+                mLoadingMessagesTv.setVisibility(View.GONE);
             }
         });
     }
@@ -116,6 +123,11 @@ public class ChatMessagesFragment extends Fragment implements ChatSocket.SocketL
         mChatMessagesList.clear();
         mChatMessagesList.addAll(messages);
         mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onRoomReceived() {
+        mModel.callRepository();
     }
 
     private void setupRecyclerView() {

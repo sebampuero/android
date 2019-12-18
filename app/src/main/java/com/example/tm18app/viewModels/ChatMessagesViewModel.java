@@ -2,8 +2,10 @@ package com.example.tm18app.viewModels;
 
 import android.content.SharedPreferences;
 
+import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import com.example.tm18app.constants.Constant;
@@ -16,7 +18,15 @@ import java.util.List;
 public class ChatMessagesViewModel extends ViewModel {
 
     public MutableLiveData<String> inputMessage = new MutableLiveData<>();
-    private LiveData<List<ChatMessage>> messagesLiveData;
+    private MutableLiveData<Boolean> reloadTrigger = new MutableLiveData<>();
+
+    private LiveData<List<ChatMessage>> messagesLiveData = Transformations.switchMap(reloadTrigger, new Function<Boolean, LiveData<List<ChatMessage>>>() {
+        @Override
+        public LiveData<List<ChatMessage>> apply(Boolean input) {
+            ChatsRepository repository = new ChatsRepository();
+            return repository.getChatsForRoom(roomId);
+        }
+    });
     private String roomId;
     private String roomName;
     private SharedPreferences prefs;
@@ -46,12 +56,7 @@ public class ChatMessagesViewModel extends ViewModel {
     }
 
     public void callRepository() {
-        if(roomId != null){
-            ChatsRepository repository = new ChatsRepository();
-            this.messagesLiveData = repository.getChatsForRoom(this.roomId);
-        }else{
-            this.messagesLiveData = new MutableLiveData<>();
-        }
+        reloadTrigger.setValue(true);
     }
 
     public void setSocket(ChatSocket socket) {
@@ -64,5 +69,9 @@ public class ChatMessagesViewModel extends ViewModel {
 
     public String getRoomName() {
         return roomName;
+    }
+
+    public String getRoomId() {
+        return roomId;
     }
 }

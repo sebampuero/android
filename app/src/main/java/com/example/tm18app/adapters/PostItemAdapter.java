@@ -173,34 +173,18 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
                 @Override
                 public void onClick(View view) {
                     if(mPostsList.get(getAdapterPosition()).getContentPicUrl() != null)
-                        buildDialogToOpenWV();
+                        openImage();
                 }
             });
         }
 
-        /**
-         * Shows an {@link AlertDialog} to confirm whether to show the image of the Post. Upon acceptance,
-         * the user is navigated to the {@link android.webkit.WebView} showing the image
-         * @see PostImgWebviewFragment
-         */
-        private void buildDialogToOpenWV() {
-            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(mCurrentFragment.getContext());
-            alertBuilder.setCancelable(true);
-            alertBuilder.setTitle(mCurrentFragment.getContext().getString(R.string.open_img_alert_title));
-            alertBuilder.setMessage(mCurrentFragment.getContext().getString(R.string.open_img_alert_text));
-            alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int which) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString(PostImgWebviewFragment.IMG_URL,
-                            mPostsList.get(getAdapterPosition()).getContentPicUrl());
-                    bundle.putString(PostImgWebviewFragment.IMG_NAME,
-                            String.valueOf(mPostsList.get(getAdapterPosition()).getId()));
-                    mNavController.navigate(R.id.postImgWebviewFragment, bundle);
-                }
-            });
-            AlertDialog alert = alertBuilder.create();
-            alert.show();
+        private void openImage() {
+            Bundle bundle = new Bundle();
+            bundle.putString(PostImgWebviewFragment.IMG_URL,
+                    mPostsList.get(getAdapterPosition()).getContentPicUrl());
+            bundle.putString(PostImgWebviewFragment.IMG_NAME,
+                    String.valueOf(mPostsList.get(getAdapterPosition()).getId()));
+            mNavController.navigate(R.id.postImgWebviewFragment, bundle);
         }
 
         /**

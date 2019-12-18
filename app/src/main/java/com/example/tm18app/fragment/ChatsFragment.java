@@ -17,13 +17,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
 import com.example.tm18app.adapters.ChatsAdapter;
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.FragmentChatsBinding;
-import com.example.tm18app.model.Chat;
+import com.example.tm18app.model.ChatRoom;
 import com.example.tm18app.viewModels.ChatsViewModel;
 import com.example.tm18app.viewModels.MyViewModel;
 
@@ -40,7 +42,9 @@ public class ChatsFragment extends Fragment {
     private ChatsViewModel mModel;
     private MyViewModel mMainModel;
     private ChatsAdapter mAdapter;
-    private List<Chat> mChatsList = new ArrayList<>();
+    private ProgressBar mChatsProgressView;
+    private TextView mNoChatsTV;
+    private List<ChatRoom> mChatsList = new ArrayList<>();
 
     public ChatsFragment() {
         // Required empty public constructor
@@ -67,19 +71,24 @@ public class ChatsFragment extends Fragment {
     private void setupViews() {
         Toolbar toolbar = ((MainActivity)getActivity()).getToolbar();
         toolbar.getMenu().clear();
+        mChatsProgressView = mBinding.chatsProgressView;
+        mNoChatsTV = mBinding.noChatsTv;
     }
 
     private void fetchData() {
         mModel.callRepository();
-        mModel.getChatLiveData().observe(this, new Observer<List<Chat>>() {
+        mModel.getChatLiveData().observe(this, new Observer<List<ChatRoom>>() {
             @Override
-            public void onChanged(List<Chat> chats) {
-                if(chats.size() > 0){
+            public void onChanged(List<ChatRoom> chatRooms) {
+                if(chatRooms.size() > 0){
                     mChatsList.clear();
-                    mChatsList.addAll(chats);
+                    mChatsList.addAll(chatRooms);
                     Collections.sort(mChatsList);
                     mAdapter.notifyDataSetChanged();
+                }else{
+                    mNoChatsTV.setVisibility(View.VISIBLE);
                 }
+                mChatsProgressView.setVisibility(View.GONE);
             }
         });
     }

@@ -15,6 +15,7 @@ public class ChatSocket {
 
     public interface SocketListener {
         void onNewMessage(ChatMessage chatMessage);
+        void onRoomReceived();
     }
 
     private SocketListener socketListener;
@@ -69,11 +70,16 @@ public class ChatSocket {
     }
 
     class RoomCreationListener implements Emitter.Listener {
-
         @Override
         public void call(final Object... args) {
-            chatsModel.setRoomName(String.valueOf(args[0]));
-            chatsModel.setRoomId(String.valueOf(args[1]));
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    chatsModel.setRoomName(String.valueOf(args[0]));
+                    chatsModel.setRoomId(String.valueOf(args[1]));
+                    socketListener.onRoomReceived();
+                }
+            });
         }
     }
 

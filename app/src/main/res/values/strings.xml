@@ -118,7 +118,7 @@
     <string name="notifications_others">Other notifications</string>
     <string name="img_downloads_mobile_low_quality">Download images on low quality when on mobile network</string>
     <string name="send_your_message">Send your message</string>
-    <string name="chats">Chats</string>
+    <string name="chatRooms">Chats</string>
     <string name="send_private_message">Send private message</string>
 
     <array name="notification_settings">
@@ -132,6 +132,11 @@
         <item>comments</item>
         <item>posts</item>
     </array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="no_chats">You have no chats</string>
+    <string name="loading_messages">Loading messages...</string>
 
 
 </resources>

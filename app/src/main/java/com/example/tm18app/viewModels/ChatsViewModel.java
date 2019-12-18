@@ -6,17 +6,17 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.tm18app.constants.Constant;
-import com.example.tm18app.model.Chat;
+import com.example.tm18app.model.ChatRoom;
 import com.example.tm18app.repository.ChatsRepository;
 
 import java.util.List;
 
 public class ChatsViewModel extends ViewModel {
 
-    private LiveData<List<Chat>> chatLiveData;
+    private LiveData<List<ChatRoom>> chatLiveData;
     private SharedPreferences prefs;
 
-    public LiveData<List<Chat>> getChatLiveData() {
+    public LiveData<List<ChatRoom>> getChatLiveData() {
         return chatLiveData;
     }
 
