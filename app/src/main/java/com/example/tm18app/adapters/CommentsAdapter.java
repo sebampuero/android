@@ -60,19 +60,28 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
         Comment comment = mCommentsList.get(position);
         holder.name.setText(comment.getName());
         holder.lastname.setText(comment.getLastname());
         holder.content.setText(comment.getContent());
         holder.timestamp.setText(TimeUtils.parseTimestampToLocaleDatetime(comment.getTimestamp()));
+        holder.commenterPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int commentUserId = mCommentsList.get(position).getUserID();
+                Bundle b = new Bundle();
+                b.putString(OtherProfileFragment.OTHER_USER_ID, String.valueOf(commentUserId));
+                mNavController
+                        .navigate(R.id.action_commentSectionFragment_to_otherProfileFragment, b);
+            }
+        });
         if(comment.getCommentatorPicUrl() != null)
             Picasso.get()
                     .load(comment.getCommentatorPicUrl())
                     .resize(50,50)
                     .centerCrop()
                     .into(holder.commenterPic);
-            // load default drawable if no image set
     }
 
     @Override
@@ -103,41 +112,6 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
                     return false;
                 }
             });
-
-            binding.getRoot().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    buildOpenProfileAlertDialog();
-                }
-            });
-        }
-
-        /**
-         * Builds an {@link AlertDialog} when the comment is clicked. Asks whether the user
-         * wants to see the comment's user profile. If accepted, the user is then navigated to
-         * the user's profile
-         * @see OtherProfileFragment
-         */
-        private void buildOpenProfileAlertDialog() {
-            Comment comment = mCommentsList.get(getAdapterPosition());
-            if(comment.getUserID() != mCurrentUserId){
-                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(mContext);
-                alertBuilder.setCancelable(true);
-                alertBuilder.setTitle(mContext.getString(R.string.open_profile_alert_title));
-                alertBuilder.setMessage(mContext.getString(R.string.open_profile_alert_text) + " " + comment.getName() +" ?");
-                alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int which) {
-                        int commentUserId = mCommentsList.get(getAdapterPosition()).getUserID();
-                        Bundle b = new Bundle();
-                        b.putString(OtherProfileFragment.OTHER_USER_ID, String.valueOf(commentUserId));
-                        mNavController
-                                .navigate(R.id.action_commentSectionFragment_to_otherProfileFragment, b);
-                    }
-                });
-                AlertDialog alert = alertBuilder.create();
-                alert.show();
-            }
         }
 
         /**
