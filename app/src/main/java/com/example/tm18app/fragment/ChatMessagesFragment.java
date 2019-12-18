@@ -57,7 +57,6 @@ public class ChatMessagesFragment extends Fragment implements ChatSocket.SocketL
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         mMainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
         mModel = ViewModelProviders.of(getActivity()).get(ChatMessagesViewModel.class);
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_chat_messages, container, false);
@@ -80,6 +79,9 @@ public class ChatMessagesFragment extends Fragment implements ChatSocket.SocketL
                 Integer.parseInt(getArguments().getString(TO)));
         mModel.setSocket(socket);
         socket.attachMessageListener();
+        if(mModel.getMessagesLiveData().getValue() != null){
+            mModel.getMessagesLiveData().getValue().clear();
+        }
         fetchData();
         setupViews();
         setupRecyclerView();
