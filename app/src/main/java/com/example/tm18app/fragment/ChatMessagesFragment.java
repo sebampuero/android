@@ -2,9 +2,11 @@ package com.example.tm18app.fragment;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
@@ -14,9 +16,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
@@ -25,7 +29,10 @@ import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.FragmentChatMessagesBinding;
 import com.example.tm18app.model.ChatMessage;
 import com.example.tm18app.network.ChatSocket;
+import com.example.tm18app.repository.ChatsRepository;
+import com.example.tm18app.repository.PostItemRepository;
 import com.example.tm18app.viewModels.ChatMessagesViewModel;
+import com.example.tm18app.viewModels.MyViewModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,6 +50,7 @@ public class ChatMessagesFragment extends Fragment implements ChatSocket.SocketL
 
     private FragmentChatMessagesBinding mBinding;
     private ChatMessagesViewModel mModel;
+    private MyViewModel mMainModel;
     private ChatMessagesAdapter mAdapter;
     private ArrayList<ChatMessage> mChatMessagesList = new ArrayList<>();
     private ChatSocket socket;
@@ -58,6 +66,7 @@ public class ChatMessagesFragment extends Fragment implements ChatSocket.SocketL
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        mMainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
         mModel = ViewModelProviders.of(this).get(ChatMessagesViewModel.class);
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_chat_messages, container, false);
         mBinding.setMyVM(mModel);
@@ -109,7 +118,36 @@ public class ChatMessagesFragment extends Fragment implements ChatSocket.SocketL
         Toolbar toolbar = ((MainActivity)getActivity()).getToolbar();
         toolbar.getMenu().clear();
         toolbar.setTitle(getArguments().getString(TO_NAME));
+        toolbar.inflateMenu(R.menu.chat_menu);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if(item.getItemId() == R.id.deleteChat){
+                    deleteChatRoom();
+                }
+                return false;
+            }
+        });
         mLoadingMessagesTv = mBinding.loadingMessagesTv;
+    }
+
+    private void deleteChatRoom() {
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getContext());
+        alertBuilder.setCancelable(true);
+        alertBuilder.setTitle(getContext().getString(R.string.delete_chat));
+        alertBuilder.setMessage(getContext().getString(R.string.delete_chat_conf_message));
+        alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int which) {
+                ChatsRepository repository = new ChatsRepository();
+                repository.deleteChatRoom(mModel.getRoomId());
+                mMainModel.getNavController().navigateUp();
+                Toast.makeText(getContext(), getResources().getString(R.string.chat_room_deleted),
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+        AlertDialog alert = alertBuilder.create();
+        alert.show();
     }
 
     private void fetchData() {

@@ -7,6 +7,7 @@ import com.example.tm18app.model.ChatMessage;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 
@@ -24,5 +25,8 @@ public interface ChatsRestInterface {
 
     @GET("api/goals/chats/{roomId}")
     Call<List<ChatMessage>> getChatMessagesByRoomId(@Path("roomId") String roomId);
+
+    @DELETE("api/goals/chats/{roomId}")
+    Call<Void> deleteChatRoom(@Path("roomId") String roomId);
 
 }

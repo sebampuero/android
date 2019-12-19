@@ -55,4 +55,16 @@ public class ChatsRepository {
         });
         return data;
     }
+
+    public void deleteChatRoom(String roomId) {
+        chatsRestInterface.deleteChatRoom(roomId).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+            }
+        });
+    }
 }

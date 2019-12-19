@@ -124,6 +124,9 @@
     <string name="new_message_notification">Du hast neue Nachrichten!</string>
     <string name="new_message_notification_text">hat dir Nachrichten geschickt!</string>
     <string name="new_messages">Es gibt ungelesene Nachrichten</string>
+    <string name="delete_chat">Chat löschen</string>
+    <string name="delete_chat_conf_message">Chat löschen? Alle Nachrichten für euch beiden werden gelöscht</string>
+    <string name="chat_room_deleted">Chat wurde gelöscht</string>
 
     <array name="notification_settings">
         <item>Alle Benachrichtigungen erlauben</item>

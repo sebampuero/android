@@ -125,6 +125,9 @@
     <string name="new_message_notification">Tienes nuevos mensajes!</string>
     <string name="new_message_notification_text">te envió nuevos mensajes!</string>
     <string name="new_messages">Hay mensajes no leidos</string>
+    <string name="delete_chat">Borrar chat</string>
+    <string name="delete_chat_conf_message">Borrar chat? Todos los mensajes para ambos seran borrados</string>
+    <string name="chat_room_deleted">El chat fue borrado</string>
 
     <array name="notification_settings">
         <item>Permitir todas las notificaciones</item>
