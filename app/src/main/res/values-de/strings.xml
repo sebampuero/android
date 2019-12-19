@@ -121,11 +121,15 @@
     <string name="send_private_message">Private Nachricht senden</string>
     <string name="no_chats">Du hast keine Chats</string>
     <string name="loading_messages">Lade Nachrichten…</string>
+    <string name="new_message_notification">Du hast neue Nachrichten!</string>
+    <string name="new_message_notification_text">hat dir Nachrichten geschickt!</string>
+    <string name="new_messages">Es gibt ungelesene Nachrichten</string>
 
     <array name="notification_settings">
         <item>Alle Benachrichtigungen erlauben</item>
         <item>Kommentare Benachrichtigungen ausschalten</item>
         <item>Posts Benachrichtigungen ausschalten</item>
+        <item>Neue Nachrichten Benachrichtigungen ausschalten</item>
     </array>
 
 </resources>

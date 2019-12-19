@@ -54,6 +54,7 @@ public class OtherProfileFragment extends Fragment {
     private TextView mNamesTV;
     private TextView mEmailTV;
     private TextView mGoalsTV;
+    private User otherUser;
 
     public OtherProfileFragment() {
         // Required empty public constructor
@@ -75,7 +76,8 @@ public class OtherProfileFragment extends Fragment {
             @Override
             public void onChanged(User user) {
                 ((MainActivity)getActivity()).getToolbar().setTitle(user.getName());
-                fillUserData(user);
+                otherUser = user;
+                fillUserData();
                 mModel.setOtherUser(user);
                 mModel.callRepositoryForPosts();
                 fetchData();
@@ -115,7 +117,8 @@ public class OtherProfileFragment extends Fragment {
             public boolean onMenuItemClick(MenuItem item) {
                 if(item.getItemId() == R.id.sendPM){
                     Bundle b = new Bundle();
-                    b.putString(ChatMessagesFragment.TO, getArguments().getString(OTHER_USER_ID));
+                    b.putString(ChatMessagesFragment.TO_ID, String.valueOf(otherUser.getId()));
+                    b.putString(ChatMessagesFragment.TO_NAME, otherUser.getName());
                     mMainModel.getNavController()
                             .navigate(R.id.action_otherProfileFragment_to_chatMessagesFragment, b);
                 }
@@ -131,12 +134,12 @@ public class OtherProfileFragment extends Fragment {
         mGoalsTV = mBinding.getRoot().findViewById(R.id.goalsInfoTv);
     }
 
-    private void fillUserData(User user) {
-        String names = user.getName() + " " + user.getLastname();
+    private void fillUserData() {
+        String names = otherUser.getName() + " " + otherUser.getLastname();
         mNamesTV.setText(names);
-        mEmailTV.setText(user.getEmail());
-        mGoalsTV.setText(Arrays.toString(user.getGoalTags()));
-        setProfilePic(user);
+        mEmailTV.setText(otherUser.getEmail());
+        mGoalsTV.setText(Arrays.toString(otherUser.getGoalTags()));
+        setProfilePic(otherUser);
     }
 
     private void setProfilePic(User user) {

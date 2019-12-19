@@ -121,11 +121,15 @@
     <string name="chatRooms">Chats</string>
     <string name="send_private_message">Enviar mensaje privado</string>
     <string name="no_chats">No tienes chats</string>
-    <string name="loading_messages">Cargando comentarios…</string>
+    <string name="loading_messages">Cargando mensajes…</string>
+    <string name="new_message_notification">Tienes nuevos mensajes!</string>
+    <string name="new_message_notification_text">te envió nuevos mensajes!</string>
+    <string name="new_messages">Hay mensajes no leidos</string>
 
     <array name="notification_settings">
         <item>Permitir todas las notificaciones</item>
         <item>Desactivar notificaciones de posts</item>
         <item>Desactivar notificaciones de comentarios</item>
+        <item>Desactivar notificaciones de mensajes nuevos</item>
     </array>
 </resources>

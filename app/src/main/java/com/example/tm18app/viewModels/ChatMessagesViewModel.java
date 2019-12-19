@@ -1,6 +1,7 @@
 package com.example.tm18app.viewModels;
 
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;

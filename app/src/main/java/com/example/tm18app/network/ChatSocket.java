@@ -21,8 +21,6 @@ public class ChatSocket {
     private SocketListener socketListener;
     private Socket socket;
     private Activity activity;
-    private MessageListener messageListener;
-    private RoomCreationListener roomCreationListener;
     private ChatMessagesViewModel chatsModel;
 
     public ChatSocket(Activity activity, ChatMessagesViewModel model) {
@@ -55,12 +53,12 @@ public class ChatSocket {
     }
 
     public void attachMessageListener() {
-        messageListener = new MessageListener();
+        MessageListener messageListener = new MessageListener();
         socket.on("message", messageListener);
     }
 
     public void attachRoomListener() {
-        roomCreationListener = new RoomCreationListener();
+        RoomCreationListener roomCreationListener = new RoomCreationListener();
         socket.on("room", roomCreationListener);
     }
 

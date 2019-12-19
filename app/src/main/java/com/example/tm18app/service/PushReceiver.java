@@ -15,7 +15,10 @@ import androidx.navigation.NavDeepLinkBuilder;
 
 import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
+import com.example.tm18app.fragment.ChatMessagesFragment;
+import com.example.tm18app.fragment.ChatsFragment;
 import com.example.tm18app.fragment.SettingsFragment;
+import com.example.tm18app.model.ChatMessage;
 
 import me.pushy.sdk.Pushy;
 
@@ -45,8 +48,18 @@ public class PushReceiver extends BroadcastReceiver {
             if(!pref.getString("notifications_other", "").equals("posts")){
                 processPostNotification(context, intent.getStringExtra("newPostNotificationTag"));
             }
+        }else if(intent.getIntExtra("roomId", 0) != 0){
+            if(!pref.getString("notifications_other", "").equals("messages")){
+                processMessageNotification(context,
+                        intent.getIntExtra("roomId", 0),
+                        intent.getStringExtra("roomName"),
+                        intent.getStringExtra("senderName"),
+                        intent.getIntExtra("senderId", 0));
+            }
         }
     }
+
+
 
     /**
      * Processes an incoming comment notification
@@ -88,6 +101,29 @@ public class PushReceiver extends BroadcastReceiver {
 
         buildNotification(context, notificationText, notificationTitle, pendingIntent);
     }
+
+    private void processMessageNotification(Context context, int roomId,
+                                            String roomName, String senderName, int senderId) {
+
+        Bundle bundle = new Bundle();
+        bundle.putString(ChatMessagesFragment.TO_NAME, senderName);
+        bundle.putString(ChatMessagesFragment.ROOM_ID, String.valueOf(roomId));
+        bundle.putString(ChatMessagesFragment.ROOM_NAME, roomName);
+        bundle.putString(ChatMessagesFragment.TO_ID, String.valueOf(senderId));
+
+        PendingIntent pendingIntent = new NavDeepLinkBuilder(context)
+                .setComponentName(MainActivity.class)
+                .setGraph(R.navigation.nav_graph)
+                .setDestination(R.id.chatMessagesFragment)
+                .setArguments(bundle)
+                .createPendingIntent();
+
+        String notificationTitle = context.getString(R.string.new_message_notification);
+        String notificationText =
+                senderName + " " + context.getString(R.string.new_message_notification_text);
+        buildNotification(context, notificationText, notificationTitle, pendingIntent);
+    }
+
 
     /**
      * Builds the notification

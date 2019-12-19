@@ -125,18 +125,22 @@
         <item>Allow all notifications</item>
         <item>Disable comment notifications</item>
         <item>Disable post notifications</item>
+        <item>Disable new messages notifications</item>
     </array>
 
     <array name="notification_settings_values">
         <item>allow</item>
         <item>comments</item>
         <item>posts</item>
+        <item>messages</item>
     </array>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="no_chats">You have no chats</string>
-    <string name="loading_messages">Loading messages...</string>
+    <string name="loading_messages">Loading messages…</string>
+    <string name="new_message_notification">You have new messages!</string>
+    <string name="new_message_notification_text">sent you new messsages!</string>
+    <string name="new_messages">Unread messages</string>
 
 
 </resources>

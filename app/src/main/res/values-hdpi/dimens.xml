@@ -4,10 +4,10 @@
     <dimen name="padding_10">8dp</dimen>
     <dimen name="padding_10_5">50dp</dimen>
 
-    <dimen name="text_size_10">8sp</dimen>
-    <dimen name="text_size_14">13sp</dimen>
-    <dimen name="text_size_15">14sp</dimen>
-    <dimen name="text_size_18">16sp</dimen>
+    <dimen name="text_size_10">10sp</dimen>
+    <dimen name="text_size_14">14sp</dimen>
+    <dimen name="text_size_15">15sp</dimen>
+    <dimen name="text_size_18">17sp</dimen>
     <dimen name="big_ass_text_size">30sp</dimen>
 
     <dimen name="margin_10">8dp</dimen>
@@ -21,5 +21,6 @@
     <dimen name="height_10_2">20dp</dimen>
     <dimen name="margin_10_2">18dp</dimen>
     <dimen name="padding_10_2">18dp</dimen>#
-    <dimen name="text_size_12">10sp</dimen>
+    <dimen name="text_size_12">12sp</dimen>
+    <dimen name="text_size_16">16sp</dimen>
 </resources>

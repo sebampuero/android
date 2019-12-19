@@ -30,7 +30,7 @@ public class TimeUtils {
      * @param timestamp {@link Long} the UNIX Timestamp in seconds
      * @return {@link String} the formatted timestamp to current user's locale
      */
-    public static String parseTimestampToLocaleDatetime(long timestamp){
+    public static String parseTimestampToLocaleDatetime(long timestamp){ //TODO: Define method for only hour minute
         long milliseconds = timestamp * 1000L;
         DateFormat sdf = new SimpleDateFormat(DATEFORMAT_1, getLocale());
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));

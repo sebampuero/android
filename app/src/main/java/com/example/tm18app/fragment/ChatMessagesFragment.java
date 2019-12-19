@@ -26,7 +26,6 @@ import com.example.tm18app.databinding.FragmentChatMessagesBinding;
 import com.example.tm18app.model.ChatMessage;
 import com.example.tm18app.network.ChatSocket;
 import com.example.tm18app.viewModels.ChatMessagesViewModel;
-import com.example.tm18app.viewModels.MyViewModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,15 +38,17 @@ public class ChatMessagesFragment extends Fragment implements ChatSocket.SocketL
 
     public static final String ROOM_ID = "roomId";
     public static final String ROOM_NAME = "roomName";
-    public static final String TO = "receiverId";
+    public static final String TO_ID = "receiverId";
+    public static final String TO_NAME = "to_name";
 
     private FragmentChatMessagesBinding mBinding;
-    private MyViewModel mMainModel;
     private ChatMessagesViewModel mModel;
     private ChatMessagesAdapter mAdapter;
     private ArrayList<ChatMessage> mChatMessagesList = new ArrayList<>();
-    private TextView mLoadingMessagesTv;
     private ChatSocket socket;
+    private SharedPreferences mPreferences;
+    private TextView mLoadingMessagesTv;
+    private RecyclerView mRv;
 
     public ChatMessagesFragment() {
         // Required empty public constructor
@@ -57,35 +58,39 @@ public class ChatMessagesFragment extends Fragment implements ChatSocket.SocketL
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mMainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
-        mModel = ViewModelProviders.of(getActivity()).get(ChatMessagesViewModel.class);
+        mModel = ViewModelProviders.of(this).get(ChatMessagesViewModel.class);
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_chat_messages, container, false);
         mBinding.setMyVM(mModel);
         mBinding.setLifecycleOwner(this);
+        mPreferences = getActivity()
+                .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
+        mModel.setPrefs(mPreferences);
+        setupSocketConnection();
+        setupViews();
+        setupRecyclerView();
+        fetchData();
+        return mBinding.getRoot();
+    }
+
+    private void setupSocketConnection() {
         mModel.setRoomId(getArguments().getString(ROOM_ID, null));
         mModel.setRoomName(getArguments().getString(ROOM_NAME, null));
-        SharedPreferences preferences = getActivity()
-                .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
-        mModel.setPrefs(preferences);
         socket = new ChatSocket(getActivity(), mModel);
-        if(mModel.getRoomName() == null){
+        if(mModel.getRoomName() == null || mModel.getRoomId() == null){
             socket.attachRoomListener();
         }else{
             mModel.callRepository();
         }
         socket.setSocketListener(this);
         socket.establishChat(mModel.getRoomName(),
-                preferences.getInt(Constant.USER_ID, 0),
-                Integer.parseInt(getArguments().getString(TO)));
+                mPreferences.getInt(Constant.USER_ID, 0),
+                Integer.parseInt(getArguments().getString(TO_ID)));
         mModel.setSocket(socket);
         socket.attachMessageListener();
         if(mModel.getMessagesLiveData().getValue() != null){
             mModel.getMessagesLiveData().getValue().clear();
         }
-        fetchData();
-        setupViews();
-        setupRecyclerView();
-        return mBinding.getRoot();
+
     }
 
     @Override
@@ -94,9 +99,16 @@ public class ChatMessagesFragment extends Fragment implements ChatSocket.SocketL
         socket.detachListener();
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        mModel.getMessagesLiveData().removeObservers(this);
+    }
+
     private void setupViews() {
         Toolbar toolbar = ((MainActivity)getActivity()).getToolbar();
         toolbar.getMenu().clear();
+        toolbar.setTitle(getArguments().getString(TO_NAME));
         mLoadingMessagesTv = mBinding.loadingMessagesTv;
     }
 
@@ -110,6 +122,7 @@ public class ChatMessagesFragment extends Fragment implements ChatSocket.SocketL
                         mChatMessagesList.addAll(chatMessages);
                         Collections.sort(mChatMessagesList);
                         mAdapter.notifyDataSetChanged();
+                        mRv.scrollToPosition(mAdapter.getItemCount() - 1);
                     }
                 }
                 mLoadingMessagesTv.setVisibility(View.GONE);
@@ -125,6 +138,7 @@ public class ChatMessagesFragment extends Fragment implements ChatSocket.SocketL
         mChatMessagesList.clear();
         mChatMessagesList.addAll(messages);
         mAdapter.notifyDataSetChanged();
+        mRv.scrollToPosition(mAdapter.getItemCount() - 1);
     }
 
     @Override
@@ -133,13 +147,14 @@ public class ChatMessagesFragment extends Fragment implements ChatSocket.SocketL
     }
 
     private void setupRecyclerView() {
-        RecyclerView rv = mBinding.chatMessagesRv;
+        mRv = mBinding.chatMessagesRv;
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
-        rv.setLayoutManager(manager);
+        manager.setStackFromEnd(true);
+        mRv.setLayoutManager(manager);
         SharedPreferences prefs = getActivity().getSharedPreferences(Constant.USER_INFO,
                 Context.MODE_PRIVATE);
         mAdapter = new ChatMessagesAdapter(mChatMessagesList, prefs);
-        rv.setAdapter(mAdapter);
+        mRv.setAdapter(mAdapter);
     }
 
 

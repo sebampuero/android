@@ -107,10 +107,10 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
             holder.posterPicture.setVisibility(View.VISIBLE);
             Picasso.get()
                     .load(post.getPosterPicUrl()) // no need to tweak quality
-                    .resize(70, 70)
+                    .resize(80, 80)
                     .centerCrop()
                     .into(holder.posterPicture);
-        }
+        }// else set drawable to profile pic drawable
         if(post.getContentPicUrl() != null){
             holder.contentImage.setVisibility(View.VISIBLE); // known recyclerview / picasso bug
             // workaround for pictures not disappearing on scroll
@@ -127,7 +127,8 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
                     .resize(0, 500)
                     .placeholder(R.drawable.progress_img_animation)
                     .into(holder.contentImage);
-        }
+        }else
+            holder.contentImage.setVisibility(View.GONE);
     }
 
     @Override

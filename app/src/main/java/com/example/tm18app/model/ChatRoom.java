@@ -8,6 +8,7 @@ public class ChatRoom implements Comparable<ChatRoom>{
     private int id;
     private String room;
     private long lastTimestamp;
+    private int newMessageInRoom;
 
     public ChatRoom() {
     }
@@ -60,6 +61,14 @@ public class ChatRoom implements Comparable<ChatRoom>{
         this.lastTimestamp = lastTimestamp;
     }
 
+    public int getNewMessageInRoom() {
+        return newMessageInRoom;
+    }
+
+    public void setNewMessageInRoom(int newMessageInRoom) {
+        this.newMessageInRoom = newMessageInRoom;
+    }
+
     @Override
     public String toString() {
         return "ChatRoom{" +
@@ -69,6 +78,7 @@ public class ChatRoom implements Comparable<ChatRoom>{
                 ", id=" + id +
                 ", room='" + room + '\'' +
                 ", lastTimestamp=" + lastTimestamp +
+                ", newMessageInRoom=" + newMessageInRoom +
                 '}';
     }
 

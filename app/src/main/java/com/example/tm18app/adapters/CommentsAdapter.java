@@ -79,7 +79,7 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
         if(comment.getCommentatorPicUrl() != null)
             Picasso.get()
                     .load(comment.getCommentatorPicUrl())
-                    .resize(50,50)
+                    .resize(80,80)
                     .centerCrop()
                     .into(holder.commenterPic);
     }
