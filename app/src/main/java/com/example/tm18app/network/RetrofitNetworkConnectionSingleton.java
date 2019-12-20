@@ -19,16 +19,24 @@ public class RetrofitNetworkConnectionSingleton {
     private static RetrofitNetworkConnectionSingleton singleInstance = null;
     private static Retrofit retrofit;
     private Gson gson;
+    private static final boolean DEBUG = true;
 
     private RetrofitNetworkConnectionSingleton(){
         // network initialization
         gson = new GsonBuilder()
                 .setLenient()
                 .create();
-        retrofit = new Retrofit.Builder()
-                .baseUrl(Constant.API_ENDPOINT)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
+        if(DEBUG){
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(Constant.API_ENDPOINT_LOCAL)
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .build();
+        }else{
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(Constant.API_ENDPOINT)
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .build();
+        }
     }
 
     public static RetrofitNetworkConnectionSingleton getInstance(){

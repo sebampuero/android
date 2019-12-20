@@ -17,6 +17,7 @@ public class ChatSocket {
 
     public static final int ONLINE = 1;
     public static final int OFFLINE = 0;
+    private static final boolean DEBUG = true;
 
     public interface SocketListener {
         void onNewMessage(ChatMessage chatMessage);
@@ -33,7 +34,10 @@ public class ChatSocket {
 
     public ChatSocket(Activity activity, ChatMessagesViewModel model) {
         try {
-            socket = IO.socket(Constant.API_ENDPOINT);
+            if(DEBUG)
+                socket = IO.socket(Constant.API_ENDPOINT_LOCAL);
+            else
+                socket = IO.socket(Constant.API_ENDPOINT);
             socket.connect();
             this.activity = activity;
             this.chatsModel = model;
