@@ -20,6 +20,7 @@ import java.util.TimeZone;
 public class TimeUtils {
 
     private static final String DATEFORMAT_1 = "h:mm a dd MMMM";
+    private static final String DATEFORMAT_2 = "h:mm a";
 
     private TimeUtils() {
         throw new AssertionError();
@@ -33,6 +34,17 @@ public class TimeUtils {
     public static String parseTimestampToLocaleDatetime(long timestamp){ //TODO: Define method for only hour minute
         long milliseconds = timestamp * 1000L;
         DateFormat sdf = new SimpleDateFormat(DATEFORMAT_1, getLocale());
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(milliseconds);
+        TimeZone tz = TimeZone.getDefault();
+        sdf.setTimeZone(tz);
+        return sdf.format(calendar.getTime());
+    }
+
+    public static String parseTimestampToLocaleTime(long timestamp) {
+        long milliseconds = timestamp * 1000L;
+        DateFormat sdf = new SimpleDateFormat(DATEFORMAT_2, getLocale());
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(milliseconds);

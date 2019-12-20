@@ -47,6 +47,7 @@ public class CommentSectionFragment extends Fragment {
     private CommentsAdapter mAdapter;
     private List<Comment> mCommentsList = new ArrayList<>();
     private EditText mCommentInputEditText;
+    private String mPostID;
 
     public CommentSectionFragment() {
         // Required empty public constructor
@@ -60,7 +61,8 @@ public class CommentSectionFragment extends Fragment {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_comment_section, container, false);
         mBinding.setLifecycleOwner(this);
         mBinding.setMyVM(mModel);
-        mModel.setPostID(getArguments().getString(POST_ID));
+        mPostID = getArguments().getString(POST_ID);
+        mModel.setPostID(mPostID);
         mModel.setAppContext(getActivity());
         setupViews();
         setupRecyclerView();

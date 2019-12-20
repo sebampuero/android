@@ -185,4 +185,18 @@ public class PostItemRepository {
             }
         });
     }
+
+    public void deleteSubscription(String userID, String postID) {
+        postRestInterface.deletePostSubscription(userID, postID).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+
+            }
+        });
+    }
 }

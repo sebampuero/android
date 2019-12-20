@@ -4,12 +4,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -33,6 +35,7 @@ import com.example.tm18app.util.TimeUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Adapter for the post items in Feed and Profile
@@ -78,6 +81,10 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         final Post post = mPostsList.get(position);
+        ArrayList<String> subscriberIds = null;
+        if(post.getSubscriberIds() != null){
+            subscriberIds = new ArrayList<>(Arrays.asList(post.getSubscriberIds().split(",")));
+        }
         holder.nameLastname.setText(String.format("%s %s", post.getName(), post.getLastname()));
         holder.postTitle.setText(post.getTitle());
         holder.postContent.setText(post.getContent());
@@ -92,6 +99,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
                 mNavController.navigate(R.id.commentSectionFragment, bundle);
             }
         });
+        holder.moreVertOptions.setVisibility(View.GONE);
         holder.posterPicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -103,6 +111,18 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
                     mNavController.navigate(R.id.profileFragment);
             }
         });
+        if(subscriberIds != null){
+            String userID = String.valueOf(mPrefs.getInt(Constant.USER_ID, 0));
+            if(subscriberIds.indexOf(userID) >= 0){
+                holder.moreVertOptions.setVisibility(View.VISIBLE);
+                holder.moreVertOptions.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        showOptionsAlertDialog(String.valueOf(post.getId()));
+                    }
+                });
+            }
+        }
         if(post.getPosterPicUrl() != null){
             holder.posterPicture.setVisibility(View.VISIBLE);
             Picasso.get()
@@ -131,6 +151,30 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
             holder.contentImage.setVisibility(View.GONE);
     }
 
+    private void showOptionsAlertDialog(final String postID) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mCurrentFragment.getContext());
+        final AlertDialog dialog = builder.create();
+        LayoutInflater inflater = mCurrentFragment.getLayoutInflater();
+        View dialogLayout = inflater.inflate(R.layout.post_options_alert, null);
+        dialog.setView(dialogLayout);
+        dialog.show();
+        dialog.setCancelable(true);
+        dialogLayout.findViewById(R.id.unsubscribe).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PostItemRepository repository = new PostItemRepository();
+                repository.deleteSubscription(
+                        String.valueOf(mPrefs.getInt(Constant.USER_ID, 0)),
+                        postID);
+                Toast.makeText(
+                        mCurrentFragment.getContext(),
+                        mCurrentFragment.getResources().getString(R.string.unsubcribed_from_post),
+                        Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+    }
+
     @Override
     public int getItemCount() {
         return (mPostsList != null) ? mPostsList.size() : 0;
@@ -148,6 +192,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
         TextView timestamp;
         ImageView posterPicture;
         ImageView contentImage;
+        ImageView moreVertOptions;
 
         MyViewHolder(final PostCardviewBinding binding) {
             super(binding.getRoot());
@@ -161,6 +206,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
             timestamp = binding.timestamp;
             posterPicture = binding.posterPic;
             contentImage = binding.contentImage;
+            moreVertOptions = binding.moreVertPost;
 
             binding.getRoot().setOnLongClickListener(new View.OnLongClickListener() {
                 @Override

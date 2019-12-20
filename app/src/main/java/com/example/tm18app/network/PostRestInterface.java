@@ -11,6 +11,7 @@ import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 /**
  * {@link retrofit2.Retrofit} Interface for Post endpoints
@@ -44,4 +45,8 @@ public interface PostRestInterface {
 
     @DELETE("api/goals/comment/{commentId}")
     Call<Void> deleteComment(@Path("commentId") String commentId);
+
+    @POST("api/goals/post/subscription")
+    Call<Void> deletePostSubscription(@Query("userID")String userID,
+                                      @Query("postID") String postID);
 }

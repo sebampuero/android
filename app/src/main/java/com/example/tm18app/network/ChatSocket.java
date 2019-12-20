@@ -10,14 +10,22 @@ import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 
 import java.net.URISyntaxException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ChatSocket {
+
+    public static final int ONLINE = 1;
+    public static final int OFFLINE = 0;
 
     public interface SocketListener {
         void onNewMessage(ChatMessage chatMessage);
         void onRoomReceived();
+        void onOtherOnlineStatus(int status);
+        void onOtherTyping();
     }
 
+    private Timer timer;
     private SocketListener socketListener;
     private Socket socket;
     private Activity activity;
@@ -40,6 +48,19 @@ public class ChatSocket {
 
     public void establishChat(String room, int senderId, int receiverId){
         socket.emit("enterChat", room, senderId, receiverId);
+        timer = new Timer();
+        if(room != null){
+            startOnlineStatusBroadcaster(room);
+        }
+    }
+
+    private void startOnlineStatusBroadcaster(final String room) {
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                socket.emit("clientStatusOnline", room);
+            }
+        },0,1000);
     }
 
     public void sendMessage(int userId, int roomId, String room, String message){
@@ -52,6 +73,10 @@ public class ChatSocket {
         socketListener.onNewMessage(chatMessage);
     }
 
+    public void sendTypingStatus(String room) {
+        socket.emit("typing", room);
+    }
+
     public void attachMessageListener() {
         MessageListener messageListener = new MessageListener();
         socket.on("message", messageListener);
@@ -62,9 +87,20 @@ public class ChatSocket {
         socket.on("room", roomCreationListener);
     }
 
+    public void attachStatusListener() {
+        OtherOnlineStatusListener statusListener = new OtherOnlineStatusListener();
+        socket.on("status", statusListener);
+    }
+
+    public void attachTypingListener() {
+        TypingListener listener = new TypingListener();
+        socket.on("isTyping", listener);
+    }
+
     public void detachListener() {
         socket.disconnect();
         socket.off();
+        timer.cancel();
     }
 
     class RoomCreationListener implements Emitter.Listener {
@@ -76,6 +112,7 @@ public class ChatSocket {
                     chatsModel.setRoomName(String.valueOf(args[0]));
                     chatsModel.setRoomId(String.valueOf(args[1]));
                     socketListener.onRoomReceived();
+                    startOnlineStatusBroadcaster(String.valueOf(args[0]));
                 }
             });
         }
@@ -94,6 +131,32 @@ public class ChatSocket {
                     message.setText((String) args[2]);
                     message.setTimestamp((Integer) args[3]);
                     socketListener.onNewMessage(message);
+                }
+            });
+        }
+    }
+
+    class OtherOnlineStatusListener implements Emitter.Listener {
+
+        @Override
+        public void call(final Object... args) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    socketListener.onOtherOnlineStatus((Integer) args[0]);
+                }
+            });
+        }
+    }
+
+    class TypingListener implements Emitter.Listener {
+
+        @Override
+        public void call(Object... args) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    socketListener.onOtherTyping();
                 }
             });
         }

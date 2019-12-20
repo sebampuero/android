@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -46,6 +47,7 @@ public class ChatsFragment extends Fragment {
     private ProgressBar mChatsProgressView;
     private TextView mNoChatsTV;
     private List<ChatRoom> mChatsList = new ArrayList<>();
+    private SwipeRefreshLayout mSwipeRefresh;
 
     public ChatsFragment() {
         // Required empty public constructor
@@ -74,6 +76,13 @@ public class ChatsFragment extends Fragment {
         toolbar.getMenu().clear();
         mChatsProgressView = mBinding.chatsProgressView;
         mNoChatsTV = mBinding.noChatsTv;
+        mSwipeRefresh = mBinding.swipeRefreshLayoutChats;
+        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mModel.callRepository();
+            }
+        });
     }
 
     private void fetchData() {
@@ -90,6 +99,7 @@ public class ChatsFragment extends Fragment {
                     mNoChatsTV.setVisibility(View.VISIBLE);
                 }
                 mChatsProgressView.setVisibility(View.GONE);
+                mSwipeRefresh.setRefreshing(false);
             }
         });
     }

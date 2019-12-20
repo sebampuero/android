@@ -127,6 +127,11 @@
     <string name="delete_chat">Chat löschen</string>
     <string name="delete_chat_conf_message">Chat löschen? Alle Nachrichten für euch beiden werden gelöscht</string>
     <string name="chat_room_deleted">Chat wurde gelöscht</string>
+    <string name="online">Online</string>
+    <string name="is_typing_a_message">Schreibt…</string>
+    <string name="new_comment_notification_subscription">Jemand hat kommentiert in einem abonnierten Post!</string>
+    <string name="unsubscribe_from_post">Abo entfernen</string>
+    <string name="unsubcribed_from_post">Abo entfernt</string>
 
     <array name="notification_settings">
         <item>Alle Benachrichtigungen erlauben</item>

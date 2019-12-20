@@ -22,6 +22,7 @@ public class Post implements Comparable<Post>{
     private String base64Image;
     private String posterPicUrl;
     private String contentPicUrl;
+    private String subscriberIds;
 
     public Post() {
     }
@@ -138,11 +139,19 @@ public class Post implements Comparable<Post>{
         this.base64Image = base64Image;
     }
 
+    public String getSubscriberIds() {
+        return subscriberIds;
+    }
+
+    public void setSubscriberIds(String subscriberIds) {
+        this.subscriberIds = subscriberIds;
+    }
+
     @Override
     public String toString() {
         return "Post{" +
                 "id=" + id +
-                ", setTitle='" + title + '\'' +
+                ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 ", userID=" + userID +
                 ", name='" + name + '\'' +
@@ -154,6 +163,7 @@ public class Post implements Comparable<Post>{
                 ", base64Image='" + base64Image + '\'' +
                 ", posterPicUrl='" + posterPicUrl + '\'' +
                 ", contentPicUrl='" + contentPicUrl + '\'' +
+                ", subscriberIds='" + subscriberIds + '\'' +
                 '}';
     }
 

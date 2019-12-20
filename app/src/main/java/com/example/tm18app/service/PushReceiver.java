@@ -31,6 +31,11 @@ import me.pushy.sdk.Pushy;
  */
 public class PushReceiver extends BroadcastReceiver {
 
+    private static final int NEW_COMMENT_POST = 1;
+    private static final int NEW_COMMENT_POST_SUBS = 2;
+    private static final int NEW_POST = 3;
+    private static final int NEW_MESSAGE = 4;
+
     @Override
     public void onReceive(Context context, Intent intent) {
         // get shared preferences that are set from configuration view
@@ -38,17 +43,17 @@ public class PushReceiver extends BroadcastReceiver {
                 context.getSharedPreferences(SettingsFragment.SETTINGS_SHARED_PREFERENCES_FILE_NAME,
                         Context.MODE_PRIVATE);
         // Attempt to extract the property from the payload:
-        if (intent.getIntExtra("postId", 0) != 0) {
+        if (intent.getIntExtra("id", 0) == NEW_COMMENT_POST) {
             if(!pref.getString("notifications_other", "").equals("comments")){
                 processCommentNotification(context,
                         intent.getIntExtra("postId", 0),
                         intent.getStringExtra("userName"));
             }
-        }else if(intent.getStringExtra("newPostNotificationTag") != null){
+        }else if(intent.getIntExtra("id", 0) == NEW_POST){
             if(!pref.getString("notifications_other", "").equals("posts")){
                 processPostNotification(context, intent.getStringExtra("newPostNotificationTag"));
             }
-        }else if(intent.getIntExtra("roomId", 0) != 0){
+        }else if(intent.getIntExtra("id", 0) == NEW_MESSAGE){
             if(!pref.getString("notifications_other", "").equals("messages")){
                 processMessageNotification(context,
                         intent.getIntExtra("roomId", 0),
@@ -56,9 +61,29 @@ public class PushReceiver extends BroadcastReceiver {
                         intent.getStringExtra("senderName"),
                         intent.getIntExtra("senderId", 0));
             }
+        }else if(intent.getIntExtra("id", 0) == NEW_COMMENT_POST_SUBS){
+            if(!pref.getString("notifications_other", "").equals("comments")){
+                processCommentNotificationSubscribedPost(context,
+                        intent.getIntExtra("postId", 0));
+            }
         }
     }
 
+    private void processCommentNotificationSubscribedPost(Context context, int postId) {
+        Bundle bundle = new Bundle();
+        bundle.putString("postID", String.valueOf(postId));
+        PendingIntent pendingIntent = new NavDeepLinkBuilder(context)
+                .setComponentName(MainActivity.class)
+                .setGraph(R.navigation.nav_graph)
+                .setDestination(R.id.commentSectionFragment)
+                .setArguments(bundle) // so that comment fragment knows what comments to load
+                .createPendingIntent();
+
+        String notificationTitle = context.getString(R.string.new_comment_notification_subscription);
+        String notificationText = "";
+
+        buildNotification(context, notificationText, notificationTitle, pendingIntent);
+    }
 
 
     /**

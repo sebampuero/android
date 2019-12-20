@@ -57,7 +57,7 @@ public class ChatMessagesAdapter  extends RecyclerView.Adapter<ChatMessagesAdapt
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         ChatMessage chatMessage = mChatMessagesList.get(position);
-        holder.contentTs.setText(TimeUtils.parseTimestampToLocaleDatetime(chatMessage.getTimestamp()));
+        holder.contentTs.setText(TimeUtils.parseTimestampToLocaleTime(chatMessage.getTimestamp()));
         holder.contentText.setText(chatMessage.getText());
     }
 

@@ -26,12 +26,14 @@
                 android:id="@+id/commentInputField"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:inputType="text"
+                android:inputType="textMultiLine"
+                android:ems="15"
                 android:hint="@string/post_a_comment"
                 android:padding="@dimen/padding_10"
                 android:background="@drawable/custom_comment_edit_text"
                 android:text="@={myVM.inputComment}"
-                android:layout_weight="0.85" />
+                android:layout_weight="0.85"
+                />
             <ImageButton
                 android:id="@+id/commentInputBtn"
                 android:layout_width="0dp"

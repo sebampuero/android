@@ -30,7 +30,6 @@ import com.example.tm18app.databinding.FragmentChatMessagesBinding;
 import com.example.tm18app.model.ChatMessage;
 import com.example.tm18app.network.ChatSocket;
 import com.example.tm18app.repository.ChatsRepository;
-import com.example.tm18app.repository.PostItemRepository;
 import com.example.tm18app.viewModels.ChatMessagesViewModel;
 import com.example.tm18app.viewModels.MyViewModel;
 
@@ -57,6 +56,7 @@ public class ChatMessagesFragment extends Fragment implements ChatSocket.SocketL
     private SharedPreferences mPreferences;
     private TextView mLoadingMessagesTv;
     private RecyclerView mRv;
+    private Toolbar mToolbar;
 
     public ChatMessagesFragment() {
         // Required empty public constructor
@@ -85,12 +85,12 @@ public class ChatMessagesFragment extends Fragment implements ChatSocket.SocketL
         mModel.setRoomId(getArguments().getString(ROOM_ID, null));
         mModel.setRoomName(getArguments().getString(ROOM_NAME, null));
         socket = new ChatSocket(getActivity(), mModel);
+        socket.setSocketListener(this);
         if(mModel.getRoomName() == null || mModel.getRoomId() == null){
             socket.attachRoomListener();
         }else{
             mModel.callRepository();
         }
-        socket.setSocketListener(this);
         socket.establishChat(mModel.getRoomName(),
                 mPreferences.getInt(Constant.USER_ID, 0),
                 Integer.parseInt(getArguments().getString(TO_ID)));
@@ -99,13 +99,21 @@ public class ChatMessagesFragment extends Fragment implements ChatSocket.SocketL
         if(mModel.getMessagesLiveData().getValue() != null){
             mModel.getMessagesLiveData().getValue().clear();
         }
-
+        socket.attachStatusListener();
+        socket.attachTypingListener();
+        mModel.inputMessage.observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String s) {
+                socket.sendTypingStatus(mModel.getRoomName());
+            }
+        });
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         socket.detachListener();
+        mToolbar.setSubtitle("");
     }
 
     @Override
@@ -115,11 +123,11 @@ public class ChatMessagesFragment extends Fragment implements ChatSocket.SocketL
     }
 
     private void setupViews() {
-        Toolbar toolbar = ((MainActivity)getActivity()).getToolbar();
-        toolbar.getMenu().clear();
-        toolbar.setTitle(getArguments().getString(TO_NAME));
-        toolbar.inflateMenu(R.menu.chat_menu);
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+        mToolbar = ((MainActivity)getActivity()).getToolbar();
+        mToolbar.getMenu().clear();
+        mToolbar.setTitle(getArguments().getString(TO_NAME));
+        mToolbar.inflateMenu(R.menu.chat_menu);
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if(item.getItemId() == R.id.deleteChat){
@@ -182,6 +190,19 @@ public class ChatMessagesFragment extends Fragment implements ChatSocket.SocketL
     @Override
     public void onRoomReceived() {
         mModel.callRepository();
+    }
+
+    @Override
+    public void onOtherOnlineStatus(int status) {
+        if(status == ChatSocket.ONLINE)
+            mToolbar.setSubtitle(getResources().getString(R.string.online));
+        else if(status == ChatSocket.OFFLINE)
+            mToolbar.setSubtitle("");
+    }
+
+    @Override
+    public void onOtherTyping() {
+        mToolbar.setSubtitle(getResources().getString(R.string.is_typing_a_message));
     }
 
     private void setupRecyclerView() {
