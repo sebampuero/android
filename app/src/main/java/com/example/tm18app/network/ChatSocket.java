@@ -46,8 +46,8 @@ public class ChatSocket {
         this.socketListener = listener;
     }
 
-    public void establishChat(String room, int senderId, int receiverId){
-        socket.emit("enterChat", room, senderId, receiverId);
+    public void establishChat(String room, int senderId, int receiverId, String pushyToken){
+        socket.emit("enterChat", room, senderId, receiverId, pushyToken);
         timer = new Timer();
         if(room != null){
             startOnlineStatusBroadcaster(room);

@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.tm18app.viewModels.MyViewModel;
 
 public abstract class BaseFragment extends Fragment {
-    //TODO: apply this base fragment to all fragments
     protected MyViewModel mMainModel;
 
     public BaseFragment() {

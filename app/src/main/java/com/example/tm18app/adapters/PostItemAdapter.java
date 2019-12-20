@@ -130,18 +130,14 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
                     .resize(80, 80)
                     .centerCrop()
                     .into(holder.posterPicture);
-        }// else set drawable to profile pic drawable
+        }else
+            holder.posterPicture.setImageDrawable(mCurrentFragment.getResources().getDrawable(R.drawable.ic_person_black_24dp));
         if(post.getContentPicUrl() != null){
             holder.contentImage.setVisibility(View.VISIBLE); // known recyclerview / picasso bug
             // workaround for pictures not disappearing on scroll
-            String imgUrl; //TODO: Remove after test
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                imgUrl = NetworkConnectivity // retrieve the image url to be downloaded by Picasso
-                        .tweakImgQualityByNetworkType(mCurrentFragment.getContext(),
-                                post.getContentPicUrl());
-            }else{
-                imgUrl = post.getContentPicUrl();
-            }
+            String imgUrl = NetworkConnectivity // retrieve the image url to be downloaded by Picasso
+                    .tweakImgQualityByNetworkType(mCurrentFragment.getContext(),
+                            post.getContentPicUrl());
             Picasso.get()
                     .load(imgUrl)
                     .resize(0, 500)

@@ -86,7 +86,8 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
         }
         socket.establishChat(mModel.getRoomName(),
                 mPreferences.getInt(Constant.USER_ID, 0),
-                Integer.parseInt(getArguments().getString(TO_ID)));
+                Integer.parseInt(getArguments().getString(TO_ID)),
+                mPreferences.getString(Constant.PUSHY_TOKEN, ""));
         mModel.setSocket(socket);
         socket.attachMessageListener();
         if(mModel.getMessagesLiveData().getValue() != null){
