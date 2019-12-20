@@ -4,7 +4,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.tm18app"
-        minSdkVersion 21
+        minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
         versionName "1.02"
@@ -44,6 +44,7 @@ dependencies {
     implementation 'me.pushy:sdk:1.0.54'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.github.nkzawa:socket.io-client:0.6.0'
+    implementation 'de.hdodenhof:circleimageview:3.0.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

@@ -21,7 +21,6 @@ import java.util.List;
  */
 public abstract class ProfileViewModel extends ViewModel {
 
-    //TODO: make an abstract view model for all viewmodels
     protected NavController navController;
 
     protected LiveData<List<Post>> postLiveData;

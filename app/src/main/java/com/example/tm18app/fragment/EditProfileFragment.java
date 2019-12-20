@@ -175,6 +175,12 @@ public class EditProfileFragment extends BaseFragmentPictureSelecter implements 
         }
     }
 
+    @Override
+    public void onLoadingBitmap() {
+        Toast.makeText(getContext(),
+                getResources().getString(R.string.loading_image_msg), Toast.LENGTH_LONG).show();
+    }
+
 
     /**
      * Evaluates the info that came from the database and show corresponding feedback messages

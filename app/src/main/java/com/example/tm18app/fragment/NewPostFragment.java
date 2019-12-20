@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,6 +36,7 @@ import com.example.tm18app.util.ConverterUtils;
 import com.example.tm18app.viewModels.MyViewModel;
 import com.example.tm18app.viewModels.NewPostViewModel;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -114,7 +116,12 @@ public class NewPostFragment extends BaseFragmentPictureSelecter implements Base
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == PICK_IMAGE){
             Uri contentImgUri = data.getData();
-            processImageURI(contentImgUri, 0, 500);
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), contentImgUri);
+                processImageURI(contentImgUri, 0, bitmap.getHeight());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -134,6 +141,12 @@ public class NewPostFragment extends BaseFragmentPictureSelecter implements Base
             });
             mContentIW.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onLoadingBitmap() {
+        Toast.makeText(getContext(),
+                getResources().getString(R.string.loading_image_msg), Toast.LENGTH_LONG).show();
     }
 
     /**

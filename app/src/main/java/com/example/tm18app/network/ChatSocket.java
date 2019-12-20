@@ -17,13 +17,14 @@ public class ChatSocket {
 
     public static final int ONLINE = 1;
     public static final int OFFLINE = 0;
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     public interface SocketListener {
         void onNewMessage(ChatMessage chatMessage);
         void onRoomReceived();
         void onOtherOnlineStatus(int status);
         void onOtherTyping();
+        void onError(String error);
     }
 
     private Timer timer;
@@ -101,6 +102,11 @@ public class ChatSocket {
         socket.on("isTyping", listener);
     }
 
+    public void attachErrorListener() {
+        ErrorListener listener = new ErrorListener();
+        socket.on("onError", listener);
+    }
+
     public void detachListener() {
         socket.disconnect();
         socket.off();
@@ -161,6 +167,19 @@ public class ChatSocket {
                 @Override
                 public void run() {
                     socketListener.onOtherTyping();
+                }
+            });
+        }
+    }
+
+    class ErrorListener implements Emitter.Listener {
+
+        @Override
+        public void call(final Object... args) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    socketListener.onError((String) args[0]);
                 }
             });
         }

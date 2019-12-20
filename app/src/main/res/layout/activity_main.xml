@@ -15,6 +15,12 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/navBottomBackgroundColor">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/toolbarLogo"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_person_black_24dp"/>
     </androidx.appcompat.widget.Toolbar>
     <fragment
         android:id="@+id/nav_host_fragment"

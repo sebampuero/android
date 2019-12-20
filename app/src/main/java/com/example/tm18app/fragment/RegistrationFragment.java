@@ -144,6 +144,12 @@ public class RegistrationFragment extends BaseFragmentPictureSelecter implements
     }
 
     @Override
+    public void onLoadingBitmap() {
+        Toast.makeText(getContext(),
+                getResources().getString(R.string.loading_image_msg), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
     protected void setupViews() {
         mProgressBar = mBinding.progressBarRegistration;
         mRegistrationBtn = mBinding.registrationBtn;

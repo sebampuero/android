@@ -93,6 +93,8 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.MyViewHolder
                             String.valueOf(mChatsList.get(getAdapterPosition()).getReceiverId()));
                     bundle.putString(ChatMessagesFragment.TO_NAME,
                             mChatsList.get(getAdapterPosition()).getReceiverName());
+                    bundle.putString(ChatMessagesFragment.PROFILE_PIC,
+                            mChatsList.get(getAdapterPosition()).getProfilePic());
                     mNavController.navigate(R.id.action_chatsFragment_to_chatMessagesFragment, bundle);
                 }
             });

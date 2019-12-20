@@ -26,6 +26,8 @@ public abstract class BaseFragmentPictureSelecter extends BaseFragment{
     protected static final int PICK_IMAGE = 100;
     protected BitmapLoaderInterface bitmapLoaderInterface;
 
+    private static final int MAX_HEIGHT = 800;
+
     /**
      * Interface to get called for when a {@link Bitmap} gets loaded by {@link Picasso}
      */
@@ -36,6 +38,8 @@ public abstract class BaseFragmentPictureSelecter extends BaseFragment{
          * @param bitmap {@link Bitmap}
          */
         void onBitmapLoaded(Bitmap bitmap);
+
+        void onLoadingBitmap();
     }
 
     public BaseFragmentPictureSelecter() {
@@ -63,8 +67,9 @@ public abstract class BaseFragmentPictureSelecter extends BaseFragment{
      * @param width {@link Integer}
      * @param height {@link Integer}
      */
-    protected void processImageURI(final Uri imageUri, final int width, final int height){
-        //Picasso.get().load(imageUri).resize(width, height).centerCrop().into(imageView);
+    protected void processImageURI(Uri imageUri, int width, int height){
+        if(height > MAX_HEIGHT)
+            height = MAX_HEIGHT;
         Picasso.get().load(imageUri).resize(width, height).centerCrop().into(new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -81,6 +86,7 @@ public abstract class BaseFragmentPictureSelecter extends BaseFragment{
             @Override
             public void onPrepareLoad(Drawable placeHolderDrawable) {
                 Log.e("TAG", "on prepare load");
+                bitmapLoaderInterface.onLoadingBitmap();
             }
         });
     }

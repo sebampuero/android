@@ -132,6 +132,7 @@
     <string name="new_comment_notification_subscription">hat kommentiert in einem abonnierten Post!</string>
     <string name="unsubscribe_from_post">Abo entfernen</string>
     <string name="unsubcribed_from_post">Abo entfernt</string>
+    <string name="loading_image_msg">Loading image</string>
 
     <array name="notification_settings">
         <item>Alle Benachrichtigungen erlauben</item>

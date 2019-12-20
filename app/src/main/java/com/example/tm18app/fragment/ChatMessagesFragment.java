@@ -15,10 +15,12 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +34,7 @@ import com.example.tm18app.network.ChatSocket;
 import com.example.tm18app.repository.ChatsRepository;
 import com.example.tm18app.viewModels.ChatMessagesViewModel;
 import com.example.tm18app.viewModels.MyViewModel;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,6 +49,7 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
     public static final String ROOM_NAME = "roomName";
     public static final String TO_ID = "receiverId";
     public static final String TO_NAME = "to_name";
+    public static final String PROFILE_PIC = "profile_pic";
 
     private FragmentChatMessagesBinding mBinding;
     private ChatMessagesViewModel mModel;
@@ -56,10 +60,15 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
     private TextView mLoadingMessagesTv;
     private RecyclerView mRv;
     private Toolbar mToolbar;
+    private String mProfilePicUrl;
+    private ImageView mProfileIW;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if(getArguments().getString(PROFILE_PIC) != null){
+            mProfilePicUrl = getArguments().getString(PROFILE_PIC);
+        }
         mModel = ViewModelProviders.of(this).get(ChatMessagesViewModel.class);
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_chat_messages, container, false);
         mBinding.setMyVM(mModel);
@@ -95,6 +104,7 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
         }
         socket.attachStatusListener();
         socket.attachTypingListener();
+        socket.attachErrorListener();
         mModel.inputMessage.observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
@@ -108,6 +118,7 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
         super.onDestroy();
         socket.detachListener();
         mToolbar.setSubtitle("");
+        mProfileIW.setVisibility(View.GONE);
     }
 
     @Override
@@ -132,6 +143,16 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
             }
         });
         mLoadingMessagesTv = mBinding.loadingMessagesTv;
+        mProfileIW = getActivity().findViewById(R.id.toolbarLogo);
+        if(mProfilePicUrl != null){
+            mProfileIW.setVisibility(View.VISIBLE);
+            Picasso.get()
+                    .load(mProfilePicUrl)
+                    .resize(80, 80)
+                    .centerCrop()
+                    .into(mProfileIW);
+        }else
+            mProfileIW.setVisibility(View.GONE);
     }
 
     private void deleteChatRoom() {
@@ -199,6 +220,11 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
     @Override
     public void onOtherTyping() {
         mToolbar.setSubtitle(getResources().getString(R.string.is_typing_a_message));
+    }
+
+    @Override
+    public void onError(String error) {
+        Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
     }
 
     private void setupRecyclerView() {

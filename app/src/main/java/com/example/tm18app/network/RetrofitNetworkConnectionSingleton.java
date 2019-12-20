@@ -19,7 +19,7 @@ public class RetrofitNetworkConnectionSingleton {
     private static RetrofitNetworkConnectionSingleton singleInstance = null;
     private static Retrofit retrofit;
     private Gson gson;
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     private RetrofitNetworkConnectionSingleton(){
         // network initialization

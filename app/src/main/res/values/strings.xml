@@ -149,6 +149,7 @@
     <string name="new_comment_notification_subscription">commented on a post your subscribed to!</string>
     <string name="unsubscribe_from_post">Unsubscribe from post</string>
     <string name="unsubcribed_from_post">Unsubscribed</string>
+    <string name="loading_image_msg">Loading image</string>
 
 
 </resources>
