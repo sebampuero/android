@@ -23,7 +23,7 @@ import com.example.tm18app.R;
  * @version  1.0
  * @since 03.12.2019
  */
-public abstract class BaseWebviewFragment extends Fragment {
+public abstract class BaseWebviewFragment extends BaseFragment {
 
 
     protected WebView mWebView;

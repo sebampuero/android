@@ -45,7 +45,8 @@ public class FeedViewModel extends ViewModel {
                     .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
             if(preferences.getString(Constant.GOAL_IDS, null) != null){
                 String[] goalIds = preferences.getString(Constant.GOAL_IDS, null).split(",");
-                return postItemRepository.getPosts(Arrays.asList(goalIds));
+                return postItemRepository.getPosts(Arrays.asList(goalIds),
+                        preferences.getString(Constant.PUSHY_TOKEN, ""));
             }
             return null;
         }

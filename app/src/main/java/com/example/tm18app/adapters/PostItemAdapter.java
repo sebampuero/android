@@ -165,7 +165,8 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
                 PostItemRepository repository = new PostItemRepository();
                 repository.deleteSubscription(
                         String.valueOf(mPrefs.getInt(Constant.USER_ID, 0)),
-                        postID);
+                        postID,
+                        mPrefs.getString(Constant.PUSHY_TOKEN, ""));
                 Toast.makeText(
                         mCurrentFragment.getContext(),
                         mCurrentFragment.getResources().getString(R.string.unsubcribed_from_post),
@@ -243,7 +244,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
             final int position = getAdapterPosition();
             final Post postToDelete = mPostsList.get(position);
             if(userID == postToDelete.getUserID()){
-                final MutableLiveData<Integer> statusCode = new MutableLiveData<>();
+                final MutableLiveData<Integer> statusCodeLiveData = new MutableLiveData<>();
                 AlertDialog.Builder alertBuilder = new AlertDialog.Builder(mCurrentFragment.getContext());
                 alertBuilder.setCancelable(true);
                 alertBuilder.setTitle(mCurrentFragment.getContext().getString(R.string.delete_post_dialog_title));
@@ -252,13 +253,15 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
                     @Override
                     public void onClick(DialogInterface dialogInterface, int which) {
                         PostItemRepository repository = new PostItemRepository();
-                        repository.deletePost(postToDelete.getId(), statusCode);
+                        repository.deletePost(postToDelete.getId(),
+                                statusCodeLiveData,
+                                mPrefs.getString(Constant.PUSHY_TOKEN, ""));
                         if(mCurrentFragment instanceof FeedFragment){
                             FeedFragment feed = (FeedFragment) mCurrentFragment;
-                            feed.onPostDeleted(statusCode);
+                            feed.onPostDeleted(statusCodeLiveData);
                         }else if(mCurrentFragment instanceof ProfileFragment){
                             ProfileFragment profile = (ProfileFragment) mCurrentFragment;
-                            profile.onPostDeleted(statusCode);
+                            profile.onPostDeleted(statusCodeLiveData);
                         }
                         mPostsList.remove(position);
                         notifyItemRemoved(position);

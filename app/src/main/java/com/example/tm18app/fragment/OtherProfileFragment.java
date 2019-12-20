@@ -38,11 +38,10 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class OtherProfileFragment extends Fragment {
+public class OtherProfileFragment extends BaseFragment {
 
     public static final String OTHER_USER_ID = "otherUserID";
 
-    private MyViewModel mMainModel;
     private OtherUserProfileViewModel mModel;
     private FragmentOtherProfileBinding mBinding;
     private RecyclerView mRecyclerView;
@@ -65,11 +64,11 @@ public class OtherProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mModel = ViewModelProviders.of(getActivity()).get(OtherUserProfileViewModel.class);
-        mMainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_other_profile, container, false);
         mBinding.setMyVM(mModel);
         mBinding.setLifecycleOwner(this);
         setupViews();
+        mModel.setContext(getContext());
         mModel.setNavController(mMainModel.getNavController());
         mModel.callRepositoryForUser(getArguments().getString(OTHER_USER_ID));
         mModel.getUserLiveData().observe(this, new Observer<User>() {
@@ -108,7 +107,8 @@ public class OtherProfileFragment extends Fragment {
         });
     }
 
-    private void setupViews() {
+    @Override
+    protected void setupViews() {
         Toolbar toolbar = ((MainActivity)getActivity()).getToolbar();
         toolbar.getMenu().clear();
         toolbar.inflateMenu(R.menu.other_profile_menu);

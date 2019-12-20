@@ -45,7 +45,9 @@ public class PasswordEditViewModel extends ViewModel {
             int userID = preferences.getInt(Constant.USER_ID, 0);
             PasswordReset passwordReset = new PasswordReset(userID, oldPassword.getValue(), newPassword.getValue());
             UserRepository userRepository = new UserRepository();
-            userRepository.changeUserPassword(passwordReset, statusCodeResponseLiveData);
+            userRepository.changeUserPassword(passwordReset,
+                    statusCodeResponseLiveData,
+                    preferences.getString(Constant.PUSHY_TOKEN, ""));
         }
     }
 

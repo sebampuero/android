@@ -40,7 +40,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ChatMessagesFragment extends Fragment implements ChatSocket.SocketListener {
+public class ChatMessagesFragment extends BaseFragment implements ChatSocket.SocketListener {
 
     public static final String ROOM_ID = "roomId";
     public static final String ROOM_NAME = "roomName";
@@ -49,7 +49,6 @@ public class ChatMessagesFragment extends Fragment implements ChatSocket.SocketL
 
     private FragmentChatMessagesBinding mBinding;
     private ChatMessagesViewModel mModel;
-    private MyViewModel mMainModel;
     private ChatMessagesAdapter mAdapter;
     private ArrayList<ChatMessage> mChatMessagesList = new ArrayList<>();
     private ChatSocket socket;
@@ -58,15 +57,9 @@ public class ChatMessagesFragment extends Fragment implements ChatSocket.SocketL
     private RecyclerView mRv;
     private Toolbar mToolbar;
 
-    public ChatMessagesFragment() {
-        // Required empty public constructor
-    }
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mMainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
         mModel = ViewModelProviders.of(this).get(ChatMessagesViewModel.class);
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_chat_messages, container, false);
         mBinding.setMyVM(mModel);
@@ -122,7 +115,8 @@ public class ChatMessagesFragment extends Fragment implements ChatSocket.SocketL
         mModel.getMessagesLiveData().removeObservers(this);
     }
 
-    private void setupViews() {
+    @Override
+    protected void setupViews() {
         mToolbar = ((MainActivity)getActivity()).getToolbar();
         mToolbar.getMenu().clear();
         mToolbar.setTitle(getArguments().getString(TO_NAME));
@@ -148,7 +142,8 @@ public class ChatMessagesFragment extends Fragment implements ChatSocket.SocketL
             @Override
             public void onClick(DialogInterface dialogInterface, int which) {
                 ChatsRepository repository = new ChatsRepository();
-                repository.deleteChatRoom(mModel.getRoomId());
+                repository.deleteChatRoom(mModel.getRoomId(),
+                        mPreferences.getString(Constant.PUSHY_TOKEN, ""));
                 mMainModel.getNavController().navigateUp();
                 Toast.makeText(getContext(), getResources().getString(R.string.chat_room_deleted),
                         Toast.LENGTH_SHORT).show();

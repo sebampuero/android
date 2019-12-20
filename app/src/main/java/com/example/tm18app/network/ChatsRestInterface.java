@@ -9,6 +9,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.Path;
 
 /**
@@ -20,13 +21,16 @@ import retrofit2.http.Path;
  */
 public interface ChatsRestInterface {
 
-    @GET("api/goals/rooms/{userId}")
-    Call<List<ChatRoom>> getRoomsByUserId(@Path("userId") String userId);
+    @GET("api/chats/rooms/{userId}")
+    Call<List<ChatRoom>> getRoomsByUserId(@Path("userId") String userId,
+                                          @Header("pushy") String pushyToken);
 
-    @GET("api/goals/chats/{roomId}")
-    Call<List<ChatMessage>> getChatMessagesByRoomId(@Path("roomId") String roomId);
+    @GET("api/chats/{roomId}")
+    Call<List<ChatMessage>> getChatMessagesByRoomId(@Path("roomId") String roomId,
+                                                    @Header("pushy") String pushyToken);
 
-    @DELETE("api/goals/chats/{roomId}")
-    Call<Void> deleteChatRoom(@Path("roomId") String roomId);
+    @DELETE("api/chats/{roomId}")
+    Call<Void> deleteChatRoom(@Path("roomId") String roomId,
+                              @Header("pushy") String pushyToken);
 
 }

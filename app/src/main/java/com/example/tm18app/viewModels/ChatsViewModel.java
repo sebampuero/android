@@ -17,15 +17,15 @@ import java.util.List;
 public class ChatsViewModel extends ViewModel {
 
     private MutableLiveData<Boolean> reloadTrigger = new MutableLiveData<>();
+    private SharedPreferences prefs;
     private LiveData<List<ChatRoom>> chatLiveData = Transformations.switchMap(reloadTrigger, new Function<Boolean, LiveData<List<ChatRoom>>>() {
         @Override
         public LiveData<List<ChatRoom>> apply(Boolean input) {
             ChatsRepository repository = new ChatsRepository();
             String userId = String.valueOf(prefs.getInt(Constant.USER_ID, 0));
-            return repository.getChatRooms(userId);
+            return repository.getChatRooms(userId, prefs.getString(Constant.PUSHY_TOKEN, ""));
         }
     });
-    private SharedPreferences prefs;
 
     public LiveData<List<ChatRoom>> getChatLiveData() {
         return chatLiveData;

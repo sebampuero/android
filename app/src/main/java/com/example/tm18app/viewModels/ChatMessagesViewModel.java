@@ -20,18 +20,17 @@ public class ChatMessagesViewModel extends ViewModel {
 
     public MutableLiveData<String> inputMessage = new MutableLiveData<>();
     private MutableLiveData<Boolean> reloadTrigger = new MutableLiveData<>();
-
-    private LiveData<List<ChatMessage>> messagesLiveData = Transformations.switchMap(reloadTrigger, new Function<Boolean, LiveData<List<ChatMessage>>>() {
-        @Override
-        public LiveData<List<ChatMessage>> apply(Boolean input) {
-            ChatsRepository repository = new ChatsRepository();
-            return repository.getChatsForRoom(roomId);
-        }
-    });
     private String roomId;
     private String roomName;
     private SharedPreferences prefs;
     private ChatSocket socket;
+    private LiveData<List<ChatMessage>> messagesLiveData = Transformations.switchMap(reloadTrigger, new Function<Boolean, LiveData<List<ChatMessage>>>() {
+        @Override
+        public LiveData<List<ChatMessage>> apply(Boolean input) {
+            ChatsRepository repository = new ChatsRepository();
+            return repository.getChatsForRoom(roomId, prefs.getString(Constant.PUSHY_TOKEN, ""));
+        }
+    });
 
     public LiveData<List<ChatMessage>> getMessagesLiveData() {
         return messagesLiveData;

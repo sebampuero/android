@@ -60,7 +60,6 @@ public class EditProfileFragment extends BaseFragmentPictureSelecter implements 
 
     private FragmentEditProfileBinding mBinding;
     private MultiGoalSelectAdapter mAdapter;
-    private MyViewModel mMainModel;
     private EditViewModel mModel;
     private ImageView mProfilePicIW;
     private CircularProgressButton mSaveBtn;
@@ -75,7 +74,6 @@ public class EditProfileFragment extends BaseFragmentPictureSelecter implements 
         setBitmapLoaderInterface(this);
         mModel = ViewModelProviders.of(getActivity()).get(EditViewModel.class);
         mModel.setContext(getContext());
-        mMainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
         mModel.setNavController(mMainModel.getNavController());
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_edit_profile, container, false);
         mBinding.setMyVM(mModel);
@@ -126,7 +124,8 @@ public class EditProfileFragment extends BaseFragmentPictureSelecter implements 
         return mBinding.getRoot();
     }
 
-    private void setupViews() {
+    @Override
+    protected void setupViews() {
         mSaveBtn = mBinding.saveEditProfileBtn;
         mProfilePicIW = mBinding.profilePic;
         Toolbar toolbar = ((MainActivity)getActivity()).getToolbar();
@@ -201,6 +200,7 @@ public class EditProfileFragment extends BaseFragmentPictureSelecter implements 
             editor.putString(Constant.EMAIL, user.getEmail());
             editor.putInt(Constant.USER_ID, user.getId());
             editor.putString(Constant.PROFILE_PIC_URL, user.getProfilePicUrl());
+            editor.putString(Constant.PUSHY_TOKEN, user.getPushyToken());
             if(user.getGoals().length > 0 && user.getGoalTags().length > 0){
                 StringBuilder sb = new StringBuilder();
                 StringBuilder sb1 = new StringBuilder();

@@ -30,7 +30,7 @@ public class ProfileImgWebviewFragment extends BaseWebviewFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         mImageUrl = getArguments().getString(IMG_URL);
-        mToolbar.getMenu().clear();
+        setupViews();
         loadPage();
         return view;
     }
@@ -41,5 +41,10 @@ public class ProfileImgWebviewFragment extends BaseWebviewFragment {
         mWebView.getSettings().setLoadWithOverviewMode(true);
         mWebView.getSettings().setUseWideViewPort(true);
         mWebView.getSettings().setBuiltInZoomControls(true);
+    }
+
+    @Override
+    protected void setupViews() {
+        mToolbar.getMenu().clear();
     }
 }

@@ -59,7 +59,6 @@ public class RegistrationFragment extends BaseFragmentPictureSelecter implements
     private FragmentRegistrationBinding mBinding;
     private ProgressBar mProgressBar;
     private RecyclerView mRecyclerView;
-    private MyViewModel mMainModel;
     private RegisterViewModel mModel;
     private CircularProgressButton mRegistrationBtn;
     private EditText mNameEditText;
@@ -78,7 +77,6 @@ public class RegistrationFragment extends BaseFragmentPictureSelecter implements
         setBitmapLoaderInterface(this);
         mModel = ViewModelProviders.of(getActivity()).get(RegisterViewModel.class);
         mModel.setContext(getContext());
-        mMainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_registration, container, false);
         mBinding.setMyVM(mModel);
         mBinding.setLifecycleOwner(this);
@@ -145,10 +143,8 @@ public class RegistrationFragment extends BaseFragmentPictureSelecter implements
         }
     }
 
-    /**
-     * Sets up views for this {@link Fragment}
-     */
-    private void setupViews() {
+    @Override
+    protected void setupViews() {
         mProgressBar = mBinding.progressBarRegistration;
         mRegistrationBtn = mBinding.registrationBtn;
         mNameEditText = mBinding.nameInput;
@@ -194,29 +190,8 @@ public class RegistrationFragment extends BaseFragmentPictureSelecter implements
                 getSharedPreferences(Constant.FIRST_TIME_INTRO,Context.MODE_PRIVATE);
         SharedPreferences.Editor editorIntro = introPreferences.edit();
         editorIntro.putBoolean(Constant.INTRO_OPENED,true);
-        editorIntro.commit();
-        SharedPreferences sharedPreferences = this.getActivity()
-                .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(Constant.LOGGED_IN, true);
-        editor.putString(Constant.NAME, user.getName());
-        editor.putString(Constant.LASTNAME, user.getLastname());
-        editor.putString(Constant.EMAIL, user.getEmail());
-        editor.putInt(Constant.USER_ID, user.getId());
-        if(user.getProfilePicUrl() != null)
-            editor.putString(Constant.PROFILE_PIC_URL, user.getProfilePicUrl());
-        if(user.getGoals().length > 0 && user.getGoalTags().length > 0){
-            StringBuilder sb = new StringBuilder();
-            StringBuilder sb1 = new StringBuilder();
-            for (int i = 0; i < user.getGoals().length; i++) {
-                sb.append(user.getGoals()[i]).append(",");
-                sb1.append(user.getGoalTags()[i]).append(",");
-            }
-            editor.putString(Constant.GOAL_IDS, sb.toString());
-            editor.putString(Constant.GOAL_TAGS, sb1.toString());
-        }
-        editor.apply();
-        mMainModel.getNavController().navigate(R.id.action_registrationFragment_to_feedFragment);
+        editorIntro.apply();
+        mMainModel.getNavController().navigate(R.id.action_registrationFragment_to_loginFragment);
         mModel.getUserLiveData().getValue().clear();
         cleanValues();
     }

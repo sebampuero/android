@@ -23,9 +23,9 @@ public class ChatsRepository {
                 .retrofitInstance().create(ChatsRestInterface.class);
     }
 
-    public LiveData<List<ChatRoom>> getChatRooms(String userId) {
+    public LiveData<List<ChatRoom>> getChatRooms(String userId, String pushyToken) {
         final MutableLiveData<List<ChatRoom>> data = new MutableLiveData<>();
-        chatsRestInterface.getRoomsByUserId(userId).enqueue(new Callback<List<ChatRoom>>() {
+        chatsRestInterface.getRoomsByUserId(userId, pushyToken).enqueue(new Callback<List<ChatRoom>>() {
             @Override
             public void onResponse(Call<List<ChatRoom>> call, Response<List<ChatRoom>> response) {
                 if(response.body() != null)
@@ -40,9 +40,9 @@ public class ChatsRepository {
         return data;
     }
 
-    public LiveData<List<ChatMessage>> getChatsForRoom(String roomId) {
+    public LiveData<List<ChatMessage>> getChatsForRoom(String roomId, String pushyToken) {
         final MutableLiveData<List<ChatMessage>> data = new MutableLiveData<>();
-        chatsRestInterface.getChatMessagesByRoomId(roomId).enqueue(new Callback<List<ChatMessage>>() {
+        chatsRestInterface.getChatMessagesByRoomId(roomId, pushyToken).enqueue(new Callback<List<ChatMessage>>() {
             @Override
             public void onResponse(Call<List<ChatMessage>> call, Response<List<ChatMessage>> response) {
                 data.setValue(response.body());
@@ -56,8 +56,8 @@ public class ChatsRepository {
         return data;
     }
 
-    public void deleteChatRoom(String roomId) {
-        chatsRestInterface.deleteChatRoom(roomId).enqueue(new Callback<Void>() {
+    public void deleteChatRoom(String roomId, String pushyToken) {
+        chatsRestInterface.deleteChatRoom(roomId, pushyToken).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
             }

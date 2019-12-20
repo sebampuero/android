@@ -21,7 +21,7 @@ import com.squareup.picasso.Target;
  * @version  1.0
  * @since 03.12.2019
  */
-public abstract class BaseFragmentPictureSelecter extends Fragment{
+public abstract class BaseFragmentPictureSelecter extends BaseFragment{
 
     protected static final int PICK_IMAGE = 100;
     protected BitmapLoaderInterface bitmapLoaderInterface;

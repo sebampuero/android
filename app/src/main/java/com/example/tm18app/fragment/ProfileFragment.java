@@ -48,9 +48,8 @@ import java.util.List;
  * @version 1.0
  * @since 03.12.2019
  */
-public class ProfileFragment extends Fragment implements PostItemAdapter.OnPostDeleteListener{
+public class ProfileFragment extends BaseFragment implements PostItemAdapter.OnPostDeleteListener{
 
-    private MyViewModel mMainModel;
     private CurrentProfileViewModel mModel;
     private FragmentProfileBinding mBinding;
     private RecyclerView mRecyclerView;
@@ -73,14 +72,13 @@ public class ProfileFragment extends Fragment implements PostItemAdapter.OnPostD
                              Bundle savedInstanceState) {
         mModel = ViewModelProviders.of(getActivity()).get(CurrentProfileViewModel.class);
         mPrefs = getContext().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
-        mMainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false);
         mBinding.setMyVM(mModel);
         mBinding.setLifecycleOwner(this);
         mModel.setNavController(mMainModel.getNavController());
         setupViews();
         fillUserData();
-        mModel.setPrefs(mPrefs);
+        mModel.setContext(getContext());
         mModel.callRepositoryForPosts();
         setupRecyclerView();
         fetchData();
@@ -98,7 +96,8 @@ public class ProfileFragment extends Fragment implements PostItemAdapter.OnPostD
     }
 
 
-    private void setupViews() {
+    @Override
+    protected void setupViews() {
         Toolbar toolbar = ((MainActivity)getActivity()).getToolbar();
         toolbar.getMenu().clear();
         mNoPostsView = mBinding.getRoot().findViewById(R.id.noPostsLayout);

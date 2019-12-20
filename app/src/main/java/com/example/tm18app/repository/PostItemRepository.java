@@ -38,9 +38,9 @@ public class PostItemRepository {
      * @param goalIds {@link Integer} the goalId for the corresponding posts
      * @return {@link LiveData} containing the {@link List} of {@link Post} items
      */
-    public LiveData<List<Post>> getPosts(List<String> goalIds) {
+    public LiveData<List<Post>> getPosts(List<String> goalIds, String pushyToken) {
         final MutableLiveData<List<Post>> data = new MutableLiveData<>();
-        postRestInterface.getPostsWithGoals(goalIds).enqueue(new Callback<List<Post>>() {
+        postRestInterface.getPostsWithGoals(goalIds, pushyToken).enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                 if(response.body() != null){
@@ -61,9 +61,9 @@ public class PostItemRepository {
      * @param userId {@link Integer} the userId
      * @return {@link LiveData} containing the {@link List} of {@link com.example.tm18app.model.User} items
      */
-    public LiveData<List<Post>> getUserPosts(String userId) {
+    public LiveData<List<Post>> getUserPosts(String userId, String pushyToken) {
         final MutableLiveData<List<Post>> data = new MutableLiveData<>();
-        postRestInterface.getPostsByUserId(userId).enqueue(new Callback<List<Post>>() {
+        postRestInterface.getPostsByUserId(userId, pushyToken).enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                 if(response.body() != null){
@@ -84,9 +84,9 @@ public class PostItemRepository {
      * @param postID {@link Integer} the postId
      * @return {@link LiveData} containing the {@link List} of {@link Comment} items
      */
-    public MutableLiveData<List<Comment>> getComments(String postID) {
+    public MutableLiveData<List<Comment>> getComments(String postID, String pushyToken) {
         final MutableLiveData<List<Comment>> data = new MutableLiveData<>();
-        postRestInterface.getCommentsByPostId(postID).enqueue(new Callback<List<Comment>>() {
+        postRestInterface.getCommentsByPostId(postID, pushyToken).enqueue(new Callback<List<Comment>>() {
             @Override
             public void onResponse(Call<List<Comment>> call, Response<List<Comment>> response) {
                 if(response.body() != null){
@@ -107,9 +107,11 @@ public class PostItemRepository {
      * @param comment {@link Comment} the comment to be inserted
      * @param commentLiveData {@link MutableLiveData} containing the {@link List} of {@link Comment}. The {@link com.example.tm18app.fragment.CommentSectionFragment} observes this parameter to display changes
      */
-    public void createComment(final Comment comment, MutableLiveData<List<Comment>> commentLiveData) {
+    public void createComment(final Comment comment,
+                              MutableLiveData<List<Comment>> commentLiveData,
+                              String pushyToken) {
         final MutableLiveData<List<Comment>> data = commentLiveData;
-        postRestInterface.newComment(comment).enqueue(new Callback<Comment>() {
+        postRestInterface.newComment(comment, pushyToken).enqueue(new Callback<Comment>() {
             @Override
             public void onResponse(Call<Comment> call, Response<Comment> response) {
                 if(data.getValue() != null){
@@ -136,9 +138,9 @@ public class PostItemRepository {
      * @param postLiveData {@link MutableLiveData} containing a {@link HashMap} of the {@link Integer} HTTP Status code and a {@link String} message.
      * The {@link com.example.tm18app.fragment.NewPostFragment} observes the parameter to display changes according to the received HTTP Status code
      */
-    public void createPost(Post post, MutableLiveData<Integer> postLiveData){
+    public void createPost(Post post, MutableLiveData<Integer> postLiveData, String pushyToken){
         final MutableLiveData<Integer> responseCode = postLiveData;
-        postRestInterface.newPost(post).enqueue(new Callback<Void>() {
+        postRestInterface.newPost(post, pushyToken).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 responseCode.setValue(response.code());
@@ -156,8 +158,8 @@ public class PostItemRepository {
      * @param postID {@link Integer} the post id of the post to be deleted
      * @param statusCode {@link MutableLiveData} containing the response status code
      */
-    public void deletePost(int postID, final MutableLiveData<Integer> statusCode){
-        postRestInterface.deletePost(String.valueOf(postID)).enqueue(new Callback<Void>() {
+    public void deletePost(int postID, final MutableLiveData<Integer> statusCode, String pushyToken){
+        postRestInterface.deletePost(String.valueOf(postID), pushyToken).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 statusCode.setValue(response.code());
@@ -174,8 +176,8 @@ public class PostItemRepository {
      * Deletes a {@link Comment} from the server.
      * @param commentID {@link Integer} the comment id of the comment to be deleted
      */
-    public void deleteComment(int commentID) {
-        postRestInterface.deleteComment(String.valueOf(commentID)).enqueue(new Callback<Void>() {
+    public void deleteComment(int commentID, String pushyToken) {
+        postRestInterface.deleteComment(String.valueOf(commentID), pushyToken).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
             }
@@ -186,8 +188,8 @@ public class PostItemRepository {
         });
     }
 
-    public void deleteSubscription(String userID, String postID) {
-        postRestInterface.deletePostSubscription(userID, postID).enqueue(new Callback<Void>() {
+    public void deleteSubscription(String userID, String postID, String pushyToken) {
+        postRestInterface.deletePostSubscription(userID, postID, pushyToken).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
 

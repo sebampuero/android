@@ -24,9 +24,8 @@ import java.net.HttpURLConnection;
 /**
  * A simple {@link Fragment} subclass. Responsible for UI and events for the password edition UI.
  */
-public class EditPasswordFragment extends Fragment {
+public class EditPasswordFragment extends BaseFragment {
 
-    private MyViewModel mMainModel;
     private PasswordEditViewModel mModel;
 
     public EditPasswordFragment() {
@@ -37,7 +36,6 @@ public class EditPasswordFragment extends Fragment {
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mMainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
         mModel = ViewModelProviders.of(this).get(PasswordEditViewModel.class);
         mModel.setContext(getContext());
         FragmentEditPasswordBinding binding = DataBindingUtil.inflate(inflater,
@@ -55,7 +53,8 @@ public class EditPasswordFragment extends Fragment {
         return binding.getRoot();
     }
 
-    private void setupViews() {
+    @Override
+    protected void setupViews() {
         Toolbar toolbar = ((MainActivity)getActivity()).getToolbar();
         toolbar.getMenu().clear();
     }

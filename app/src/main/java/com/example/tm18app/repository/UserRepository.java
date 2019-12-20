@@ -73,9 +73,10 @@ public class UserRepository {
      * @param user {@link User} the user to be edited
      * @param userLiveData {@link MutableLiveData} containing a {@link HashMap} for the HTTP Status code and response body that contains information about the edited user
      */
-    public void editUser(User user, MutableLiveData<HashMap<Integer, User>> userLiveData) {
+    public void editUser(User user, MutableLiveData<HashMap<Integer,
+                            User>> userLiveData, String pushyToken) {
         final MutableLiveData<HashMap<Integer, User>> responseCode = userLiveData;
-        userRestInterface.updateUser(user).enqueue(new Callback<User>() {
+        userRestInterface.updateUser(user, pushyToken).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 HashMap<Integer, User> hashMap = new HashMap<>();
@@ -96,9 +97,11 @@ public class UserRepository {
      * @param passwordReset {@link PasswordReset} containing old password, new password and user id
      * @param statusCodeResponseLiveData {@link MutableLiveData} to emit status response to the UI
      */
-    public void changeUserPassword(PasswordReset passwordReset, MutableLiveData<Integer> statusCodeResponseLiveData){
+    public void changeUserPassword(PasswordReset passwordReset,
+                                   MutableLiveData<Integer> statusCodeResponseLiveData,
+                                   String pushyToken){
         final MutableLiveData<Integer> statusCodeRespIntegerMutableLiveData = statusCodeResponseLiveData;
-        userRestInterface.updatePassword(passwordReset).enqueue(new Callback<Void>() {
+        userRestInterface.updatePassword(passwordReset, pushyToken).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 statusCodeRespIntegerMutableLiveData.setValue(response.code());
@@ -111,9 +114,9 @@ public class UserRepository {
         });
     }
 
-    public LiveData<User> getUser(String id) {
+    public LiveData<User> getUser(String id, String pushyToken) {
         final MutableLiveData<User> data = new MutableLiveData<>();
-        userRestInterface.getUserById(id).enqueue(new Callback<User>() {
+        userRestInterface.getUserById(id, pushyToken).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 if(response.body() != null){

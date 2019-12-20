@@ -58,14 +58,14 @@ public class NewPostViewModel extends ViewModel {
      */
     public void onNewPostClicked() {
         if(areInputsValid()){
-            SharedPreferences sharedPreferences = appContext
+            SharedPreferences prefs = appContext
                     .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
-            int userID = sharedPreferences.getInt(Constant.USER_ID, 0);
+            int userID = prefs.getInt(Constant.USER_ID, 0);
             ArrayList<String> userGoalTags =
-                    new ArrayList<>(Arrays.asList(sharedPreferences
+                    new ArrayList<>(Arrays.asList(prefs
                             .getString(Constant.GOAL_TAGS, null).split(",")));
             ArrayList<String> userGoalIds =
-                    new ArrayList<>(Arrays.asList(sharedPreferences
+                    new ArrayList<>(Arrays.asList(prefs
                             .getString(Constant.GOAL_IDS, null).split(",")));
             int goalID = Integer.valueOf(userGoalIds.get(userGoalTags.indexOf(selectedGoal)));
             PostItemRepository repository = new PostItemRepository();
@@ -73,7 +73,7 @@ public class NewPostViewModel extends ViewModel {
             if(contentImageBase64Data != null)
                 post.setBase64Image(contentImageBase64Data);
             repository.createPost(post,
-                    postLiveDataResponse);
+                    postLiveDataResponse, prefs.getString(Constant.PUSHY_TOKEN, ""));
             triggerLoadingBtn.call();
         }
     }

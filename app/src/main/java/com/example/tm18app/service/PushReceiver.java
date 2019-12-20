@@ -64,12 +64,13 @@ public class PushReceiver extends BroadcastReceiver {
         }else if(intent.getIntExtra("id", 0) == NEW_COMMENT_POST_SUBS){
             if(!pref.getString("notifications_other", "").equals("comments")){
                 processCommentNotificationSubscribedPost(context,
-                        intent.getIntExtra("postId", 0));
+                        intent.getIntExtra("postId", 0),
+                        intent.getStringExtra("commenterName"));
             }
         }
     }
 
-    private void processCommentNotificationSubscribedPost(Context context, int postId) {
+    private void processCommentNotificationSubscribedPost(Context context, int postId, String name) {
         Bundle bundle = new Bundle();
         bundle.putString("postID", String.valueOf(postId));
         PendingIntent pendingIntent = new NavDeepLinkBuilder(context)
@@ -79,7 +80,7 @@ public class PushReceiver extends BroadcastReceiver {
                 .setArguments(bundle) // so that comment fragment knows what comments to load
                 .createPendingIntent();
 
-        String notificationTitle = context.getString(R.string.new_comment_notification_subscription);
+        String notificationTitle = name + " " + context.getString(R.string.new_comment_notification_subscription);
         String notificationText = "";
 
         buildNotification(context, notificationText, notificationTitle, pendingIntent);

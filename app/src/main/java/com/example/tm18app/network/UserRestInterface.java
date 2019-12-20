@@ -6,6 +6,7 @@ import com.example.tm18app.model.User;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
@@ -18,18 +19,18 @@ import retrofit2.http.Path;
  */
 public interface UserRestInterface {
 
-    @POST("api/goals/login")
+    @POST("api/users/login")
     Call<User> loginUser(@Body User user);
 
-    @POST("api/goals/register")
+    @POST("api/users/register")
     Call<User> registerUser(@Body User user);
 
-    @POST("api/goals/update")
-    Call<User> updateUser(@Body User user);
+    @POST("api/users/update")
+    Call<User> updateUser(@Body User user, @Header("pushy") String pushyToken);
 
-    @POST("api/goals/update/password")
-    Call<Void> updatePassword(@Body PasswordReset passwordReset);
+    @POST("api/users/update/password")
+    Call<Void> updatePassword(@Body PasswordReset passwordReset, @Header("pushy") String pushyToken);
 
-    @GET("api/goals/user/{userId}")
-    Call<User> getUserById(@Path("userId") String userId);
+    @GET("api/users/{userId}")
+    Call<User> getUserById(@Path("userId") String userId, @Header("pushy") String pushyToken);
 }

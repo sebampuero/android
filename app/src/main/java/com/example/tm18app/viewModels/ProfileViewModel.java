@@ -1,5 +1,7 @@
 package com.example.tm18app.viewModels;
 
+import android.content.Context;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.navigation.NavController;
@@ -19,6 +21,7 @@ import java.util.List;
  */
 public abstract class ProfileViewModel extends ViewModel {
 
+    //TODO: make an abstract view model for all viewmodels
     protected NavController navController;
 
     protected LiveData<List<Post>> postLiveData;
@@ -50,5 +53,6 @@ public abstract class ProfileViewModel extends ViewModel {
      */
     public abstract void onProfilePicClicked();
 
+    public abstract void setContext(Context context);
 }
 

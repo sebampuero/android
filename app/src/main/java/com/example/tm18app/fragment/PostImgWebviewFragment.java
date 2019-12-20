@@ -47,6 +47,13 @@ public class PostImgWebviewFragment extends BaseWebviewFragment {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         mImageUrl = getArguments().getString(IMG_URL);
         mImageName = getArguments().getString(IMG_NAME);
+        setupViews();
+        loadPage();
+        return view;
+    }
+
+    @Override
+    protected void setupViews() {
         mToolbar.getMenu().clear();
         mToolbar.inflateMenu(R.menu.webview_menu); // this fragment loads a custom toolbar
         mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
@@ -63,8 +70,6 @@ public class PostImgWebviewFragment extends BaseWebviewFragment {
                 return false;
             }
         });
-        loadPage();
-        return view;
     }
 
     /**

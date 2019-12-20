@@ -130,7 +130,7 @@
     <string name="chat_room_deleted">El chat fue borrado</string>
     <string name="online">En línea</string>
     <string name="is_typing_a_message">Escribiendo…</string>
-    <string name="new_comment_notification_subscription">Alguien comento en un post donde estas suscrito/a!</string>
+    <string name="new_comment_notification_subscription">comentó en un post donde estas suscrito/a!</string>
     <string name="unsubscribe_from_post">Desuscribirse del post</string>
     <string name="unsubcribed_from_post">Dususcrito/a</string>
 

@@ -1,6 +1,7 @@
 package com.example.tm18app.viewModels;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
@@ -9,6 +10,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.tm18app.R;
 import com.example.tm18app.adapters.MultiGoalSelectAdapter;
+import com.example.tm18app.constants.Constant;
 import com.example.tm18app.model.Goal;
 import com.example.tm18app.model.User;
 import com.example.tm18app.repository.GoalsItemRepository;

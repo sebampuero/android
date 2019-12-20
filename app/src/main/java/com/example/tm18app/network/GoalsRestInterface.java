@@ -7,6 +7,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 
 /**
@@ -18,10 +19,7 @@ import retrofit2.http.POST;
  */
 public interface GoalsRestInterface {
 
-    @GET("api/goals/goals")
+    @GET("api/goals")
     Call<List<Goal>> getGoals();
-
-    @POST("api/goals/goal")
-    Call<Void> postGoalRequest(@Field("goals") String goals, @Field("userID") String userID);
 
 }

@@ -26,7 +26,6 @@ import com.example.tm18app.R;
 import com.example.tm18app.adapters.PostItemAdapter;
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.FragmentFeedBinding;
-import com.example.tm18app.network.UserPushyTokenAsyncTask;
 import com.example.tm18app.model.Post;
 import com.example.tm18app.viewModels.FeedViewModel;
 import com.example.tm18app.viewModels.MyViewModel;
@@ -37,8 +36,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import me.pushy.sdk.Pushy;
-
 
 /**
  * A simple {@link Fragment} subclass. Responsible for UI and events for the feed section UI.
@@ -47,9 +44,8 @@ import me.pushy.sdk.Pushy;
  * @version 1.0
  * @since 03.12.2019
  */
-public class FeedFragment extends Fragment implements PostItemAdapter.OnPostDeleteListener{
+public class FeedFragment extends BaseFragment implements PostItemAdapter.OnPostDeleteListener{
 
-    private MyViewModel mMainModel;
     private FeedViewModel mModel;
     private FragmentFeedBinding mBinding;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -68,7 +64,6 @@ public class FeedFragment extends Fragment implements PostItemAdapter.OnPostDele
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         checkBackBtnPressedFromMainFragment();
-        mMainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
         mModel = ViewModelProviders.of(getActivity()).get(FeedViewModel.class);
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_feed, container, false);
         mBinding.setMyVM(mModel);
@@ -79,7 +74,6 @@ public class FeedFragment extends Fragment implements PostItemAdapter.OnPostDele
         setupRecyclerView();
         mModel.setContext(getContext());
         checkIfGoalsExist();
-        requestPushyCreds();
         if(doGoalsExist){ // if user has selected goals, fetch posts
             mModel.callRepository();
             fetchData();
@@ -89,7 +83,8 @@ public class FeedFragment extends Fragment implements PostItemAdapter.OnPostDele
         return mBinding.getRoot();
     }
 
-    private void setupViews() {
+    @Override
+    protected void setupViews() {
         mProgressBar = mBinding.progressBarFeed;
         mNoPostsView = mBinding.feedLinearLayout;
         mProgressBar.setVisibility(View.VISIBLE); // to show that posts are loading
@@ -107,21 +102,6 @@ public class FeedFragment extends Fragment implements PostItemAdapter.OnPostDele
         if(!preferences.getBoolean(Constant.LOGGED_IN, false)){
             getActivity().finish(); // closes the activity when the app detects the user swipes back
             // when logged out
-        }
-    }
-
-    /**
-     * Requests the user's {@link me.pushy.sdk.model.PushyDeviceCredentials} from the database to
-     * later store them on the device's internal storage.
-     * @see me.pushy.sdk.util.PushyPersistence
-     */
-    private void requestPushyCreds() {
-        // Only requests pushy creds when there are no credentials stored on the device.
-        // Do not waste network resources
-        if (!Pushy.isRegistered(getActivity().getApplicationContext())) {
-            SharedPreferences preferences = getActivity().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
-            int userID = preferences.getInt(Constant.USER_ID, 0);
-            new UserPushyTokenAsyncTask(getActivity().getApplicationContext()).execute(Constant.PUSHY_CREDS_ENDPOINT + userID);
         }
     }
 

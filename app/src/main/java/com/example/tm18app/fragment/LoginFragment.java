@@ -2,6 +2,7 @@ package com.example.tm18app.fragment;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,9 @@ import java.net.HttpURLConnection;
 import java.util.HashMap;
 
 import br.com.simplepass.loading_button_lib.customViews.CircularProgressButton;
+import me.pushy.sdk.Pushy;
+import me.pushy.sdk.model.PushyDeviceCredentials;
+import me.pushy.sdk.util.exceptions.PushyException;
 
 /**
  * A simple {@link Fragment} subclass. Responsible for UI and events for the login UI.
@@ -33,13 +37,13 @@ import br.com.simplepass.loading_button_lib.customViews.CircularProgressButton;
  * @version 1.0
  * @since 03.12.2019
  */
-public class LoginFragment extends Fragment {
+public class LoginFragment extends BaseFragment {
 
     private LoginViewModel mModel;
-    private MyViewModel mMainModel;
     private CircularProgressButton mLoginBtn;
     private EditText mEmailEditText;
     private EditText mPasswordEditText;
+    private FragmentLoginBinding mBinding;
 
     public LoginFragment() {
     }
@@ -49,14 +53,10 @@ public class LoginFragment extends Fragment {
                              Bundle savedInstanceState) {
         mModel = ViewModelProviders.of(getActivity()).get(LoginViewModel.class);
         mModel.setContext(getContext());
-        mMainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
-        FragmentLoginBinding binding = DataBindingUtil.inflate(inflater,
+        mBinding = DataBindingUtil.inflate(inflater,
                 R.layout.fragment_login, container, false);
-        binding.setMyVM(mModel);
-        binding.setLifecycleOwner(this);
-        mLoginBtn = binding.loginBtn;
-        mEmailEditText = binding.emailAddressInput;
-        mPasswordEditText = binding.passwordInput;
+        mBinding.setMyVM(mModel);
+        mBinding.setLifecycleOwner(this);
         // Observe for response when the user logs in
         mModel.getUserLiveData().observe(this, new Observer<HashMap<Integer, User>>() {
             @Override
@@ -71,7 +71,15 @@ public class LoginFragment extends Fragment {
                 mLoginBtn.startAnimation();
             }
         });
-        return binding.getRoot();
+        setupViews();
+        return mBinding.getRoot();
+    }
+
+    @Override
+    protected void setupViews() {
+        mLoginBtn = mBinding.loginBtn;
+        mEmailEditText = mBinding.emailAddressInput;
+        mPasswordEditText = mBinding.passwordInput;
     }
 
     /**
@@ -106,7 +114,7 @@ public class LoginFragment extends Fragment {
                 getSharedPreferences(Constant.FIRST_TIME_INTRO,Context.MODE_PRIVATE);
         SharedPreferences.Editor editorIntro = introPreferences.edit();
         editorIntro.putBoolean(Constant.INTRO_OPENED,true);
-        editorIntro.commit();
+        editorIntro.apply();
         SharedPreferences sharedPreferences =
                 this.getActivity().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -115,6 +123,7 @@ public class LoginFragment extends Fragment {
         editor.putString(Constant.LASTNAME, user.getLastname());
         editor.putString(Constant.EMAIL, user.getEmail());
         editor.putInt(Constant.USER_ID, user.getId());
+        editor.putString(Constant.PUSHY_TOKEN, user.getPushyToken());
         if(user.getProfilePicUrl() != null)
             editor.putString(Constant.PROFILE_PIC_URL, user.getProfilePicUrl());
         StringBuilder sb = new StringBuilder();
@@ -132,6 +141,22 @@ public class LoginFragment extends Fragment {
         mModel.getUserLiveData().getValue().clear();
         mLoginBtn.revertAnimation();
         cleanInputs();
+        setUserPushyCreds(user);
+    }
+
+    private void setUserPushyCreds(User user) {
+        final PushyDeviceCredentials credentials =
+                new PushyDeviceCredentials(user.getPushyToken(), user.getPushyAuthKey());
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Pushy.setDeviceCredentials(credentials, getContext());
+                } catch (PushyException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     /**

@@ -57,7 +57,8 @@ public class EditViewModel extends ViewModel {
      */
     private void fetchGoals() {
         GoalsItemRepository goalsItemRepository = new GoalsItemRepository();
-        this.goalItemsLiveData = goalsItemRepository.getGoals();
+        this.goalItemsLiveData =
+                goalsItemRepository.getGoals();
     }
 
     /**
@@ -83,7 +84,9 @@ public class EditViewModel extends ViewModel {
             UserRepository userRepository = new UserRepository();
             // call the editUser method in repository and pass the MutableLiveData for the UI
             // to observe for changes and show feedback accordingly
-            userRepository.editUser(user, (MutableLiveData<HashMap<Integer, User>>) userLiveData);
+            userRepository.editUser(user,
+                    (MutableLiveData<HashMap<Integer, User>>) userLiveData,
+                    preferences.getString(Constant.PUSHY_TOKEN, ""));
             triggerLoadingBtn.call();
         }
     }

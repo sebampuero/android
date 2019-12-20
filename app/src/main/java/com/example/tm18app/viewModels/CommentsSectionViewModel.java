@@ -48,7 +48,9 @@ public class CommentsSectionViewModel extends ViewModel {
                 comment.setContent(inputComment.getValue());
                 comment.setPostID(Integer.parseInt(postID));
                 comment.setUserID(preferences.getInt(Constant.USER_ID, 0));
-                postItemRepository.createComment(comment, commentLiveData);
+                postItemRepository.createComment(comment,
+                        commentLiveData,
+                        preferences.getString(Constant.PUSHY_TOKEN, ""));
             }
         }
     }
@@ -66,8 +68,11 @@ public class CommentsSectionViewModel extends ViewModel {
      * Calls the {@link PostItemRepository} and fetches the data from the server
      */
     private void fetchData() {
+        SharedPreferences prefs =
+                appContext.getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
         PostItemRepository postItemRepository = new PostItemRepository();
-        this.commentLiveData = postItemRepository.getComments(postID);
+        this.commentLiveData = postItemRepository.getComments(postID,
+                prefs.getString(Constant.PUSHY_TOKEN, ""));
     }
 
     /**

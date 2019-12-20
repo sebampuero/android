@@ -38,11 +38,10 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ChatsFragment extends Fragment {
+public class ChatsFragment extends BaseFragment {
 
     private FragmentChatsBinding mBinding;
     private ChatsViewModel mModel;
-    private MyViewModel mMainModel;
     private ChatsAdapter mAdapter;
     private ProgressBar mChatsProgressView;
     private TextView mNoChatsTV;
@@ -57,7 +56,6 @@ public class ChatsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mMainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
         mModel = ViewModelProviders.of(getActivity()).get(ChatsViewModel.class);
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_chats,container, false);
         mBinding.setMyVM(mModel);
@@ -71,7 +69,8 @@ public class ChatsFragment extends Fragment {
         return mBinding.getRoot();
     }
 
-    private void setupViews() {
+    @Override
+    protected void setupViews() {
         Toolbar toolbar = ((MainActivity)getActivity()).getToolbar();
         toolbar.getMenu().clear();
         mChatsProgressView = mBinding.chatsProgressView;

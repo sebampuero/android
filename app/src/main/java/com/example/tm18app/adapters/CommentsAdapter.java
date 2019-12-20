@@ -41,13 +41,14 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
     private ArrayList<Comment> mCommentsList;
     private int mCurrentUserId;
     private NavController mNavController;
+    private SharedPreferences mPrefs;
 
     public CommentsAdapter(FragmentActivity activity, List<Comment> comments, NavController mNavController) {
         this.mContext = activity;
         this.mCommentsList = (ArrayList<Comment>) comments;
-        SharedPreferences preferences = mContext
+        mPrefs = mContext
                 .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
-        this.mCurrentUserId = preferences.getInt(Constant.USER_ID, 0);
+        this.mCurrentUserId = mPrefs.getInt(Constant.USER_ID, 0);
         this.mNavController = mNavController;
     }
 
@@ -130,7 +131,8 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
                     @Override
                     public void onClick(DialogInterface dialogInterface, int which) {
                         PostItemRepository repository = new PostItemRepository();
-                        repository.deleteComment(commentToDelete.getId());
+                        repository.deleteComment(commentToDelete.getId(),
+                                mPrefs.getString(Constant.PUSHY_TOKEN, ""));
                         mCommentsList.remove(position);
                         notifyItemRemoved(position);
                     }

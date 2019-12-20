@@ -37,13 +37,12 @@ import java.util.List;
  * @version 1.0
  * @since 03.12.2019
  */
-public class CommentSectionFragment extends Fragment {
+public class CommentSectionFragment extends BaseFragment {
 
     public static final String POST_ID = "postID";
 
     private FragmentCommentSectionBinding mBinding;
     private CommentsSectionViewModel mModel;
-    private MyViewModel mMainModel;
     private CommentsAdapter mAdapter;
     private List<Comment> mCommentsList = new ArrayList<>();
     private EditText mCommentInputEditText;
@@ -57,7 +56,6 @@ public class CommentSectionFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mModel = ViewModelProviders.of(getActivity()).get(CommentsSectionViewModel.class);
-        mMainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_comment_section, container, false);
         mBinding.setLifecycleOwner(this);
         mBinding.setMyVM(mModel);
@@ -70,7 +68,8 @@ public class CommentSectionFragment extends Fragment {
         return mBinding.getRoot();
     }
 
-    private void setupViews() {
+    @Override
+    protected void setupViews() {
         mCommentInputEditText = mBinding.commentInputField;
         Toolbar toolbar = ((MainActivity)getActivity()).getToolbar();
         toolbar.getMenu().clear();

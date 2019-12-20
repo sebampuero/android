@@ -52,7 +52,6 @@ import static android.app.Activity.RESULT_OK;
  */
 public class NewPostFragment extends BaseFragmentPictureSelecter implements BaseFragmentPictureSelecter.BitmapLoaderInterface {
 
-    private MyViewModel mMainModel;
     private NewPostViewModel mModel;
     private FragmentNewPostBinding mBinding;
     private EditText mPostTitleEditText;
@@ -69,7 +68,6 @@ public class NewPostFragment extends BaseFragmentPictureSelecter implements Base
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         setBitmapLoaderInterface(this);
-        mMainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
         mModel = ViewModelProviders.of(getActivity()).get(NewPostViewModel.class);
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_new_post, container, false);
         mBinding.setMyVM(mModel);
@@ -101,7 +99,8 @@ public class NewPostFragment extends BaseFragmentPictureSelecter implements Base
         return mBinding.getRoot();
     }
 
-    private void setupViews() {
+    @Override
+    protected void setupViews() {
         mPostContentEditText = mBinding.inputTextEdit;
         mPostTitleEditText = mBinding.postTitle;
         mContentIW = mBinding.contentImage;

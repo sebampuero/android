@@ -9,6 +9,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -22,31 +23,36 @@ import retrofit2.http.Query;
  */
 public interface PostRestInterface {
 
-    @POST("api/goals/post")
-    Call<Void> newPost(@Body Post post);
+    @POST("api/posts/")
+    Call<Void> newPost(@Body Post post,
+                       @Header("pushy") String pushyToken);
 
-    @GET("api/goals/posts/{goalId}")
-    Call<List<Post>> getPostsByGoalId(@Path("goalId") String goalId);
+    @POST("api/posts/goals")
+    Call<List<Post>> getPostsWithGoals(@Body List<String> goals,
+                                       @Header("pushy") String pushyToken);
 
-    @POST("api/goals/posts")
-    Call<List<Post>> getPostsWithGoals(@Body List<String> goals);
+    @GET("api/posts/user/{userId}")
+    Call<List<Post>> getPostsByUserId(@Path("userId") String userId,
+                                      @Header("pushy") String pushyToken);
 
-    @GET("api/goals/posts/user/{userId}")
-    Call<List<Post>> getPostsByUserId(@Path("userId") String userId);
+    @POST("api/posts/comment")
+    Call<Comment> newComment(@Body Comment comment,
+                             @Header("pushy") String pushyToken);
 
-    @POST("api/goals/comment")
-    Call<Comment> newComment(@Body Comment comment);
+    @GET("api/posts/comments/{postId}")
+    Call<List<Comment>> getCommentsByPostId(@Path("postId") String postId,
+                                            @Header("pushy") String pushyToken);
 
-    @GET("api/goals/comments/{postId}")
-    Call<List<Comment>> getCommentsByPostId(@Path("postId") String postId);
+    @DELETE("api/posts/{postId}")
+    Call<Void> deletePost(@Path("postId") String postId,
+                          @Header("pushy") String pushyToken);
 
-    @DELETE("api/goals/post/{postId}")
-    Call<Void> deletePost(@Path("postId") String postId);
+    @DELETE("api/posts/comment/{commentId}")
+    Call<Void> deleteComment(@Path("commentId") String commentId,
+                             @Header("pushy") String pushyToken);
 
-    @DELETE("api/goals/comment/{commentId}")
-    Call<Void> deleteComment(@Path("commentId") String commentId);
-
-    @POST("api/goals/post/subscription")
+    @POST("api/posts/subscription")
     Call<Void> deletePostSubscription(@Query("userID")String userID,
-                                      @Query("postID") String postID);
+                                      @Query("postID") String postID,
+                                      @Header("pushy") String pushyToken);
 }
