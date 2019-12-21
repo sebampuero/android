@@ -47,6 +47,7 @@ public class ChatsFragment extends BaseFragment {
     private TextView mNoChatsTV;
     private List<ChatRoom> mChatsList = new ArrayList<>();
     private SwipeRefreshLayout mSwipeRefresh;
+    private RecyclerView mRv;
 
     public ChatsFragment() {
         // Required empty public constructor
@@ -96,6 +97,8 @@ public class ChatsFragment extends BaseFragment {
                     mAdapter.notifyDataSetChanged();
                 }else{
                     mNoChatsTV.setVisibility(View.VISIBLE);
+                    mRv.setVisibility(View.GONE);
+
                 }
                 mChatsProgressView.setVisibility(View.GONE);
                 mSwipeRefresh.setRefreshing(false);
@@ -104,12 +107,12 @@ public class ChatsFragment extends BaseFragment {
     }
 
     private void setupRecyclerView() {
-        RecyclerView rv = mBinding.chatsRv;
+        mRv = mBinding.chatsRv;
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
-        rv.setLayoutManager(manager);
-        mAdapter = new ChatsAdapter(mChatsList, mMainModel.getNavController());
-        rv.setAdapter(mAdapter);
-        rv.addItemDecoration(new DividerItemDecoration(rv.getContext(),
+        mRv.setLayoutManager(manager);
+        mAdapter = new ChatsAdapter(mChatsList, mMainModel.getNavController(), getContext());
+        mRv.setAdapter(mAdapter);
+        mRv.addItemDecoration(new DividerItemDecoration(mRv.getContext(),
                 manager.getOrientation()));
     }
 

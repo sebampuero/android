@@ -1,6 +1,7 @@
 package com.example.tm18app.fragment;
 
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.Toolbar;
@@ -23,6 +24,7 @@ import android.widget.TextView;
 import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
 import com.example.tm18app.adapters.PostItemAdapter;
+import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.FragmentOtherProfileBinding;
 import com.example.tm18app.model.Post;
 import com.example.tm18app.model.User;
@@ -68,8 +70,7 @@ public class OtherProfileFragment extends BaseFragment {
         mBinding.setMyVM(mModel);
         mBinding.setLifecycleOwner(this);
         setupViews();
-        mModel.setContext(getContext());
-        mModel.setNavController(mMainModel.getNavController());
+        mModel.setPrefs(getContext().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE));
         mModel.callRepositoryForUser(getArguments().getString(OTHER_USER_ID));
         mModel.getUserLiveData().observe(this, new Observer<User>() {
             @Override

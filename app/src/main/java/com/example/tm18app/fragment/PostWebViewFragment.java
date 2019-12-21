@@ -6,36 +6,32 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.widget.Toast;
+import android.webkit.WebSettings;
 
-import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
 import com.example.tm18app.network.DownloadsManager;
 import com.example.tm18app.network.NetworkConnectivity;
 
 /**
- * A simple {@link BaseWebviewFragment}  subclass. This class loads post pictures
+ * A simple {@link BaseWebViewFragment}  subclass. This class loads post pictures
  *
  * @author Sebastian Ampuero
  * @version  1.0
  * @since 03.12.2019
  */
-public class PostImgWebviewFragment extends BaseWebviewFragment {
+public class PostWebViewFragment extends BaseWebViewFragment {
 
     public static final String IMG_URL = "IMG_URL";
     public static final String IMG_NAME = "IMG_NAME";
     private String mImageUrl;
     private String mImageName;
 
-    public PostImgWebviewFragment() {
+    public PostWebViewFragment() {
         // Required empty public constructor
     }
 
@@ -102,5 +98,7 @@ public class PostImgWebviewFragment extends BaseWebviewFragment {
         mWebView.getSettings().setLoadWithOverviewMode(true);
         mWebView.getSettings().setUseWideViewPort(true);
         mWebView.getSettings().setBuiltInZoomControls(true);
+        mWebView.getSettings().setAppCacheEnabled(true);
+        mWebView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
     }
 }

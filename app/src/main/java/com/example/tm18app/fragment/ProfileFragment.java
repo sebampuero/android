@@ -78,7 +78,8 @@ public class ProfileFragment extends BaseFragment implements PostItemAdapter.OnP
         mModel.setNavController(mMainModel.getNavController());
         setupViews();
         fillUserData();
-        mModel.setContext(getContext());
+        mModel.setNavController(mMainModel.getNavController());
+        mModel.setPrefs(getContext().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE));
         mModel.callRepositoryForPosts();
         setupRecyclerView();
         fetchData();

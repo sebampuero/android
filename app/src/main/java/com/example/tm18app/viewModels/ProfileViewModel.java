@@ -21,17 +21,7 @@ import java.util.List;
  */
 public abstract class ProfileViewModel extends ViewModel {
 
-    protected NavController navController;
-
     protected LiveData<List<Post>> postLiveData;
-
-    /**
-     * Sets the {@link NavController} for this ViewModel
-     * @param navController {@link NavController}
-     */
-    public void setNavController(NavController navController) {
-        this.navController = navController;
-    }
 
     /**
      * Getter for the {@link LiveData} for the user's posts that show on the profile
@@ -46,12 +36,5 @@ public abstract class ProfileViewModel extends ViewModel {
      */
     public abstract void callRepositoryForPosts();
 
-    /**
-     * Called when the {@link android.widget.ImageView} containing the profile picture
-     * is clicked
-     */
-    public abstract void onProfilePicClicked();
-
-    public abstract void setContext(Context context);
 }
 

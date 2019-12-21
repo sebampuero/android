@@ -35,9 +35,6 @@
         <action
             android:id="@+id/action_profileFragment_to_editProfileFragment"
             app:destination="@id/editProfileFragment" />
-        <action
-            android:id="@+id/action_profileFragment_to_profileImgWebviewFragment"
-            app:destination="@id/profileImgWebviewFragment" />
     </fragment>
     <fragment
         android:id="@+id/commentSectionFragment"
@@ -96,7 +93,7 @@
     </fragment>
     <fragment
         android:id="@+id/postImgWebviewFragment"
-        android:name="com.example.tm18app.fragment.PostImgWebviewFragment"
+        android:name="com.example.tm18app.fragment.PostWebViewFragment"
         android:label=""
         tools:layout="@layout/fragment_webview" />
     <fragment
@@ -105,16 +102,9 @@
         android:label=""
         tools:layout="@layout/fragment_other_profile" >
         <action
-            android:id="@+id/action_otherProfileFragment_to_profileImgWebviewFragment"
-            app:destination="@id/profileImgWebviewFragment" />
-        <action
             android:id="@+id/action_otherProfileFragment_to_chatMessagesFragment"
             app:destination="@id/chatMessagesFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/profileImgWebviewFragment"
-        android:name="com.example.tm18app.fragment.ProfileImgWebviewFragment"
-        android:label="" />
     <fragment
         android:id="@+id/chatsFragment"
         android:name="com.example.tm18app.fragment.ChatsFragment"

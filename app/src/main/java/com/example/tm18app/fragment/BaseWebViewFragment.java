@@ -5,12 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 
 import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
@@ -23,13 +23,13 @@ import com.example.tm18app.R;
  * @version  1.0
  * @since 03.12.2019
  */
-public abstract class BaseWebviewFragment extends BaseFragment {
+public abstract class BaseWebViewFragment extends BaseFragment {
 
 
     protected WebView mWebView;
     protected Toolbar mToolbar;
 
-    public BaseWebviewFragment() {
+    public BaseWebViewFragment() {
 
     }
 

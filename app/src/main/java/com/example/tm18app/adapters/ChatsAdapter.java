@@ -1,5 +1,6 @@
 package com.example.tm18app.adapters;
 
+import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -25,11 +26,13 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.MyViewHolder
 
     private List<ChatRoom> mChatsList;
     private NavController mNavController;
+    private Context mContext;
 
 
-    public ChatsAdapter(List<ChatRoom> list, NavController navController) {
+    public ChatsAdapter(List<ChatRoom> list, NavController navController, Context context) {
         this.mChatsList = list;
         this.mNavController = navController;
+        this.mContext = context;
     }
 
     @NonNull
@@ -59,6 +62,8 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.MyViewHolder
                     .resize(80, 80)
                     .centerCrop()
                     .into(holder.profilePic);
+        else
+            holder.profilePic.setImageDrawable(mContext.getDrawable(R.drawable.ic_person_black_24dp));
     }
 
     @Override

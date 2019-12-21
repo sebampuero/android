@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +27,7 @@ import com.example.tm18app.fragment.CommentSectionFragment;
 import com.example.tm18app.fragment.FeedFragment;
 import com.example.tm18app.fragment.OtherProfileFragment;
 import com.example.tm18app.fragment.ProfileFragment;
-import com.example.tm18app.fragment.PostImgWebviewFragment;
+import com.example.tm18app.fragment.PostWebViewFragment;
 import com.example.tm18app.network.NetworkConnectivity;
 import com.example.tm18app.model.Post;
 import com.example.tm18app.repository.PostItemRepository;
@@ -131,8 +130,8 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
                     .resize(80, 80)
                     .centerCrop()
                     .into(holder.posterPicture);
-        }// else //TODO: remove after tests
-         // holder.posterPicture.setImageDrawable(mCurrentFragment.getResources().getDrawable(R.drawable.ic_person_black_24dp));
+        }else
+            holder.posterPicture.setImageDrawable(mCurrentFragment.getResources().getDrawable(R.drawable.ic_person_black_24dp));
         if(post.getContentPicUrl() != null){
             holder.contentImage.setVisibility(View.VISIBLE); // known recyclerview / picasso bug
             // workaround for pictures not disappearing on scroll
@@ -224,9 +223,9 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
 
         private void openImage() {
             Bundle bundle = new Bundle();
-            bundle.putString(PostImgWebviewFragment.IMG_URL,
+            bundle.putString(PostWebViewFragment.IMG_URL,
                     mPostsList.get(getAdapterPosition()).getContentPicUrl());
-            bundle.putString(PostImgWebviewFragment.IMG_NAME,
+            bundle.putString(PostWebViewFragment.IMG_NAME,
                     String.valueOf(mPostsList.get(getAdapterPosition()).getId()));
             mNavController.navigate(R.id.postImgWebviewFragment, bundle);
         }
