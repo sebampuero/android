@@ -23,6 +23,9 @@ public class ChatMessagesViewModel extends ViewModel {
     private MutableLiveData<Boolean> reloadTrigger = new MutableLiveData<>();
     private String roomId;
     private String roomName;
+    private String toId;
+    private String toName;
+    private String profilePic;
     private SharedPreferences prefs;
     private ChatSocket socket;
     private LiveData<List<ChatMessage>> messagesLiveData = Transformations.switchMap(reloadTrigger, new Function<Boolean, LiveData<List<ChatMessage>>>() {
@@ -74,5 +77,29 @@ public class ChatMessagesViewModel extends ViewModel {
 
     public String getRoomId() {
         return roomId;
+    }
+
+    public String getToId() {
+        return toId;
+    }
+
+    public void setToId(String toId) {
+        this.toId = toId;
+    }
+
+    public String getToName() {
+        return toName;
+    }
+
+    public void setToName(String toName) {
+        this.toName = toName;
+    }
+
+    public String getProfilePic() {
+        return profilePic;
+    }
+
+    public void setProfilePic(String profilePic) {
+        this.profilePic = profilePic;
     }
 }

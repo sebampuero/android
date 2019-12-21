@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
@@ -69,23 +70,43 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
         if(getArguments().getString(PROFILE_PIC) != null){
             mProfilePicUrl = getArguments().getString(PROFILE_PIC);
         }
-        mModel = ViewModelProviders.of(this).get(ChatMessagesViewModel.class);
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_chat_messages, container, false);
         mBinding.setMyVM(mModel);
         mBinding.setLifecycleOwner(this);
+        return mBinding.getRoot();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mModel = ViewModelProviders.of(this).get(ChatMessagesViewModel.class);
         mPreferences = getActivity()
                 .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
         mModel.setPrefs(mPreferences);
+        mModel.setRoomId(getArguments().getString(ROOM_ID, null));
+        mModel.setRoomName(getArguments().getString(ROOM_NAME, null));
+        mModel.setToId(getArguments().getString(TO_ID));
+        mModel.setToName(getArguments().getString(TO_NAME));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        socket.detachListener();
+        mToolbar.setSubtitle("");
+        mProfileIW.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         setupSocketConnection();
         setupViews();
         setupRecyclerView();
         fetchData();
-        return mBinding.getRoot();
     }
 
     private void setupSocketConnection() {
-        mModel.setRoomId(getArguments().getString(ROOM_ID, null));
-        mModel.setRoomName(getArguments().getString(ROOM_NAME, null));
         socket = new ChatSocket(getActivity(), mModel);
         socket.setSocketListener(this);
         if(mModel.getRoomName() == null || mModel.getRoomId() == null){
@@ -95,7 +116,7 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
         }
         socket.establishChat(mModel.getRoomName(),
                 mPreferences.getInt(Constant.USER_ID, 0),
-                Integer.parseInt(getArguments().getString(TO_ID)),
+                Integer.parseInt(mModel.getToId()),
                 mPreferences.getString(Constant.PUSHY_TOKEN, ""));
         mModel.setSocket(socket);
         socket.attachMessageListener();
@@ -114,14 +135,6 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        socket.detachListener();
-        mToolbar.setSubtitle("");
-        mProfileIW.setVisibility(View.GONE);
-    }
-
-    @Override
     public void onStop() {
         super.onStop();
         mModel.getMessagesLiveData().removeObservers(this);
@@ -131,7 +144,7 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
     protected void setupViews() {
         mToolbar = ((MainActivity)getActivity()).getToolbar();
         mToolbar.getMenu().clear();
-        mToolbar.setTitle(getArguments().getString(TO_NAME));
+        mToolbar.setTitle(mModel.getToName());
         mToolbar.inflateMenu(R.menu.chat_menu);
         mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
