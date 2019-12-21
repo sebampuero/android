@@ -24,4 +24,6 @@
     <dimen name="text_size_12">12sp</dimen>
     <dimen name="text_size_16">16sp</dimen>
 
+    <integer name="thumbnail_profile_pic">80</integer>
+
 </resources>

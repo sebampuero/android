@@ -27,12 +27,14 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.MyViewHolder
     private List<ChatRoom> mChatsList;
     private NavController mNavController;
     private Context mContext;
+    private int profilePicDimen;
 
 
     public ChatsAdapter(List<ChatRoom> list, NavController navController, Context context) {
         this.mChatsList = list;
         this.mNavController = navController;
         this.mContext = context;
+        profilePicDimen = mContext.getResources().getInteger(R.integer.thumbnail_profile_pic);
     }
 
     @NonNull
@@ -59,7 +61,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.MyViewHolder
         if(chatRoom.getProfilePic() != null)
             Picasso.get()
                     .load(chatRoom.getProfilePic())
-                    .resize(80, 80)
+                    .resize(profilePicDimen, profilePicDimen)
                     .centerCrop()
                     .into(holder.profilePic);
         else

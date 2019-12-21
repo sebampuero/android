@@ -42,6 +42,7 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
     private int mCurrentUserId;
     private NavController mNavController;
     private SharedPreferences mPrefs;
+    private int profilePicDimen;
 
     public CommentsAdapter(FragmentActivity activity, List<Comment> comments, NavController mNavController) {
         this.mContext = activity;
@@ -50,6 +51,7 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
                 .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
         this.mCurrentUserId = mPrefs.getInt(Constant.USER_ID, 0);
         this.mNavController = mNavController;
+        profilePicDimen =  mContext.getResources().getInteger(R.integer.thumbnail_profile_pic);
     }
 
     @NonNull
@@ -80,7 +82,7 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
         if(comment.getCommentatorPicUrl() != null)
             Picasso.get()
                     .load(comment.getCommentatorPicUrl())
-                    .resize(80,80)
+                    .resize(profilePicDimen,profilePicDimen)
                     .centerCrop()
                     .into(holder.commenterPic);
     }

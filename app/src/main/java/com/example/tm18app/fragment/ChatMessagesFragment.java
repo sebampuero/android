@@ -141,6 +141,7 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
 
     @Override
     protected void setupViews() {
+        int profilePicDimen = getResources().getInteger(R.integer.thumbnail_profile_pic);
         mToolbar = ((MainActivity)getActivity()).getToolbar();
         mToolbar.getMenu().clear();
         mToolbar.setTitle(mModel.getToName());
@@ -160,7 +161,7 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
             mProfileIW.setVisibility(View.VISIBLE);
             Picasso.get()
                     .load(mProfilePicUrl)
-                    .resize(80, 80)
+                    .resize(profilePicDimen, profilePicDimen)
                     .centerCrop()
                     .into(mProfileIW);
         }else

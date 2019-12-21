@@ -59,7 +59,8 @@ public class PushReceiver extends BroadcastReceiver {
                         intent.getIntExtra("roomId", 0),
                         intent.getStringExtra("roomName"),
                         intent.getStringExtra("senderName"),
-                        intent.getIntExtra("senderId", 0));
+                        intent.getIntExtra("senderId", 0),
+                        intent.getStringExtra("senderProfilePicUrl"));
             }
         }else if(intent.getIntExtra("id", 0) == NEW_COMMENT_POST_SUBS){
             if(!pref.getString("notifications_other", "").equals("comments")){
@@ -128,14 +129,19 @@ public class PushReceiver extends BroadcastReceiver {
         buildNotification(context, notificationText, notificationTitle, pendingIntent);
     }
 
-    private void processMessageNotification(Context context, int roomId,
-                                            String roomName, String senderName, int senderId) {
+    private void processMessageNotification(Context context,
+                                            int roomId,
+                                            String roomName,
+                                            String senderName,
+                                            int senderId,
+                                            String picUrl) {
 
         Bundle bundle = new Bundle();
         bundle.putString(ChatMessagesFragment.TO_NAME, senderName);
         bundle.putString(ChatMessagesFragment.ROOM_ID, String.valueOf(roomId));
         bundle.putString(ChatMessagesFragment.ROOM_NAME, roomName);
         bundle.putString(ChatMessagesFragment.TO_ID, String.valueOf(senderId));
+        bundle.putString(ChatMessagesFragment.PROFILE_PIC, picUrl);
 
         PendingIntent pendingIntent = new NavDeepLinkBuilder(context)
                 .setComponentName(MainActivity.class)

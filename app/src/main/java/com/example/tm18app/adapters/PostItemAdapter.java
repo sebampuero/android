@@ -51,6 +51,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
     private NavController mNavController;
     private Fragment mCurrentFragment;
     private SharedPreferences mPrefs;
+    private int profilePicDimen;
 
     public interface OnPostDeleteListener {
 
@@ -68,6 +69,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
         this.mNavController = mNavController;
         this.mCurrentFragment = fragment;
         mPrefs = mCurrentFragment.getContext().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
+        profilePicDimen = fragment.getResources().getInteger(R.integer.thumbnail_profile_pic);
     }
 
     @NonNull
@@ -127,7 +129,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
             holder.posterPicture.setVisibility(View.VISIBLE);
             Picasso.get()
                     .load(post.getPosterPicUrl()) // no need to tweak quality
-                    .resize(80, 80)
+                    .resize(profilePicDimen, profilePicDimen)
                     .centerCrop()
                     .into(holder.posterPicture);
         }else
