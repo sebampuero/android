@@ -61,9 +61,7 @@ public class ChatsFragment extends BaseFragment {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_chats,container, false);
         mBinding.setMyVM(mModel);
         mBinding.setLifecycleOwner(this);
-        SharedPreferences prefs = getActivity()
-                .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
-        mModel.setPrefs(prefs);
+        mModel.setPrefs(mPrefs);
         setupViews();
         setupRecyclerView();
         fetchData();

@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
@@ -65,6 +66,7 @@ public class FeedFragment extends BaseFragment implements PostItemAdapter.OnPost
         // Required empty public constructor
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -103,9 +105,7 @@ public class FeedFragment extends BaseFragment implements PostItemAdapter.OnPost
      * This is  a workaround and wouldn't be propery to keep on production
      */
     private void checkBackBtnPressedFromMainFragment() {
-        //TODO: Find alternative
-        SharedPreferences preferences = getActivity().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
-        if(!preferences.getBoolean(Constant.LOGGED_IN, false)){
+        if(!mPrefs.getBoolean(Constant.LOGGED_IN, false)){
             getActivity().finish(); // closes the activity when the app detects the user swipes back
             // when logged out
         }
@@ -116,8 +116,7 @@ public class FeedFragment extends BaseFragment implements PostItemAdapter.OnPost
      * that goals can be selected on the Profile.
      */
     private void checkIfGoalsExist() {
-        SharedPreferences preferences = getActivity().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
-        if(preferences.getString(Constant.GOAL_TAGS, null) == null){
+        if(mPrefs.getString(Constant.GOAL_TAGS, null) == null){
             Snackbar.make(mBinding.getRoot(), getActivity().getString(R.string.no_goals_msg), Snackbar.LENGTH_LONG).show();
             mNoPostsView.setVisibility(View.VISIBLE);
             mRecyclerView.setVisibility(View.GONE);

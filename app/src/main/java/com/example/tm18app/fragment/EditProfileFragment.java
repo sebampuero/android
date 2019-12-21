@@ -72,7 +72,7 @@ public class EditProfileFragment extends BaseFragmentPictureSelecter implements 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         setBitmapLoaderInterface(this);
-        mModel = ViewModelProviders.of(getActivity()).get(EditViewModel.class);
+        mModel = ViewModelProviders.of(this).get(EditViewModel.class);
         mModel.setContext(getContext());
         mModel.setNavController(mMainModel.getNavController());
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_edit_profile, container, false);

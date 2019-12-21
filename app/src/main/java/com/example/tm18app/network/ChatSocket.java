@@ -65,7 +65,7 @@ public class ChatSocket {
             public void run() {
                 socket.emit("clientStatusOnline", room);
             }
-        },0,1000);
+        },0,5000);
     }
 
     public void sendMessage(int userId, int roomId, String room, String message){

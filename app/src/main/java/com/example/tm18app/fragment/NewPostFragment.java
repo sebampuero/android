@@ -70,7 +70,7 @@ public class NewPostFragment extends BaseFragmentPictureSelecter implements Base
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         setBitmapLoaderInterface(this);
-        mModel = ViewModelProviders.of(getActivity()).get(NewPostViewModel.class);
+        mModel = ViewModelProviders.of(this).get(NewPostViewModel.class);
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_new_post, container, false);
         mBinding.setMyVM(mModel);
         mBinding.setLifecycleOwner(this);
@@ -179,9 +179,8 @@ public class NewPostFragment extends BaseFragmentPictureSelecter implements Base
      */
     private void setSpinner() {
         Spinner goalTagsSpinner = mBinding.goalTagsSpinner;
-        SharedPreferences preferences = getActivity().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
-        if(preferences.getString(Constant.GOAL_TAGS, null) != null){
-            final ArrayList<String> goalTags = new ArrayList<>(Arrays.asList(preferences.getString(Constant.GOAL_TAGS, null).split(",")));
+        if(mPrefs.getString(Constant.GOAL_TAGS, null) != null){
+            final ArrayList<String> goalTags = new ArrayList<>(Arrays.asList(mPrefs.getString(Constant.GOAL_TAGS, null).split(",")));
             ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, goalTags);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             goalTagsSpinner.setAdapter(adapter);

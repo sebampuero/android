@@ -51,7 +51,7 @@ public class LoginFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mModel = ViewModelProviders.of(getActivity()).get(LoginViewModel.class);
+        mModel = ViewModelProviders.of(this).get(LoginViewModel.class);
         mModel.setContext(getContext());
         mBinding = DataBindingUtil.inflate(inflater,
                 R.layout.fragment_login, container, false);
@@ -115,9 +115,7 @@ public class LoginFragment extends BaseFragment {
         SharedPreferences.Editor editorIntro = introPreferences.edit();
         editorIntro.putBoolean(Constant.INTRO_OPENED,true);
         editorIntro.apply();
-        SharedPreferences sharedPreferences =
-                this.getActivity().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
+        SharedPreferences.Editor editor = mPrefs.edit();
         editor.putBoolean(Constant.LOGGED_IN, true);
         editor.putString(Constant.NAME, user.getName());
         editor.putString(Constant.LASTNAME, user.getLastname());

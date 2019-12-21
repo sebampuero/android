@@ -33,6 +33,7 @@ import com.example.tm18app.databinding.FragmentChatMessagesBinding;
 import com.example.tm18app.model.ChatMessage;
 import com.example.tm18app.network.ChatSocket;
 import com.example.tm18app.repository.ChatsRepository;
+import com.example.tm18app.util.Debouncer;
 import com.example.tm18app.viewModels.ChatMessagesViewModel;
 import com.example.tm18app.viewModels.MyViewModel;
 import com.squareup.picasso.Picasso;
@@ -40,6 +41,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -57,7 +59,6 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
     private ChatMessagesAdapter mAdapter;
     private ArrayList<ChatMessage> mChatMessagesList = new ArrayList<>();
     private ChatSocket socket;
-    private SharedPreferences mPreferences;
     private TextView mLoadingMessagesTv;
     private RecyclerView mRv;
     private Toolbar mToolbar;
@@ -80,9 +81,7 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mModel = ViewModelProviders.of(this).get(ChatMessagesViewModel.class);
-        mPreferences = getActivity()
-                .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
-        mModel.setPrefs(mPreferences);
+        mModel.setPrefs(mPrefs);
         mModel.setRoomId(getArguments().getString(ROOM_ID, null));
         mModel.setRoomName(getArguments().getString(ROOM_NAME, null));
         mModel.setToId(getArguments().getString(TO_ID));
@@ -115,9 +114,9 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
             mModel.callRepository();
         }
         socket.establishChat(mModel.getRoomName(),
-                mPreferences.getInt(Constant.USER_ID, 0),
+                mPrefs.getInt(Constant.USER_ID, 0),
                 Integer.parseInt(mModel.getToId()),
-                mPreferences.getString(Constant.PUSHY_TOKEN, ""));
+                mPrefs.getString(Constant.PUSHY_TOKEN, ""));
         mModel.setSocket(socket);
         socket.attachMessageListener();
         if(mModel.getMessagesLiveData().getValue() != null){
@@ -126,18 +125,18 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
         socket.attachStatusListener();
         socket.attachTypingListener();
         socket.attachErrorListener();
+        final Debouncer debouncer = new Debouncer();
         mModel.inputMessage.observe(this, new Observer<String>() {
             @Override
             public void onChanged(String s) {
-                socket.sendTypingStatus(mModel.getRoomName());
+                debouncer.debounce(Void.class, new Runnable() {
+                    @Override
+                    public void run() {
+                        socket.sendTypingStatus(mModel.getRoomName());
+                    }
+                }, 500, TimeUnit.MILLISECONDS);
             }
         });
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        mModel.getMessagesLiveData().removeObservers(this);
     }
 
     @Override
@@ -178,7 +177,7 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
             public void onClick(DialogInterface dialogInterface, int which) {
                 ChatsRepository repository = new ChatsRepository();
                 repository.deleteChatRoom(mModel.getRoomId(),
-                        mPreferences.getString(Constant.PUSHY_TOKEN, ""));
+                        mPrefs.getString(Constant.PUSHY_TOKEN, ""));
                 mMainModel.getNavController().navigateUp();
                 Toast.makeText(getContext(), getResources().getString(R.string.chat_room_deleted),
                         Toast.LENGTH_SHORT).show();

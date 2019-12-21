@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -58,10 +59,10 @@ public class ProfileFragment extends BaseFragment implements PostItemAdapter.OnP
     private ProgressBar mProgressBar;
     private LinearLayout mNoPostsView;
     private ImageView mProfilePicIW;
-    private SharedPreferences mPrefs;
     private TextView mNamesTV;
     private TextView mEmailTV;
     private TextView mGoalsTV;
+    private SwipeRefreshLayout mSwipe;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -71,7 +72,6 @@ public class ProfileFragment extends BaseFragment implements PostItemAdapter.OnP
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mModel = ViewModelProviders.of(getActivity()).get(CurrentProfileViewModel.class);
-        mPrefs = getContext().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false);
         mBinding.setMyVM(mModel);
         mBinding.setLifecycleOwner(this);
@@ -79,7 +79,8 @@ public class ProfileFragment extends BaseFragment implements PostItemAdapter.OnP
         setupViews();
         fillUserData();
         mModel.setNavController(mMainModel.getNavController());
-        mModel.setPrefs(getContext().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE));
+        mModel.setUserId(String.valueOf(mPrefs.getInt(Constant.USER_ID, 0)));
+        mModel.setPreferences(mPrefs);
         mModel.callRepositoryForPosts();
         setupRecyclerView();
         fetchData();
@@ -108,6 +109,13 @@ public class ProfileFragment extends BaseFragment implements PostItemAdapter.OnP
         mNamesTV = mBinding.getRoot().findViewById(R.id.namesTv);
         mEmailTV = mBinding.getRoot().findViewById(R.id.emailTv);
         mGoalsTV = mBinding.getRoot().findViewById(R.id.goalsInfoTv);
+        mSwipe = mBinding.getRoot().findViewById(R.id.swipeRefreshCurrentProfile);
+        mSwipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mModel.callRepositoryForPosts();
+            }
+        });
     }
 
     /**
@@ -142,6 +150,7 @@ public class ProfileFragment extends BaseFragment implements PostItemAdapter.OnP
                     }
                     mProgressBar.setVisibility(View.GONE);
                 }
+                mSwipe.setRefreshing(false);
             }
         });
         setProfilePic();

@@ -5,38 +5,43 @@
     <data>
         <variable name="myVM" type="com.example.tm18app.viewModels.OtherUserProfileViewModel" />
     </data>
-    <ScrollView
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshOtherProfile"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/inAppBackgroundColor">
-        <FrameLayout
+        android:layout_height="match_parent">
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:context=".fragment.OtherProfileFragment">
-            <RelativeLayout
+            android:layout_height="match_parent"
+            android:background="@color/inAppBackgroundColor">
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/profilePic"
+                android:layout_height="wrap_content"
+                tools:context=".fragment.OtherProfileFragment">
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_person_black_80dp"
-                    android:layout_marginTop="@dimen/margin_10"/>
+                    android:layout_height="match_parent">
 
-                <include
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:layout_below="@id/profilePic"
-                    android:id="@+id/info_layout"
-                    layout="@layout/profile_info_layout"/>
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/profilePic"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_person_black_80dp"
+                        android:layout_marginTop="@dimen/margin_10"/>
 
-                <include
-                    android:layout_below="@id/info_layout"
-                    layout="@layout/profile_posts_layout"
-                    android:id="@+id/postsLayout"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"/>
-            </RelativeLayout>
-        </FrameLayout>
-    </ScrollView></layout>
+                    <include
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:layout_below="@id/profilePic"
+                        android:id="@+id/info_layout"
+                        layout="@layout/profile_info_layout"/>
+
+                    <include
+                        android:layout_below="@id/info_layout"
+                        layout="@layout/profile_posts_layout"
+                        android:id="@+id/postsLayout"
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"/>
+                </RelativeLayout>
+            </FrameLayout>
+        </ScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout></layout>

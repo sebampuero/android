@@ -75,7 +75,7 @@ public class RegistrationFragment extends BaseFragmentPictureSelecter implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         setBitmapLoaderInterface(this);
-        mModel = ViewModelProviders.of(getActivity()).get(RegisterViewModel.class);
+        mModel = ViewModelProviders.of(this).get(RegisterViewModel.class);
         mModel.setContext(getContext());
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_registration, container, false);
         mBinding.setMyVM(mModel);

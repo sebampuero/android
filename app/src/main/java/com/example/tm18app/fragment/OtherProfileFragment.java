@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -56,6 +57,7 @@ public class OtherProfileFragment extends BaseFragment {
     private TextView mEmailTV;
     private TextView mGoalsTV;
     private User otherUser;
+    private SwipeRefreshLayout mSwipe;
 
     public OtherProfileFragment() {
         // Required empty public constructor
@@ -65,12 +67,12 @@ public class OtherProfileFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mModel = ViewModelProviders.of(getActivity()).get(OtherUserProfileViewModel.class);
+        mModel = ViewModelProviders.of(this).get(OtherUserProfileViewModel.class);
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_other_profile, container, false);
         mBinding.setMyVM(mModel);
         mBinding.setLifecycleOwner(this);
         setupViews();
-        mModel.setPrefs(getContext().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE));
+        mModel.setPreferences(mPrefs);
         mModel.callRepositoryForUser(getArguments().getString(OTHER_USER_ID));
         mModel.getUserLiveData().observe(this, new Observer<User>() {
             @Override
@@ -78,7 +80,7 @@ public class OtherProfileFragment extends BaseFragment {
                 ((MainActivity)getActivity()).getToolbar().setTitle(user.getName());
                 otherUser = user;
                 fillUserData();
-                mModel.setOtherUser(user);
+                mModel.setUserId(String.valueOf(user.getId()));
                 mModel.callRepositoryForPosts();
                 fetchData();
             }
@@ -104,6 +106,7 @@ public class OtherProfileFragment extends BaseFragment {
                     }
                     mProgressBar.setVisibility(View.GONE);
                 }
+                mSwipe.setRefreshing(false);
             }
         });
     }
@@ -133,6 +136,13 @@ public class OtherProfileFragment extends BaseFragment {
         mNamesTV = mBinding.getRoot().findViewById(R.id.namesTv);
         mEmailTV = mBinding.getRoot().findViewById(R.id.emailTv);
         mGoalsTV = mBinding.getRoot().findViewById(R.id.goalsInfoTv);
+        mSwipe = mBinding.getRoot().findViewById(R.id.swipeRefreshOtherProfile);
+        mSwipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mModel.callRepositoryForPosts();
+            }
+        });
     }
 
     private void fillUserData() {
