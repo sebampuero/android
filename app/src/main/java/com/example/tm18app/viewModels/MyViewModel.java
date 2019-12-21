@@ -54,14 +54,14 @@ public class MyViewModel extends ViewModel {
      * Navigate to the Login UI
      */
     public void onLoginPressed(){
-        navController.navigate(R.id.action_mainFragment_to_loginFragment);
+        this.navController.navigate(R.id.action_mainFragment_to_loginFragment);
     }
 
     /**
      * Navigate to the Register UI
      */
     public void onRegisterPressed(){
-        navController.navigate(R.id.action_mainFragment_to_registrationFragment);
+        this.navController.navigate(R.id.action_mainFragment_to_registrationFragment);
     }
 
     /**

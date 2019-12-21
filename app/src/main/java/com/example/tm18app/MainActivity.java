@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 
@@ -77,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
         binding.setLifecycleOwner(this);
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        Log.e("TAG", "Setting nav controller");
         model.setNavController(navController);
         model.setContext(this.getApplication());
         model.checkLoginStatus();
