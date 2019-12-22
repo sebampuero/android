@@ -33,7 +33,6 @@ import com.example.tm18app.model.Goal;
 import com.example.tm18app.model.GoalItemSelection;
 import com.example.tm18app.model.User;
 import com.example.tm18app.util.ConverterUtils;
-import com.example.tm18app.viewModels.MyViewModel;
 import com.example.tm18app.viewModels.RegisterViewModel;
 
 import java.net.HttpURLConnection;
@@ -53,7 +52,7 @@ import static android.app.Activity.RESULT_OK;
  * @version 1.0
  * @since 03.12.2019
  */
-public class RegistrationFragment extends BaseFragmentPictureSelecter implements BaseFragmentPictureSelecter.BitmapLoaderInterface {
+public class RegistrationFragment extends BaseFragmentMediaSelector implements BaseFragmentMediaSelector.BitmapLoaderInterface {
 
     private MultiGoalSelectAdapter mAdapter;
     private FragmentRegistrationBinding mBinding;
@@ -109,7 +108,7 @@ public class RegistrationFragment extends BaseFragmentPictureSelecter implements
         mModel.selectProfilePic.observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                openGallery();
+                openGalleryForImage();
             }
         });
         mModel.setGoalsAdapter(mAdapter);

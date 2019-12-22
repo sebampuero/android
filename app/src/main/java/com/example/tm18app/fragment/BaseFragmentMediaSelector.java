@@ -21,9 +21,10 @@ import com.squareup.picasso.Target;
  * @version  1.0
  * @since 03.12.2019
  */
-public abstract class BaseFragmentPictureSelecter extends BaseFragment{
+public abstract class BaseFragmentMediaSelector extends BaseFragment{
 
     protected static final int PICK_IMAGE = 100;
+    protected static final int PICK_VIDEO = 200;
     protected BitmapLoaderInterface bitmapLoaderInterface;
 
     private static final int MAX_HEIGHT = 800;
@@ -42,7 +43,7 @@ public abstract class BaseFragmentPictureSelecter extends BaseFragment{
         void onLoadingBitmap();
     }
 
-    public BaseFragmentPictureSelecter() {
+    public BaseFragmentMediaSelector() {
     }
 
     /**
@@ -56,9 +57,16 @@ public abstract class BaseFragmentPictureSelecter extends BaseFragment{
     /**
      * Opens an {@link Intent} to select an image from the gallery
      */
-    protected void openGallery(){
-        Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-        startActivityForResult(gallery, PICK_IMAGE);
+    protected void openGalleryForImage(){
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_PICK);
+        startActivityForResult(Intent.createChooser(intent,"Select Image"),PICK_IMAGE);
+    }
+
+    protected void openGalleryForVideo() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(Intent.createChooser(intent,"Select Video"),PICK_VIDEO);
     }
 
     /**
@@ -90,4 +98,5 @@ public abstract class BaseFragmentPictureSelecter extends BaseFragment{
             }
         });
     }
+
 }

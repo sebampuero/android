@@ -35,7 +35,6 @@ import com.example.tm18app.model.GoalItemSelection;
 import com.example.tm18app.model.User;
 import com.example.tm18app.util.ConverterUtils;
 import com.example.tm18app.viewModels.EditViewModel;
-import com.example.tm18app.viewModels.MyViewModel;
 import com.squareup.picasso.Picasso;
 
 import java.net.HttpURLConnection;
@@ -56,7 +55,7 @@ import static android.app.Activity.RESULT_OK;
  * @version 1.0
  * @since 03.12.2019
  */
-public class EditProfileFragment extends BaseFragmentPictureSelecter implements BaseFragmentPictureSelecter.BitmapLoaderInterface {
+public class EditProfileFragment extends BaseFragmentMediaSelector implements BaseFragmentMediaSelector.BitmapLoaderInterface {
 
     private FragmentEditProfileBinding mBinding;
     private MultiGoalSelectAdapter mAdapter;
@@ -110,7 +109,7 @@ public class EditProfileFragment extends BaseFragmentPictureSelecter implements 
         mModel.selectProfilePic.observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                openGallery();
+                openGalleryForImage();
             }
         });
         mModel.triggerLoadingBtn.observe(this, new Observer<Boolean>() {

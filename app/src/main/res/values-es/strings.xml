@@ -133,7 +133,10 @@
     <string name="new_comment_notification_subscription">comentó en un post donde estas suscrito/a!</string>
     <string name="unsubscribe_from_post">Desuscribirse del post</string>
     <string name="unsubcribed_from_post">Dususcrito/a</string>
-    <string name="loading_image_msg">Loading image</string>
+    <string name="loading_image_msg">Cargando imagen</string>
+    <string name="upload_video">Subir video</string>
+    <string name="file_is_too_large">The selected file is too large, maximum is 10MB</string>
+    <string name="error_ocurred">An error ocurred</string>
 
     <array name="notification_settings">
         <item>Permitir todas las notificaciones</item>

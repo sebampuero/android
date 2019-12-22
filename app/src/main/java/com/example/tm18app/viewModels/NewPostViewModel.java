@@ -2,6 +2,7 @@ package com.example.tm18app.viewModels;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
@@ -27,12 +28,12 @@ public class NewPostViewModel extends ViewModel {
 
     public MutableLiveData<String> title = new MutableLiveData<>();
     public MutableLiveData<String> content = new MutableLiveData<>();
-    public SingleLiveEvent<Boolean> selectContentImage = new SingleLiveEvent<>();
     public SingleLiveEvent<Boolean> triggerLoadingBtn = new SingleLiveEvent<>();
 
     private Context appContext;
     private String selectedGoal;
     private String contentImageBase64Data;
+    private String contentVideoBase64Data;
 
     private MutableLiveData<Integer> postLiveDataResponse = new MutableLiveData<>();
 
@@ -72,15 +73,14 @@ public class NewPostViewModel extends ViewModel {
             Post post = new Post(title.getValue(), content.getValue(), userID, goalID);
             if(contentImageBase64Data != null)
                 post.setBase64Image(contentImageBase64Data);
+            if(contentVideoBase64Data != null)
+                post.setBase64Video(contentVideoBase64Data);
             repository.createPost(post,
                     postLiveDataResponse, prefs.getString(Constant.PUSHY_TOKEN, ""));
             triggerLoadingBtn.call();
         }
     }
 
-    public void onUploadImageClicked() {
-        selectContentImage.call();
-    }
 
     /**
      * Checks whether the input fields are valid
@@ -116,5 +116,9 @@ public class NewPostViewModel extends ViewModel {
      */
     public void setContentImageBase64Data(String contentImageBase64Data) {
         this.contentImageBase64Data = contentImageBase64Data;
+    }
+
+    public void setContentVideoBase64Data(String contentVideoBase64Data) {
+        this.contentVideoBase64Data = contentVideoBase64Data;
     }
 }

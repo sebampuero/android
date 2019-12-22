@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -146,6 +147,8 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
                     .into(holder.contentImage);
         }else
             holder.contentImage.setVisibility(View.GONE);
+        if(post.getContentVideoUrl() != null)
+            Log.d(getClass().getSimpleName(), post.getContentVideoUrl());
     }
 
     private void showOptionsAlertDialog(final String postID) {

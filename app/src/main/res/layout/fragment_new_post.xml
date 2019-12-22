@@ -4,107 +4,123 @@
     <data>
         <variable name="myVM" type="com.example.tm18app.viewModels.NewPostViewModel" />
     </data>
-<ScrollView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <FrameLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:context=".fragment.NewPostFragment">
-
-        <RelativeLayout
+        android:layout_height="match_parent">
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/inAppBackgroundColor">
+            tools:context=".fragment.NewPostFragment">
 
-            <TextView
-                android:id="@+id/newPostTv"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/new_post"
-                android:layout_marginStart="@dimen/margin_10"
-                android:layout_marginEnd="@dimen/margin_10"
-                android:textStyle="bold"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+                android:layout_height="match_parent"
+                android:background="@color/inAppBackgroundColor">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_margin="@dimen/margin_10"
-                android:layout_below="@id/newPostTv"
-                android:id="@+id/contentImage"/>
+                <TextView
+                    android:id="@+id/newPostTv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/new_post"
+                    android:layout_marginStart="@dimen/margin_10"
+                    android:layout_marginEnd="@dimen/margin_10"
+                    android:textStyle="bold"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/custom_btn_form"
-                android:padding="@dimen/padding_10"
-                android:text="@string/upload_image"
-                android:onClick="@{() -> myVM.onUploadImageClicked()}"
-                android:layout_centerHorizontal="true"
-                android:id="@+id/uploadImageBtn"
-                android:layout_below="@id/contentImage"/>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:visibility="gone"
+                    android:layout_marginBottom="@dimen/margin_10"
+                    android:layout_below="@id/newPostTv"
+                    android:id="@+id/contentImage"/>
 
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/uploadImageBtn"
-                android:hint="@string/post_title_label"
-                android:id="@+id/postTitle"
-                android:text="@={myVM.title}"
-                android:padding="@dimen/padding_10"
-                android:background="@drawable/custom_edit_text_forms"
-                android:layout_margin="@dimen/margin_10" />
+                <com.google.android.exoplayer2.ui.PlayerView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/player_view_height"
+                    android:visibility="gone"
+                    android:layout_marginBottom="@dimen/margin_10"
+                    android:layout_below="@id/contentImage"
+                    android:id="@+id/videpPlayer"/>
 
-            <EditText
-                android:id="@+id/inputTextEdit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="15"
-                android:layout_below="@id/postTitle"
-                android:text="@={myVM.content}"
-                android:layout_marginStart="@dimen/margin_10"
-                android:background="@drawable/custom_edit_text_forms"
-                android:padding="@dimen/padding_10"
-                android:layout_margin="@dimen/margin_10"
-                android:hint="@string/post_content_hint"
-                android:inputType="textMultiLine" />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/custom_btn_form"
+                    android:padding="@dimen/padding_10"
+                    android:text="@string/upload_image"
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/uploadImageBtn"
+                    android:layout_below="@id/videpPlayer"/>
 
-            <TextView
-                android:id="@+id/goalSpinnerLabel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_10"
-                android:layout_marginEnd="@dimen/margin_10"
-                android:layout_below="@id/inputTextEdit"
-                android:text="@string/goalSpinnerLabel" />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/custom_btn_form"
+                    android:padding="@dimen/padding_10"
+                    android:layout_marginTop="@dimen/margin_10"
+                    android:text="@string/upload_video"
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/uploadVideoBtn"
+                    android:layout_below="@id/uploadImageBtn"/>
 
-            <Spinner
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_10"
-                android:layout_below="@id/goalSpinnerLabel"
-                android:id="@+id/goalTagsSpinner" />
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/uploadVideoBtn"
+                    android:hint="@string/post_title_label"
+                    android:id="@+id/postTitle"
+                    android:text="@={myVM.title}"
+                    android:padding="@dimen/padding_10"
+                    android:background="@drawable/custom_edit_text_forms"
+                    android:layout_margin="@dimen/margin_10" />
 
-            <br.com.simplepass.loading_button_lib.customViews.CircularProgressButton
-                android:id="@+id/newPostBtn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_10"
-                android:layout_marginEnd="@dimen/margin_10"
-                android:textStyle="bold"
-                android:layout_centerHorizontal="true"
-                android:background="@drawable/custom_btn_form"
-                android:onClick="@{() -> myVM.onNewPostClicked()}"
-                android:layout_alignParentBottom="true"
-                android:text="@string/new_post_btn"
-                android:layout_below="@id/goalTagsSpinner"/>
+                <EditText
+                    android:id="@+id/inputTextEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="15"
+                    android:layout_below="@id/postTitle"
+                    android:text="@={myVM.content}"
+                    android:layout_marginStart="@dimen/margin_10"
+                    android:background="@drawable/custom_edit_text_forms"
+                    android:padding="@dimen/padding_10"
+                    android:layout_margin="@dimen/margin_10"
+                    android:hint="@string/post_content_hint"
+                    android:inputType="textMultiLine" />
+
+                <TextView
+                    android:id="@+id/goalSpinnerLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_10"
+                    android:layout_marginEnd="@dimen/margin_10"
+                    android:layout_below="@id/inputTextEdit"
+                    android:text="@string/goalSpinnerLabel" />
+
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_10"
+                    android:layout_below="@id/goalSpinnerLabel"
+                    android:id="@+id/goalTagsSpinner" />
+
+                <br.com.simplepass.loading_button_lib.customViews.CircularProgressButton
+                    android:id="@+id/newPostBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_10"
+                    android:layout_marginEnd="@dimen/margin_10"
+                    android:textStyle="bold"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/custom_btn_form"
+                    android:onClick="@{() -> myVM.onNewPostClicked()}"
+                    android:text="@string/new_post_btn"
+                    android:layout_below="@id/goalTagsSpinner"/>
+            </RelativeLayout>
 
 
-        </RelativeLayout>
-
-
-    </FrameLayout>
-</ScrollView>
+        </FrameLayout>
+    </ScrollView>
 </layout>

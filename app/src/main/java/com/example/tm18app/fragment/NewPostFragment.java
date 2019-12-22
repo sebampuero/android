@@ -1,9 +1,7 @@
 package com.example.tm18app.fragment;
 
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -32,11 +31,23 @@ import com.example.tm18app.MainActivity;
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.R;
 import com.example.tm18app.databinding.FragmentNewPostBinding;
+import com.example.tm18app.exceptions.FileTooLargeException;
 import com.example.tm18app.util.ConverterUtils;
-import com.example.tm18app.viewModels.MyViewModel;
 import com.example.tm18app.viewModels.NewPostViewModel;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
+import com.google.android.exoplayer2.extractor.ExtractorsFactory;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -52,14 +63,18 @@ import static android.app.Activity.RESULT_OK;
  * @version 1.0
  * @since 03.12.2019
  */
-public class NewPostFragment extends BaseFragmentPictureSelecter implements BaseFragmentPictureSelecter.BitmapLoaderInterface {
+public class NewPostFragment extends BaseFragmentMediaSelector implements BaseFragmentMediaSelector.BitmapLoaderInterface {
 
     private NewPostViewModel mModel;
     private FragmentNewPostBinding mBinding;
     private EditText mPostTitleEditText;
     private EditText mPostContentEditText;
     private ImageView mContentIW;
+    private PlayerView mContentVW;
     private CircularProgressButton mPostBtn;
+    private Button mUploadPicBtn;
+    private Button mUploadVideoBtn;
+    private SimpleExoPlayer mPlayer;
 
     public NewPostFragment() {
         // Required empty public constructor
@@ -84,13 +99,6 @@ public class NewPostFragment extends BaseFragmentPictureSelecter implements Base
                 evaluatePostResponse(statusCode);
             }
         });
-        // Observe for when the open gallery button is clicked
-        mModel.selectContentImage.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                openGallery();
-            }
-        });
         // Trigger loading button for new post
         mModel.triggerLoadingBtn.observe(this, new Observer<Boolean>() {
             @Override
@@ -106,15 +114,32 @@ public class NewPostFragment extends BaseFragmentPictureSelecter implements Base
         mPostContentEditText = mBinding.inputTextEdit;
         mPostTitleEditText = mBinding.postTitle;
         mContentIW = mBinding.contentImage;
+        mContentVW = mBinding.videpPlayer;
         mPostBtn = mBinding.newPostBtn;
         Toolbar toolbar = ((MainActivity)getActivity()).getToolbar();
         toolbar.getMenu().clear();
+        mUploadPicBtn = mBinding.uploadImageBtn;
+        mUploadPicBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openGalleryForImage();
+            }
+        });
+        mUploadVideoBtn = mBinding.uploadVideoBtn;
+        mUploadVideoBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openGalleryForVideo();
+            }
+        });
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == PICK_IMAGE){
+            mContentVW.setVisibility(View.GONE);
+            mContentIW.setVisibility(View.VISIBLE);
             Uri contentImgUri = data.getData();
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), contentImgUri);
@@ -122,15 +147,52 @@ public class NewPostFragment extends BaseFragmentPictureSelecter implements Base
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }else if(resultCode == RESULT_OK && requestCode == PICK_VIDEO){
+            mContentVW.setVisibility(View.VISIBLE);
+            mContentIW.setVisibility(View.GONE);
+            Uri contentVideoUri = data.getData();
+            try{
+                if(mPlayer != null)
+                    mPlayer.release();
+                setVideoReadyToUpload(contentVideoUri);
+                TrackSelector selector = new DefaultTrackSelector();
+                mPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), selector);
+                DefaultDataSourceFactory dataSourceFactory = new DefaultDataSourceFactory(getContext(), "exoplayer_video");
+                ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
+                MediaSource source = new ExtractorMediaSource(contentVideoUri, dataSourceFactory, extractorsFactory, null, null);
+                mContentVW.setPlayer(mPlayer);
+                mPlayer.prepare(source);
+                mPlayer.setPlayWhenReady(true);
+            }catch (FileTooLargeException e){
+                Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(getContext(),
+                        getResources().getString(R.string.error_ocurred), Toast.LENGTH_LONG).show();
+            }
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(mPlayer != null)
+            mPlayer.release();
+    }
+
+    private void setVideoReadyToUpload(Uri contentVideoUri) throws FileTooLargeException, IOException {
+        InputStream is =  getContext().getContentResolver().openInputStream(contentVideoUri);
+        byte[] videoBytes = ConverterUtils.getBytes(is);
+        if(videoBytes.length > 10000000) throw new FileTooLargeException(getResources().getString(R.string.file_is_too_large));
+        mModel.setContentVideoBase64Data(Base64.encodeToString(videoBytes, Base64.DEFAULT));
     }
 
     @Override
     public void onBitmapLoaded(Bitmap bitmap) {
         try {
             mContentIW.setImageBitmap(bitmap);
-            byte[] profilePicByteArray = ConverterUtils.getBytes(bitmap);
-            mModel.setContentImageBase64Data(Base64.encodeToString(profilePicByteArray, Base64.DEFAULT));
+            byte[] contentImageBytes = ConverterUtils.getBytes(bitmap);
+            mModel.setContentImageBase64Data(Base64.encodeToString(contentImageBytes, Base64.DEFAULT));
         }catch (Exception e){
             e.printStackTrace();
             getActivity().runOnUiThread(new Runnable() {
