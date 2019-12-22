@@ -123,6 +123,7 @@ public class OtherProfileFragment extends BaseFragment {
                     Bundle b = new Bundle();
                     b.putString(ChatMessagesFragment.TO_ID, String.valueOf(otherUser.getId()));
                     b.putString(ChatMessagesFragment.TO_NAME, otherUser.getName());
+                    b.putString(ChatMessagesFragment.PROFILE_PIC, otherUser.getProfilePicUrl());
                     mMainModel.getNavController()
                             .navigate(R.id.action_otherProfileFragment_to_chatMessagesFragment, b);
                 }
