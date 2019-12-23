@@ -28,6 +28,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
 import com.example.tm18app.adapters.PostItemAdapter;
+import com.example.tm18app.adapters.VideoPlayerRecyclerView;
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.FragmentFeedBinding;
 import com.example.tm18app.model.Post;
@@ -35,6 +36,7 @@ import com.example.tm18app.viewModels.FeedViewModel;
 import com.example.tm18app.viewModels.MyViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.squareup.picasso.Picasso;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
@@ -54,7 +56,7 @@ public class FeedFragment extends BaseFragment implements PostItemAdapter.OnPost
     private FeedViewModel mModel;
     private FragmentFeedBinding mBinding;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private RecyclerView mRecyclerView;
+    private VideoPlayerRecyclerView mRecyclerView;
     private PostItemAdapter mAdapter;
     private List<Post> mPostsList = new ArrayList<>();
     private ProgressBar mProgressBar;
@@ -98,6 +100,13 @@ public class FeedFragment extends BaseFragment implements PostItemAdapter.OnPost
         mProgressBar.setVisibility(View.VISIBLE); // to show that posts are loading
         Toolbar toolbar = ((MainActivity)getActivity()).getToolbar();
         toolbar.getMenu().clear();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(mRecyclerView != null)
+            mRecyclerView.releasePlayer();
     }
 
     /**
@@ -184,18 +193,8 @@ public class FeedFragment extends BaseFragment implements PostItemAdapter.OnPost
         mAdapter = new PostItemAdapter((ArrayList<Post>) mPostsList,
                 mMainModel.getNavController(), this);
         mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @SuppressLint("RestrictedApi")
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (!recyclerView.canScrollVertically(1) && newState==RecyclerView.SCROLL_STATE_IDLE) {
-                    mNewPostBtn.setVisibility(View.GONE);
-                }else{
-                    mNewPostBtn.setVisibility(View.VISIBLE);
-                }
-            }
-        });
+        mRecyclerView.setPostObjects((ArrayList<Post>) mPostsList);
+        mRecyclerView.setNavController(mMainModel.getNavController());
     }
 
     @Override

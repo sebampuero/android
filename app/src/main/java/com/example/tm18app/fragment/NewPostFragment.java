@@ -183,8 +183,9 @@ public class NewPostFragment extends BaseFragmentMediaSelector implements BaseFr
     private void setVideoReadyToUpload(Uri contentVideoUri) throws FileTooLargeException, IOException {
         InputStream is =  getContext().getContentResolver().openInputStream(contentVideoUri);
         byte[] videoBytes = ConverterUtils.getBytes(is);
-        if(videoBytes.length > 10000000) throw new FileTooLargeException(getResources().getString(R.string.file_is_too_large));
+        if(videoBytes.length > 20000000) throw new FileTooLargeException(getResources().getString(R.string.file_is_too_large));
         mModel.setContentVideoBase64Data(Base64.encodeToString(videoBytes, Base64.DEFAULT));
+        mModel.setContentImageBase64Data(null);
     }
 
     @Override
@@ -193,6 +194,7 @@ public class NewPostFragment extends BaseFragmentMediaSelector implements BaseFr
             mContentIW.setImageBitmap(bitmap);
             byte[] contentImageBytes = ConverterUtils.getBytes(bitmap);
             mModel.setContentImageBase64Data(Base64.encodeToString(contentImageBytes, Base64.DEFAULT));
+            mModel.setContentVideoBase64Data(null);
         }catch (Exception e){
             e.printStackTrace();
             getActivity().runOnUiThread(new Runnable() {

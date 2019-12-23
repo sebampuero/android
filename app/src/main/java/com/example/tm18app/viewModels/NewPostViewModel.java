@@ -121,4 +121,6 @@ public class NewPostViewModel extends ViewModel {
     public void setContentVideoBase64Data(String contentVideoBase64Data) {
         this.contentVideoBase64Data = contentVideoBase64Data;
     }
+
+
 }

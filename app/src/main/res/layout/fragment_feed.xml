@@ -37,11 +37,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
+                    <!--
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rvFeed"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        />
+                        /> -->
+                    <com.example.tm18app.adapters.VideoPlayerRecyclerView
+                        android:id="@+id/rvFeed"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
