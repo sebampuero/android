@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
 import com.example.tm18app.adapters.PostItemAdapter;
+import com.example.tm18app.adapters.VideoPlayerRecyclerView;
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.FragmentOtherProfileBinding;
 import com.example.tm18app.model.Post;
@@ -47,7 +48,7 @@ public class OtherProfileFragment extends BaseFragment {
 
     private OtherUserProfileViewModel mModel;
     private FragmentOtherProfileBinding mBinding;
-    private RecyclerView mRecyclerView;
+    private VideoPlayerRecyclerView mRecyclerView;
     private PostItemAdapter mAdapter;
     private List<Post> mPostsList = new ArrayList<>();
     private ProgressBar mProgressBar;
@@ -173,6 +174,7 @@ public class OtherProfileFragment extends BaseFragment {
         mAdapter = new PostItemAdapter((ArrayList<Post>) mPostsList,
                 mMainModel.getNavController(), this);
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setPostObjects((ArrayList<Post>) mPostsList);
     }
 
 }

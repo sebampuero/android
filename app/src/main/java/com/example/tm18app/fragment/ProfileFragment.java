@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
 import com.example.tm18app.adapters.PostItemAdapter;
+import com.example.tm18app.adapters.VideoPlayerRecyclerView;
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.FragmentProfileBinding;
 import com.example.tm18app.model.Post;
@@ -53,7 +54,7 @@ public class ProfileFragment extends BaseFragment implements PostItemAdapter.OnP
 
     private CurrentProfileViewModel mModel;
     private FragmentProfileBinding mBinding;
-    private RecyclerView mRecyclerView;
+    private VideoPlayerRecyclerView mRecyclerView;
     private PostItemAdapter mAdapter;
     private List<Post> mPostsList = new ArrayList<>();
     private ProgressBar mProgressBar;
@@ -128,6 +129,7 @@ public class ProfileFragment extends BaseFragment implements PostItemAdapter.OnP
         mAdapter = new PostItemAdapter((ArrayList<Post>) mPostsList,
                 mMainModel.getNavController(), this);
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setPostObjects((ArrayList<Post>) mPostsList);
     }
 
     /**

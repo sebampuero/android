@@ -194,7 +194,6 @@ public class FeedFragment extends BaseFragment implements PostItemAdapter.OnPost
                 mMainModel.getNavController(), this);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setPostObjects((ArrayList<Post>) mPostsList);
-        mRecyclerView.setNavController(mMainModel.getNavController());
     }
 
     @Override
