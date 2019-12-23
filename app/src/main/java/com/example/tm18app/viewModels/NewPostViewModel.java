@@ -8,6 +8,7 @@ import android.widget.Toast;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.model.Post;
@@ -35,15 +36,8 @@ public class NewPostViewModel extends ViewModel {
     private String contentImageBase64Data;
     private String contentVideoBase64Data;
 
-    private MutableLiveData<Integer> postLiveDataResponse = new MutableLiveData<>();
-
-    /**
-     * Getter for the {@link MutableLiveData} of post creation status
-     * @return {@link MutableLiveData}
-     */
-    public MutableLiveData<Integer> getPostLiveDataResponse(){
-        return postLiveDataResponse;
-    }
+    private String contentImageURI;
+    private String contentVideoURI;
 
     /**
      * Sets the {@link Context} for this ViewModel
@@ -59,7 +53,6 @@ public class NewPostViewModel extends ViewModel {
      */
     public void onNewPostClicked() {
         if(areInputsValid()){
-            triggerLoadingBtn.call();
             SharedPreferences prefs = appContext
                     .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
             int userID = prefs.getInt(Constant.USER_ID, 0);
@@ -72,12 +65,12 @@ public class NewPostViewModel extends ViewModel {
             int goalID = Integer.valueOf(userGoalIds.get(userGoalTags.indexOf(selectedGoal)));
             PostItemRepository repository = new PostItemRepository();
             Post post = new Post(title.getValue(), content.getValue(), userID, goalID);
-            if(contentImageBase64Data != null)
-                post.setBase64Image(contentImageBase64Data);
-            if(contentVideoBase64Data != null)
-                post.setBase64Video(contentVideoBase64Data);
-            repository.createPost(post,
-                    postLiveDataResponse, prefs.getString(Constant.PUSHY_TOKEN, ""));
+            if(contentImageURI != null)
+                post.setContentImageURI(contentImageURI);
+            if(contentVideoURI != null)
+                post.setContentVideoURI(contentVideoURI);
+            repository.createPost(post, prefs.getString(Constant.PUSHY_TOKEN, ""), appContext);
+            triggerLoadingBtn.call();
         }
     }
 
@@ -120,5 +113,21 @@ public class NewPostViewModel extends ViewModel {
 
     public void setContentVideoBase64Data(String contentVideoBase64Data) {
         this.contentVideoBase64Data = contentVideoBase64Data;
+    }
+
+    public String getContentImageURI() {
+        return contentImageURI;
+    }
+
+    public void setContentImageURI(String contentImageURI) {
+        this.contentImageURI = contentImageURI;
+    }
+
+    public String getContentVideoURI() {
+        return contentVideoURI;
+    }
+
+    public void setContentVideoURI(String contentVideoURI) {
+        this.contentVideoURI = contentVideoURI;
     }
 }

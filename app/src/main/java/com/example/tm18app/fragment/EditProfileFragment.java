@@ -180,6 +180,12 @@ public class EditProfileFragment extends BaseFragmentMediaSelector implements Ba
                 getResources().getString(R.string.loading_image_msg), Toast.LENGTH_LONG).show();
     }
 
+    @Override
+    public void onErrorLoadingBitmap() {
+        Toast.makeText(getContext(),
+                getResources().getString(R.string.error_ocurred), Toast.LENGTH_SHORT).show();
+    }
+
 
     /**
      * Evaluates the info that came from the database and show corresponding feedback messages

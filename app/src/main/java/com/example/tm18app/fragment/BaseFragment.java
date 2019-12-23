@@ -15,6 +15,13 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.viewModels.MyViewModel;
 
+/**
+ * Base {@link Fragment} class.
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public abstract class BaseFragment extends Fragment {
     protected MyViewModel mMainModel;
     protected SharedPreferences mPrefs;
@@ -30,6 +37,9 @@ public abstract class BaseFragment extends Fragment {
         mPrefs = getContext().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
     }
 
+    /**
+     * Sets up views for the {@link Fragment}
+     */
     protected abstract void setupViews();
 
 }

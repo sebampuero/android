@@ -2,10 +2,7 @@ package com.example.tm18app.fragment;
 
 
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +11,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
@@ -32,7 +28,6 @@ import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.FragmentFeedBinding;
 import com.example.tm18app.model.Post;
 import com.example.tm18app.viewModels.FeedViewModel;
-import com.example.tm18app.viewModels.MyViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -201,13 +196,15 @@ public class FeedFragment extends BaseFragment implements PostItemAdapter.OnPost
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mAdapter.releasePlayer();
+        if(mAdapter != null)
+            mAdapter.releasePlayers();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mAdapter.stopPlayer();
+        if(mAdapter != null)
+            mAdapter.pausePlayers();
     }
 
     @Override

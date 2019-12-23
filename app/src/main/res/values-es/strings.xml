@@ -135,8 +135,10 @@
     <string name="unsubcribed_from_post">Dususcrito/a</string>
     <string name="loading_image_msg">Cargando imagen</string>
     <string name="upload_video">Subir video</string>
-    <string name="file_is_too_large">El video es muy grande, maximo admitido es 20MB</string>
+    <string name="file_is_too_large">El video es muy grande, maximo admitido es 50MB</string>
     <string name="error_ocurred">Un error ocurrió</string>
+    <string name="uploading_post">Publicando tu post</string>
+    <string name="successfully_registered">Registrado/o, por favor, inicia sesiòn</string>
 
     <array name="notification_settings">
         <item>Permitir todas las notificaciones</item>

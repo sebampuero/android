@@ -1,8 +1,6 @@
 package com.example.tm18app.fragment;
 
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.Toolbar;
@@ -11,13 +9,11 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -33,7 +29,6 @@ import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.FragmentProfileBinding;
 import com.example.tm18app.model.Post;
 import com.example.tm18app.viewModels.CurrentProfileViewModel;
-import com.example.tm18app.viewModels.MyViewModel;
 import com.squareup.picasso.Picasso;
 
 import java.net.HttpURLConnection;
@@ -133,13 +128,15 @@ public class ProfileFragment extends BaseFragment implements PostItemAdapter.OnP
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mAdapter.releasePlayer();
+        if(mAdapter != null)
+            mAdapter.releasePlayers();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mAdapter.stopPlayer();
+        if(mAdapter != null)
+            mAdapter.pausePlayers();
     }
 
     /**

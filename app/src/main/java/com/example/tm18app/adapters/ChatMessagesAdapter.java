@@ -18,10 +18,17 @@ import com.example.tm18app.util.TimeUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Adapter for the {@link ChatMessage} {@link RecyclerView}
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public class ChatMessagesAdapter  extends RecyclerView.Adapter<ChatMessagesAdapter.MyViewHolder> {
 
-    private static final int OTHER = 0;
-    private static final int ME = 1;
+    private static final int OTHER = 0; // represents the other user
+    private static final int ME = 1; // represents the currently logged in user
 
     private List<ChatMessage> mChatMessagesList ;
     private SharedPreferences prefs;

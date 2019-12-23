@@ -22,6 +22,13 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+/**
+ * Adapter for the {@link ChatRoom} {@link RecyclerView}
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.MyViewHolder> {
 
     private List<ChatRoom> mChatsList;
@@ -54,16 +61,19 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.MyViewHolder
         holder.lastTs.setTypeface(null, Typeface.NORMAL);
         holder.newMessages.setVisibility(View.GONE);
         if(chatRoom.getNewMessageInRoom() != 0){
+            // if the chatroom has new messages, display messages stating that
             holder.name.setTypeface(null, Typeface.BOLD);
             holder.lastTs.setTypeface(null, Typeface.BOLD);
             holder.newMessages.setVisibility(View.VISIBLE);
         }
-        if(chatRoom.getProfilePic() != null)
+        if(chatRoom.getProfilePic() != null){
+            holder.profilePic.setVisibility(View.VISIBLE);
             Picasso.get()
                     .load(chatRoom.getProfilePic())
                     .resize(profilePicDimen, profilePicDimen)
                     .centerCrop()
                     .into(holder.profilePic);
+        }
         else
             holder.profilePic.setImageDrawable(mContext.getDrawable(R.drawable.ic_person_black_24dp));
     }

@@ -90,19 +90,14 @@ public class NewPostFragment extends BaseFragmentMediaSelector implements BaseFr
         mModel.setContext(getContext());
         setupViews();
         setSpinner();
-        // set observer for new post response feedback
-        mModel.getPostLiveDataResponse().observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer statusCode) {
-                evaluatePostResponse(statusCode);
-            }
-        });
         // Trigger loading button for new post
         mModel.triggerLoadingBtn.observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                //Toast.makeText(getContext(), "Post is being published...", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), getResources().getString(R.string.uploading_post), Toast.LENGTH_LONG).show();
                 mPostBtn.startAnimation();
+                cleanInputs();
+                mMainModel.getNavController().navigateUp();
             }
         });
         return mBinding.getRoot();
@@ -140,6 +135,7 @@ public class NewPostFragment extends BaseFragmentMediaSelector implements BaseFr
             mContentVW.setVisibility(View.GONE);
             mContentIW.setVisibility(View.VISIBLE);
             Uri contentImgUri = data.getData();
+            mModel.setContentImageURI(String.valueOf(contentImgUri));
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), contentImgUri);
                 processImageURI(contentImgUri, 0, bitmap.getHeight());
@@ -150,25 +146,17 @@ public class NewPostFragment extends BaseFragmentMediaSelector implements BaseFr
             mContentVW.setVisibility(View.VISIBLE);
             mContentIW.setVisibility(View.GONE);
             Uri contentVideoUri = data.getData();
-            try{
-                if(mPlayer != null)
-                    mPlayer.release();
-                setVideoReadyToUpload(contentVideoUri);
-                TrackSelector selector = new DefaultTrackSelector();
-                mPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), selector);
-                DefaultDataSourceFactory dataSourceFactory = new DefaultDataSourceFactory(getContext(), "exoplayer_video");
-                ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
-                MediaSource source = new ExtractorMediaSource(contentVideoUri, dataSourceFactory, extractorsFactory, null, null);
-                mContentVW.setPlayer(mPlayer);
-                mPlayer.prepare(source);
-                mPlayer.setPlayWhenReady(true);
-            }catch (FileTooLargeException e){
-                Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-            } catch (IOException e) {
-                e.printStackTrace();
-                Toast.makeText(getContext(),
-                        getResources().getString(R.string.error_ocurred), Toast.LENGTH_LONG).show();
-            }
+            mModel.setContentVideoURI(String.valueOf(contentVideoUri));
+            if(mPlayer != null)
+                mPlayer.release();
+            TrackSelector selector = new DefaultTrackSelector();
+            mPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), selector);
+            DefaultDataSourceFactory dataSourceFactory = new DefaultDataSourceFactory(getContext(), "exoplayer_video");
+            ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
+            MediaSource source = new ExtractorMediaSource(contentVideoUri, dataSourceFactory, extractorsFactory, null, null);
+            mContentVW.setPlayer(mPlayer);
+            mPlayer.prepare(source);
+            mPlayer.setPlayWhenReady(true);
         }
     }
 
@@ -179,29 +167,9 @@ public class NewPostFragment extends BaseFragmentMediaSelector implements BaseFr
             mPlayer.release();
     }
 
-    private void setVideoReadyToUpload(Uri contentVideoUri) throws FileTooLargeException, IOException {
-        InputStream is =  getContext().getContentResolver().openInputStream(contentVideoUri);
-        byte[] videoBytes = ConverterUtils.getBytes(is);
-        if(videoBytes.length > 20000000) throw new FileTooLargeException(getResources().getString(R.string.file_is_too_large));
-        mModel.setContentVideoBase64Data(Base64.encodeToString(videoBytes, Base64.DEFAULT));
-    }
-
     @Override
     public void onBitmapLoaded(Bitmap bitmap) {
-        try {
-            mContentIW.setImageBitmap(bitmap);
-            byte[] contentImageBytes = ConverterUtils.getBytes(bitmap);
-            mModel.setContentImageBase64Data(Base64.encodeToString(contentImageBytes, Base64.DEFAULT));
-        }catch (Exception e){
-            e.printStackTrace();
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
-                }
-            });
-            mContentIW.setVisibility(View.GONE);
-        }
+        mContentIW.setImageBitmap(bitmap);
     }
 
     @Override
@@ -210,21 +178,10 @@ public class NewPostFragment extends BaseFragmentMediaSelector implements BaseFr
                 getResources().getString(R.string.loading_image_msg), Toast.LENGTH_LONG).show();
     }
 
-    /**
-     * Evaluate the status of the procedure of creating a new Post. Show feedback to the user.
-     * @param statusCode {@link Integer} HTTP status code of the response from the server
-     */
-    private void evaluatePostResponse(Integer statusCode) {
-        if(statusCode == 200){
-            Toast.makeText(this.getContext(), this.getContext().getString(R.string.post_successfully_created), Toast.LENGTH_SHORT).show();
-            mMainModel.getNavController().navigateUp();
-            mModel.getPostLiveDataResponse().setValue(0);
-            cleanInputs();
-        }
-        else if(statusCode == 500) {
-            Toast.makeText(this.getContext(), this.getContext().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
-        }
-        mPostBtn.revertAnimation();
+    @Override
+    public void onErrorLoadingBitmap() {
+        Toast.makeText(getContext(),
+                getResources().getString(R.string.error_ocurred), Toast.LENGTH_SHORT).show();
     }
 
     /**

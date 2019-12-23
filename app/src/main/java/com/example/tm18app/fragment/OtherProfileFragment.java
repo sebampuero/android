@@ -1,7 +1,6 @@
 package com.example.tm18app.fragment;
 
 
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.Toolbar;
@@ -25,11 +24,9 @@ import android.widget.TextView;
 import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
 import com.example.tm18app.adapters.PostItemAdapter;
-import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.FragmentOtherProfileBinding;
 import com.example.tm18app.model.Post;
 import com.example.tm18app.model.User;
-import com.example.tm18app.viewModels.MyViewModel;
 import com.example.tm18app.viewModels.OtherUserProfileViewModel;
 import com.squareup.picasso.Picasso;
 
@@ -178,12 +175,14 @@ public class OtherProfileFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mAdapter.releasePlayer();
+        if(mAdapter != null)
+            mAdapter.releasePlayers();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mAdapter.stopPlayer();
+        if(mAdapter != null)
+            mAdapter.pausePlayers();
     }
 }

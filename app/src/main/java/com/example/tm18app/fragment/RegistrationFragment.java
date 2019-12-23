@@ -149,6 +149,12 @@ public class RegistrationFragment extends BaseFragmentMediaSelector implements B
     }
 
     @Override
+    public void onErrorLoadingBitmap() {
+        Toast.makeText(getContext(),
+                getResources().getString(R.string.error_ocurred), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     protected void setupViews() {
         mProgressBar = mBinding.progressBarRegistration;
         mRegistrationBtn = mBinding.registrationBtn;
@@ -182,6 +188,8 @@ public class RegistrationFragment extends BaseFragmentMediaSelector implements B
         else if(integerUserHashMap.containsKey(HttpURLConnection.HTTP_OK)){
             User user = integerUserHashMap.get(HttpURLConnection.HTTP_OK);
             handleRegisterSuccess(user);
+            Toast.makeText(getContext(),
+                    getResources().getString(R.string.successfully_registered), Toast.LENGTH_SHORT).show();
         }
         mRegistrationBtn.revertAnimation();
     }

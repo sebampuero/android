@@ -1,13 +1,26 @@
 package com.example.tm18app.repository;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.util.Log;
+import android.widget.Toast;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.tm18app.MainActivity;
+import com.example.tm18app.R;
 import com.example.tm18app.network.PostRestInterface;
 import com.example.tm18app.network.RetrofitNetworkConnectionSingleton;
 import com.example.tm18app.model.Comment;
 import com.example.tm18app.model.Post;
+import com.example.tm18app.service.UploadService;
 
+import org.json.HTTP;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -132,25 +145,16 @@ public class PostItemRepository {
         });
     }
 
-    /**
-     * Inserts a {@link Post} by sending a POST Request to the API
-     * @param post {@link Post} the post to be inserted
-     * @param postLiveData {@link MutableLiveData} containing a {@link HashMap} of the {@link Integer} HTTP Status code and a {@link String} message.
-     * The {@link com.example.tm18app.fragment.NewPostFragment} observes the parameter to display changes according to the received HTTP Status code
-     */
-    public void createPost(Post post, MutableLiveData<Integer> postLiveData, String pushyToken){
-        final MutableLiveData<Integer> responseCode = postLiveData;
-        postRestInterface.newPost(post, pushyToken).enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                responseCode.setValue(response.code());
-            }
-
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                responseCode.setValue(0);
-            }
-        });
+    public void createPost(Post post, String pushyToken, Context context){
+        Intent serviceIntent = new Intent(context, UploadService.class);
+        serviceIntent.putExtra("pushy", pushyToken);
+        serviceIntent.putExtra("title", post.getTitle());
+        serviceIntent.putExtra("content", post.getContent());
+        serviceIntent.putExtra("imageUri", post.getContentImageURI());
+        serviceIntent.putExtra("videoUri", post.getContentVideoURI());
+        serviceIntent.putExtra("userID",  post.getUserID());
+        serviceIntent.putExtra("goalID", post.getGoalId());
+        context.startService(serviceIntent);
     }
 
     /**

@@ -14,7 +14,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 /**
- * A simple {@link Fragment} abstract subclass. This class is responsible for image selection
+ * A simple {@link Fragment} abstract subclass. This class is responsible for media selection
  * functions
  *
  * @author Sebastian Ampuero
@@ -40,7 +40,12 @@ public abstract class BaseFragmentMediaSelector extends BaseFragment{
          */
         void onBitmapLoaded(Bitmap bitmap);
 
+        /**
+         * When the selected {@link Bitmap} is currently loading.
+         */
         void onLoadingBitmap();
+
+        void onErrorLoadingBitmap();
     }
 
     public BaseFragmentMediaSelector() {
@@ -64,6 +69,9 @@ public abstract class BaseFragmentMediaSelector extends BaseFragment{
         startActivityForResult(Intent.createChooser(intent,"Select Image"),PICK_IMAGE);
     }
 
+    /**
+     * Opens an {@link Intent} to select a video from the gallery
+     */
     protected void openGalleryForVideo() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(Intent.createChooser(intent,"Select Video"),PICK_VIDEO);
@@ -81,7 +89,6 @@ public abstract class BaseFragmentMediaSelector extends BaseFragment{
         Picasso.get().load(imageUri).resize(width, height).centerCrop().into(new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                Log.e("TAG", "Loaded bitmap");
                 bitmapLoaderInterface.onBitmapLoaded(bitmap); // call the method for fragments to
                 // know that the bitmap was loaded
             }
@@ -93,7 +100,6 @@ public abstract class BaseFragmentMediaSelector extends BaseFragment{
 
             @Override
             public void onPrepareLoad(Drawable placeHolderDrawable) {
-                Log.e("TAG", "on prepare load");
                 bitmapLoaderInterface.onLoadingBitmap();
             }
         });

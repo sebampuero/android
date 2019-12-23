@@ -1,5 +1,8 @@
 package com.example.tm18app.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Model that holds data of a Post
  *
@@ -7,7 +10,7 @@ package com.example.tm18app.model;
  * @version 1.0
  * @since 03.12.2019
  */
-public class Post implements Comparable<Post>{
+public class Post implements Comparable<Post> {
 
     private int id;
     private String title;
@@ -25,6 +28,9 @@ public class Post implements Comparable<Post>{
     private String contentPicUrl;
     private String contentVideoUrl;
     private String subscriberIds;
+
+    private String contentVideoURI;
+    private String contentImageURI;
 
     public Post() {
     }
@@ -165,6 +171,22 @@ public class Post implements Comparable<Post>{
         this.contentVideoUrl = contentVideoUrl;
     }
 
+    public String getContentVideoURI() {
+        return contentVideoURI;
+    }
+
+    public void setContentVideoURI(String contentVideoURI) {
+        this.contentVideoURI = contentVideoURI;
+    }
+
+    public String getContentImageURI() {
+        return contentImageURI;
+    }
+
+    public void setContentImageURI(String contentImageURI) {
+        this.contentImageURI = contentImageURI;
+    }
+
     @Override
     public String toString() {
         return "Post{" +
@@ -184,6 +206,8 @@ public class Post implements Comparable<Post>{
                 ", contentPicUrl='" + contentPicUrl + '\'' +
                 ", contentVideoUrl='" + contentVideoUrl + '\'' +
                 ", subscriberIds='" + subscriberIds + '\'' +
+                ", contentVideoURI='" + contentVideoURI + '\'' +
+                ", contentImageURI='" + contentImageURI + '\'' +
                 '}';
     }
 

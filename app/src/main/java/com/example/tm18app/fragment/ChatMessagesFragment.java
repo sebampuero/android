@@ -44,26 +44,34 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link Fragment} subclass. This class represents the UI for  a given {@link com.example.tm18app.model.ChatRoom}
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
  */
 public class ChatMessagesFragment extends BaseFragment implements ChatSocket.SocketListener {
 
+    // static vars
     public static final String ROOM_ID = "roomId";
     public static final String ROOM_NAME = "roomName";
     public static final String TO_ID = "receiverId";
     public static final String TO_NAME = "to_name";
     public static final String PROFILE_PIC = "profile_pic";
 
+    // views
     private FragmentChatMessagesBinding mBinding;
-    private ChatMessagesViewModel mModel;
-    private ChatMessagesAdapter mAdapter;
-    private ArrayList<ChatMessage> mChatMessagesList = new ArrayList<>();
-    private ChatSocket socket;
     private TextView mLoadingMessagesTv;
     private RecyclerView mRv;
     private Toolbar mToolbar;
-    private String mProfilePicUrl;
     private ImageView mProfileIW;
+
+    // vars
+    private ChatSocket socket;
+    private String mProfilePicUrl;
+    private ChatMessagesViewModel mModel;
+    private ChatMessagesAdapter mAdapter;
+    private ArrayList<ChatMessage> mChatMessagesList = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -80,6 +88,7 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // set relevant recipients info on the VM
         mModel = ViewModelProviders.of(this).get(ChatMessagesViewModel.class);
         mModel.setPrefs(mPrefs);
         mModel.setRoomId(getArguments().getString(ROOM_ID, null));
@@ -90,6 +99,8 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
 
     @Override
     public void onPause() {
+        // it is important to disconnect the socket when the user leaves the fragment
+        // protect battery and bandwidth
         super.onPause();
         socket.detachListener();
         mToolbar.setSubtitle("");
@@ -105,12 +116,18 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
         fetchData();
     }
 
+    /**
+     * Sets up the {@link ChatSocket} for the chat.
+     */
     private void setupSocketConnection() {
         socket = new ChatSocket(getActivity(), mModel);
         socket.setSocketListener(this);
         if(mModel.getRoomName() == null || mModel.getRoomId() == null){
+            // when the user initializes a chatroom for the first time there is no chat room available
+            // init a listener for the server to send the room name and therefore start chatting
             socket.attachRoomListener();
         }else{
+            // if there is a chat room already, retrieve the chat messages from the server
             mModel.callRepository();
         }
         socket.establishChat(mModel.getRoomName(),
@@ -125,6 +142,8 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
         socket.attachStatusListener();
         socket.attachTypingListener();
         socket.attachErrorListener();
+        // the chat room is capable of transmitting typing status. But it wastes network if done
+        // for every key stroke, therefore use a debouncer to send keystrokes every half second
         final Debouncer debouncer = new Debouncer();
         mModel.inputMessage.observe(this, new Observer<String>() {
             @Override
@@ -155,6 +174,14 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
                 return false;
             }
         });
+        mToolbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle b = new Bundle();
+                b.putString(OtherProfileFragment.OTHER_USER_ID, mModel.getToId());
+                mMainModel.getNavController().navigate(R.id.otherProfileFragment, b);
+            }
+        });
         mLoadingMessagesTv = mBinding.loadingMessagesTv;
         mProfileIW = getActivity().findViewById(R.id.toolbarLogo);
         if(mProfilePicUrl != null){
@@ -168,6 +195,10 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
             mProfileIW.setVisibility(View.GONE);
     }
 
+    /**
+     * Deletes the chat room. <b>Warning: it deletes chats for both users.</b> Still a bad practice, would
+     * be good to implement a different approach in the future.
+     */
     private void deleteChatRoom() {
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getContext());
         alertBuilder.setCancelable(true);
@@ -188,6 +219,9 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
         alert.show();
     }
 
+    /**
+     * Initializes an {@link Observer} for chat messages.
+     */
     private void fetchData() {
         mModel.getMessagesLiveData().observe(this, new Observer<List<ChatMessage>>() {
             @Override
@@ -198,7 +232,8 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
                         mChatMessagesList.addAll(chatMessages);
                         Collections.sort(mChatMessagesList);
                         mAdapter.notifyDataSetChanged();
-                        mRv.scrollToPosition(mAdapter.getItemCount() - 1);
+                        mRv.scrollToPosition(mAdapter.getItemCount() - 1); // scroll to bottom for
+                        // better UX
                     }
                 }
                 mLoadingMessagesTv.setVisibility(View.GONE);
@@ -240,6 +275,9 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
         Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Sets up the {@link RecyclerView} for the chat messages.
+     */
     private void setupRecyclerView() {
         mRv = mBinding.chatMessagesRv;
         LinearLayoutManager manager = new LinearLayoutManager(getContext());

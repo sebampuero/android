@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,6 +76,9 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
     private int profilePicDimen;
     private HashMap<Integer, SimpleExoPlayer> videoPlayers;
 
+    /**
+     * Listener for posts deletes
+     */
     public interface OnPostDeleteListener {
 
         /**
@@ -116,7 +118,12 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
         return (mPostsList != null) ? mPostsList.size() : 0;
     }
 
-    public void releasePlayer() {
+    /**
+     * Releases all instantiated {@link com.google.android.exoplayer2.ExoPlayer} inside the
+     * {@link HashMap}. Useful for when the App is closed and memory has to be released and therefore
+     * prevent memory leaks.
+     */
+    public void releasePlayers() {
         if(videoPlayers != null)
             if(!videoPlayers.isEmpty()){
                 for(SimpleExoPlayer player : videoPlayers.values()){
@@ -125,7 +132,10 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
             }
     }
 
-    public void stopPlayer() {
+    /**
+     * Pauses all instantiated {@link com.google.android.exoplayer2.ExoPlayer} inside the {@link HashMap}
+     */
+    public void pausePlayers() {
         if(videoPlayers != null)
             if(!videoPlayers.isEmpty()){
                 for(SimpleExoPlayer player : videoPlayers.values()){
@@ -135,6 +145,9 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
     }
 
 
+    /**
+     * Custom {@link androidx.recyclerview.widget.RecyclerView.ViewHolder} subclass.
+     */
     class MyViewHolder extends RecyclerView.ViewHolder{
 
         TextView nameLastname;
@@ -177,9 +190,14 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
         }
 
 
+        /**
+         * Binds a {@link Post} into the {@link androidx.recyclerview.widget.RecyclerView.ViewHolder}
+         * @param post {@link Post}
+         */
         public void onBind(final Post post) {
             ArrayList<String> subscriberIds = null;
             if(post.getSubscriberIds() != null){
+                // subscriber ids comes in a csv format
                 subscriberIds = new ArrayList<>(Arrays.asList(post.getSubscriberIds().split(",")));
             }
             nameLastname.setText(String.format("%s %s", post.getName(), post.getLastname()));
@@ -193,14 +211,10 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
             posterProfilePic.setOnClickListener(new ProfilePicClickListener());
             if(subscriberIds != null){
                 String userID = String.valueOf(mPrefs.getInt(Constant.USER_ID, 0));
+                // if the current user is inside this post's subscribers, show options accordingly
                 if(subscriberIds.indexOf(userID) >= 0){
                     moreVertOptions.setVisibility(View.VISIBLE);
-                    moreVertOptions.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            showOptionsAlertDialog(String.valueOf(post.getId()));
-                        }
-                    });
+                    moreVertOptions.setOnClickListener(new SubscriberOptionsClickListener());
                 }
             }
             if(post.getPosterPicUrl() != null){
@@ -211,12 +225,14 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
                         .centerCrop()
                         .into(posterProfilePic);
             }else
-                Picasso.get()
-                    .load(R.drawable.ic_person_black_24dp)
-                    .into(posterProfilePic);
+                posterProfilePic.setImageDrawable(mCurrentFragment
+                        .getResources()
+                        .getDrawable(R.drawable.ic_person_black_24dp));
             if(post.getContentPicUrl() != null){
                 contentImage.setVisibility(View.VISIBLE);
-                surfaceView.setVisibility(View.GONE);
+                surfaceView.setVisibility(View.GONE); // hide the video player view is visible
+                // needed because recyclerview recycles views and sometimes the recycled view appears
+                // on other posts that have no video media set
                 String imgUrl =  NetworkConnectivity
                         .tweakImgQualityByNetworkType(mCurrentFragment.getContext(),
                                 post.getContentPicUrl());
@@ -230,7 +246,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
                 surfaceView.setVisibility(View.GONE);
             }
             if(post.getContentVideoUrl() != null){
-                contentImage.setVisibility(View.VISIBLE);
+                contentImage.setVisibility(View.VISIBLE); // for thumbnail
                 Picasso.get()
                         .load(R.drawable.thumbnail_video)
                         .into(contentImage);
@@ -257,6 +273,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
                 alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int which) {
+                        // releases the video corresponding to this post if available to release memory
                         if(videoPlayers.get(getAdapterPosition()) != null)
                             videoPlayers.get(getAdapterPosition()).release();
                         PostItemRepository repository = new PostItemRepository();
@@ -279,7 +296,11 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
             }
         }
 
-        private void showOptionsAlertDialog(final String postID) {
+        /**
+         * Shows a {@link AlertDialog} for when the subscriber options view is clicked.
+         * @param postID {@link Integer}
+         */
+        private void showSubscriberOptionsAlertDialog(final String postID) {
             AlertDialog.Builder builder = new AlertDialog.Builder(mCurrentFragment.getContext());
             final AlertDialog dialog = builder.create();
             LayoutInflater inflater = mCurrentFragment.getLayoutInflater();
@@ -304,6 +325,21 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
             });
         }
 
+        /**
+         * Subscriber options click listener.
+         */
+        class SubscriberOptionsClickListener implements View.OnClickListener {
+
+            @Override
+            public void onClick(View view) {
+                Post post = mPostsList.get(getAdapterPosition());
+                showSubscriberOptionsAlertDialog(String.valueOf(post.getId()));
+            }
+        }
+
+        /**
+         * Comments click listener.
+         */
         class CommentsClickListener implements View.OnClickListener {
 
             @Override
@@ -315,6 +351,9 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
             }
         }
 
+        /**
+         * Profile picture click listener.
+         */
         class ProfilePicClickListener implements View.OnClickListener {
 
             @Override
@@ -329,6 +368,9 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
             }
         }
 
+        /**
+         * Content image click listener.
+         */
         class ImageClickListener implements View.OnClickListener {
 
             @Override
@@ -343,18 +385,23 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
             }
         }
 
+        /**
+         * Videothumbnail click listener.
+         */
         class VideoThumbnailClickListener implements View.OnClickListener {
 
             @Override
             public void onClick(View view) {
+                //Init video player params
                 BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
                 TrackSelection.Factory videoTrackSelectionFactory =
                         new AdaptiveTrackSelection.Factory(bandwidthMeter);
                 TrackSelector trackSelector =
                         new DefaultTrackSelector(videoTrackSelectionFactory);
-                SimpleExoPlayer videoPlayer = ExoPlayerFactory.newSimpleInstance(mCurrentFragment.getContext(), trackSelector);
+                SimpleExoPlayer videoPlayer = ExoPlayerFactory
+                        .newSimpleInstance(mCurrentFragment.getContext(), trackSelector);
                 videoPlayers.put(getAdapterPosition(), videoPlayer);
-                surfaceView.setUseController(true);
+                surfaceView.setUseController(true); // allow user to pause/resume video
                 surfaceView.setPlayer(videoPlayer);
                 videoPlayer.addListener(new PlayerListener());
                 DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(
@@ -370,6 +417,9 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
             }
         }
 
+        /**
+         * Videoplayer events listener.
+         */
         class PlayerListener implements Player.EventListener {
 
             @Override
@@ -390,7 +440,6 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
             @Override
             public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
                 switch (playbackState) {
-
                     case Player.STATE_BUFFERING:
                         progressBarVideo.setVisibility(View.VISIBLE);
                         contentImage.setVisibility(View.GONE);

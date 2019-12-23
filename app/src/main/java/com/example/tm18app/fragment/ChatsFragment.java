@@ -1,9 +1,12 @@
 package com.example.tm18app.fragment;
 
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
@@ -15,21 +18,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-
 import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
 import com.example.tm18app.adapters.ChatsAdapter;
-import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.FragmentChatsBinding;
 import com.example.tm18app.model.ChatRoom;
 import com.example.tm18app.viewModels.ChatsViewModel;
-import com.example.tm18app.viewModels.MyViewModel;
 
 import java.util.ArrayList;
 import java.util.Collections;

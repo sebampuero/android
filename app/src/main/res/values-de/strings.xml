@@ -134,8 +134,10 @@
     <string name="unsubcribed_from_post">Abo entfernt</string>
     <string name="loading_image_msg">Bild lädt</string>
     <string name="upload_video">Video hochladen</string>
-    <string name="file_is_too_large">Video ist zu groß, 20MB is der Grenze</string>
+    <string name="file_is_too_large">Video ist zu groß, 50MB is der Grenze</string>
     <string name="error_ocurred">Ein Fehler ist aufgetreten</string>
+    <string name="uploading_post">Veröffentliche Post</string>
+    <string name="successfully_registered">Erfolgreich registriert, jetzt melde dich bitte an</string>
 
     <array name="notification_settings">
         <item>Alle Benachrichtigungen erlauben</item>
