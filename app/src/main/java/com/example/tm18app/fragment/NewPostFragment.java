@@ -94,7 +94,9 @@ public class NewPostFragment extends BaseFragmentMediaSelector implements BaseFr
         mModel.triggerLoadingBtn.observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
-                Toast.makeText(getContext(), getResources().getString(R.string.uploading_post), Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(),
+                        getResources().getString(R.string.uploading_post),
+                        Toast.LENGTH_LONG).show();
                 mPostBtn.startAnimation();
                 cleanInputs();
                 mMainModel.getNavController().navigateUp();

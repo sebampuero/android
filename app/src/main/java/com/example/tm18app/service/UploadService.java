@@ -8,9 +8,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.os.IBinder;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -36,12 +38,14 @@ public class UploadService extends Service {
 
     NotificationManager mNotifyManager;
     NotificationCompat.Builder mBuilder;
+    Handler mHandler;
 
     private PostRestInterface postRestInterface;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        mHandler = new Handler();
         postRestInterface = RetrofitNetworkConnectionSingleton.
                 getInstance().retrofitInstance().create(PostRestInterface.class);
     }
@@ -108,24 +112,30 @@ public class UploadService extends Service {
             return 0;
         }
 
-        private String getDataForImage(String contentImageURI) throws IOException {
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.parse(contentImageURI));
-            int height = bitmap.getHeight();
-            if(height > MAX_IMG_HEIGHT)
-                height = MAX_IMG_HEIGHT;
-            Bitmap resizedBitmap = Picasso.get().load(contentImageURI).resize(0, height).centerCrop().get();
-            byte[] contentImageBytes = ConverterUtils.getBytes(resizedBitmap);
-            return Base64.encodeToString(contentImageBytes, Base64.DEFAULT);
-        }
-
         @Override
         protected void onPostExecute(Integer statusCode) {
             if(statusCode == HttpURLConnection.HTTP_OK){
-                mBuilder.setContentTitle(getResources().getString(R.string.post_successfully_created));
+                mBuilder.setContentTitle(getResources().getString(R.string.post_successfully_created) + " " + post.getTitle());
                 mNotifyManager.notify(1, mBuilder.build());
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(UploadService.this,
+                                getResources().getString(R.string.post_successfully_created),
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
             }else if(statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR){
                 mBuilder.setContentTitle(getResources().getString(R.string.server_error));
                 mNotifyManager.notify(1, mBuilder.build());
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(UploadService.this,
+                                getResources().getString(R.string.server_error),
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
             }
             stopForeground(false);
         }
@@ -135,6 +145,16 @@ public class UploadService extends Service {
             byte[] videoBytes = ConverterUtils.getBytes(is);
             if(videoBytes.length > 50000000) throw new FileTooLargeException(getResources().getString(R.string.file_is_too_large));
             return Base64.encodeToString(videoBytes, Base64.DEFAULT);
+        }
+
+        private String getDataForImage(String contentImageURI) throws IOException {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.parse(contentImageURI));
+            int height = bitmap.getHeight();
+            if(height > MAX_IMG_HEIGHT)
+                height = MAX_IMG_HEIGHT;
+            Bitmap resizedBitmap = Picasso.get().load(contentImageURI).resize(0, height).centerCrop().get();
+            byte[] contentImageBytes = ConverterUtils.getBytes(resizedBitmap);
+            return Base64.encodeToString(contentImageBytes, Base64.DEFAULT);
         }
     }
 

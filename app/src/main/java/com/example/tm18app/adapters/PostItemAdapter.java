@@ -139,7 +139,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
         if(videoPlayers != null)
             if(!videoPlayers.isEmpty()){
                 for(SimpleExoPlayer player : videoPlayers.values()){
-                    player.setPlayWhenReady(!player.getPlayWhenReady());
+                    player.setPlayWhenReady(false);
                 }
             }
     }
