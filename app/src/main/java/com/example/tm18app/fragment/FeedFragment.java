@@ -3,6 +3,7 @@ package com.example.tm18app.fragment;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -184,6 +185,11 @@ public class FeedFragment extends BaseFragment implements PostItemAdapter.OnPost
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
+                if(newState == RecyclerView.SCROLL_STATE_IDLE){
+                    int itemPositionInSight = ((LinearLayoutManager)mRecyclerView
+                            .getLayoutManager()).findFirstCompletelyVisibleItemPosition();
+                    mModel.setCurrentScrolledItemPosition(itemPositionInSight);
+                }
                 if (!recyclerView.canScrollVertically(1) && newState==RecyclerView.SCROLL_STATE_IDLE) {
                     mNewPostBtn.setVisibility(View.GONE);
                 }else{
@@ -191,6 +197,7 @@ public class FeedFragment extends BaseFragment implements PostItemAdapter.OnPost
                 }
             }
         });
+        mRecyclerView.scrollToPosition(mModel.getCurrentScrolledItemPosition());
     }
 
     @Override

@@ -29,6 +29,7 @@ public class FeedViewModel extends ViewModel {
 
     private NavController navController;
     private Context appContext;
+    private int currentScrolledItemPosition;
 
     private MutableLiveData<Boolean> reloadTrigger = new MutableLiveData<>();
 
@@ -91,5 +92,11 @@ public class FeedViewModel extends ViewModel {
         navController.navigate(R.id.action_feedFragment_to_newPostFragment);
     }
 
+    public int getCurrentScrolledItemPosition() {
+        return currentScrolledItemPosition;
+    }
 
+    public void setCurrentScrolledItemPosition(int currentScrolledItemPosition) {
+        this.currentScrolledItemPosition = currentScrolledItemPosition;
+    }
 }

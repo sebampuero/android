@@ -102,4 +102,5 @@ public class ChatMessagesViewModel extends ViewModel {
     public void setProfilePic(String profilePic) {
         this.profilePic = profilePic;
     }
+
 }

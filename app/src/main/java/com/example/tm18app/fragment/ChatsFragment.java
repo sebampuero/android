@@ -30,7 +30,11 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link Fragment} subclass. Represents the UI that show the users chat rooms.
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
  */
 public class ChatsFragment extends BaseFragment {
 
