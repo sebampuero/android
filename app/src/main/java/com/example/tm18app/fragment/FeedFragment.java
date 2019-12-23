@@ -199,6 +199,18 @@ public class FeedFragment extends BaseFragment implements PostItemAdapter.OnPost
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mAdapter.releasePlayer();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mAdapter.stopPlayer();
+    }
+
+    @Override
     public void onPostDeleted(MutableLiveData<Integer> statusCode) {
         statusCode.observe(this, new Observer<Integer>() {
             @Override
@@ -220,4 +232,5 @@ public class FeedFragment extends BaseFragment implements PostItemAdapter.OnPost
         }
         mModel.callRepository(); // mimic a reload for data
     }
+
 }

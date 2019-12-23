@@ -130,6 +130,18 @@ public class ProfileFragment extends BaseFragment implements PostItemAdapter.OnP
         mRecyclerView.setAdapter(mAdapter);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mAdapter.releasePlayer();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mAdapter.stopPlayer();
+    }
+
     /**
      * Fetches the {@link List} of {@link Post} items from the server.
      */

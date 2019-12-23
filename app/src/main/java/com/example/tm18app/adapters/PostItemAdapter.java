@@ -3,7 +3,7 @@ package com.example.tm18app.adapters;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.os.Build;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,10 +34,31 @@ import com.example.tm18app.network.NetworkConnectivity;
 import com.example.tm18app.model.Post;
 import com.example.tm18app.repository.PostItemRepository;
 import com.example.tm18app.util.TimeUtils;
+import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.PlaybackParameters;
+import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.Timeline;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.TrackGroupArray;
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelection;
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
+import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.upstream.BandwidthMeter;
+import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 /**
  * Adapter for the post items in Feed and Profile
@@ -53,6 +75,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
     private Fragment mCurrentFragment;
     private SharedPreferences mPrefs;
     private int profilePicDimen;
+    private HashMap<Integer, SimpleExoPlayer> videoPlayers;
 
     public interface OnPostDeleteListener {
 
@@ -71,6 +94,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
         this.mCurrentFragment = fragment;
         mPrefs = mCurrentFragment.getContext().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
         profilePicDimen = fragment.getResources().getInteger(R.integer.thumbnail_profile_pic);
+        videoPlayers = new HashMap<>();
     }
 
     @NonNull
@@ -84,101 +108,30 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         final Post post = mPostsList.get(position);
-        ArrayList<String> subscriberIds = null;
-        if(post.getSubscriberIds() != null){
-            subscriberIds = new ArrayList<>(Arrays.asList(post.getSubscriberIds().split(",")));
-        }
-        holder.nameLastname.setText(String.format("%s %s", post.getName(), post.getLastname()));
-        holder.postTitle.setText(post.getTitle());
-        holder.postContent.setText(post.getContent());
-        holder.goalTag.setText(post.getGoalTag());
-        holder.commentCount.setText(String.valueOf(post.getCommentCount()));
-        holder.timestamp.setText(TimeUtils.parseTimestampToLocaleDatetime(post.getTimestamp()));
-        holder.commentsSection.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putString(CommentSectionFragment.POST_ID, String.valueOf(post.getId()));
-                mNavController.navigate(R.id.commentSectionFragment, bundle);
-            }
-        });
-        holder.moreVertOptions.setVisibility(View.GONE);
-        holder.posterPicture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bundle b = new Bundle();
-                b.putString(OtherProfileFragment.OTHER_USER_ID, String.valueOf(post.getUserID()));
-                if(post.getUserID() != mPrefs.getInt(Constant.USER_ID, 0))
-                    mNavController.navigate(R.id.otherProfileFragment, b);
-                else
-                    mNavController.navigate(R.id.profileFragment);
-            }
-        });
-        if(subscriberIds != null){
-            String userID = String.valueOf(mPrefs.getInt(Constant.USER_ID, 0));
-            if(subscriberIds.indexOf(userID) >= 0){
-                holder.moreVertOptions.setVisibility(View.VISIBLE);
-                holder.moreVertOptions.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        showOptionsAlertDialog(String.valueOf(post.getId()));
-                    }
-                });
-            }
-        }
-        if(post.getPosterPicUrl() != null){
-            holder.posterPicture.setVisibility(View.VISIBLE);
-            Picasso.get()
-                    .load(post.getPosterPicUrl()) // no need to tweak quality
-                    .resize(profilePicDimen, profilePicDimen)
-                    .centerCrop()
-                    .into(holder.posterPicture);
-        }else
-            holder.posterPicture.setImageDrawable(mCurrentFragment.getResources().getDrawable(R.drawable.ic_person_black_24dp));
-        if(post.getContentPicUrl() != null){
-            holder.contentImage.setVisibility(View.VISIBLE); // known recyclerview / picasso bug
-            // workaround for pictures not disappearing on scroll
-            String imgUrl = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) ? NetworkConnectivity // retrieve the image url to be downloaded by Picasso
-                    .tweakImgQualityByNetworkType(mCurrentFragment.getContext(),
-                            post.getContentPicUrl()) : post.getContentPicUrl();
-            Picasso.get()
-                    .load(imgUrl)
-                    .placeholder(R.drawable.progress_img_animation)
-                    .into(holder.contentImage);
-        }else
-            holder.contentImage.setVisibility(View.GONE);
-        if(post.getContentVideoUrl() != null)
-            Log.d(getClass().getSimpleName(), post.getContentVideoUrl());
-    }
-
-    private void showOptionsAlertDialog(final String postID) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mCurrentFragment.getContext());
-        final AlertDialog dialog = builder.create();
-        LayoutInflater inflater = mCurrentFragment.getLayoutInflater();
-        View dialogLayout = inflater.inflate(R.layout.post_options_alert, null);
-        dialog.setView(dialogLayout);
-        dialog.show();
-        dialog.setCancelable(true);
-        dialogLayout.findViewById(R.id.unsubscribe).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PostItemRepository repository = new PostItemRepository();
-                repository.deleteSubscription(
-                        String.valueOf(mPrefs.getInt(Constant.USER_ID, 0)),
-                        postID,
-                        mPrefs.getString(Constant.PUSHY_TOKEN, ""));
-                Toast.makeText(
-                        mCurrentFragment.getContext(),
-                        mCurrentFragment.getResources().getString(R.string.unsubcribed_from_post),
-                        Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
-            }
-        });
+        holder.onBind(post);
     }
 
     @Override
     public int getItemCount() {
         return (mPostsList != null) ? mPostsList.size() : 0;
+    }
+
+    public void releasePlayer() {
+        if(videoPlayers != null)
+            if(!videoPlayers.isEmpty()){
+                for(SimpleExoPlayer player : videoPlayers.values()){
+                    player.release();
+                }
+            }
+    }
+
+    public void stopPlayer() {
+        if(videoPlayers != null)
+            if(!videoPlayers.isEmpty()){
+                for(SimpleExoPlayer player : videoPlayers.values()){
+                    player.setPlayWhenReady(!player.getPlayWhenReady());
+                }
+            }
     }
 
 
@@ -191,9 +144,11 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
         TextView commentCount;
         LinearLayout commentsSection;
         TextView timestamp;
-        ImageView posterPicture;
+        ImageView posterProfilePic;
         ImageView contentImage;
         ImageView moreVertOptions;
+        ProgressBar progressBarVideo;
+        PlayerView surfaceView;
 
         MyViewHolder(final PostCardviewBinding binding) {
             super(binding.getRoot());
@@ -205,9 +160,11 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
             commentCount = binding.commentCountTv;
             commentsSection = binding.commentSectionLayout;
             timestamp = binding.timestamp;
-            posterPicture = binding.posterPic;
+            posterProfilePic = binding.posterPic;
             contentImage = binding.contentImage;
             moreVertOptions = binding.moreVertPost;
+            progressBarVideo = binding.progressBarVideo;
+            surfaceView = binding.videoPlayerPost;
 
             binding.getRoot().setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
@@ -217,22 +174,70 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
                 }
             });
 
-            binding.getRoot().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(mPostsList.get(getAdapterPosition()).getContentPicUrl() != null)
-                        openImage();
-                }
-            });
         }
 
-        private void openImage() {
-            Bundle bundle = new Bundle();
-            bundle.putString(PostWebViewFragment.IMG_URL,
-                    mPostsList.get(getAdapterPosition()).getContentPicUrl());
-            bundle.putString(PostWebViewFragment.IMG_NAME,
-                    String.valueOf(mPostsList.get(getAdapterPosition()).getId()));
-            mNavController.navigate(R.id.postImgWebviewFragment, bundle);
+
+        public void onBind(final Post post) {
+            ArrayList<String> subscriberIds = null;
+            if(post.getSubscriberIds() != null){
+                subscriberIds = new ArrayList<>(Arrays.asList(post.getSubscriberIds().split(",")));
+            }
+            nameLastname.setText(String.format("%s %s", post.getName(), post.getLastname()));
+            postTitle.setText(post.getTitle());
+            postContent.setText(post.getContent());
+            goalTag.setText(post.getGoalTag());
+            commentCount.setText(String.valueOf(post.getCommentCount()));
+            timestamp.setText(TimeUtils.parseTimestampToLocaleDatetime(post.getTimestamp()));
+            commentsSection.setOnClickListener(new CommentsClickListener());
+            moreVertOptions.setVisibility(View.GONE);
+            posterProfilePic.setOnClickListener(new ProfilePicClickListener());
+            if(subscriberIds != null){
+                String userID = String.valueOf(mPrefs.getInt(Constant.USER_ID, 0));
+                if(subscriberIds.indexOf(userID) >= 0){
+                    moreVertOptions.setVisibility(View.VISIBLE);
+                    moreVertOptions.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            showOptionsAlertDialog(String.valueOf(post.getId()));
+                        }
+                    });
+                }
+            }
+            if(post.getPosterPicUrl() != null){
+                posterProfilePic.setVisibility(View.VISIBLE);
+                Picasso.get()
+                        .load(post.getPosterPicUrl()) // no need to tweak quality
+                        .resize(profilePicDimen, profilePicDimen)
+                        .centerCrop()
+                        .into(posterProfilePic);
+            }else
+                Picasso.get()
+                    .load(R.drawable.ic_person_black_24dp)
+                    .into(posterProfilePic);
+            if(post.getContentPicUrl() != null){
+                contentImage.setVisibility(View.VISIBLE);
+                surfaceView.setVisibility(View.GONE);
+                String imgUrl =  NetworkConnectivity
+                        .tweakImgQualityByNetworkType(mCurrentFragment.getContext(),
+                                post.getContentPicUrl());
+                Picasso.get()
+                        .load(imgUrl)
+                        .placeholder(R.drawable.progress_img_animation)
+                        .into(contentImage);
+                contentImage.setOnClickListener(new ImageClickListener());
+            }else{
+                contentImage.setVisibility(View.GONE);
+                surfaceView.setVisibility(View.GONE);
+            }
+            if(post.getContentVideoUrl() != null){
+                contentImage.setVisibility(View.VISIBLE);
+                Picasso.get()
+                        .load(R.drawable.thumbnail_video)
+                        .into(contentImage);
+                contentImage.setOnClickListener(new VideoThumbnailClickListener());
+            }else{
+                surfaceView.setVisibility(View.GONE);
+            }
         }
 
         /**
@@ -252,6 +257,8 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
                 alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int which) {
+                        if(videoPlayers.get(getAdapterPosition()) != null)
+                            videoPlayers.get(getAdapterPosition()).release();
                         PostItemRepository repository = new PostItemRepository();
                         repository.deletePost(postToDelete.getId(),
                                 statusCodeLiveData,
@@ -272,5 +279,160 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
             }
         }
 
+        private void showOptionsAlertDialog(final String postID) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(mCurrentFragment.getContext());
+            final AlertDialog dialog = builder.create();
+            LayoutInflater inflater = mCurrentFragment.getLayoutInflater();
+            View dialogLayout = inflater.inflate(R.layout.post_options_alert, null);
+            dialog.setView(dialogLayout);
+            dialog.show();
+            dialog.setCancelable(true);
+            dialogLayout.findViewById(R.id.unsubscribe).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    PostItemRepository repository = new PostItemRepository();
+                    repository.deleteSubscription(
+                            String.valueOf(mPrefs.getInt(Constant.USER_ID, 0)),
+                            postID,
+                            mPrefs.getString(Constant.PUSHY_TOKEN, ""));
+                    Toast.makeText(
+                            mCurrentFragment.getContext(),
+                            mCurrentFragment.getResources().getString(R.string.unsubcribed_from_post),
+                            Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                }
+            });
+        }
+
+        class CommentsClickListener implements View.OnClickListener {
+
+            @Override
+            public void onClick(View view) {
+                Post post = mPostsList.get(getAdapterPosition());
+                Bundle bundle = new Bundle();
+                bundle.putString(CommentSectionFragment.POST_ID, String.valueOf(post.getId()));
+                mNavController.navigate(R.id.commentSectionFragment, bundle);
+            }
+        }
+
+        class ProfilePicClickListener implements View.OnClickListener {
+
+            @Override
+            public void onClick(View view) {
+                Post post = mPostsList.get(getAdapterPosition());
+                Bundle b = new Bundle();
+                b.putString(OtherProfileFragment.OTHER_USER_ID, String.valueOf(post.getUserID()));
+                if(post.getUserID() != mPrefs.getInt(Constant.USER_ID, 0))
+                    mNavController.navigate(R.id.otherProfileFragment, b);
+                else
+                    mNavController.navigate(R.id.profileFragment);
+            }
+        }
+
+        class ImageClickListener implements View.OnClickListener {
+
+            @Override
+            public void onClick(View view) {
+                Post post = mPostsList.get(getAdapterPosition());
+                Bundle bundle = new Bundle();
+                bundle.putString(PostWebViewFragment.IMG_URL,
+                        post.getContentPicUrl());
+                bundle.putString(PostWebViewFragment.IMG_NAME,
+                        String.valueOf(post.getId()));
+                mNavController.navigate(R.id.postImgWebviewFragment, bundle);
+            }
+        }
+
+        class VideoThumbnailClickListener implements View.OnClickListener {
+
+            @Override
+            public void onClick(View view) {
+                BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
+                TrackSelection.Factory videoTrackSelectionFactory =
+                        new AdaptiveTrackSelection.Factory(bandwidthMeter);
+                TrackSelector trackSelector =
+                        new DefaultTrackSelector(videoTrackSelectionFactory);
+                SimpleExoPlayer videoPlayer = ExoPlayerFactory.newSimpleInstance(mCurrentFragment.getContext(), trackSelector);
+                videoPlayers.put(getAdapterPosition(), videoPlayer);
+                surfaceView.setUseController(true);
+                surfaceView.setPlayer(videoPlayer);
+                videoPlayer.addListener(new PlayerListener());
+                DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(
+                        mCurrentFragment.getContext(),
+                        Util.getUserAgent(mCurrentFragment.getContext(), "RecyclerView VideoPlayer"));
+                String contentUrl = mPostsList.get(getAdapterPosition()).getContentVideoUrl();
+                if(contentUrl != null){
+                    MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
+                            .createMediaSource(Uri.parse(contentUrl));
+                    videoPlayer.prepare(videoSource);
+                    videoPlayer.setPlayWhenReady(true);
+                }
+            }
+        }
+
+        class PlayerListener implements Player.EventListener {
+
+            @Override
+            public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
+
+            }
+
+            @Override
+            public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+
+            }
+
+            @Override
+            public void onLoadingChanged(boolean isLoading) {
+
+            }
+
+            @Override
+            public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+                switch (playbackState) {
+
+                    case Player.STATE_BUFFERING:
+                        progressBarVideo.setVisibility(View.VISIBLE);
+                        contentImage.setVisibility(View.GONE);
+                        break;
+                    case Player.STATE_READY:
+                        progressBarVideo.setVisibility(View.GONE);
+                        surfaceView.setVisibility(View.VISIBLE);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            @Override
+            public void onRepeatModeChanged(int repeatMode) {
+
+            }
+
+            @Override
+            public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
+
+            }
+
+            @Override
+            public void onPlayerError(ExoPlaybackException error) {
+
+            }
+
+            @Override
+            public void onPositionDiscontinuity(int reason) {
+
+            }
+
+            @Override
+            public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
+
+            }
+
+            @Override
+            public void onSeekProcessed() {
+
+            }
+        }
     }
 }

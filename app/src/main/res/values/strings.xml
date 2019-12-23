@@ -151,7 +151,7 @@
     <string name="unsubcribed_from_post">Unsubscribed</string>
     <string name="loading_image_msg">Loading image</string>
     <string name="upload_video">Upload video</string>
-    <string name="file_is_too_large">The selected file is too large, maximum is 10MB</string>
+    <string name="file_is_too_large">The selected file is too large, maximum is 20MB</string>
     <string name="error_ocurred">An error ocurred</string>
 
 

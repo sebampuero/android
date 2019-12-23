@@ -45,7 +45,6 @@ import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -80,12 +79,11 @@ public class NewPostFragment extends BaseFragmentMediaSelector implements BaseFr
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         setBitmapLoaderInterface(this);
-        mModel = ViewModelProviders.of(this).get(NewPostViewModel.class);
+        mModel = ViewModelProviders.of(getActivity()).get(NewPostViewModel.class);
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_new_post, container, false);
         mBinding.setMyVM(mModel);
         mBinding.setLifecycleOwner(this);
@@ -103,6 +101,7 @@ public class NewPostFragment extends BaseFragmentMediaSelector implements BaseFr
         mModel.triggerLoadingBtn.observe(this, new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
+                //Toast.makeText(getContext(), "Post is being published...", Toast.LENGTH_LONG).show();
                 mPostBtn.startAnimation();
             }
         });
@@ -183,7 +182,7 @@ public class NewPostFragment extends BaseFragmentMediaSelector implements BaseFr
     private void setVideoReadyToUpload(Uri contentVideoUri) throws FileTooLargeException, IOException {
         InputStream is =  getContext().getContentResolver().openInputStream(contentVideoUri);
         byte[] videoBytes = ConverterUtils.getBytes(is);
-        if(videoBytes.length > 10000000) throw new FileTooLargeException(getResources().getString(R.string.file_is_too_large));
+        if(videoBytes.length > 20000000) throw new FileTooLargeException(getResources().getString(R.string.file_is_too_large));
         mModel.setContentVideoBase64Data(Base64.encodeToString(videoBytes, Base64.DEFAULT));
     }
 

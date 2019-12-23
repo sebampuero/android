@@ -175,4 +175,15 @@ public class OtherProfileFragment extends BaseFragment {
         mRecyclerView.setAdapter(mAdapter);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mAdapter.releasePlayer();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mAdapter.stopPlayer();
+    }
 }

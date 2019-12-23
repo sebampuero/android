@@ -59,6 +59,7 @@ public class NewPostViewModel extends ViewModel {
      */
     public void onNewPostClicked() {
         if(areInputsValid()){
+            triggerLoadingBtn.call();
             SharedPreferences prefs = appContext
                     .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
             int userID = prefs.getInt(Constant.USER_ID, 0);
@@ -77,7 +78,6 @@ public class NewPostViewModel extends ViewModel {
                 post.setBase64Video(contentVideoBase64Data);
             repository.createPost(post,
                     postLiveDataResponse, prefs.getString(Constant.PUSHY_TOKEN, ""));
-            triggerLoadingBtn.call();
         }
     }
 
