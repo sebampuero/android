@@ -107,13 +107,12 @@ public class NewPostFragment extends BaseFragmentMediaSelector implements BaseFr
 
     @Override
     protected void setupViews() {
+        super.setupViews();
         mPostContentEditText = mBinding.inputTextEdit;
         mPostTitleEditText = mBinding.postTitle;
         mContentIW = mBinding.contentImage;
         mContentVW = mBinding.videpPlayer;
         mPostBtn = mBinding.newPostBtn;
-        Toolbar toolbar = ((MainActivity)getActivity()).getToolbar();
-        toolbar.getMenu().clear();
         mUploadPicBtn = mBinding.uploadImageBtn;
         mUploadPicBtn.setOnClickListener(new View.OnClickListener() {
             @Override

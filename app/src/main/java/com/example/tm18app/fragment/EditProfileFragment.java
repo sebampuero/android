@@ -125,10 +125,9 @@ public class EditProfileFragment extends BaseFragmentMediaSelector implements Ba
 
     @Override
     protected void setupViews() {
+        super.setupViews();
         mSaveBtn = mBinding.saveEditProfileBtn;
         mProfilePicIW = mBinding.profilePic;
-        Toolbar toolbar = ((MainActivity)getActivity()).getToolbar();
-        toolbar.getMenu().clear();
     }
 
     /**

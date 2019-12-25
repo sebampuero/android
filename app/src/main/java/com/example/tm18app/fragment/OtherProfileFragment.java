@@ -1,11 +1,13 @@
 package com.example.tm18app.fragment;
 
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -38,7 +40,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class OtherProfileFragment extends BaseFragment {
+public class OtherProfileFragment extends BasePostsContainerFragment {
 
     public static final String OTHER_USER_ID = "otherUserID";
 
@@ -110,10 +112,9 @@ public class OtherProfileFragment extends BaseFragment {
 
     @Override
     protected void setupViews() {
-        Toolbar toolbar = ((MainActivity)getActivity()).getToolbar();
-        toolbar.getMenu().clear();
-        toolbar.inflateMenu(R.menu.other_profile_menu);
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+        super.setupViews();
+        mToolbar.inflateMenu(R.menu.other_profile_menu);
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if(item.getItemId() == R.id.sendPM){
@@ -163,12 +164,21 @@ public class OtherProfileFragment extends BaseFragment {
         }
     }
 
+    private PostItemAdapter.PostsEventsListener listener = reproducing -> {
+        int orientation = getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE && reproducing) {
+            setCinemaMode(true);
+        } else {
+            setCinemaMode(false);
+        }
+    };
+
     private void setupRecyclerView() {
         mRecyclerView = mBinding.getRoot().findViewById(R.id.goalsUserRv);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layoutManager);
         mAdapter = new PostItemAdapter((ArrayList<Post>) mPostsList,
-                mMainModel.getNavController(), this);
+                mMainModel.getNavController(), getContext(), listener);
         mRecyclerView.setAdapter(mAdapter);
     }
 

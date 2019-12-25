@@ -2,8 +2,8 @@ package com.example.tm18app.fragment;
 
 
 import android.annotation.SuppressLint;
+import android.content.res.Configuration;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +12,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
@@ -22,7 +21,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
 import com.example.tm18app.adapters.PostItemAdapter;
 import com.example.tm18app.constants.Constant;
@@ -45,7 +43,7 @@ import java.util.List;
  * @version 1.0
  * @since 03.12.2019
  */
-public class FeedFragment extends BaseFragment implements PostItemAdapter.OnPostDeleteListener{
+public class FeedFragment extends BasePostsContainerFragment{
 
     private FeedViewModel mModel;
     private FragmentFeedBinding mBinding;
@@ -88,12 +86,11 @@ public class FeedFragment extends BaseFragment implements PostItemAdapter.OnPost
 
     @Override
     protected void setupViews() {
+        super.setupViews();
         mNewPostBtn = mBinding.newPostFab;
         mProgressBar = mBinding.progressBarFeed;
         mNoPostsView = mBinding.feedLinearLayout;
         mProgressBar.setVisibility(View.VISIBLE); // to show that posts are loading
-        Toolbar toolbar = ((MainActivity)getActivity()).getToolbar();
-        toolbar.getMenu().clear();
     }
 
     /**
@@ -170,6 +167,31 @@ public class FeedFragment extends BaseFragment implements PostItemAdapter.OnPost
         }
     }
 
+    private PostItemAdapter.PostsEventsListener listener = new PostItemAdapter.PostsEventsListener() {
+        @Override
+        public void onPostDeleted(MutableLiveData<Integer> statusCode) {
+            statusCode.observe(FeedFragment.this, statusCode1 -> {
+                handlePostDeletion(statusCode1);
+                mModel.callRepository(); // mimic a reload for data
+            });
+        }
+
+        @Override
+        public void onUndoPostDeleted(int itemPosition) {
+            mRecyclerView.scrollToPosition(itemPosition);
+        }
+
+        @Override
+        public void onPlayerReproducing(boolean reproducing) {
+            int orientation = getResources().getConfiguration().orientation;
+            if (orientation == Configuration.ORIENTATION_LANDSCAPE && reproducing) {
+                setCinemaMode(true);
+            } else {
+                setCinemaMode(false);
+            }
+        }
+    };
+
     /**
      * Sets up the {@link RecyclerView} for the Feed UI.
      */
@@ -178,7 +200,7 @@ public class FeedFragment extends BaseFragment implements PostItemAdapter.OnPost
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layoutManager);
         mAdapter = new PostItemAdapter((ArrayList<Post>) mPostsList,
-                mMainModel.getNavController(), this);
+                mMainModel.getNavController(), getContext(), listener);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @SuppressLint("RestrictedApi")
@@ -214,27 +236,13 @@ public class FeedFragment extends BaseFragment implements PostItemAdapter.OnPost
             mAdapter.pausePlayers();
     }
 
-    @Override
-    public void onPostDeleted(MutableLiveData<Integer> statusCode) {
-        statusCode.observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer statusCode) {
-                handlePostDeletion(statusCode);
-            }
-        });
-    }
-
     /**
      * Shows feedback to the user about the deletion of the post
      * @param statusCode {@link Integer} status code of the operation
      */
     private void handlePostDeletion(Integer statusCode) {
-        if(statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR){
+        if(statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR)
             Toast.makeText(getContext(), getContext().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
-        }else if(statusCode == HttpURLConnection.HTTP_OK){
-            Toast.makeText(getContext(), getContext().getString(R.string.post_deleted_msg), Toast.LENGTH_SHORT).show();
-        }
-        mModel.callRepository(); // mimic a reload for data
     }
 
 }

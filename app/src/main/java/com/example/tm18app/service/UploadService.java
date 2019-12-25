@@ -34,11 +34,20 @@ import retrofit2.Response;
 
 import static com.example.tm18app.App.CHANNEL_ID;
 
+/**
+ * Upload service class for posts. When a {@link Post} is to be created, the upload mechanism is
+ * held by the service in a background thread. This is done because when uploading large amounts
+ * of data (e.g. a video), the process has to be performed in a background thread using a service
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 07.12.2019
+ */
 public class UploadService extends Service {
 
-    NotificationManager mNotifyManager;
-    NotificationCompat.Builder mBuilder;
-    Handler mHandler;
+    private NotificationManager mNotifyManager;
+    private NotificationCompat.Builder mBuilder;
+    private Handler mHandler;
 
     private PostRestInterface postRestInterface;
 
@@ -57,6 +66,7 @@ public class UploadService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        // extract relevant post data from the IntentService
         String pushyToken = intent.getStringExtra("pushy");
         Post post = new Post(intent.getStringExtra("title"),
                 intent.getStringExtra("content"),
@@ -66,6 +76,7 @@ public class UploadService extends Service {
             post.setContentImageURI(intent.getStringExtra("imageUri"));
         if(intent.getStringExtra("videoUri") != null)
             post.setContentVideoURI(intent.getStringExtra("videoUri"));
+        // An intent to the Main activity for when the user clicks on the notification
         Intent notifIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notifIntent, 0);
 
@@ -76,12 +87,16 @@ public class UploadService extends Service {
                 .setContentIntent(pendingIntent);
 
         mNotifyManager.notify(1, mBuilder.build());
+        // Start a service to upload the post even if the app is closed
         startForeground(1, mBuilder.build());
         new UploaderAsync(post, pushyToken).execute();
         return START_NOT_STICKY;
     }
 
 
+    /**
+     * Asynctask to upload the post
+     */
     class UploaderAsync extends AsyncTask<Void, Void, Integer> {
 
         final int MAX_IMG_HEIGHT = 800;
@@ -106,6 +121,7 @@ public class UploadService extends Service {
             }catch (FileTooLargeException e){
                 mBuilder.setContentTitle(e.getMessage());
                 mNotifyManager.notify(1, mBuilder.build());
+                mHandler.post(new ShowToastInUI(e.getMessage()));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -117,29 +133,24 @@ public class UploadService extends Service {
             if(statusCode == HttpURLConnection.HTTP_OK){
                 mBuilder.setContentTitle(getResources().getString(R.string.post_successfully_created) + " " + post.getTitle());
                 mNotifyManager.notify(1, mBuilder.build());
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(UploadService.this,
-                                getResources().getString(R.string.post_successfully_created),
-                                Toast.LENGTH_LONG).show();
-                    }
-                });
+                mHandler.post(new ShowToastInUI(getResources()
+                        .getString(R.string.post_successfully_created)));
             }else if(statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR){
                 mBuilder.setContentTitle(getResources().getString(R.string.server_error));
                 mNotifyManager.notify(1, mBuilder.build());
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(UploadService.this,
-                                getResources().getString(R.string.server_error),
-                                Toast.LENGTH_LONG).show();
-                    }
-                });
+                mHandler.post(new ShowToastInUI(getResources().getString(R.string.server_error)));
             }
+            // stops the service
             stopForeground(false);
         }
 
+        /**
+         * Converts a {@link Uri} into bytes and then into a 64base encoded {@link String} for a video
+         * @param contentVideoURI {@link String}
+         * @return {@String} 64base encoded data
+         * @throws IOException
+         * @throws FileTooLargeException if the video is bigger than 50MB
+         */
         private String getDataForVideo(String contentVideoURI) throws IOException, FileTooLargeException {
             InputStream is =  getContentResolver().openInputStream(Uri.parse(contentVideoURI));
             byte[] videoBytes = ConverterUtils.getBytes(is);
@@ -147,6 +158,13 @@ public class UploadService extends Service {
             return Base64.encodeToString(videoBytes, Base64.DEFAULT);
         }
 
+        /**
+         * Converts a {@link Uri} into bytes and then into a 65base encoded {@link String} for an image.
+         * Also processes the corresponding {@link Bitmap} to allow only up to a maximal height.
+         * @param contentImageURI {@link Uri}
+         * @return {@link String} 64base encoded data
+         * @throws IOException
+         */
         private String getDataForImage(String contentImageURI) throws IOException {
             Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.parse(contentImageURI));
             int height = bitmap.getHeight();
@@ -155,6 +173,20 @@ public class UploadService extends Service {
             Bitmap resizedBitmap = Picasso.get().load(contentImageURI).resize(0, height).centerCrop().get();
             byte[] contentImageBytes = ConverterUtils.getBytes(resizedBitmap);
             return Base64.encodeToString(contentImageBytes, Base64.DEFAULT);
+        }
+    }
+
+    /**
+     * Shows a {@link Toast} in the main thread
+     */
+    class ShowToastInUI implements Runnable {
+        String msg;
+        ShowToastInUI(String msg) {
+            this.msg = msg;
+        }
+        @Override
+        public void run() {
+            Toast.makeText(UploadService.this, msg, Toast.LENGTH_LONG).show();
         }
     }
 

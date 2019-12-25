@@ -110,4 +110,8 @@ public class MainActivity extends AppCompatActivity {
         return mToolbar;
     }
 
+    public BottomNavigationView getmBottonNavigationView() {
+        return mBottonNavigationView;
+    }
+
 }

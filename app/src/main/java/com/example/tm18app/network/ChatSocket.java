@@ -51,6 +51,8 @@ public class ChatSocket {
          */
         void onOtherOnlineStatus(int status);
 
+        void onOtherLastOnline(int lastOnline);
+
         /**
          * Called when the other user is typing a message. Displays it on the {@link android.widget.Toolbar}
          */
@@ -181,10 +183,15 @@ public class ChatSocket {
         socket.on("onError", new ErrorListener());
     }
 
+    public void attachLastOnlineListener() {
+        socket.on("lastOnline", new LastOnlineListener());
+    }
+
     /**
      * Detaches all listeners for this {@link ChatSocket} and disconnects.
      */
-    public void detachListener() {
+    public void detachListener(int userId, int roomid) {
+        socket.emit("beforeDisconnect", userId, roomid);
         socket.disconnect();
         socket.off();
         timer.cancel();
@@ -272,6 +279,19 @@ public class ChatSocket {
                 @Override
                 public void run() {
                     socketListener.onError((String) args[0]);
+                }
+            });
+        }
+    }
+
+    class LastOnlineListener implements Emitter.Listener {
+
+        @Override
+        public void call(final Object... args) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    socketListener.onOtherLastOnline((int) args[0]);
                 }
             });
         }

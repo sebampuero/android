@@ -55,6 +55,7 @@ public class EditPasswordFragment extends BaseFragment {
 
     @Override
     protected void setupViews() {
+        super.setupViews();
         Toolbar toolbar = ((MainActivity)getActivity()).getToolbar();
         toolbar.getMenu().clear();
     }

@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
@@ -17,7 +16,6 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,8 +33,8 @@ import com.example.tm18app.model.ChatMessage;
 import com.example.tm18app.network.ChatSocket;
 import com.example.tm18app.repository.ChatsRepository;
 import com.example.tm18app.util.Debouncer;
+import com.example.tm18app.util.TimeUtils;
 import com.example.tm18app.viewModels.ChatMessagesViewModel;
-import com.example.tm18app.viewModels.MyViewModel;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -64,7 +62,6 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
     private FragmentChatMessagesBinding mBinding;
     private TextView mLoadingMessagesTv;
     private RecyclerView mRv;
-    private Toolbar mToolbar;
     private ImageView mProfileIW;
 
     // vars
@@ -103,7 +100,8 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
         // it is important to disconnect the socket when the user leaves the fragment
         // protect battery and bandwidth
         super.onPause();
-        socket.detachListener();
+        socket.detachListener(mPrefs.getInt(Constant.USER_ID, 0),
+                Integer.parseInt(mModel.getRoomId()));
         mToolbar.setSubtitle("");
         mProfileIW.setVisibility(View.GONE);
     }
@@ -136,6 +134,7 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
                 Integer.parseInt(mModel.getToId()),
                 mPrefs.getString(Constant.PUSHY_TOKEN, ""));
         mModel.setSocket(socket);
+        socket.attachLastOnlineListener();
         socket.attachMessageListener();
         if(mModel.getMessagesLiveData().getValue() != null){
             mModel.getMessagesLiveData().getValue().clear();
@@ -146,42 +145,26 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
         // the chat room is capable of transmitting typing status. But it wastes network if done
         // for every key stroke, therefore use a debouncer to send keystrokes every half second
         final Debouncer debouncer = new Debouncer();
-        mModel.inputMessage.observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                debouncer.debounce(Void.class, new Runnable() {
-                    @Override
-                    public void run() {
-                        socket.sendTypingStatus(mModel.getRoomName());
-                    }
-                }, 500, TimeUnit.MILLISECONDS);
-            }
-        });
+        mModel.inputMessage.observe(this, keyInput -> debouncer.debounce(Void.class,
+                () -> socket.sendTypingStatus(mModel.getRoomName()), 500, TimeUnit.MILLISECONDS));
     }
 
     @Override
     protected void setupViews() {
+        super.setupViews();
         int profilePicDimen = getResources().getInteger(R.integer.thumbnail_profile_pic);
-        mToolbar = ((MainActivity)getActivity()).getToolbar();
-        mToolbar.getMenu().clear();
         mToolbar.setTitle(mModel.getToName());
         mToolbar.inflateMenu(R.menu.chat_menu);
-        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                if(item.getItemId() == R.id.deleteChat){
-                    deleteChatRoom();
-                }
-                return false;
+        mToolbar.setOnMenuItemClickListener(item -> {
+            if(item.getItemId() == R.id.deleteChat){
+                deleteChatRoom();
             }
+            return false;
         });
-        mToolbar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bundle b = new Bundle();
-                b.putString(OtherProfileFragment.OTHER_USER_ID, mModel.getToId());
-                mMainModel.getNavController().navigate(R.id.otherProfileFragment, b);
-            }
+        mToolbar.setOnClickListener(view -> {
+            Bundle b = new Bundle();
+            b.putString(OtherProfileFragment.OTHER_USER_ID, mModel.getToId());
+            mMainModel.getNavController().navigate(R.id.otherProfileFragment, b);
         });
         mLoadingMessagesTv = mBinding.loadingMessagesTv;
         mProfileIW = getActivity().findViewById(R.id.toolbarLogo);
@@ -205,16 +188,13 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
         alertBuilder.setCancelable(true);
         alertBuilder.setTitle(getContext().getString(R.string.delete_chat));
         alertBuilder.setMessage(getContext().getString(R.string.delete_chat_conf_message));
-        alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int which) {
-                ChatsRepository repository = new ChatsRepository();
-                repository.deleteChatRoom(mModel.getRoomId(),
-                        mPrefs.getString(Constant.PUSHY_TOKEN, ""));
-                mMainModel.getNavController().navigateUp();
-                Toast.makeText(getContext(), getResources().getString(R.string.chat_room_deleted),
-                        Toast.LENGTH_SHORT).show();
-            }
+        alertBuilder.setPositiveButton(android.R.string.yes, (dialogInterface, which) -> {
+            ChatsRepository repository = new ChatsRepository();
+            repository.deleteChatRoom(mModel.getRoomId(),
+                    mPrefs.getString(Constant.PUSHY_TOKEN, ""));
+            mMainModel.getNavController().navigateUp();
+            Toast.makeText(getContext(), getResources().getString(R.string.chat_room_deleted),
+                    Toast.LENGTH_SHORT).show();
         });
         AlertDialog alert = alertBuilder.create();
         alert.show();
@@ -224,21 +204,18 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
      * Initializes an {@link Observer} for chat messages.
      */
     private void fetchData() {
-        mModel.getMessagesLiveData().observe(this, new Observer<List<ChatMessage>>() {
-            @Override
-            public void onChanged(List<ChatMessage> chatMessages) {
-                if(chatMessages != null){
-                    if(chatMessages.size() > 0){
-                        mChatMessagesList.clear();
-                        mChatMessagesList.addAll(chatMessages);
-                        Collections.sort(mChatMessagesList);
-                        mAdapter.notifyDataSetChanged();
-                        mRv.scrollToPosition(mAdapter.getItemCount() - 1); // scroll to bottom for
-                        // better UX
-                    }
+        mModel.getMessagesLiveData().observe(this, chatMessages -> {
+            if(chatMessages != null){
+                if(chatMessages.size() > 0){
+                    mChatMessagesList.clear();
+                    mChatMessagesList.addAll(chatMessages);
+                    Collections.sort(mChatMessagesList);
+                    mAdapter.notifyDataSetChanged();
+                    mRv.scrollToPosition(mAdapter.getItemCount() - 1); // scroll to bottom for
+                    // better UX
                 }
-                mLoadingMessagesTv.setVisibility(View.GONE);
             }
+            mLoadingMessagesTv.setVisibility(View.GONE);
         });
     }
 
@@ -263,7 +240,14 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
         if(status == ChatSocket.ONLINE)
             mToolbar.setSubtitle(getResources().getString(R.string.online));
         else if(status == ChatSocket.OFFLINE)
-            mToolbar.setSubtitle("");
+            mToolbar.setSubtitle(TimeUtils.parseTimestampToLocaleDatetime(System.currentTimeMillis() / 1000L));
+    }
+
+    @Override
+    public void onOtherLastOnline(int lastOnline) {
+        if(lastOnline != 0){
+            mToolbar.setSubtitle(TimeUtils.parseTimestampToLocaleDatetime(lastOnline));
+        }
     }
 
     @Override

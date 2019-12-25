@@ -155,6 +155,9 @@
     <string name="error_ocurred">An error ocurred</string>
     <string name="uploading_post">Uploading your post</string>
     <string name="successfully_registered">Successfully registered, please now log in</string>
+    <string name="report_this_post">Report this post</string>
+    <string name="undo">Undo</string>
+    <string name="last_online">Last online</string>
 
 
 </resources>

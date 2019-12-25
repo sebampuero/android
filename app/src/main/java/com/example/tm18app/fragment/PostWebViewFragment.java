@@ -50,7 +50,7 @@ public class PostWebViewFragment extends BaseWebViewFragment {
 
     @Override
     protected void setupViews() {
-        mToolbar.getMenu().clear();
+        super.setupViews();
         mToolbar.inflateMenu(R.menu.webview_menu); // this fragment loads a custom toolbar
         mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override

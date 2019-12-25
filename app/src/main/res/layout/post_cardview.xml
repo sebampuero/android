@@ -56,7 +56,6 @@
                     android:textSize="@dimen/text_size_12" />
 
                 <ImageView
-                    android:visibility="gone"
                     android:id="@+id/moreVertPost"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -76,24 +75,29 @@
                 android:textSize="@dimen/text_size_18"
                 android:textStyle="bold" />
 
-            <ImageView
-                android:id="@+id/contentImage"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content">
 
-            <ProgressBar
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:visibility="gone"
-                android:id="@+id/progressBarVideo"/>
+                <ImageView
+                    android:id="@+id/contentImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-            <com.google.android.exoplayer2.ui.PlayerView
-                android:layout_width="match_parent"
-                android:visibility="gone"
-                android:layout_height="@dimen/player_view_height"
-                android:layout_marginBottom="@dimen/margin_10"
-                android:id="@+id/videoPlayerPost"/>
+                <com.google.android.exoplayer2.ui.PlayerView
+                    android:layout_width="match_parent"
+                    android:visibility="gone"
+                    android:layout_height="@dimen/player_view_height"
+                    android:layout_marginBottom="@dimen/margin_10"
+                    android:id="@+id/videoPlayerPost"/>
+                <ProgressBar
+                    android:visibility="gone"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/progressBarVideo"/>
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/postContentCardviewTv"

@@ -26,6 +26,8 @@ public class ChatMessagesViewModel extends ViewModel {
     private String toId;
     private String toName;
     private String profilePic;
+    private long lastOnline;
+
     private SharedPreferences prefs;
     private ChatSocket socket;
     private LiveData<List<ChatMessage>> messagesLiveData = Transformations.switchMap(reloadTrigger, new Function<Boolean, LiveData<List<ChatMessage>>>() {
@@ -103,4 +105,11 @@ public class ChatMessagesViewModel extends ViewModel {
         this.profilePic = profilePic;
     }
 
+    public long getLastOnline() {
+        return lastOnline;
+    }
+
+    public void setLastOnline(long lastOnline) {
+        this.lastOnline = lastOnline;
+    }
 }

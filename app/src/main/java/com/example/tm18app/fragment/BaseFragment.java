@@ -3,17 +3,17 @@ package com.example.tm18app.fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.example.tm18app.MainActivity;
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.viewModels.MyViewModel;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 /**
  * Base {@link Fragment} class.
@@ -25,6 +25,8 @@ import com.example.tm18app.viewModels.MyViewModel;
 public abstract class BaseFragment extends Fragment {
     protected MyViewModel mMainModel;
     protected SharedPreferences mPrefs;
+    protected Toolbar mToolbar;
+    protected BottomNavigationView mBottomNavigationView;
 
     public BaseFragment() {
 
@@ -40,6 +42,12 @@ public abstract class BaseFragment extends Fragment {
     /**
      * Sets up views for the {@link Fragment}
      */
-    protected abstract void setupViews();
+    protected void setupViews() {
+        mBottomNavigationView = ((MainActivity)getActivity()).getmBottonNavigationView();
+        mToolbar = ((MainActivity)getActivity()).getToolbar();
+        mToolbar.setVisibility(View.VISIBLE);
+        mBottomNavigationView.setVisibility(View.VISIBLE);
+        mToolbar.getMenu().clear();
+    }
 
 }

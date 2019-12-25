@@ -138,6 +138,9 @@
     <string name="error_ocurred">Ein Fehler ist aufgetreten</string>
     <string name="uploading_post">Veröffentliche Post</string>
     <string name="successfully_registered">Erfolgreich registriert, jetzt melde dich bitte an</string>
+    <string name="report_this_post">Diesen Post melden</string>
+    <string name="undo">Rückganging machen</string>
+    <string name="last_online">Last online</string>
 
     <array name="notification_settings">
         <item>Alle Benachrichtigungen erlauben</item>

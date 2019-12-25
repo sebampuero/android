@@ -139,6 +139,9 @@
     <string name="error_ocurred">Un error ocurrió</string>
     <string name="uploading_post">Publicando tu post</string>
     <string name="successfully_registered">Registrado/o, por favor, inicia sesiòn</string>
+    <string name="report_this_post">Reportar post</string>
+    <string name="undo">Deshacer</string>
+    <string name="last_online">Last online</string>
 
     <array name="notification_settings">
         <item>Permitir todas las notificaciones</item>

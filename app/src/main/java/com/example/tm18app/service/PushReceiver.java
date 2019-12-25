@@ -71,6 +71,12 @@ public class PushReceiver extends BroadcastReceiver {
         }
     }
 
+    /**
+     * Processes the notification for when a user comments in a post someone is subscribed to
+     * @param context {@link Context}
+     * @param postId {@link Integer}
+     * @param name {@link String} commenter's name
+     */
     private void processCommentNotificationSubscribedPost(Context context, int postId, String name) {
         Bundle bundle = new Bundle();
         bundle.putString("postID", String.valueOf(postId));
@@ -111,7 +117,8 @@ public class PushReceiver extends BroadcastReceiver {
     }
 
     /**
-     * Processes an incoming new post notification
+     * Processes an incoming new post notification for when a user creates a new post containing a
+     * goal someone is subscribed to
      * @param context {@link Context}
      * @param goalTag {@link String} the goal tag that the new post corresponds to
      */

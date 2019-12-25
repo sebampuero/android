@@ -70,9 +70,8 @@ public class CommentSectionFragment extends BaseFragment {
 
     @Override
     protected void setupViews() {
+        super.setupViews();
         mCommentInputEditText = mBinding.commentInputField;
-        Toolbar toolbar = ((MainActivity)getActivity()).getToolbar();
-        toolbar.getMenu().clear();
     }
 
     /**

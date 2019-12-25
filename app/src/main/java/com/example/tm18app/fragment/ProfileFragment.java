@@ -1,9 +1,9 @@
 package com.example.tm18app.fragment;
 
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 
-import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
@@ -22,7 +22,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
 import com.example.tm18app.adapters.PostItemAdapter;
 import com.example.tm18app.constants.Constant;
@@ -44,7 +43,7 @@ import java.util.List;
  * @version 1.0
  * @since 03.12.2019
  */
-public class ProfileFragment extends BaseFragment implements PostItemAdapter.OnPostDeleteListener{
+public class ProfileFragment extends BasePostsContainerFragment{
 
     private CurrentProfileViewModel mModel;
     private FragmentProfileBinding mBinding;
@@ -95,8 +94,7 @@ public class ProfileFragment extends BaseFragment implements PostItemAdapter.OnP
 
     @Override
     protected void setupViews() {
-        Toolbar toolbar = ((MainActivity)getActivity()).getToolbar();
-        toolbar.getMenu().clear();
+        super.setupViews();
         mNoPostsView = mBinding.getRoot().findViewById(R.id.noPostsLayout);
         mProgressBar = mBinding.getRoot().findViewById(R.id.progressBar);
         mProfilePicIW = mBinding.profilePic;
@@ -113,6 +111,33 @@ public class ProfileFragment extends BaseFragment implements PostItemAdapter.OnP
         });
     }
 
+    private PostItemAdapter.PostsEventsListener listener = new PostItemAdapter.PostsEventsListener() {
+        @Override
+        public void onPostDeleted(MutableLiveData<Integer> statusCode) {
+            statusCode.observe(ProfileFragment.this, new Observer<Integer>() {
+                @Override
+                public void onChanged(Integer statusCode) {
+                    handlePostDeletion(statusCode);
+                }
+            });
+        }
+
+        @Override
+        public void onUndoPostDeleted(int itemPosition) {
+            mRecyclerView.scrollToPosition(itemPosition);
+        }
+
+        @Override
+        public void onPlayerReproducing(boolean reproducing) {
+            int orientation = getResources().getConfiguration().orientation;
+            if (orientation == Configuration.ORIENTATION_LANDSCAPE && reproducing) {
+                setCinemaMode(true);
+            } else {
+                setCinemaMode(false);
+            }
+        }
+    };
+
     /**
      * Sets up the {@link RecyclerView} for the user's Posts list in the profile
      */
@@ -121,7 +146,7 @@ public class ProfileFragment extends BaseFragment implements PostItemAdapter.OnP
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layoutManager);
         mAdapter = new PostItemAdapter((ArrayList<Post>) mPostsList,
-                mMainModel.getNavController(), this);
+                mMainModel.getNavController(), getContext(), listener);
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -177,25 +202,12 @@ public class ProfileFragment extends BaseFragment implements PostItemAdapter.OnP
         }
     }
 
-    @Override
-    public void onPostDeleted(MutableLiveData<Integer> statusCode) {
-        statusCode.observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer statusCode) {
-                handlePostDeletion(statusCode);
-            }
-        });
-    }
-
     /**
      * Shows feedback to the user about the deletion of the post
      * @param statusCode {@link Integer} status code of the operation
      */
     private void handlePostDeletion(Integer statusCode) {
-        if(statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR){
+        if(statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR)
             Toast.makeText(getContext(), getContext().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
-        }else if(statusCode == HttpURLConnection.HTTP_OK){
-            Toast.makeText(getContext(), getContext().getString(R.string.post_deleted_msg), Toast.LENGTH_SHORT).show();
-        }
     }
 }

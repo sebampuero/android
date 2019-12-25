@@ -68,8 +68,7 @@ public class ChatsFragment extends BaseFragment {
 
     @Override
     protected void setupViews() {
-        Toolbar toolbar = ((MainActivity)getActivity()).getToolbar();
-        toolbar.getMenu().clear();
+        super.setupViews();
         mChatsProgressView = mBinding.chatsProgressView;
         mNoChatsTV = mBinding.noChatsTv;
         mSwipeRefresh = mBinding.swipeRefreshLayoutChats;
