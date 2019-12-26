@@ -24,51 +24,35 @@
                     android:text="@string/new_post"
                     android:layout_marginStart="@dimen/margin_10"
                     android:layout_marginEnd="@dimen/margin_10"
+                    android:layout_marginBottom="@dimen/margin_10"
                     android:textStyle="bold"
                     android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
 
-                <ImageView
+                <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:visibility="gone"
-                    android:layout_marginBottom="@dimen/margin_10"
                     android:layout_below="@id/newPostTv"
-                    android:id="@+id/contentImage"/>
+                    android:id="@+id/mediaContent">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:layout_marginBottom="@dimen/margin_10"
+                        android:id="@+id/contentImage"/>
 
-                <com.google.android.exoplayer2.ui.PlayerView
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/player_view_height"
-                    android:visibility="gone"
-                    android:layout_marginBottom="@dimen/margin_10"
-                    android:layout_below="@id/contentImage"
-                    android:id="@+id/videpPlayer"/>
+                    <com.google.android.exoplayer2.ui.PlayerView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/player_view_height"
+                        android:visibility="gone"
+                        android:layout_marginBottom="@dimen/margin_10"
+                        android:id="@+id/videpPlayer"/>
+                </FrameLayout>
 
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/custom_btn_form"
-                    android:padding="@dimen/padding_10"
-                    android:text="@string/upload_image"
-                    android:layout_centerHorizontal="true"
-                    android:id="@+id/uploadImageBtn"
-                    android:layout_below="@id/videpPlayer"/>
-
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/custom_btn_form"
-                    android:padding="@dimen/padding_10"
-                    android:layout_marginTop="@dimen/margin_10"
-                    android:text="@string/upload_video"
-                    android:layout_centerHorizontal="true"
-                    android:id="@+id/uploadVideoBtn"
-                    android:layout_below="@id/uploadImageBtn"/>
 
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/uploadVideoBtn"
+                    android:layout_below="@id/mediaContent"
                     android:hint="@string/post_title_label"
                     android:id="@+id/postTitle"
                     android:text="@={myVM.title}"
@@ -106,10 +90,32 @@
                     android:layout_below="@id/goalSpinnerLabel"
                     android:id="@+id/goalTagsSpinner" />
 
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/custom_btn_form"
+                    android:padding="@dimen/padding_10"
+                    android:text="@string/upload_image"
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/uploadImageBtn"
+                    android:layout_below="@id/goalTagsSpinner"/>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/custom_btn_form"
+                    android:padding="@dimen/padding_10"
+                    android:layout_marginTop="@dimen/margin_10"
+                    android:text="@string/upload_video"
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/uploadVideoBtn"
+                    android:layout_below="@id/uploadImageBtn"/>
+
                 <br.com.simplepass.loading_button_lib.customViews.CircularProgressButton
                     android:id="@+id/newPostBtn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_10"
                     android:layout_marginStart="@dimen/margin_10"
                     android:layout_marginEnd="@dimen/margin_10"
                     android:textStyle="bold"
@@ -117,7 +123,7 @@
                     android:background="@drawable/custom_btn_form"
                     android:onClick="@{() -> myVM.onNewPostClicked()}"
                     android:text="@string/new_post_btn"
-                    android:layout_below="@id/goalTagsSpinner"/>
+                    android:layout_below="@id/uploadVideoBtn"/>
             </RelativeLayout>
 
 

@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -102,8 +103,9 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
         super.onPause();
         socket.detachListener(mPrefs.getInt(Constant.USER_ID, 0),
                 Integer.parseInt(mModel.getRoomId()));
-        mToolbar.setSubtitle("");
         mProfileIW.setVisibility(View.GONE);
+        mToolbar.setSubtitle("");
+        mToolbar.setOnClickListener(null);
     }
 
     @Override
@@ -256,8 +258,8 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
     }
 
     @Override
-    public void onError(String error) {
-        Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+    public void onError() {
+        Toast.makeText(getContext(), getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
     }
 
     /**

@@ -27,6 +27,7 @@ public class Post implements Comparable<Post> {
     private String posterPicUrl;
     private String contentPicUrl;
     private String contentVideoUrl;
+    private String contentVideoThumbnailUrl;
     private String subscriberIds;
 
     private String contentVideoURI;
@@ -187,6 +188,14 @@ public class Post implements Comparable<Post> {
         this.contentImageURI = contentImageURI;
     }
 
+    public String getContentVideoThumbnailUrl() {
+        return contentVideoThumbnailUrl;
+    }
+
+    public void setContentVideoThumbnailUrl(String contentVideoThumbnailUrl) {
+        this.contentVideoThumbnailUrl = contentVideoThumbnailUrl;
+    }
+
     @Override
     public String toString() {
         return "Post{" +
@@ -200,11 +209,10 @@ public class Post implements Comparable<Post> {
                 ", goalId=" + goalId +
                 ", commentCount=" + commentCount +
                 ", timestamp=" + timestamp +
-                ", base64Image='" + base64Image + '\'' +
-                ", base64Video='" + base64Video + '\'' +
                 ", posterPicUrl='" + posterPicUrl + '\'' +
                 ", contentPicUrl='" + contentPicUrl + '\'' +
                 ", contentVideoUrl='" + contentVideoUrl + '\'' +
+                ", contentVideoThumbnailUrl='" + contentVideoThumbnailUrl + '\'' +
                 ", subscriberIds='" + subscriberIds + '\'' +
                 ", contentVideoURI='" + contentVideoURI + '\'' +
                 ", contentImageURI='" + contentImageURI + '\'' +

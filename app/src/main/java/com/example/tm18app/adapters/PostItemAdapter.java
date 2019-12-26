@@ -5,12 +5,15 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -175,6 +178,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
         ImageView moreVertOptions;
         ProgressBar progressBarVideo;
         PlayerView surfaceView;
+        RelativeLayout postMediaContent;
 
         MyViewHolder(final PostCardviewBinding binding) {
             super(binding.getRoot());
@@ -191,8 +195,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
             moreVertOptions = binding.moreVertPost;
             progressBarVideo = binding.progressBarVideo;
             surfaceView = binding.videoPlayerPost;
-
-
+            postMediaContent = binding.postMediaContent;
         }
 
 
@@ -226,11 +229,19 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
                 posterProfilePic.setImageDrawable(mContext
                         .getResources()
                         .getDrawable(R.drawable.ic_person_black_24dp));
-            if(post.getContentPicUrl() != null){
+
+            if(post.getContentPicUrl() != null || post.getContentVideoUrl() != null){
+                postMediaContent.setVisibility(View.VISIBLE);
                 contentImage.setVisibility(View.VISIBLE);
-                surfaceView.setVisibility(View.GONE); // hide the video player view is visible
-                // needed because recyclerview recycles views and sometimes the recycled view appears
-                // on other posts that have no video media set
+                surfaceView.setVisibility(View.VISIBLE);
+            }else{
+                contentImage.setVisibility(View.GONE);
+                surfaceView.setVisibility(View.GONE);
+                postMediaContent.setVisibility(View.GONE);
+            }
+
+            if(post.getContentPicUrl() != null){
+                surfaceView.setVisibility(View.GONE);
                 String imgUrl =  NetworkConnectivity
                         .tweakImgQualityByNetworkType(mContext,
                                 post.getContentPicUrl());
@@ -239,18 +250,13 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
                         .placeholder(R.drawable.progress_img_animation)
                         .into(contentImage);
                 contentImage.setOnClickListener(new ImageClickListener());
-            }else{
-                contentImage.setVisibility(View.GONE);
-                surfaceView.setVisibility(View.GONE);
             }
             if(post.getContentVideoUrl() != null){
-                contentImage.setVisibility(View.VISIBLE); // for thumbnail
+                surfaceView.setVisibility(View.GONE);
                 Picasso.get()
                         .load(R.drawable.thumbnail_video)
                         .into(contentImage);
                 contentImage.setOnClickListener(new VideoThumbnailClickListener());
-            }else{
-                surfaceView.setVisibility(View.GONE);
             }
         }
 
@@ -309,6 +315,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
 
             @Override
             public void onClick(View view) {
+                surfaceView.setVisibility(View.VISIBLE);
                 //Init video player params
                 BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
                 TrackSelection.Factory videoTrackSelectionFactory =

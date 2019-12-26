@@ -4,6 +4,7 @@ package com.example.tm18app.fragment;
 import android.annotation.SuppressLint;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,16 +46,14 @@ import java.util.List;
  */
 public class FeedFragment extends BasePostsContainerFragment{
 
+    private final int ANIMATION_DURATION = 300;
+
     private FeedViewModel mModel;
     private FragmentFeedBinding mBinding;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-    private RecyclerView mRecyclerView;
-    private PostItemAdapter mAdapter;
-    private List<Post> mPostsList = new ArrayList<>();
     private ProgressBar mProgressBar;
     private boolean doGoalsExist = true;
     private LinearLayout mNoPostsView;
-    private FloatingActionButton mNewPostBtn;
+    private FloatingActionButton mFab;
 
     public FeedFragment() {
         // Required empty public constructor
@@ -87,10 +86,10 @@ public class FeedFragment extends BasePostsContainerFragment{
     @Override
     protected void setupViews() {
         super.setupViews();
-        mNewPostBtn = mBinding.newPostFab;
         mProgressBar = mBinding.progressBarFeed;
         mNoPostsView = mBinding.feedLinearLayout;
         mProgressBar.setVisibility(View.VISIBLE); // to show that posts are loading
+        mFab = mBinding.newPostFab;
     }
 
     /**
@@ -122,15 +121,13 @@ public class FeedFragment extends BasePostsContainerFragment{
      * Sets up the {@link SwipeRefreshLayout} for the Feed UI.
      */
     private void setupSwipeRefreshLayout() {
-        mSwipeRefreshLayout = mBinding.swipeRefreshLayout;
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                if(mModel.getPostLiveData() != null && doGoalsExist){
-                    mModel.callRepository();
-                }else{
-                    mSwipeRefreshLayout.setRefreshing(false);
-                }
+        mSwipe = mBinding.swipeRefreshLayout;
+        mSwipe.setOnRefreshListener(() -> {
+            if(mModel.getPostLiveData() != null && doGoalsExist){
+                mModel.callRepository();
+                mAdapter.releasePlayers();
+            }else{
+                mSwipe.setRefreshing(false);
             }
         });
     }
@@ -141,29 +138,26 @@ public class FeedFragment extends BasePostsContainerFragment{
      */
     private void fetchData() {
         if(mModel.getPostLiveData() != null){
-            mModel.getPostLiveData().observe(this, new Observer<List<Post>>() {
-                @Override
-                public void onChanged(List<Post> posts) {
-                    if(posts.size() > 0){
-                        if(doGoalsExist){
-                            mPostsList.clear();
-                            mPostsList.addAll(posts);
-                            Collections.sort(mPostsList);
-                            mAdapter.notifyDataSetChanged();
-                            mNoPostsView.setVisibility(View.GONE);
-                            mRecyclerView.setVisibility(View.VISIBLE);
-                        }
-                    }else{
-                        mNoPostsView.setVisibility(View.VISIBLE);
-                        mRecyclerView.setVisibility(View.GONE);
+            mModel.getPostLiveData().observe(this, posts -> {
+                if(posts.size() > 0){
+                    if(doGoalsExist){
+                        mPostsList.clear();
+                        mPostsList.addAll(posts);
+                        Collections.sort(mPostsList);
+                        mAdapter.notifyDataSetChanged();
+                        mNoPostsView.setVisibility(View.GONE);
+                        mRecyclerView.setVisibility(View.VISIBLE);
                     }
-                    mProgressBar.setVisibility(View.GONE);
-                    mSwipeRefreshLayout.setRefreshing(false);
+                }else{
+                    mNoPostsView.setVisibility(View.VISIBLE);
+                    mRecyclerView.setVisibility(View.GONE);
                 }
+                mProgressBar.setVisibility(View.GONE);
+                mSwipe.setRefreshing(false);
             });
         }else{
             mProgressBar.setVisibility(View.GONE);
-            mSwipeRefreshLayout.setRefreshing(false);
+            mSwipe.setRefreshing(false);
         }
     }
 
@@ -192,10 +186,9 @@ public class FeedFragment extends BasePostsContainerFragment{
         }
     };
 
-    /**
-     * Sets up the {@link RecyclerView} for the Feed UI.
-     */
-    private void setupRecyclerView() {
+
+    @Override
+    protected void setupRecyclerView() {
         mRecyclerView = mBinding.rvFeed;
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layoutManager);
@@ -211,30 +204,15 @@ public class FeedFragment extends BasePostsContainerFragment{
                     int itemPositionInSight = ((LinearLayoutManager)mRecyclerView
                             .getLayoutManager()).findFirstCompletelyVisibleItemPosition();
                     mModel.setCurrentScrolledItemPosition(itemPositionInSight);
-                }
-                if (!recyclerView.canScrollVertically(1) && newState==RecyclerView.SCROLL_STATE_IDLE) {
-                    mNewPostBtn.setVisibility(View.GONE);
-                }else{
-                    mNewPostBtn.setVisibility(View.VISIBLE);
+                    mFab.animate().alpha(1).setDuration(ANIMATION_DURATION);
+                }else if(newState == RecyclerView.SCROLL_STATE_DRAGGING){
+                    mFab.animate().alpha(0).setDuration(ANIMATION_DURATION);
                 }
             }
         });
         mRecyclerView.scrollToPosition(mModel.getCurrentScrolledItemPosition());
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if(mAdapter != null)
-            mAdapter.releasePlayers();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if(mAdapter != null)
-            mAdapter.pausePlayers();
-    }
 
     /**
      * Shows feedback to the user about the deletion of the post

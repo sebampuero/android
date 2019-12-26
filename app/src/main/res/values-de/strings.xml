@@ -141,6 +141,7 @@
     <string name="report_this_post">Diesen Post melden</string>
     <string name="undo">Rückganging machen</string>
     <string name="last_online">Last online</string>
+    <string name="see_user_goals">Ziele ansehen</string>
 
     <array name="notification_settings">
         <item>Alle Benachrichtigungen erlauben</item>

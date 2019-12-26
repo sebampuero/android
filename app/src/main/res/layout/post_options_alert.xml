@@ -7,7 +7,8 @@
     <TextView
         android:id="@+id/unsubscribe"
         android:visibility="gone"
-        android:layout_marginBottom="@dimen/margin_10_2"
+        android:layout_marginBottom="@dimen/margin_10"
+        android:layout_marginTop="@dimen/margin_10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/unsubscribe_from_post"
@@ -16,7 +17,8 @@
     <TextView
         android:id="@+id/deletePost"
         android:visibility="gone"
-        android:layout_marginBottom="@dimen/margin_10_2"
+        android:layout_marginBottom="@dimen/margin_10"
+        android:layout_marginTop="@dimen/margin_10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/delete_post_dialog_title"
@@ -24,7 +26,8 @@
 
     <TextView
         android:id="@+id/reportPost"
-        android:layout_marginBottom="@dimen/margin_10_2"
+        android:layout_marginBottom="@dimen/margin_10"
+        android:layout_marginTop="@dimen/margin_10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/report_this_post"

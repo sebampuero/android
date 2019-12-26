@@ -4,6 +4,7 @@ package com.example.tm18app.fragment;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
@@ -32,6 +33,7 @@ import com.squareup.picasso.Picasso;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,20 +45,10 @@ import java.util.List;
  * @version 1.0
  * @since 03.12.2019
  */
-public class ProfileFragment extends BasePostsContainerFragment{
+public class ProfileFragment extends BaseProfileFragment{
 
     private CurrentProfileViewModel mModel;
     private FragmentProfileBinding mBinding;
-    private RecyclerView mRecyclerView;
-    private PostItemAdapter mAdapter;
-    private List<Post> mPostsList = new ArrayList<>();
-    private ProgressBar mProgressBar;
-    private LinearLayout mNoPostsView;
-    private ImageView mProfilePicIW;
-    private TextView mNamesTV;
-    private TextView mEmailTV;
-    private TextView mGoalsTV;
-    private SwipeRefreshLayout mSwipe;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -84,11 +76,8 @@ public class ProfileFragment extends BasePostsContainerFragment{
     private void fillUserData() {
         String names = mPrefs
                 .getString(Constant.NAME,"") + " " + mPrefs.getString(Constant.LASTNAME, "");
-        String email = mPrefs.getString(Constant.EMAIL, "");
-        String goals = mPrefs.getString(Constant.GOAL_TAGS, "");
+        userGoals = mPrefs.getString(Constant.GOAL_TAGS, "").split(",");
         mNamesTV.setText(names);
-        mEmailTV.setText(email);
-        mGoalsTV.setText(goals);
     }
 
 
@@ -100,26 +89,17 @@ public class ProfileFragment extends BasePostsContainerFragment{
         mProfilePicIW = mBinding.profilePic;
         mProgressBar.setVisibility(View.VISIBLE); // show loading animation when posts are being loaded
         mNamesTV = mBinding.getRoot().findViewById(R.id.namesTv);
-        mEmailTV = mBinding.getRoot().findViewById(R.id.emailTv);
-        mGoalsTV = mBinding.getRoot().findViewById(R.id.goalsInfoTv);
         mSwipe = mBinding.getRoot().findViewById(R.id.swipeRefreshCurrentProfile);
-        mSwipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mModel.callRepositoryForPosts();
-            }
-        });
+        mSwipe.setOnRefreshListener(() -> mModel.callRepositoryForPosts());
+        mGoalsTvCall = mBinding.getRoot().findViewById(R.id.seeUserGoalsTv);
+        mGoalsTvCall.setOnClickListener(goalsInfoClickListener);
     }
 
     private PostItemAdapter.PostsEventsListener listener = new PostItemAdapter.PostsEventsListener() {
         @Override
         public void onPostDeleted(MutableLiveData<Integer> statusCode) {
-            statusCode.observe(ProfileFragment.this, new Observer<Integer>() {
-                @Override
-                public void onChanged(Integer statusCode) {
-                    handlePostDeletion(statusCode);
-                }
-            });
+            statusCode.observe(ProfileFragment.this, statusCode1
+                    -> handlePostDeletion(statusCode1));
         }
 
         @Override
@@ -138,10 +118,8 @@ public class ProfileFragment extends BasePostsContainerFragment{
         }
     };
 
-    /**
-     * Sets up the {@link RecyclerView} for the user's Posts list in the profile
-     */
-    private void setupRecyclerView() {
+    @Override
+    protected void setupRecyclerView() {
         mRecyclerView = mBinding.getRoot().findViewById(R.id.goalsUserRv);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layoutManager);
@@ -150,47 +128,30 @@ public class ProfileFragment extends BasePostsContainerFragment{
         mRecyclerView.setAdapter(mAdapter);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if(mAdapter != null)
-            mAdapter.releasePlayers();
-    }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        if(mAdapter != null)
-            mAdapter.pausePlayers();
-    }
-
-    /**
-     * Fetches the {@link List} of {@link Post} items from the server.
-     */
-    private void fetchData() {
-        mModel.getPostLiveData().observe(this, new Observer<List<Post>>() {
-            @Override
-            public void onChanged(List<Post> posts) {
-                if(posts != null){
-                    if(posts.size() > 0){
-                        mPostsList.clear();
-                        mPostsList.addAll(posts);
-                        Collections.sort(mPostsList);
-                        mAdapter.notifyDataSetChanged();
-                        mRecyclerView.setVisibility(View.VISIBLE);
-                    }else{
-                        mNoPostsView.setVisibility(View.VISIBLE);
-                        mRecyclerView.setVisibility(View.GONE);
-                    }
-                    mProgressBar.setVisibility(View.GONE);
+    protected void fetchData() {
+        mModel.getPostLiveData().observe(this, posts -> {
+            if(posts != null){
+                if(posts.size() > 0){
+                    mPostsList.clear();
+                    mPostsList.addAll(posts);
+                    Collections.sort(mPostsList);
+                    mAdapter.notifyDataSetChanged();
+                    mRecyclerView.setVisibility(View.VISIBLE);
+                }else{
+                    mNoPostsView.setVisibility(View.VISIBLE);
+                    mRecyclerView.setVisibility(View.GONE);
                 }
-                mSwipe.setRefreshing(false);
+                mProgressBar.setVisibility(View.GONE);
             }
+            mSwipe.setRefreshing(false);
         });
         setProfilePic();
     }
 
-    private void setProfilePic() {
+    @Override
+    protected void setProfilePic() {
         String imgUrl = mPrefs.getString(Constant.PROFILE_PIC_URL, null);
         if(imgUrl != null){
             Picasso.get()

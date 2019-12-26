@@ -60,9 +60,8 @@ public class ChatSocket {
 
         /**
          * Called when there was an error.
-         * @param error {@link String}
          */
-        void onError(String error);
+        void onError();
     }
 
     private Timer timer;
@@ -180,7 +179,7 @@ public class ChatSocket {
      * Attaches an error listener.
      */
     public void attachErrorListener() {
-        socket.on("onError", new ErrorListener());
+        socket.on("errorEvent", new ErrorListener());
     }
 
     public void attachLastOnlineListener() {
@@ -203,14 +202,11 @@ public class ChatSocket {
     class RoomCreationListener implements Emitter.Listener {
         @Override
         public void call(final Object... args) {
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    chatsModel.setRoomName(String.valueOf(args[0]));
-                    chatsModel.setRoomId(String.valueOf(args[1]));
-                    socketListener.onRoomReceived();
-                    startOnlineStatusBroadcaster(String.valueOf(args[0]));
-                }
+            activity.runOnUiThread(() -> {
+                chatsModel.setRoomName(String.valueOf(args[0]));
+                chatsModel.setRoomId(String.valueOf(args[1]));
+                socketListener.onRoomReceived();
+                startOnlineStatusBroadcaster(String.valueOf(args[0]));
             });
         }
     }
@@ -222,16 +218,13 @@ public class ChatSocket {
 
         @Override
         public void call(final Object... args) {
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    ChatMessage message = new ChatMessage();
-                    message.setRoomId((Integer) args[0]);
-                    message.setSenderId((Integer) args[1]);
-                    message.setText((String) args[2]);
-                    message.setTimestamp((Integer) args[3]);
-                    socketListener.onNewMessage(message);
-                }
+            activity.runOnUiThread(() -> {
+                ChatMessage message = new ChatMessage();
+                message.setRoomId((Integer) args[0]);
+                message.setSenderId((Integer) args[1]);
+                message.setText((String) args[2]);
+                message.setTimestamp((Integer) args[3]);
+                socketListener.onNewMessage(message);
             });
         }
     }
@@ -243,12 +236,7 @@ public class ChatSocket {
 
         @Override
         public void call(final Object... args) {
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    socketListener.onOtherOnlineStatus((Integer) args[0]);
-                }
-            });
+            activity.runOnUiThread(() -> socketListener.onOtherOnlineStatus((Integer) args[0]));
         }
     }
 
@@ -259,12 +247,7 @@ public class ChatSocket {
 
         @Override
         public void call(Object... args) {
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    socketListener.onOtherTyping();
-                }
-            });
+            activity.runOnUiThread(() -> socketListener.onOtherTyping());
         }
     }
 
@@ -275,12 +258,7 @@ public class ChatSocket {
 
         @Override
         public void call(final Object... args) {
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    socketListener.onError((String) args[0]);
-                }
-            });
+            activity.runOnUiThread(() -> socketListener.onError());
         }
     }
 
@@ -288,12 +266,7 @@ public class ChatSocket {
 
         @Override
         public void call(final Object... args) {
-            activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    socketListener.onOtherLastOnline((int) args[0]);
-                }
-            });
+            activity.runOnUiThread(() -> socketListener.onOtherLastOnline((int) args[0]));
         }
     }
 

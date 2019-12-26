@@ -5,10 +5,10 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginStart="3dp"
-        android:layout_marginEnd="3dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="3dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="2dp"
         app:cardCornerRadius="4dp"
         android:orientation="vertical"
         android:focusable="true"
@@ -18,12 +18,14 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="5dp"
             android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
                 android:orientation="horizontal">
 
                 <de.hdodenhof.circleimageview.CircleImageView
@@ -69,34 +71,56 @@
                 style="@style/CardView.Light"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="5dp"
+                android:layout_margin="5dp"
                 android:text="Title"
                 android:textSize="@dimen/text_size_18"
                 android:textStyle="bold" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:id="@+id/postMediaContent">
 
-                <ImageView
-                    android:id="@+id/contentImage"
+                <View
+                    android:id="@+id/separatorTop"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:background="@color/inAppBackgroundColor"
+                    android:layout_height="2dp"/>
 
-                <com.google.android.exoplayer2.ui.PlayerView
+                <RelativeLayout
+                    android:layout_below="@id/separatorTop"
                     android:layout_width="match_parent"
-                    android:visibility="gone"
-                    android:layout_height="@dimen/player_view_height"
-                    android:layout_marginBottom="@dimen/margin_10"
-                    android:id="@+id/videoPlayerPost"/>
-                <ProgressBar
-                    android:visibility="gone"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/progressBarVideo"/>
+                    android:id="@+id/mediaLayout">
+
+                    <ImageView
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:id="@+id/contentImage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <com.google.android.exoplayer2.ui.PlayerView
+                        android:layout_width="match_parent"
+                        android:visibility="gone"
+                        android:layout_height="@dimen/player_view_height"
+                        android:id="@+id/videoPlayerPost"/>
+                    <ProgressBar
+                        android:layout_centerVertical="true"
+                        android:layout_centerHorizontal="true"
+                        android:visibility="gone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/progressBarVideo"/>
+                </RelativeLayout>
+
+                <View
+                    android:layout_below="@id/mediaLayout"
+                    android:layout_width="match_parent"
+                    android:background="@color/inAppBackgroundColor"
+                    android:layout_height="2dp"/>
             </RelativeLayout>
 
             <TextView
@@ -106,6 +130,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
                 android:text="Content"
                 android:textSize="@dimen/text_size_15" />
 
@@ -115,21 +140,24 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
                 android:text="Goal tag" />
 
             <LinearLayout
                 android:id="@+id/commentSectionLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginTop="@dimen/margin_10"
+                android:layout_marginBottom="5dp"
                 android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/commentCountTv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"
+                    android:layout_marginEnd="5dp"
                     android:text="10"
                     android:textStyle="bold" />
 
