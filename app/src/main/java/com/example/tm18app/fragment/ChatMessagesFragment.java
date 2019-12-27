@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
@@ -40,6 +41,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -209,12 +211,21 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
         mModel.getMessagesLiveData().observe(this, chatMessages -> {
             if(chatMessages != null){
                 if(chatMessages.size() > 0){
+                    HashSet<ChatMessage> set = new HashSet<>(mChatMessagesList);
+                    set.addAll(chatMessages);
                     mChatMessagesList.clear();
-                    mChatMessagesList.addAll(chatMessages);
-                    Collections.sort(mChatMessagesList);
-                    mAdapter.notifyDataSetChanged();
-                    mRv.scrollToPosition(mAdapter.getItemCount() - 1); // scroll to bottom for
-                    // better UX
+                    if(!mModel.isPaginating()){
+                        mChatMessagesList.addAll(set);
+                        Collections.sort(mChatMessagesList);
+                        mAdapter.notifyDataSetChanged();
+                        mModel.setPaginating(false);
+                        mRv.scrollToPosition(mAdapter.getItemCount() - 1);
+                    }else{
+                        mChatMessagesList.addAll(0, set);
+                        Collections.sort(mChatMessagesList);
+                        mAdapter.notifyItemRangeInserted(0, chatMessages.size());
+                        mLoadingMessagesTv.setVisibility(View.GONE);
+                    }
                 }
             }
             mLoadingMessagesTv.setVisibility(View.GONE);
@@ -268,12 +279,28 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
     private void setupRecyclerView() {
         mRv = mBinding.chatMessagesRv;
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
-        manager.setStackFromEnd(true);
+        //manager.setStackFromEnd(true);
         mRv.setLayoutManager(manager);
         SharedPreferences prefs = getActivity().getSharedPreferences(Constant.USER_INFO,
                 Context.MODE_PRIVATE);
         mAdapter = new ChatMessagesAdapter(mChatMessagesList, prefs);
         mRv.setAdapter(mAdapter);
+        mRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if(newState == RecyclerView.SCROLL_STATE_IDLE && !recyclerView.canScrollVertically(-1)){
+                    loadMoreItems();
+                }
+            }
+
+            private void loadMoreItems() {
+                mModel.setPaginating(true);
+                mModel.setNumberPage(mModel.getNumberPage()+1);
+                mModel.callRepository();
+                mLoadingMessagesTv.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
 

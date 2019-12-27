@@ -68,6 +68,14 @@
                     android:id="@+id/postsLayout"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"/>
+
+                <ProgressBar
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:alpha="0"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/loadMoreItemsProgressBar"/>
             </RelativeLayout>
 
 

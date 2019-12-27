@@ -91,16 +91,13 @@ public class NewPostFragment extends BaseFragmentMediaSelector implements BaseFr
         setupViews();
         setSpinner();
         // Trigger loading button for new post
-        mModel.triggerLoadingBtn.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                Toast.makeText(getContext(),
-                        getResources().getString(R.string.uploading_post),
-                        Toast.LENGTH_LONG).show();
-                mPostBtn.startAnimation();
-                cleanInputs();
-                mMainModel.getNavController().navigateUp();
-            }
+        mModel.triggerLoadingBtn.observe(this, aBoolean -> {
+            Toast.makeText(getContext(),
+                    getResources().getString(R.string.uploading_post),
+                    Toast.LENGTH_LONG).show();
+            mPostBtn.startAnimation();
+            cleanInputs();
+            mMainModel.getNavController().navigateUp();
         });
         return mBinding.getRoot();
     }

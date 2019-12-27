@@ -1,7 +1,6 @@
 package com.example.tm18app.fragment;
 
 
-import android.annotation.SuppressLint;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,13 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -34,6 +33,7 @@ import com.google.android.material.snackbar.Snackbar;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 
@@ -46,13 +46,16 @@ import java.util.List;
  */
 public class FeedFragment extends BasePostsContainerFragment{
 
+    private final String TAG = getClass().getSimpleName();
+
     private final int ANIMATION_DURATION = 300;
 
     private FeedViewModel mModel;
     private FragmentFeedBinding mBinding;
     private ProgressBar mProgressBar;
+    private ProgressBar mLoadMoreItemsProgressBar;
     private boolean doGoalsExist = true;
-    private LinearLayout mNoPostsView;
+    private TextView mNoPostsView;
     private FloatingActionButton mFab;
 
     public FeedFragment() {
@@ -64,7 +67,7 @@ public class FeedFragment extends BasePostsContainerFragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         checkBackBtnPressedFromMainFragment();
-        mModel = ViewModelProviders.of(getActivity()).get(FeedViewModel.class);
+        mModel = ViewModelProviders.of(this).get(FeedViewModel.class);
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_feed, container, false);
         mBinding.setMyVM(mModel);
         mBinding.setLifecycleOwner(this);
@@ -75,6 +78,7 @@ public class FeedFragment extends BasePostsContainerFragment{
         mModel.setContext(getContext());
         checkIfGoalsExist();
         if(doGoalsExist){ // if user has selected goals, fetch posts
+            mModel.setPageNumber(0);
             mModel.callRepository();
             fetchData();
         }else{
@@ -87,9 +91,10 @@ public class FeedFragment extends BasePostsContainerFragment{
     protected void setupViews() {
         super.setupViews();
         mProgressBar = mBinding.progressBarFeed;
-        mNoPostsView = mBinding.feedLinearLayout;
+        mNoPostsView = mBinding.noPostsTv;
         mProgressBar.setVisibility(View.VISIBLE); // to show that posts are loading
         mFab = mBinding.newPostFab;
+        mLoadMoreItemsProgressBar = mBinding.loadMoreItemsProgressBar;
     }
 
     /**
@@ -124,6 +129,7 @@ public class FeedFragment extends BasePostsContainerFragment{
         mSwipe = mBinding.swipeRefreshLayout;
         mSwipe.setOnRefreshListener(() -> {
             if(mModel.getPostLiveData() != null && doGoalsExist){
+                mModel.setPageNumber(0);
                 mModel.callRepository();
                 mAdapter.releasePlayers();
             }else{
@@ -137,28 +143,30 @@ public class FeedFragment extends BasePostsContainerFragment{
      * a {@link List} of Posts
      */
     private void fetchData() {
-        if(mModel.getPostLiveData() != null){
-            mModel.getPostLiveData().observe(this, posts -> {
-                if(posts.size() > 0){
-                    if(doGoalsExist){
-                        mPostsList.clear();
-                        mPostsList.addAll(posts);
-                        Collections.sort(mPostsList);
-                        mAdapter.notifyDataSetChanged();
-                        mNoPostsView.setVisibility(View.GONE);
-                        mRecyclerView.setVisibility(View.VISIBLE);
-                    }
-                }else{
+        mModel.getPostLiveData().observe(this, posts -> {
+            if(posts.size() > 0){
+                if(doGoalsExist){
+                    mModel.setHasResultsOnPreviousPages(true);
+                    HashSet<Post> postsSet = new HashSet<>(mPostsList);
+                    postsSet.addAll(posts);
+                    mPostsList.clear();
+                    mPostsList.addAll(postsSet);
+                    Collections.sort(mPostsList);
+                    mAdapter.notifyDataSetChanged();
+                    mNoPostsView.setVisibility(View.GONE);
+                    mRecyclerView.setVisibility(View.VISIBLE);
+                    mLoadMoreItemsProgressBar.animate().alpha(0).setDuration(200);
+                }
+            }else{
+                if(!mModel.hasResultsOnPreviousPages()){
                     mNoPostsView.setVisibility(View.VISIBLE);
                     mRecyclerView.setVisibility(View.GONE);
                 }
-                mProgressBar.setVisibility(View.GONE);
-                mSwipe.setRefreshing(false);
-            });
-        }else{
+                mLoadMoreItemsProgressBar.animate().alpha(0).setDuration(200);
+            }
             mProgressBar.setVisibility(View.GONE);
             mSwipe.setRefreshing(false);
-        }
+        });
     }
 
     private PostItemAdapter.PostsEventsListener listener = new PostItemAdapter.PostsEventsListener() {
@@ -195,21 +203,8 @@ public class FeedFragment extends BasePostsContainerFragment{
         mAdapter = new PostItemAdapter((ArrayList<Post>) mPostsList,
                 mMainModel.getNavController(), getContext(), listener);
         mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @SuppressLint("RestrictedApi")
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if(newState == RecyclerView.SCROLL_STATE_IDLE){
-                    int itemPositionInSight = ((LinearLayoutManager)mRecyclerView
-                            .getLayoutManager()).findFirstCompletelyVisibleItemPosition();
-                    mModel.setCurrentScrolledItemPosition(itemPositionInSight);
-                    mFab.animate().alpha(1).setDuration(ANIMATION_DURATION);
-                }else if(newState == RecyclerView.SCROLL_STATE_DRAGGING){
-                    mFab.animate().alpha(0).setDuration(ANIMATION_DURATION);
-                }
-            }
-        });
+        mRecyclerView.addOnScrollListener(
+                new CustomFeedScrollListener((LinearLayoutManager)mRecyclerView.getLayoutManager()));
         mRecyclerView.scrollToPosition(mModel.getCurrentScrolledItemPosition());
     }
 
@@ -221,6 +216,32 @@ public class FeedFragment extends BasePostsContainerFragment{
     private void handlePostDeletion(Integer statusCode) {
         if(statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR)
             Toast.makeText(getContext(), getContext().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
+    }
+
+    class CustomFeedScrollListener extends CustomScrollListener{
+
+        CustomFeedScrollListener(LinearLayoutManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+            if(newState == RecyclerView.SCROLL_STATE_IDLE){
+                int itemPositionInSight = layoutManager.findFirstCompletelyVisibleItemPosition();
+                mModel.setCurrentScrolledItemPosition(itemPositionInSight);
+                mFab.animate().alpha(1).setDuration(ANIMATION_DURATION);
+            }else if(newState == RecyclerView.SCROLL_STATE_DRAGGING){
+                mFab.animate().alpha(0).setDuration(ANIMATION_DURATION);
+            }
+        }
+
+        @Override
+        void loadMoreItems() {
+            mModel.setPageNumber(mModel.getPageNumber()+1);
+            mModel.callRepository();
+            mLoadMoreItemsProgressBar.animate().alpha(1).setDuration(200);
+        }
     }
 
 }

@@ -25,8 +25,8 @@ public interface ChatsRestInterface {
     Call<List<ChatRoom>> getRoomsByUserId(@Path("userId") String userId,
                                           @Header("pushy") String pushyToken);
 
-    @GET("api/chats/{roomId}")
-    Call<List<ChatMessage>> getChatMessagesByRoomId(@Path("roomId") String roomId,
+    @GET("api/chats/{roomId}/{page}")
+    Call<List<ChatMessage>> getChatMessagesByRoomId(@Path("roomId") String roomId, @Path("page") String page,
                                                     @Header("pushy") String pushyToken);
 
     @DELETE("api/chats/{roomId}")

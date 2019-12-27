@@ -5,11 +5,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -33,19 +31,14 @@ import com.example.tm18app.network.NetworkConnectivity;
 import com.example.tm18app.model.Post;
 import com.example.tm18app.repository.PostItemRepository;
 import com.example.tm18app.util.TimeUtils;
-import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
-import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
-import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
@@ -70,7 +63,11 @@ import java.util.HashMap;
  * @version 1.0
  * @since 03.12.2019
  */
-public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyViewHolder> {
+public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemViewHolder> {
+
+    private static final int LOADING = 0;
+    private static final int ITEM = 1;
+
     private ArrayList<Post> mPostsList;
     private NavController mNavController;
     private Context mContext;
@@ -117,14 +114,14 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
 
     @NonNull
     @Override
-    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         PostCardviewBinding itemBinding = PostCardviewBinding.inflate(layoutInflater, parent, false);
-        return new MyViewHolder(itemBinding);
+        return new ItemViewHolder(itemBinding);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         final Post post = mPostsList.get(position);
         holder.onBind(post);
     }
@@ -160,11 +157,10 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
             }
     }
 
-
     /**
      * Custom {@link androidx.recyclerview.widget.RecyclerView.ViewHolder} subclass.
      */
-    class MyViewHolder extends RecyclerView.ViewHolder{
+    class ItemViewHolder extends RecyclerView.ViewHolder{
 
         TextView nameLastname;
         TextView postTitle;
@@ -176,11 +172,12 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
         ImageView posterProfilePic;
         ImageView contentImage;
         ImageView moreVertOptions;
+        ImageView playBtnView;
         ProgressBar progressBarVideo;
         PlayerView surfaceView;
         RelativeLayout postMediaContent;
 
-        MyViewHolder(final PostCardviewBinding binding) {
+        ItemViewHolder(final PostCardviewBinding binding) {
             super(binding.getRoot());
 
             nameLastname = binding.nameLastnameCardviewTv;
@@ -196,6 +193,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
             progressBarVideo = binding.progressBarVideo;
             surfaceView = binding.videoPlayerPost;
             postMediaContent = binding.postMediaContent;
+            playBtnView = binding.playBtnView;
         }
 
 
@@ -234,13 +232,16 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
                 postMediaContent.setVisibility(View.VISIBLE);
                 contentImage.setVisibility(View.VISIBLE);
                 surfaceView.setVisibility(View.VISIBLE);
+                playBtnView.setVisibility(View.VISIBLE);
             }else{
                 contentImage.setVisibility(View.GONE);
                 surfaceView.setVisibility(View.GONE);
                 postMediaContent.setVisibility(View.GONE);
+                playBtnView.setVisibility(View.GONE);
             }
 
             if(post.getContentPicUrl() != null){
+                playBtnView.setVisibility(View.GONE);
                 surfaceView.setVisibility(View.GONE);
                 String imgUrl =  NetworkConnectivity
                         .tweakImgQualityByNetworkType(mContext,
@@ -254,7 +255,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
             if(post.getContentVideoUrl() != null){
                 surfaceView.setVisibility(View.GONE);
                 Picasso.get()
-                        .load(R.drawable.thumbnail_video)
+                        .load(post.getContentVideoThumbnailUrl())
                         .into(contentImage);
                 contentImage.setOnClickListener(new VideoThumbnailClickListener());
             }
@@ -316,6 +317,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
             @Override
             public void onClick(View view) {
                 surfaceView.setVisibility(View.VISIBLE);
+                playBtnView.setVisibility(View.GONE);
                 //Init video player params
                 BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
                 TrackSelection.Factory videoTrackSelectionFactory =
@@ -394,47 +396,38 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
                 dialog.setView(dialogLayout);
                 dialog.show();
                 dialog.setCancelable(true);
-                dialogLayout.findViewById(R.id.reportPost).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Toast.makeText(mContext,
-                                "Not yet implemented!", Toast.LENGTH_SHORT).show();
-                        dialog.dismiss();
-                    }
+                dialogLayout.findViewById(R.id.reportPost).setOnClickListener(view13 -> {
+                    Toast.makeText(mContext,
+                            "Not yet implemented!", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
                 });
                 if(subscriberIds != null){
                     if(subscriberIds.indexOf(String.valueOf(userID)) >= 0) {
                         dialogLayout.findViewById(R.id.unsubscribe).setVisibility(View.VISIBLE);
-                        dialogLayout.findViewById(R.id.unsubscribe).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                PostItemRepository repository = new PostItemRepository();
-                                repository.deleteSubscription(
-                                        String.valueOf(userID),
-                                        String.valueOf(post.getId()),
-                                        mPrefs.getString(Constant.PUSHY_TOKEN, ""));
-                                Toast.makeText(
-                                        mContext,
-                                        mContext.getResources().getString(R.string.unsubcribed_from_post),
-                                        Toast.LENGTH_SHORT).show();
-                                dialog.dismiss();
-                            }
+                        dialogLayout.findViewById(R.id.unsubscribe).setOnClickListener(view12 -> {
+                            PostItemRepository repository = new PostItemRepository();
+                            repository.deleteSubscription(
+                                    String.valueOf(userID),
+                                    String.valueOf(post.getId()),
+                                    mPrefs.getString(Constant.PUSHY_TOKEN, ""));
+                            Toast.makeText(
+                                    mContext,
+                                    mContext.getResources().getString(R.string.unsubcribed_from_post),
+                                    Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
                         });
                     }
                 }
                 if(post.getUserID() == userID){
                     dialogLayout.findViewById(R.id.deletePost).setVisibility(View.VISIBLE);
-                    dialogLayout.findViewById(R.id.deletePost).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            pausePlayers();
-                            recentlyDeletedPost = mPostsList.get(getAdapterPosition());
-                            recentlyDeletedPostPosition = getAdapterPosition();
-                            mPostsList.remove(getAdapterPosition());
-                            notifyItemRemoved(getAdapterPosition());
-                            dialog.dismiss();
-                            showUndoSnackbar();
-                        }
+                    dialogLayout.findViewById(R.id.deletePost).setOnClickListener(view1 -> {
+                        pausePlayers();
+                        recentlyDeletedPost = mPostsList.get(getAdapterPosition());
+                        recentlyDeletedPostPosition = getAdapterPosition();
+                        mPostsList.remove(getAdapterPosition());
+                        notifyItemRemoved(getAdapterPosition());
+                        dialog.dismiss();
+                        showUndoSnackbar();
                     });
                 }
             }
@@ -447,12 +440,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.MyView
                 View view = ((Activity)mContext).findViewById(android.R.id.content);
                 Snackbar snackbar = Snackbar.make(view, mContext.getResources().getString(R.string.post_deleted_msg), Snackbar.LENGTH_LONG);
                 snackbar.show();
-                snackbar.setAction(mContext.getResources().getString(R.string.undo), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        undoDelete();
-                    }
-                });
+                snackbar.setAction(mContext.getResources().getString(R.string.undo), view1 -> undoDelete());
                 snackbar.addCallback(new Snackbar.Callback() {
                     @Override
                     public void onDismissed(Snackbar transientBottomBar, int event) {

@@ -51,9 +51,9 @@ public class PostItemRepository {
      * @param goalIds {@link Integer} the goalId for the corresponding posts
      * @return {@link LiveData} containing the {@link List} of {@link Post} items
      */
-    public LiveData<List<Post>> getPosts(List<String> goalIds, String pushyToken) {
+    public LiveData<List<Post>> getPosts(List<String> goalIds, String pushyToken, String page) {
         final MutableLiveData<List<Post>> data = new MutableLiveData<>();
-        postRestInterface.getPostsWithGoals(goalIds, pushyToken).enqueue(new Callback<List<Post>>() {
+        postRestInterface.getPostsWithGoals(page, goalIds, pushyToken).enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                 if(response.body() != null){
@@ -74,9 +74,9 @@ public class PostItemRepository {
      * @param userId {@link Integer} the userId
      * @return {@link LiveData} containing the {@link List} of {@link com.example.tm18app.model.User} items
      */
-    public LiveData<List<Post>> getUserPosts(String userId, String pushyToken) {
+    public LiveData<List<Post>> getUserPosts(String userId, String pushyToken, String page) {
         final MutableLiveData<List<Post>> data = new MutableLiveData<>();
-        postRestInterface.getPostsByUserId(userId, pushyToken).enqueue(new Callback<List<Post>>() {
+        postRestInterface.getPostsByUserId(userId, pushyToken, page).enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                 if(response.body() != null){

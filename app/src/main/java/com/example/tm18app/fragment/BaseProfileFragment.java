@@ -26,6 +26,7 @@ public abstract class BaseProfileFragment extends BasePostsContainerFragment {
     protected TextView mNamesTV;
     protected TextView mGoalsTvCall;
     protected String[] userGoals;
+    protected ProgressBar mLoadMoreItemsProgressBar;
 
     protected View.OnClickListener goalsInfoClickListener = new View.OnClickListener() {
 

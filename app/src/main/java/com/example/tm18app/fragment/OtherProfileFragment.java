@@ -40,6 +40,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -48,6 +49,7 @@ import java.util.List;
 public class OtherProfileFragment extends BaseProfileFragment {
 
     public static final String OTHER_USER_ID = "otherUserID";
+    private final String TAG = getClass().getSimpleName();
 
     private OtherUserProfileViewModel mModel;
     private FragmentOtherProfileBinding mBinding;
@@ -67,6 +69,7 @@ public class OtherProfileFragment extends BaseProfileFragment {
         mBinding.setLifecycleOwner(this);
         setupViews();
         mModel.setPreferences(mPrefs);
+        mModel.setPageNumber(0);
         mModel.callRepositoryForUser(getArguments().getString(OTHER_USER_ID));
         mModel.getUserLiveData().observe(this, user -> {
             ((MainActivity)getActivity()).getToolbar().setTitle(user.getName());
@@ -85,14 +88,21 @@ public class OtherProfileFragment extends BaseProfileFragment {
         mModel.getPostLiveData().observe(this, posts -> {
             if(posts != null){
                 if(posts.size() > 0){
+                    mModel.setHasResultsOnPreviousPages(true);
+                    HashSet<Post> postsSet = new HashSet<>(mPostsList);
+                    postsSet.addAll(posts);
                     mPostsList.clear();
-                    mPostsList.addAll(posts);
+                    mPostsList.addAll(postsSet);
                     Collections.sort(mPostsList);
                     mAdapter.notifyDataSetChanged();
                     mRecyclerView.setVisibility(View.VISIBLE);
+                    mLoadMoreItemsProgressBar.animate().alpha(0).setDuration(200);
                 }else{
-                    mNoPostsView.setVisibility(View.VISIBLE);
-                    mRecyclerView.setVisibility(View.GONE);
+                    if(!mModel.hasResultsOnPreviousPages()){
+                        mNoPostsView.setVisibility(View.VISIBLE);
+                        mRecyclerView.setVisibility(View.GONE);
+                    }
+                    mLoadMoreItemsProgressBar.animate().alpha(0).setDuration(200);
                 }
                 mProgressBar.setVisibility(View.GONE);
             }
@@ -121,9 +131,13 @@ public class OtherProfileFragment extends BaseProfileFragment {
         mProgressBar.setVisibility(View.VISIBLE); // show loading animation when posts are being loaded
         mNamesTV = mBinding.getRoot().findViewById(R.id.namesTv);
         mSwipe = mBinding.getRoot().findViewById(R.id.swipeRefreshOtherProfile);
-        mSwipe.setOnRefreshListener(() -> mModel.callRepositoryForPosts());
+        mSwipe.setOnRefreshListener(() -> {
+            mModel.setPageNumber(0);
+            mModel.callRepositoryForPosts();
+        });
         mGoalsTvCall = mBinding.getRoot().findViewById(R.id.seeUserGoalsTv);
         mGoalsTvCall.setOnClickListener(goalsInfoClickListener);
+        mLoadMoreItemsProgressBar = mBinding.loadMoreItemsProgressBar;
     }
 
     private void fillUserData() {
@@ -163,6 +177,14 @@ public class OtherProfileFragment extends BaseProfileFragment {
         mAdapter = new PostItemAdapter((ArrayList<Post>) mPostsList,
                 mMainModel.getNavController(), getContext(), listener);
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.addOnScrollListener(new CustomScrollListener((LinearLayoutManager)mRecyclerView.getLayoutManager()) {
+            @Override
+            void loadMoreItems() {
+                mModel.setPageNumber(mModel.getPageNumber()+1);
+                mModel.callRepositoryForPosts();
+                mLoadMoreItemsProgressBar.animate().alpha(1).setDuration(200);
+            }
+        });
     }
 
 }

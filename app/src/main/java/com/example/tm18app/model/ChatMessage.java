@@ -1,5 +1,7 @@
 package com.example.tm18app.model;
 
+import androidx.annotation.Nullable;
+
 public class ChatMessage implements Comparable<ChatMessage>{
 
     private int chatId;
@@ -65,5 +67,20 @@ public class ChatMessage implements Comparable<ChatMessage>{
     @Override
     public int compareTo(ChatMessage chatMessage) {
         return (int) (this.getTimestamp() - chatMessage.getTimestamp());
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj == null) return false;
+        if (!(obj instanceof ChatMessage))
+            return false;
+        if (obj == this)
+            return true;
+        return this.getChatId() == ((ChatMessage) obj).getChatId();
+    }
+
+    @Override
+    public int hashCode() {
+        return chatId;
     }
 }

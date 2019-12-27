@@ -27,6 +27,8 @@ import java.util.List;
  */
 public class FeedViewModel extends ViewModel {
 
+    private int pageNumber;
+    private boolean hasResultsOnPreviousPages;
     private NavController navController;
     private Context appContext;
     private int currentScrolledItemPosition;
@@ -47,7 +49,7 @@ public class FeedViewModel extends ViewModel {
             if(preferences.getString(Constant.GOAL_IDS, null) != null){
                 String[] goalIds = preferences.getString(Constant.GOAL_IDS, null).split(",");
                 return postItemRepository.getPosts(Arrays.asList(goalIds),
-                        preferences.getString(Constant.PUSHY_TOKEN, ""));
+                        preferences.getString(Constant.PUSHY_TOKEN, ""), String.valueOf(pageNumber));
             }
             return null;
         }
@@ -98,5 +100,21 @@ public class FeedViewModel extends ViewModel {
 
     public void setCurrentScrolledItemPosition(int currentScrolledItemPosition) {
         this.currentScrolledItemPosition = currentScrolledItemPosition;
+    }
+
+    public int getPageNumber() {
+        return pageNumber;
+    }
+
+    public void setPageNumber(int pageNumber) {
+        this.pageNumber = pageNumber;
+    }
+
+    public boolean hasResultsOnPreviousPages() {
+        return hasResultsOnPreviousPages;
+    }
+
+    public void setHasResultsOnPreviousPages(boolean hasResultsOnPreviousPages) {
+        this.hasResultsOnPreviousPages = hasResultsOnPreviousPages;
     }
 }

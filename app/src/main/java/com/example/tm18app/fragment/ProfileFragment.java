@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,7 @@ import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 
@@ -46,6 +48,8 @@ import java.util.List;
  * @since 03.12.2019
  */
 public class ProfileFragment extends BaseProfileFragment{
+
+    private final String TAG = getClass().getSimpleName();
 
     private CurrentProfileViewModel mModel;
     private FragmentProfileBinding mBinding;
@@ -67,6 +71,7 @@ public class ProfileFragment extends BaseProfileFragment{
         mModel.setNavController(mMainModel.getNavController());
         mModel.setUserId(String.valueOf(mPrefs.getInt(Constant.USER_ID, 0)));
         mModel.setPreferences(mPrefs);
+        mModel.setPageNumber(0);
         mModel.callRepositoryForPosts();
         setupRecyclerView();
         fetchData();
@@ -90,9 +95,13 @@ public class ProfileFragment extends BaseProfileFragment{
         mProgressBar.setVisibility(View.VISIBLE); // show loading animation when posts are being loaded
         mNamesTV = mBinding.getRoot().findViewById(R.id.namesTv);
         mSwipe = mBinding.getRoot().findViewById(R.id.swipeRefreshCurrentProfile);
-        mSwipe.setOnRefreshListener(() -> mModel.callRepositoryForPosts());
+        mSwipe.setOnRefreshListener(() -> {
+            mModel.setPageNumber(0);
+            mModel.callRepositoryForPosts();
+        });
         mGoalsTvCall = mBinding.getRoot().findViewById(R.id.seeUserGoalsTv);
         mGoalsTvCall.setOnClickListener(goalsInfoClickListener);
+        mLoadMoreItemsProgressBar = mBinding.loadMoreItemsProgressBar;
     }
 
     private PostItemAdapter.PostsEventsListener listener = new PostItemAdapter.PostsEventsListener() {
@@ -126,6 +135,14 @@ public class ProfileFragment extends BaseProfileFragment{
         mAdapter = new PostItemAdapter((ArrayList<Post>) mPostsList,
                 mMainModel.getNavController(), getContext(), listener);
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.addOnScrollListener(new CustomScrollListener((LinearLayoutManager)mRecyclerView.getLayoutManager()) {
+            @Override
+            void loadMoreItems() {
+                mModel.setPageNumber(mModel.getPageNumber()+1);
+                mModel.callRepositoryForPosts();
+                mLoadMoreItemsProgressBar.animate().alpha(1).setDuration(200);
+            }
+        });
     }
 
 
@@ -134,14 +151,22 @@ public class ProfileFragment extends BaseProfileFragment{
         mModel.getPostLiveData().observe(this, posts -> {
             if(posts != null){
                 if(posts.size() > 0){
+                    mModel.setHasResultsOnPreviousPages(true);
+                    HashSet<Post> postsSet = new HashSet<>(mPostsList);
+                    postsSet.addAll(posts);
                     mPostsList.clear();
-                    mPostsList.addAll(posts);
+                    mPostsList.addAll(postsSet);
                     Collections.sort(mPostsList);
                     mAdapter.notifyDataSetChanged();
+                    mAdapter.notifyDataSetChanged();
                     mRecyclerView.setVisibility(View.VISIBLE);
+                    mLoadMoreItemsProgressBar.animate().alpha(0).setDuration(200);
                 }else{
-                    mNoPostsView.setVisibility(View.VISIBLE);
-                    mRecyclerView.setVisibility(View.GONE);
+                    if(!mModel.hasResultsOnPreviousPages()){
+                        mNoPostsView.setVisibility(View.VISIBLE);
+                        mRecyclerView.setVisibility(View.GONE);
+                    }
+                    mLoadMoreItemsProgressBar.animate().alpha(0).setDuration(200);
                 }
                 mProgressBar.setVisibility(View.GONE);
             }

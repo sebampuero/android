@@ -27,12 +27,12 @@ public interface PostRestInterface {
     Call<Void> newPost(@Body Post post,
                        @Header("pushy") String pushyToken);
 
-    @POST("api/posts/goals")
-    Call<List<Post>> getPostsWithGoals(@Body List<String> goals,
+    @POST("api/posts/goals/{page}")
+    Call<List<Post>> getPostsWithGoals(@Path("page") String page, @Body List<String> goals,
                                        @Header("pushy") String pushyToken);
 
-    @GET("api/posts/user/{userId}")
-    Call<List<Post>> getPostsByUserId(@Path("userId") String userId,
+    @GET("api/posts/user/{userId}/{page}")
+    Call<List<Post>> getPostsByUserId(@Path("userId") String userId, @Path("page") String page,
                                       @Header("pushy") String pushyToken);
 
     @POST("api/posts/comment")

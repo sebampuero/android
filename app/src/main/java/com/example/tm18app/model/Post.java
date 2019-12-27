@@ -3,6 +3,8 @@ package com.example.tm18app.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.Nullable;
+
 /**
  * Model that holds data of a Post
  *
@@ -217,6 +219,21 @@ public class Post implements Comparable<Post> {
                 ", contentVideoURI='" + contentVideoURI + '\'' +
                 ", contentImageURI='" + contentImageURI + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj == null) return false;
+        if (!(obj instanceof Post))
+            return false;
+        if (obj == this)
+            return true;
+        return this.getId() == ((Post) obj).getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
     }
 
     @Override

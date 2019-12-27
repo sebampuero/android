@@ -26,7 +26,8 @@ public class ChatMessagesViewModel extends ViewModel {
     private String toId;
     private String toName;
     private String profilePic;
-    private long lastOnline;
+    private int numberPage;
+    private boolean isPaginating;
 
     private SharedPreferences prefs;
     private ChatSocket socket;
@@ -34,7 +35,8 @@ public class ChatMessagesViewModel extends ViewModel {
         @Override
         public LiveData<List<ChatMessage>> apply(Boolean input) {
             ChatsRepository repository = new ChatsRepository();
-            return repository.getChatsForRoom(roomId, prefs.getString(Constant.PUSHY_TOKEN, ""));
+            return repository.getChatsForRoom(roomId,
+                    String.valueOf(numberPage), prefs.getString(Constant.PUSHY_TOKEN, ""));
         }
     });
 
@@ -105,11 +107,19 @@ public class ChatMessagesViewModel extends ViewModel {
         this.profilePic = profilePic;
     }
 
-    public long getLastOnline() {
-        return lastOnline;
+    public int getNumberPage() {
+        return numberPage;
     }
 
-    public void setLastOnline(long lastOnline) {
-        this.lastOnline = lastOnline;
+    public void setNumberPage(int numberPage) {
+        this.numberPage = numberPage;
+    }
+
+    public boolean isPaginating() {
+        return isPaginating;
+    }
+
+    public void setPaginating(boolean paginating) {
+        isPaginating = paginating;
     }
 }

@@ -28,14 +28,16 @@ import java.util.List;
 public abstract class ProfileViewModel extends ViewModel {
 
     protected String userId;
+    private boolean hasResultsOnPreviousPages;
     protected SharedPreferences prefs;
+    protected int pageNumber;
 
     protected MutableLiveData<Boolean> reloadTrigger = new MutableLiveData<>();
     protected LiveData<List<Post>> postLiveData = Transformations.switchMap(reloadTrigger, new Function<Boolean, LiveData<List<Post>>>() {
         @Override
         public LiveData<List<Post>> apply(Boolean input) {
             PostItemRepository postItemRepository = new PostItemRepository();
-            return postItemRepository.getUserPosts(userId,
+            return postItemRepository.getUserPosts(userId, String.valueOf(pageNumber),
                     prefs.getString(Constant.PUSHY_TOKEN, ""));
         }
     });
@@ -63,5 +65,20 @@ public abstract class ProfileViewModel extends ViewModel {
         this.prefs = prefs;
     }
 
+    public int getPageNumber() {
+        return pageNumber;
+    }
+
+    public void setPageNumber(int pageNumber) {
+        this.pageNumber = pageNumber;
+    }
+
+    public boolean hasResultsOnPreviousPages() {
+        return hasResultsOnPreviousPages;
+    }
+
+    public void setHasResultsOnPreviousPages(boolean hasResultsOnPreviousPages) {
+        this.hasResultsOnPreviousPages = hasResultsOnPreviousPages;
+    }
 }
 

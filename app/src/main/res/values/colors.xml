@@ -19,4 +19,8 @@
     <color name="tab_indicator_gray">#c0c0c0</color>
     <color name="intro_title_color">#000000</color>
     <color name="intro_description_color">#656565</color>
+
+    <!-- chat -->
+    <color name="me_color">#7dd3e8</color>
+    <color name="other_color">#e3e3e3</color>
 </resources>

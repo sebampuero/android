@@ -102,6 +102,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
 
+                    <ImageView
+                        android:id="@+id/playBtnView"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:src="@drawable/thumbnail_video"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:alpha="0.8"/>
+
                     <com.google.android.exoplayer2.ui.PlayerView
                         android:layout_width="match_parent"
                         android:visibility="gone"

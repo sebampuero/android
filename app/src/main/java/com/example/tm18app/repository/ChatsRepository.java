@@ -40,9 +40,9 @@ public class ChatsRepository {
         return data;
     }
 
-    public LiveData<List<ChatMessage>> getChatsForRoom(String roomId, String pushyToken) {
+    public LiveData<List<ChatMessage>> getChatsForRoom(String roomId, String pushyToken, String page) {
         final MutableLiveData<List<ChatMessage>> data = new MutableLiveData<>();
-        chatsRestInterface.getChatMessagesByRoomId(roomId, pushyToken).enqueue(new Callback<List<ChatMessage>>() {
+        chatsRestInterface.getChatMessagesByRoomId(roomId, pushyToken, page).enqueue(new Callback<List<ChatMessage>>() {
             @Override
             public void onResponse(Call<List<ChatMessage>> call, Response<List<ChatMessage>> response) {
                 data.setValue(response.body());
