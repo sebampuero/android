@@ -67,7 +67,7 @@ public class FeedFragment extends BasePostsContainerFragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         checkBackBtnPressedFromMainFragment();
-        mModel = ViewModelProviders.of(this).get(FeedViewModel.class);
+        mModel = ViewModelProviders.of(getActivity()).get(FeedViewModel.class);
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_feed, container, false);
         mBinding.setMyVM(mModel);
         mBinding.setLifecycleOwner(this);
@@ -114,7 +114,8 @@ public class FeedFragment extends BasePostsContainerFragment{
      */
     private void checkIfGoalsExist() {
         if(mPrefs.getString(Constant.GOAL_TAGS, null) == null){
-            Snackbar.make(mBinding.getRoot(), getActivity().getString(R.string.no_goals_msg), Snackbar.LENGTH_LONG).show();
+            Snackbar.make(mBinding.getRoot(), getActivity().getString(R.string.no_goals_msg),
+                    Snackbar.LENGTH_LONG).show();
             mNoPostsView.setVisibility(View.VISIBLE);
             mRecyclerView.setVisibility(View.GONE);
             mPostsList.clear();

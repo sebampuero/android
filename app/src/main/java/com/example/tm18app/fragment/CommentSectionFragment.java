@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 
 import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
@@ -46,6 +47,7 @@ public class CommentSectionFragment extends BaseFragment {
     private CommentsAdapter mAdapter;
     private List<Comment> mCommentsList = new ArrayList<>();
     private EditText mCommentInputEditText;
+    private ProgressBar mProgressBar;
     private String mPostID;
 
     public CommentSectionFragment() {
@@ -72,6 +74,7 @@ public class CommentSectionFragment extends BaseFragment {
     protected void setupViews() {
         super.setupViews();
         mCommentInputEditText = mBinding.commentInputField;
+        mProgressBar = mBinding.progressBarComments;
     }
 
     /**
@@ -79,17 +82,14 @@ public class CommentSectionFragment extends BaseFragment {
      * of comments. When changes occur, they appear on screen.
      */
     private void fetchData() {
-        mModel.getCommentLiveData().observe(this, new Observer<List<Comment>>() {
-            @Override
-            public void onChanged(List<Comment> comments) {
-                if(comments != null){
-                    mCommentsList.clear();
-                    mCommentsList.addAll(comments);
-                    // sort comments by creation date
-                    Collections.sort(mCommentsList);
-                    mAdapter.notifyDataSetChanged();
-                    mCommentInputEditText.setText("");
-                }
+        mModel.getCommentLiveData().observe(this, comments -> {
+            if(comments != null){
+                mCommentsList.clear();
+                mCommentsList.addAll(comments);
+                Collections.sort(mCommentsList);
+                mAdapter.notifyDataSetChanged();
+                mCommentInputEditText.setText("");
+                mProgressBar.setVisibility(View.GONE);
             }
         });
     }
