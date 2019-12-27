@@ -4,6 +4,13 @@ import androidx.navigation.NavController;
 
 import com.example.tm18app.R;
 
+/**
+ * {@link androidx.lifecycle.ViewModel} class for the logged in user profile UI
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public class CurrentProfileViewModel extends ProfileViewModel {
 
     private NavController navController;

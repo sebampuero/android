@@ -31,7 +31,8 @@ import me.pushy.sdk.Pushy;
 public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private final static String TAG = SettingsFragment.class.getName();
-    public final static String SETTINGS_SHARED_PREFERENCES_FILE_NAME = TAG + ".SETTINGS_SHARED_PREFERENCES_FILE_NAME";
+    public final static String SETTINGS_SHARED_PREFERENCES_FILE_NAME = TAG +
+            ".SETTINGS_SHARED_PREFERENCES_FILE_NAME";
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -44,38 +45,32 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         setPreferencesFromResource(R.xml.settings_pref, rootKey);
         setupViews();
         Preference button = findPreference("logout");
-        button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getContext());
-                alertBuilder.setCancelable(true);
-                alertBuilder.setTitle(getContext().getString(R.string.log_out_alert_title));
-                alertBuilder.setMessage(getContext().getString(R.string.log_out_conf_message));
-                alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int which) {
-                        SharedPreferences preferences = getContext().
-                                getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
-                        SharedPreferences.Editor e = preferences.edit();
-                        e.clear().apply(); // clear SharedPreferences info
-                        Pushy.unregister(getContext()); // wipe user token and auth key info
-                        // Navigate to the main fragment with a deep link
-                        PendingIntent pendingIntent = new NavDeepLinkBuilder(getContext())
-                                .setComponentName(MainActivity.class)
-                                .setGraph(R.navigation.nav_graph)
-                                .setDestination(R.id.mainFragment)
-                                .createPendingIntent();
-                        try {
-                            pendingIntent.send();
-                        } catch (PendingIntent.CanceledException ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                });
-                AlertDialog alert = alertBuilder.create();
-                alert.show();
-                return true;
-            }
+        button.setOnPreferenceClickListener(preference -> {
+            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getContext());
+            alertBuilder.setCancelable(true);
+            alertBuilder.setTitle(getContext().getString(R.string.log_out_alert_title));
+            alertBuilder.setMessage(getContext().getString(R.string.log_out_conf_message));
+            alertBuilder.setPositiveButton(android.R.string.yes, (dialogInterface, which) -> {
+                SharedPreferences preferences = getContext().
+                        getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
+                SharedPreferences.Editor e = preferences.edit();
+                e.clear().apply(); // clear SharedPreferences info
+                Pushy.unregister(getContext()); // wipe user token and auth key info
+                // Navigate to the main fragment with a deep link
+                PendingIntent pendingIntent = new NavDeepLinkBuilder(getContext())
+                        .setComponentName(MainActivity.class)
+                        .setGraph(R.navigation.nav_graph)
+                        .setDestination(R.id.mainFragment)
+                        .createPendingIntent();
+                try {
+                    pendingIntent.send();
+                } catch (PendingIntent.CanceledException ex) {
+                    ex.printStackTrace();
+                }
+            });
+            AlertDialog alert = alertBuilder.create();
+            alert.show();
+            return true;
         });
     }
 
@@ -98,8 +93,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if(key.equals("notifications")){
-            Pushy.toggleNotifications(!sharedPreferences.getBoolean(key, false), getActivity().getApplicationContext());
+        if(key.equals("notifications")){ // upon toggle notifs off, pushy shuts down service
+            Pushy.toggleNotifications(!sharedPreferences.getBoolean(key, false),
+                    getActivity().getApplicationContext());
             getPreferenceScreen().findPreference("notifications_other")
                     .setEnabled(!sharedPreferences.getBoolean(key, false));
         }

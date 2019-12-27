@@ -141,6 +141,12 @@ public class ProfileFragment extends BaseProfileFragment{
                 mModel.setPageNumber(mModel.getPageNumber()+1);
                 mModel.callRepositoryForPosts();
                 mLoadMoreItemsProgressBar.animate().alpha(1).setDuration(200);
+                mModel.setLoadingMoreItems(true);
+            }
+
+            @Override
+            boolean isLoading() {
+                return mModel.isLoadingMoreItems();
             }
         });
     }
@@ -168,6 +174,7 @@ public class ProfileFragment extends BaseProfileFragment{
                     }
                     mLoadMoreItemsProgressBar.animate().alpha(0).setDuration(200);
                 }
+                mModel.setLoadingMoreItems(false);
                 mProgressBar.setVisibility(View.GONE);
             }
             mSwipe.setRefreshing(false);

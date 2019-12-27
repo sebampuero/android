@@ -1,6 +1,5 @@
 package com.example.tm18app.viewModels;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 
 import androidx.arch.core.util.Function;
@@ -8,7 +7,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
-import androidx.navigation.NavController;
 
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.model.Post;
@@ -31,6 +29,7 @@ public abstract class ProfileViewModel extends ViewModel {
     private boolean hasResultsOnPreviousPages;
     protected SharedPreferences prefs;
     protected int pageNumber;
+    protected boolean isLoadingMoreItems;
 
     protected MutableLiveData<Boolean> reloadTrigger = new MutableLiveData<>();
     protected LiveData<List<Post>> postLiveData = Transformations.switchMap(reloadTrigger, new Function<Boolean, LiveData<List<Post>>>() {
@@ -79,6 +78,14 @@ public abstract class ProfileViewModel extends ViewModel {
 
     public void setHasResultsOnPreviousPages(boolean hasResultsOnPreviousPages) {
         this.hasResultsOnPreviousPages = hasResultsOnPreviousPages;
+    }
+
+    public boolean isLoadingMoreItems() {
+        return isLoadingMoreItems;
+    }
+
+    public void setLoadingMoreItems(boolean loadingMoreItems) {
+        isLoadingMoreItems = loadingMoreItems;
     }
 }
 

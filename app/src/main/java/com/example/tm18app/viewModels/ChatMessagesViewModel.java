@@ -17,6 +17,13 @@ import com.example.tm18app.repository.ChatsRepository;
 
 import java.util.List;
 
+/**
+ * {@link ViewModel} class for the chat messages UI
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public class ChatMessagesViewModel extends ViewModel {
 
     public MutableLiveData<String> inputMessage = new MutableLiveData<>();
@@ -31,7 +38,8 @@ public class ChatMessagesViewModel extends ViewModel {
 
     private SharedPreferences prefs;
     private ChatSocket socket;
-    private LiveData<List<ChatMessage>> messagesLiveData = Transformations.switchMap(reloadTrigger, new Function<Boolean, LiveData<List<ChatMessage>>>() {
+    private LiveData<List<ChatMessage>> messagesLiveData = Transformations.switchMap(reloadTrigger,
+            new Function<Boolean, LiveData<List<ChatMessage>>>() {
         @Override
         public LiveData<List<ChatMessage>> apply(Boolean input) {
             ChatsRepository repository = new ChatsRepository();

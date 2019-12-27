@@ -154,7 +154,8 @@ public class UploadService extends Service {
         private String getDataForVideo(String contentVideoURI) throws IOException, FileTooLargeException {
             InputStream is =  getContentResolver().openInputStream(Uri.parse(contentVideoURI));
             byte[] videoBytes = ConverterUtils.getBytes(is);
-            if(videoBytes.length > 50000000) throw new FileTooLargeException(getResources().getString(R.string.file_is_too_large));
+            if(videoBytes.length > 50000000)
+                throw new FileTooLargeException(getResources().getString(R.string.file_is_too_large));
             return Base64.encodeToString(videoBytes, Base64.DEFAULT);
         }
 

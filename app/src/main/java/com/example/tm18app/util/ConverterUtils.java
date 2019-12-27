@@ -34,6 +34,11 @@ public class ConverterUtils {
         return byteBuffer.toByteArray();
     }
 
+    /**
+     * Get bytes of a {@link Bitmap}
+     * @param bitmap {@link Bitmap}
+     * @return byte array of the Bitmap
+     */
     public static byte[] getBytes(Bitmap bitmap) {
         ByteArrayOutputStream stream = null;
         try{

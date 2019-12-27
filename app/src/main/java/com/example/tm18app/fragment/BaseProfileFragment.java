@@ -8,16 +8,20 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.fragment.app.Fragment;
 
 import com.example.tm18app.R;
-import com.example.tm18app.databinding.FragmentOtherProfileBinding;
 import com.example.tm18app.model.Post;
-import com.example.tm18app.model.User;
-import com.example.tm18app.viewModels.OtherUserProfileViewModel;
 
 import java.util.List;
 
+/**
+ * A simple {@link Fragment} abstract subclass. This class is responsible for profile UI's
+ *
+ * @author Sebastian Ampuero
+ * @version  1.0
+ * @since 03.12.2019
+ */
 public abstract class BaseProfileFragment extends BasePostsContainerFragment {
 
     protected ProgressBar mProgressBar;
@@ -50,6 +54,9 @@ public abstract class BaseProfileFragment extends BasePostsContainerFragment {
         }
     };
 
+    /**
+     * Fetches profile pic and displays it
+     */
     protected abstract void setProfilePic();
 
     /**

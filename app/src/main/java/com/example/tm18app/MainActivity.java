@@ -62,14 +62,10 @@ public class MainActivity extends AppCompatActivity {
             alertBuilder.setCancelable(true);
             alertBuilder.setTitle(getString(R.string.permission_necessary));
             alertBuilder.setMessage(getString(R.string.permission_necessary_explanation));
-            alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int which) {
-                    ActivityCompat.requestPermissions(MainActivity.this,
-                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
-                }
-            });
+            alertBuilder.setPositiveButton(android.R.string.yes,
+                    (dialogInterface, which) -> ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0));
             AlertDialog alert = alertBuilder.create();
             alert.show();
         }
@@ -90,17 +86,16 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(mBottonNavigationView, navController);
         NavigationUI.setupWithNavController(mToolbar, navController, appBarConfiguration);
 
-        navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
-            @Override
-            public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
-                if(destination.getId() == R.id.mainFragment || destination.getId() == R.id.loginFragment || destination.getId() == R.id.registrationFragment){
-                    // disable mToolbar where Fragments don't need it
-                    mToolbar.setVisibility(View.GONE);
-                    mBottonNavigationView.setVisibility(View.GONE);
-                }else{
-                    mToolbar.setVisibility(View.VISIBLE);
-                    mBottonNavigationView.setVisibility(View.VISIBLE);
-                }
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            if(destination.getId() == R.id.mainFragment ||
+                    destination.getId() == R.id.loginFragment
+                    || destination.getId() == R.id.registrationFragment){
+                // disable mToolbar where Fragments don't need it
+                mToolbar.setVisibility(View.GONE);
+                mBottonNavigationView.setVisibility(View.GONE);
+            }else{
+                mToolbar.setVisibility(View.VISIBLE);
+                mBottonNavigationView.setVisibility(View.VISIBLE);
             }
         });
     }

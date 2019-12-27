@@ -71,17 +71,14 @@ public class IntroActivity extends AppCompatActivity {
         screenPager.setAdapter(introViewPagerAdapter);
 
         tabIndicator.setupWithViewPager(screenPager);
-        btnNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                position = screenPager.getCurrentItem();
-                if (position < screenList.size()) {
-                    position++;
-                    screenPager.setCurrentItem(position);
-                }
-                if (position == screenList.size()-1) {
-                    loadLastScreen();
-                }
+        btnNext.setOnClickListener(v -> {
+            position = screenPager.getCurrentItem();
+            if (position < screenList.size()) {
+                position++;
+                screenPager.setCurrentItem(position);
+            }
+            if (position == screenList.size()-1) {
+                loadLastScreen();
             }
         });
 
@@ -104,21 +101,13 @@ public class IntroActivity extends AppCompatActivity {
             }
         });
 
-        btnGetStarted.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent mainActivity = new Intent(getApplicationContext(),MainActivity.class);
-                startActivity(mainActivity);
-                finish();
-            }
+        btnGetStarted.setOnClickListener(v -> {
+            Intent mainActivity = new Intent(getApplicationContext(),MainActivity.class);
+            startActivity(mainActivity);
+            finish();
         });
 
-        tvSkip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                screenPager.setCurrentItem(screenList.size());
-            }
-        });
+        tvSkip.setOnClickListener(v -> screenPager.setCurrentItem(screenList.size()));
 
     }
 

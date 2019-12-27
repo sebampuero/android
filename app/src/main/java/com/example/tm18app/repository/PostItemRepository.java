@@ -145,6 +145,12 @@ public class PostItemRepository {
         });
     }
 
+    /**
+     * Creates a {@link Post}
+     * @param post {@link Post} object containing post's data
+     * @param pushyToken {@link String} unique token of the logged in user
+     * @param context {@link Context}
+     */
     public void createPost(Post post, String pushyToken, Context context){
         Intent serviceIntent = new Intent(context, UploadService.class);
         serviceIntent.putExtra("pushy", pushyToken);
@@ -192,6 +198,12 @@ public class PostItemRepository {
         });
     }
 
+    /**
+     * Deletes a subscription to a given {@link Post}
+     * @param userID {@link String} the id of the user to delete the subscription
+     * @param postID {@link String} id of the post to delete the subscription from
+     * @param pushyToken {@link String} unique token of the logged in user
+     */
     public void deleteSubscription(String userID, String postID, String pushyToken) {
         postRestInterface.deletePostSubscription(userID, postID, pushyToken).enqueue(new Callback<Void>() {
             @Override

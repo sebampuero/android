@@ -14,11 +14,19 @@ import com.example.tm18app.repository.ChatsRepository;
 
 import java.util.List;
 
+/**
+ * {@link ViewModel} class for the chat rooms UI
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public class ChatsViewModel extends ViewModel {
 
     private MutableLiveData<Boolean> reloadTrigger = new MutableLiveData<>();
     private SharedPreferences prefs;
-    private LiveData<List<ChatRoom>> chatLiveData = Transformations.switchMap(reloadTrigger, new Function<Boolean, LiveData<List<ChatRoom>>>() {
+    private LiveData<List<ChatRoom>> chatLiveData = Transformations.switchMap(reloadTrigger,
+            new Function<Boolean, LiveData<List<ChatRoom>>>() {
         @Override
         public LiveData<List<ChatRoom>> apply(Boolean input) {
             ChatsRepository repository = new ChatsRepository();

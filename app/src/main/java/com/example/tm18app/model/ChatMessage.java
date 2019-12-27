@@ -2,6 +2,13 @@ package com.example.tm18app.model;
 
 import androidx.annotation.Nullable;
 
+/**
+ * Model that holds data of a chat message
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public class ChatMessage implements Comparable<ChatMessage>{
 
     private int chatId;

@@ -114,6 +114,12 @@ public class UserRepository {
         });
     }
 
+    /**
+     * Retrieves {@link User} details
+     * @param id {@link String} id of the user to retrieve details from
+     * @param pushyToken {@link String} unique token of the logged in user
+     * @return {@link MutableLiveData} containing user's details
+     */
     public LiveData<User> getUser(String id, String pushyToken) {
         final MutableLiveData<User> data = new MutableLiveData<>();
         userRestInterface.getUserById(id, pushyToken).enqueue(new Callback<User>() {

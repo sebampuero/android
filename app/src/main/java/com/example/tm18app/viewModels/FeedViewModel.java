@@ -29,6 +29,7 @@ public class FeedViewModel extends ViewModel {
 
     private int pageNumber;
     private boolean hasResultsOnPreviousPages;
+    private boolean isLoadingMoreItems;
     private NavController navController;
     private Context appContext;
     private int currentScrolledItemPosition;
@@ -116,5 +117,13 @@ public class FeedViewModel extends ViewModel {
 
     public void setHasResultsOnPreviousPages(boolean hasResultsOnPreviousPages) {
         this.hasResultsOnPreviousPages = hasResultsOnPreviousPages;
+    }
+
+    public boolean isLoadingMoreItems() {
+        return isLoadingMoreItems;
+    }
+
+    public void setLoadingMoreItems(boolean loadingMoreItems) {
+        isLoadingMoreItems = loadingMoreItems;
     }
 }

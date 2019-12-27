@@ -6,7 +6,15 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-// https://stackoverflow.com/a/38296055
+/**
+ * Debouncer class to debounce methods that should not be called too frequently within a period
+ * of time.
+ * See this <a href="https://stackoverflow.com/a/38296055">Stackoverflow's answer</a>
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 05.12.2019
+ */
 public class Debouncer {
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     private final ConcurrentHashMap<Object, Future<?>> delayedMap = new ConcurrentHashMap<>();
@@ -16,14 +24,11 @@ public class Debouncer {
      * or cancels its execution if the method is called with the same key within the {@code delay} again.
      */
     public void debounce(final Object key, final Runnable runnable, long delay, TimeUnit unit) {
-        final Future<?> prev = delayedMap.put(key, scheduler.schedule(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    runnable.run();
-                } finally {
-                    delayedMap.remove(key);
-                }
+        final Future<?> prev = delayedMap.put(key, scheduler.schedule(() -> {
+            try {
+                runnable.run();
+            } finally {
+                delayedMap.remove(key);
             }
         }, delay, unit));
         if (prev != null) {

@@ -166,6 +166,7 @@ public class FeedFragment extends BasePostsContainerFragment{
             }
             mProgressBar.setVisibility(View.GONE);
             mSwipe.setRefreshing(false);
+            mModel.setLoadingMoreItems(false);
         });
     }
 
@@ -218,6 +219,10 @@ public class FeedFragment extends BasePostsContainerFragment{
             Toast.makeText(getContext(), getContext().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Custom scroll listener for the {@link FeedFragment}.
+     * @see CustomScrollListener
+     */
     class CustomFeedScrollListener extends CustomScrollListener{
 
         CustomFeedScrollListener(LinearLayoutManager manager) {
@@ -228,10 +233,14 @@ public class FeedFragment extends BasePostsContainerFragment{
         public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
             if(newState == RecyclerView.SCROLL_STATE_IDLE){
+                // if scroll stopped save current item position in model view so that when user
+                // changes view and comes back the rv shows the last position on the list the user
+                // was on
                 int itemPositionInSight = layoutManager.findFirstCompletelyVisibleItemPosition();
                 mModel.setCurrentScrolledItemPosition(itemPositionInSight);
                 mFab.animate().alpha(1).setDuration(ANIMATION_DURATION);
             }else if(newState == RecyclerView.SCROLL_STATE_DRAGGING){
+                // on scrolling, disappear the fab
                 mFab.animate().alpha(0).setDuration(ANIMATION_DURATION);
             }
         }
@@ -241,6 +250,12 @@ public class FeedFragment extends BasePostsContainerFragment{
             mModel.setPageNumber(mModel.getPageNumber()+1);
             mModel.callRepository();
             mLoadMoreItemsProgressBar.animate().alpha(1).setDuration(200);
+            mModel.setLoadingMoreItems(true);
+        }
+
+        @Override
+        boolean isLoading() {
+            return mModel.isLoadingMoreItems();
         }
     }
 

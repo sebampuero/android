@@ -51,6 +51,10 @@ public class ChatSocket {
          */
         void onOtherOnlineStatus(int status);
 
+        /**
+         * Called when the receiver sends his/her online status
+         * @param lastOnline
+         */
         void onOtherLastOnline(int lastOnline);
 
         /**
@@ -262,6 +266,9 @@ public class ChatSocket {
         }
     }
 
+    /**
+     * Listener for online status
+     */
     class LastOnlineListener implements Emitter.Listener {
 
         @Override

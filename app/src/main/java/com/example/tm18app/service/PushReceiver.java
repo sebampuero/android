@@ -136,6 +136,15 @@ public class PushReceiver extends BroadcastReceiver {
         buildNotification(context, notificationText, notificationTitle, pendingIntent);
     }
 
+    /**
+     * Processes an incoming new chat message notification
+     * @param context {@link Context}
+     * @param roomId {@link Integer} room id the chat message belongs to
+     * @param roomName {@link String} room name the chat messages belongs to
+     * @param senderName {@link String} name of the sender
+     * @param senderId {@link Integer} id of the sender
+     * @param picUrl {@link String} profile picture URL of the sender
+     */
     private void processMessageNotification(Context context,
                                             int roomId,
                                             String roomName,

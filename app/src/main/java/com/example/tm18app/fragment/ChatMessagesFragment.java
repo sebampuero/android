@@ -73,6 +73,7 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
     private ChatMessagesViewModel mModel;
     private ChatMessagesAdapter mAdapter;
     private ArrayList<ChatMessage> mChatMessagesList = new ArrayList<>();
+    private Debouncer debouncer;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -108,6 +109,7 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
         mProfileIW.setVisibility(View.GONE);
         mToolbar.setSubtitle("");
         mToolbar.setOnClickListener(null);
+        debouncer.shutdown();
     }
 
     @Override
@@ -148,7 +150,7 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
         socket.attachErrorListener();
         // the chat room is capable of transmitting typing status. But it wastes network if done
         // for every key stroke, therefore use a debouncer to send keystrokes every half second
-        final Debouncer debouncer = new Debouncer();
+        debouncer = new Debouncer();
         mModel.inputMessage.observe(this, keyInput -> debouncer.debounce(Void.class,
                 () -> socket.sendTypingStatus(mModel.getRoomName()), 500, TimeUnit.MILLISECONDS));
     }
@@ -218,7 +220,6 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
                         mChatMessagesList.addAll(set);
                         Collections.sort(mChatMessagesList);
                         mAdapter.notifyDataSetChanged();
-                        mModel.setPaginating(false);
                         mRv.scrollToPosition(mAdapter.getItemCount() - 1);
                     }else{
                         mChatMessagesList.addAll(0, set);
@@ -227,6 +228,7 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
                         mLoadingMessagesTv.setVisibility(View.GONE);
                     }
                 }
+                mModel.setPaginating(false);
             }
             mLoadingMessagesTv.setVisibility(View.GONE);
         });
@@ -289,7 +291,8 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if(newState == RecyclerView.SCROLL_STATE_IDLE && !recyclerView.canScrollVertically(-1)){
+                if(newState == RecyclerView.SCROLL_STATE_IDLE
+                        && !recyclerView.canScrollVertically(-1) && !mModel.isPaginating()){
                     loadMoreItems();
                 }
             }

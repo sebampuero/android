@@ -1,5 +1,12 @@
 package com.example.tm18app.model;
 
+/**
+ * Model that holds data of a chat room
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public class ChatRoom implements Comparable<ChatRoom>{
 
     private int receiverId;

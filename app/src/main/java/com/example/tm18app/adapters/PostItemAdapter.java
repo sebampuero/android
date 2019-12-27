@@ -65,9 +65,6 @@ import java.util.HashMap;
  */
 public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemViewHolder> {
 
-    private static final int LOADING = 0;
-    private static final int ITEM = 1;
-
     private ArrayList<Post> mPostsList;
     private NavController mNavController;
     private Context mContext;
@@ -81,7 +78,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
     private final String TAG = getClass().getSimpleName();
 
     /**
-     * Listener for posts deletes
+     * Listener for posts events
      */
     public interface PostsEventsListener {
 
@@ -98,6 +95,10 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
          */
         default void onUndoPostDeleted(int itemPosition) {}
 
+        /**
+         * Called when a video is reproducing
+         * @param reproducing
+         */
         void onPlayerReproducing(boolean reproducing);
 
     }
@@ -157,9 +158,6 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
             }
     }
 
-    /**
-     * Custom {@link androidx.recyclerview.widget.RecyclerView.ViewHolder} subclass.
-     */
     class ItemViewHolder extends RecyclerView.ViewHolder{
 
         TextView nameLastname;
@@ -310,7 +308,9 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
         }
 
         /**
-         * Videothumbnail click postsEventsListener.
+         * Videothumbnail click postsEventsListener. Upon click on the video thumbnail the video
+         * should start buffering and playing.
+         * @see PlayerListener
          */
         class VideoThumbnailClickListener implements View.OnClickListener {
 
@@ -402,6 +402,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
                     dialog.dismiss();
                 });
                 if(subscriberIds != null){
+                    // if current user is subscribed to this post
                     if(subscriberIds.indexOf(String.valueOf(userID)) >= 0) {
                         dialogLayout.findViewById(R.id.unsubscribe).setVisibility(View.VISIBLE);
                         dialogLayout.findViewById(R.id.unsubscribe).setOnClickListener(view12 -> {

@@ -3,6 +3,7 @@ package com.example.tm18app.fragment;
 import android.util.Log;
 import android.view.View;
 
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -12,6 +13,14 @@ import com.example.tm18app.model.Post;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A simple {@link Fragment} abstract subclass. This class is responsible for managing UI's that
+ * contain {@link Post} elements.
+ *
+ * @author Sebastian Ampuero
+ * @version  1.0
+ * @since 05.12.2019
+ */
 public abstract class BasePostsContainerFragment extends BaseFragment {
 
     protected RecyclerView mRecyclerView;
@@ -34,6 +43,9 @@ public abstract class BasePostsContainerFragment extends BaseFragment {
         }
     }
 
+    /**
+     * Sets up the {@link RecyclerView} containing post items.
+     */
     protected abstract void setupRecyclerView();
 
     @Override

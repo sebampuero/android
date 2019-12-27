@@ -31,7 +31,7 @@ public class TimeUtils {
      * @param timestamp {@link Long} the UNIX Timestamp in seconds
      * @return {@link String} the formatted timestamp to current user's locale
      */
-    public static String parseTimestampToLocaleDatetime(long timestamp){ //TODO: Define method for only hour minute
+    public static String parseTimestampToLocaleDatetime(long timestamp){
         long milliseconds = timestamp * 1000L;
         DateFormat sdf = new SimpleDateFormat(DATEFORMAT_1, getLocale());
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -42,6 +42,12 @@ public class TimeUtils {
         return sdf.format(calendar.getTime());
     }
 
+    /**
+     * Parses a UNIX timestamp to a readable hour timestamp (e.g. 10:00 PM) format
+     * depending onn the user's locale
+     * @param timestamp {@link Long}
+     * @return {@link String} the formatted hour timestamp
+     */
     public static String parseTimestampToLocaleTime(long timestamp) {
         long milliseconds = timestamp * 1000L;
         DateFormat sdf = new SimpleDateFormat(DATEFORMAT_2, getLocale());

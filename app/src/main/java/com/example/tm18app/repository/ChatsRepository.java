@@ -14,6 +14,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * Repository for chats responsible for managing network requests to the API.
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public class ChatsRepository {
 
     private ChatsRestInterface chatsRestInterface;
@@ -23,6 +30,12 @@ public class ChatsRepository {
                 .retrofitInstance().create(ChatsRestInterface.class);
     }
 
+    /**
+     * Retrieves the {@link ChatRoom} list of the logged in user.
+     * @param userId {@link String} id of the logged in user
+     * @param pushyToken {@link String} unique token of the logged in user
+     * @return {@link MutableLiveData} containing the chat rooms
+     */
     public LiveData<List<ChatRoom>> getChatRooms(String userId, String pushyToken) {
         final MutableLiveData<List<ChatRoom>> data = new MutableLiveData<>();
         chatsRestInterface.getRoomsByUserId(userId, pushyToken).enqueue(new Callback<List<ChatRoom>>() {
@@ -40,6 +53,13 @@ public class ChatsRepository {
         return data;
     }
 
+    /**
+     * Retrieves all {@link ChatMessage} of a given {@link ChatRoom}
+     * @param roomId {@link String} id of the chat room
+     * @param pushyToken {@link String} unique token of the logged in user
+     * @param page {@link String} number of the page to load data. Used for pagination
+     * @return {@link MutableLiveData} containing the chat messages
+     */
     public LiveData<List<ChatMessage>> getChatsForRoom(String roomId, String pushyToken, String page) {
         final MutableLiveData<List<ChatMessage>> data = new MutableLiveData<>();
         chatsRestInterface.getChatMessagesByRoomId(roomId, pushyToken, page).enqueue(new Callback<List<ChatMessage>>() {
@@ -56,6 +76,11 @@ public class ChatsRepository {
         return data;
     }
 
+    /**
+     * Deletes a {@link ChatRoom}. Upon deletion all {@link ChatMessage} get also lost.
+     * @param roomId {@link String} id of the chat room
+     * @param pushyToken {@link String} unique token of the logged in user
+     */
     public void deleteChatRoom(String roomId, String pushyToken) {
         chatsRestInterface.deleteChatRoom(roomId, pushyToken).enqueue(new Callback<Void>() {
             @Override

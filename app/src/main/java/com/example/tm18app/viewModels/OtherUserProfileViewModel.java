@@ -6,6 +6,13 @@ import com.example.tm18app.constants.Constant;
 import com.example.tm18app.model.User;
 import com.example.tm18app.repository.UserRepository;
 
+/**
+ * {@link androidx.lifecycle.ViewModel} class for other user's profile UI
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
+ */
 public class OtherUserProfileViewModel extends ProfileViewModel {
 
     private LiveData<User> userLiveData;
@@ -14,6 +21,10 @@ public class OtherUserProfileViewModel extends ProfileViewModel {
         return userLiveData;
     }
 
+    /**
+     * Calls the repository to fetch the user's details
+     * @param userId {@link String}
+     */
     public void callRepositoryForUser(String userId) {
         UserRepository repository = new UserRepository();
         this.userLiveData = repository.getUser(userId, prefs.getString(Constant.PUSHY_TOKEN, ""));

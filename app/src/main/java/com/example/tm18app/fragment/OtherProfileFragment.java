@@ -44,7 +44,11 @@ import java.util.HashSet;
 import java.util.List;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link Fragment} subclass. Responsible for UI and events for the other user profile UI.
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
  */
 public class OtherProfileFragment extends BaseProfileFragment {
 
@@ -104,6 +108,7 @@ public class OtherProfileFragment extends BaseProfileFragment {
                     }
                     mLoadMoreItemsProgressBar.animate().alpha(0).setDuration(200);
                 }
+                mModel.setLoadingMoreItems(false);
                 mProgressBar.setVisibility(View.GONE);
             }
             mSwipe.setRefreshing(false);
@@ -132,7 +137,7 @@ public class OtherProfileFragment extends BaseProfileFragment {
         mNamesTV = mBinding.getRoot().findViewById(R.id.namesTv);
         mSwipe = mBinding.getRoot().findViewById(R.id.swipeRefreshOtherProfile);
         mSwipe.setOnRefreshListener(() -> {
-            mModel.setPageNumber(0);
+            mModel.setPageNumber(0); // upon swipe call repository again to reload data
             mModel.callRepositoryForPosts();
         });
         mGoalsTvCall = mBinding.getRoot().findViewById(R.id.seeUserGoalsTv);
@@ -140,6 +145,9 @@ public class OtherProfileFragment extends BaseProfileFragment {
         mLoadMoreItemsProgressBar = mBinding.loadMoreItemsProgressBar;
     }
 
+    /**
+     * Fills views with the user's data
+     */
     private void fillUserData() {
         String names = otherUser.getName() + " " + otherUser.getLastname();
         mNamesTV.setText(names);
@@ -183,6 +191,12 @@ public class OtherProfileFragment extends BaseProfileFragment {
                 mModel.setPageNumber(mModel.getPageNumber()+1);
                 mModel.callRepositoryForPosts();
                 mLoadMoreItemsProgressBar.animate().alpha(1).setDuration(200);
+                mModel.setLoadingMoreItems(true);
+            }
+
+            @Override
+            boolean isLoading() {
+                return mModel.isLoadingMoreItems();
             }
         });
     }

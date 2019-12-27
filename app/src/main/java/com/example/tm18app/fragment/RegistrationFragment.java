@@ -76,41 +76,27 @@ public class RegistrationFragment extends BaseFragmentMediaSelector implements B
         setBitmapLoaderInterface(this);
         mModel = ViewModelProviders.of(this).get(RegisterViewModel.class);
         mModel.setContext(getContext());
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_registration, container, false);
+        mBinding = DataBindingUtil.inflate(inflater,
+                R.layout.fragment_registration, container, false);
         mBinding.setMyVM(mModel);
         mBinding.setLifecycleOwner(this);
         setupViews();
         setupGoalsBoxRecyclerView();
         // Observe to fetch goal items
-        mModel.getGoalLiveData().observe(this, new Observer<List<Goal>>() {
-            @Override
-            public void onChanged(List<Goal> goals) {
-                prepareDataForAdapter(goals);
-                mProgressBar.setVisibility(View.GONE);
-                mRecyclerView.setVisibility(View.VISIBLE);
-            }
+        mModel.getGoalLiveData().observe(this, goals -> {
+            prepareDataForAdapter(goals);
+            mProgressBar.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
         });
         // Observe the status of the response of registration process
-        mModel.getUserLiveData().observe(this, new Observer<HashMap<Integer, User>>() {
-            @Override
-            public void onChanged(HashMap<Integer, User> integerUserHashMap) {
-                evaluateRegistration(integerUserHashMap);
-            }
-        });
+        mModel.getUserLiveData().observe(this,
+                this::evaluateRegistration);
         // Observe the events on the registration button
-        mModel.triggerLoadingBtn.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                mRegistrationBtn.startAnimation();
-            }
-        });
+        mModel.triggerLoadingBtn.observe(this,
+                aBoolean -> mRegistrationBtn.startAnimation());
         // Observe for when the open gallery button is clicked
-        mModel.selectProfilePic.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                openGalleryForImage();
-            }
-        });
+        mModel.selectProfilePic.observe(this,
+                aBoolean -> openGalleryForImage());
         mModel.setGoalsAdapter(mAdapter);
         return mBinding.getRoot();
     }
@@ -129,15 +115,12 @@ public class RegistrationFragment extends BaseFragmentMediaSelector implements B
         try {
             mProfilePicIW.setImageBitmap(bitmap);
             byte[] profilePicByteArray = ConverterUtils.getBytes(bitmap);
-            mModel.setProfilePicBase64Data(Base64.encodeToString(profilePicByteArray, Base64.DEFAULT));
+            mModel.setProfilePicBase64Data(Base64.encodeToString(profilePicByteArray,
+                    Base64.DEFAULT));
         }catch (Exception e){
             e.printStackTrace();
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
-                }
-            });
+            getActivity().runOnUiThread(() ->
+                    Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show());
             mProfilePicIW.setVisibility(View.GONE);
         }
     }
@@ -240,7 +223,8 @@ public class RegistrationFragment extends BaseFragmentMediaSelector implements B
     private void setupGoalsBoxRecyclerView() {
         mRecyclerView = mBinding.goalsComboBox;
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
+                LinearLayoutManager.VERTICAL));
         mAdapter = new MultiGoalSelectAdapter();
         mRecyclerView.setAdapter(mAdapter);
     }
