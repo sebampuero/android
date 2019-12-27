@@ -36,31 +36,18 @@
                     android:id="@+id/info_layout"
                     layout="@layout/profile_info_layout"/>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_below="@id/info_layout"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/text_size_15"
                     android:paddingStart="@dimen/padding_10"
                     android:paddingEnd="@dimen/padding_10"
-                    android:layout_marginTop="@dimen/margin_10_2"
-                    android:id="@+id/editLayout">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textStyle="bold"
-                        android:layout_marginTop="@dimen/margin_10"
-                        android:text="@string/edit_your_information"/>
-                    <ImageButton
-                        android:id="@+id/editInfoBtn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:onClick="@{() -> myVM.onEditInfoClicked()}"
-                        android:backgroundTint="@color/inAppBackgroundColor"
-                        android:src="@drawable/ic_edit_black_24dp" />
-
-                </LinearLayout>
+                    android:id="@+id/editLayout"
+                    android:onClick="@{() -> myVM.onEditInfoClicked()}"
+                    android:layout_below="@id/info_layout"
+                    android:layout_marginTop="@dimen/margin_10"
+                    android:text="@string/edit_your_information"/>
 
                 <include
                     android:layout_below="@id/editLayout"
