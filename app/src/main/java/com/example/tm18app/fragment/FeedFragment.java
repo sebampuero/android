@@ -130,6 +130,7 @@ public class FeedFragment extends BasePostsContainerFragment{
         mSwipe = mBinding.swipeRefreshLayout;
         mSwipe.setOnRefreshListener(() -> {
             if(mModel.getPostLiveData() != null && doGoalsExist){
+                mPostsList.clear();
                 mModel.setPageNumber(0);
                 mModel.callRepository();
                 mAdapter.releasePlayers();

@@ -137,6 +137,7 @@ public class OtherProfileFragment extends BaseProfileFragment {
         mNamesTV = mBinding.getRoot().findViewById(R.id.namesTv);
         mSwipe = mBinding.getRoot().findViewById(R.id.swipeRefreshOtherProfile);
         mSwipe.setOnRefreshListener(() -> {
+            mPostsList.clear();
             mModel.setPageNumber(0); // upon swipe call repository again to reload data
             mModel.callRepositoryForPosts();
         });
