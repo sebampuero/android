@@ -2,6 +2,7 @@ package com.example.tm18app.fragment;
 
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +39,8 @@ import java.util.List;
  */
 public class ChatsFragment extends BaseFragment {
 
+    private final String TAG = getClass().getSimpleName();
+
     private FragmentChatsBinding mBinding;
     private ChatsViewModel mModel;
     private ChatsAdapter mAdapter;
@@ -62,6 +65,7 @@ public class ChatsFragment extends BaseFragment {
         mModel.setPrefs(mPrefs);
         setupViews();
         setupRecyclerView();
+        mModel.callRepository();
         fetchData();
         return mBinding.getRoot();
     }
@@ -72,32 +76,24 @@ public class ChatsFragment extends BaseFragment {
         mChatsProgressView = mBinding.chatsProgressView;
         mNoChatsTV = mBinding.noChatsTv;
         mSwipeRefresh = mBinding.swipeRefreshLayoutChats;
-        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mModel.callRepository();
-            }
-        });
+        mSwipeRefresh.setOnRefreshListener(() -> mModel.callRepository());
     }
 
     private void fetchData() {
-        mModel.callRepository();
-        mModel.getChatLiveData().observe(this, new Observer<List<ChatRoom>>() {
-            @Override
-            public void onChanged(List<ChatRoom> chatRooms) {
-                if(chatRooms.size() > 0){
-                    mChatsList.clear();
-                    mChatsList.addAll(chatRooms);
-                    Collections.sort(mChatsList);
-                    mAdapter.notifyDataSetChanged();
-                }else{
-                    mNoChatsTV.setVisibility(View.VISIBLE);
-                    mRv.setVisibility(View.GONE);
-
-                }
-                mChatsProgressView.setVisibility(View.GONE);
-                mSwipeRefresh.setRefreshing(false);
+        mModel.getChatLiveData().observe(this, chatRooms -> {
+            if(chatRooms.size() > 0){
+                mChatsList.clear();
+                mChatsList.addAll(chatRooms);
+                Collections.sort(mChatsList);
+                mAdapter.notifyDataSetChanged();
+                mNoChatsTV.setVisibility(View.GONE);
+                mRv.setVisibility(View.VISIBLE);
+            }else{
+                mNoChatsTV.setVisibility(View.VISIBLE);
+                mRv.setVisibility(View.GONE);
             }
+            mChatsProgressView.setVisibility(View.GONE);
+            mSwipeRefresh.setRefreshing(false);
         });
     }
 
