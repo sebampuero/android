@@ -213,8 +213,8 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
         mModel.getMessagesLiveData().observe(this, chatMessages -> {
             if(chatMessages != null){
                 if(chatMessages.size() > 0){
-                    HashSet<ChatMessage> set = new HashSet<>(mChatMessagesList);
-                    set.addAll(chatMessages);
+                    HashSet<ChatMessage> set = new HashSet<>(chatMessages);
+                    set.addAll(mChatMessagesList);
                     mChatMessagesList.clear();
                     if(!mModel.isPaginating()){
                         mChatMessagesList.addAll(set);

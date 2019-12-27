@@ -158,8 +158,8 @@ public class ProfileFragment extends BaseProfileFragment{
             if(posts != null){
                 if(posts.size() > 0){
                     mModel.setHasResultsOnPreviousPages(true);
-                    HashSet<Post> postsSet = new HashSet<>(mPostsList);
-                    postsSet.addAll(posts);
+                    HashSet<Post> postsSet = new HashSet<>(posts);
+                    postsSet.addAll(mPostsList);
                     mPostsList.clear();
                     mPostsList.addAll(postsSet);
                     Collections.sort(mPostsList);

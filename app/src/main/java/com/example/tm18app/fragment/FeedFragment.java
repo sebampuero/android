@@ -148,8 +148,8 @@ public class FeedFragment extends BasePostsContainerFragment{
             if(posts.size() > 0){
                 if(doGoalsExist){
                     mModel.setHasResultsOnPreviousPages(true);
-                    HashSet<Post> postsSet = new HashSet<>(mPostsList);
-                    postsSet.addAll(posts);
+                    HashSet<Post> postsSet = new HashSet<>(posts);
+                    postsSet.addAll(mPostsList);
                     mPostsList.clear();
                     mPostsList.addAll(postsSet);
                     Collections.sort(mPostsList);
