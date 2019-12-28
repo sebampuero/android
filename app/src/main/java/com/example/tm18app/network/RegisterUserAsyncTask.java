@@ -2,12 +2,22 @@ package com.example.tm18app.network;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.tm18app.constants.Constant;
 import com.example.tm18app.model.User;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.util.HashMap;
 
 import me.pushy.sdk.Pushy;
@@ -24,6 +34,8 @@ import retrofit2.Response;
  * @since 03.12.2019
  */
 public class RegisterUserAsyncTask extends AsyncTask<Void, Void, User> {
+
+    private final String TAG = getClass().getSimpleName();
 
     private WeakReference<Context> mContext;
     private User mUser;
@@ -42,23 +54,29 @@ public class RegisterUserAsyncTask extends AsyncTask<Void, Void, User> {
     }
 
     protected User doInBackground(Void... params) {
-        try {
             try{
-                // Assign a unique token to the device and mUser
-                String deviceToken = Pushy.register(mContext.get());
-                mUser.setPushyAuthKey(Pushy.getDeviceCredentials(mContext.get()).authKey);
-                mUser.setPushyToken(deviceToken);
-            } catch (PushyException e){
+                // Firstly verify that the email does not exist before attempting to assign a pushy
+                // token
+                HttpURLConnection conn;
+                URL url = new URL(Constant.API_ENDPOINT + "/api/users/verifyEmail/" + mUser.getEmail());
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.setRequestProperty("User-Agent", "okhttp/3.10.0");
+                if(conn.getResponseCode() == HttpURLConnection.HTTP_OK){
+                    String deviceToken = Pushy.register(mContext.get());
+                    mUser.setPushyAuthKey(Pushy.getDeviceCredentials(mContext.get()).authKey);
+                    mUser.setPushyToken(deviceToken);
+                    Response<User> response = mUserRestInterface.registerUser(mUser).execute();
+                    mStatusCOde = response.code();
+                    return response.body();
+                }else if(conn.getResponseCode() == HttpURLConnection.HTTP_BAD_REQUEST){
+                    mStatusCOde = conn.getResponseCode();
+                    return null;
+                }
+            } catch (IOException | PushyException e){
                 e.printStackTrace();
             }
-            Response<User> response = mUserRestInterface.registerUser(mUser).execute();
-            mStatusCOde = response.code();
-            return response.body();
-        }
-        catch (Exception exc) {
-            return null;
-        }
-
+        return null;
     }
 
     @Override
