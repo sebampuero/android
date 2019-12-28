@@ -103,7 +103,8 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
 
     }
 
-    public PostItemAdapter(ArrayList<Post> posts, NavController mNavController, Context context, PostsEventsListener postsEventsListener) {
+    public PostItemAdapter(ArrayList<Post> posts, NavController mNavController,
+                           Context context, PostsEventsListener postsEventsListener) {
         this.mPostsList = posts;
         this.mNavController = mNavController;
         this.mContext = context;

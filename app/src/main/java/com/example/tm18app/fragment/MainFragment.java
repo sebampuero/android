@@ -32,7 +32,8 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         MyViewModel model = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
-        FragmentMainBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_main, container, false);
+        FragmentMainBinding binding = DataBindingUtil.inflate(inflater,
+                R.layout.fragment_main, container, false);
         binding.setMyVM(model);
         binding.setLifecycleOwner(this);
         return binding.getRoot();

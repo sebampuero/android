@@ -58,19 +58,9 @@ public class LoginFragment extends BaseFragment {
         mBinding.setMyVM(mModel);
         mBinding.setLifecycleOwner(this);
         // Observe for response when the user logs in
-        mModel.getUserLiveData().observe(this, new Observer<HashMap<Integer, User>>() {
-            @Override
-            public void onChanged(HashMap<Integer, User> integerUserHashMap) {
-                evaluateLogin(integerUserHashMap);
-            }
-        });
+        mModel.getUserLiveData().observe(this, this::evaluateLogin);
         // Observer to trigger the loading login button animation
-        mModel.triggerLoadingBtn.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                mLoginBtn.startAnimation();
-            }
-        });
+        mModel.triggerLoadingBtn.observe(this, aBoolean -> mLoginBtn.startAnimation());
         setupViews();
         return mBinding.getRoot();
     }
@@ -145,14 +135,11 @@ public class LoginFragment extends BaseFragment {
     private void setUserPushyCreds(User user) {
         final PushyDeviceCredentials credentials =
                 new PushyDeviceCredentials(user.getPushyToken(), user.getPushyAuthKey());
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Pushy.setDeviceCredentials(credentials, getContext());
-                } catch (PushyException e) {
-                    e.printStackTrace();
-                }
+        AsyncTask.execute(() -> {
+            try {
+                Pushy.setDeviceCredentials(credentials, getContext());
+            } catch (PushyException e) {
+                e.printStackTrace();
             }
         });
     }

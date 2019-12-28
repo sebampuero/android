@@ -255,7 +255,8 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
         if(status == ChatSocket.ONLINE)
             mToolbar.setSubtitle(getResources().getString(R.string.online));
         else if(status == ChatSocket.OFFLINE)
-            mToolbar.setSubtitle(TimeUtils.parseTimestampToLocaleDatetime(System.currentTimeMillis() / 1000L));
+            mToolbar.setSubtitle(TimeUtils
+                    .parseTimestampToLocaleDatetime(System.currentTimeMillis() / 1000L));
     }
 
     @Override
@@ -272,7 +273,8 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
 
     @Override
     public void onError() {
-        Toast.makeText(getContext(), getResources().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), getResources().getString(R.string.server_error),
+                Toast.LENGTH_SHORT).show();
     }
 
     /**

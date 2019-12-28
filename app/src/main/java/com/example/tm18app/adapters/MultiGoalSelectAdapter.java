@@ -37,7 +37,8 @@ public class MultiGoalSelectAdapter extends RecyclerView.Adapter<MultiGoalSelect
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.goals_listview, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.goals_listview,
+                parent, false);
         return new ViewHolder(view);
     }
 
@@ -81,12 +82,9 @@ public class MultiGoalSelectAdapter extends RecyclerView.Adapter<MultiGoalSelect
             checkBox.setChecked(goal.isChecked());
             tv.setText(goal.getTag());
 
-            checkBox.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    goal.setChecked(!goal.isChecked());
-                    checkBox.setChecked(goal.isChecked());
-                }
+            checkBox.setOnClickListener(view -> {
+                goal.setChecked(!goal.isChecked());
+                checkBox.setChecked(goal.isChecked());
             });
         }
     }

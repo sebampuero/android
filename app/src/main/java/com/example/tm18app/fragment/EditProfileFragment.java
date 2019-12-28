@@ -55,7 +55,8 @@ import static android.app.Activity.RESULT_OK;
  * @version 1.0
  * @since 03.12.2019
  */
-public class EditProfileFragment extends BaseFragmentMediaSelector implements BaseFragmentMediaSelector.BitmapLoaderInterface {
+public class EditProfileFragment extends BaseFragmentMediaSelector
+        implements BaseFragmentMediaSelector.BitmapLoaderInterface {
 
     private FragmentEditProfileBinding mBinding;
     private MultiGoalSelectAdapter mAdapter;
@@ -80,44 +81,21 @@ public class EditProfileFragment extends BaseFragmentMediaSelector implements Ba
         setupViews();
         setupGoalsBoxRecyclerView();
         // Observe for clicks on the button that triggers the DialogFragment to request goal tags
-        mModel.navigateToDialog.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                FragmentManager fm = getFragmentManager();
-                NewGoalsDialogFragment frag = NewGoalsDialogFragment.newInstance();
-                frag.setTargetFragment(EditProfileFragment.this, 0);
-                frag.show(fm, "fragment_create_goal"); // start dialog fragment
-            }
+        mModel.navigateToDialog.observe(this, aBoolean -> {
+            FragmentManager fm = getFragmentManager();
+            NewGoalsDialogFragment frag = NewGoalsDialogFragment.newInstance();
+            frag.setTargetFragment(EditProfileFragment.this, 0);
+            frag.show(fm, "fragment_create_goal"); // start dialog fragment
         });
 
         // Fetch goal tags with the observer
-        mModel.getGoalLiveData().observe(this, new Observer<List<Goal>>() {
-            @Override
-            public void onChanged(List<Goal> goals) {
-                prepareDataForAdapter(goals);
-            }
-        });
+        mModel.getGoalLiveData().observe(this, this::prepareDataForAdapter);
 
         // Observe for changes when the user edits his/her info
-        mModel.getUserLiveData().observe(this, new Observer<HashMap<Integer, User>>() {
-            @Override
-            public void onChanged(HashMap<Integer, User> integerUserHashMap) {
-                evaluateEditUser(integerUserHashMap);
-            }
-        });
+        mModel.getUserLiveData().observe(this, this::evaluateEditUser);
         // Observe for when the button to open gallery is clicked
-        mModel.selectProfilePic.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                openGalleryForImage();
-            }
-        });
-        mModel.triggerLoadingBtn.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                mSaveBtn.startAnimation();
-            }
-        });
+        mModel.selectProfilePic.observe(this, aBoolean -> openGalleryForImage());
+        mModel.triggerLoadingBtn.observe(this, aBoolean -> mSaveBtn.startAnimation());
         mModel.setAdapter(mAdapter);
         fetchProfilePic();
         return mBinding.getRoot();
@@ -163,12 +141,8 @@ public class EditProfileFragment extends BaseFragmentMediaSelector implements Ba
             mModel.setProfilePicBase64Data(Base64.encodeToString(profilePicByteArray, Base64.DEFAULT));
         }catch (Exception e){
             e.printStackTrace();
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
-                }
-            });
+            getActivity().runOnUiThread(() ->
+                    Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show());
             mProfilePicIW.setVisibility(View.GONE);
         }
     }
@@ -266,7 +240,8 @@ public class EditProfileFragment extends BaseFragmentMediaSelector implements Ba
     private void setupGoalsBoxRecyclerView() {
         RecyclerView recyclerView = mBinding.goalsComboBoxEditProfile;
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
+                LinearLayoutManager.VERTICAL));
         mAdapter = new MultiGoalSelectAdapter();
         recyclerView.setAdapter(mAdapter);
     }

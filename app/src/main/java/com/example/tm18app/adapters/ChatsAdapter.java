@@ -98,22 +98,19 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.MyViewHolder
             lastTs = binding.lastTsChat;
             newMessages = binding.newMessagesTv;
 
-            binding.getRoot().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString(ChatMessagesFragment.ROOM_ID,
-                            String.valueOf(mChatsList.get(getAdapterPosition()).getId()));
-                    bundle.putString(ChatMessagesFragment.ROOM_NAME,
-                            mChatsList.get(getAdapterPosition()).getRoom());
-                    bundle.putString(ChatMessagesFragment.TO_ID,
-                            String.valueOf(mChatsList.get(getAdapterPosition()).getReceiverId()));
-                    bundle.putString(ChatMessagesFragment.TO_NAME,
-                            mChatsList.get(getAdapterPosition()).getReceiverName());
-                    bundle.putString(ChatMessagesFragment.PROFILE_PIC,
-                            mChatsList.get(getAdapterPosition()).getProfilePic());
-                    mNavController.navigate(R.id.action_chatsFragment_to_chatMessagesFragment, bundle);
-                }
+            binding.getRoot().setOnClickListener(view -> {
+                Bundle bundle = new Bundle();
+                bundle.putString(ChatMessagesFragment.ROOM_ID,
+                        String.valueOf(mChatsList.get(getAdapterPosition()).getId()));
+                bundle.putString(ChatMessagesFragment.ROOM_NAME,
+                        mChatsList.get(getAdapterPosition()).getRoom());
+                bundle.putString(ChatMessagesFragment.TO_ID,
+                        String.valueOf(mChatsList.get(getAdapterPosition()).getReceiverId()));
+                bundle.putString(ChatMessagesFragment.TO_NAME,
+                        mChatsList.get(getAdapterPosition()).getReceiverName());
+                bundle.putString(ChatMessagesFragment.PROFILE_PIC,
+                        mChatsList.get(getAdapterPosition()).getProfilePic());
+                mNavController.navigate(R.id.action_chatsFragment_to_chatMessagesFragment, bundle);
             });
         }
     }

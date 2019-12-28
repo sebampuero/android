@@ -69,15 +69,12 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
         holder.lastname.setText(comment.getLastname());
         holder.content.setText(comment.getContent());
         holder.timestamp.setText(TimeUtils.parseTimestampToLocaleDatetime(comment.getTimestamp()));
-        holder.commenterPic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int commentUserId = mCommentsList.get(position).getUserID();
-                Bundle b = new Bundle();
-                b.putString(OtherProfileFragment.OTHER_USER_ID, String.valueOf(commentUserId));
-                mNavController
-                        .navigate(R.id.action_commentSectionFragment_to_otherProfileFragment, b);
-            }
+        holder.commenterPic.setOnClickListener(view -> {
+            int commentUserId = mCommentsList.get(position).getUserID();
+            Bundle b = new Bundle();
+            b.putString(OtherProfileFragment.OTHER_USER_ID, String.valueOf(commentUserId));
+            mNavController
+                    .navigate(R.id.action_commentSectionFragment_to_otherProfileFragment, b);
         });
         if(comment.getCommentatorPicUrl() != null)
             Picasso.get()
@@ -108,12 +105,9 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
             content = binding.commentContent;
             timestamp = binding.timestamp;
             commenterPic = binding.commenterPic;
-            binding.getRoot().setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    buildDeletionAlertDialog();
-                    return false;
-                }
+            binding.getRoot().setOnLongClickListener(view -> {
+                buildDeletionAlertDialog();
+                return false;
             });
         }
 
@@ -129,15 +123,12 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
                 alertBuilder.setCancelable(true);
                 alertBuilder.setTitle(mContext.getString(R.string.delete_comment_title));
                 alertBuilder.setMessage(mContext.getString(R.string.delete_comment_conf_message));
-                alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int which) {
-                        PostItemRepository repository = new PostItemRepository();
-                        repository.deleteComment(commentToDelete.getId(),
-                                mPrefs.getString(Constant.PUSHY_TOKEN, ""));
-                        mCommentsList.remove(position);
-                        notifyItemRemoved(position);
-                    }
+                alertBuilder.setPositiveButton(android.R.string.yes, (dialogInterface, which) -> {
+                    PostItemRepository repository = new PostItemRepository();
+                    repository.deleteComment(commentToDelete.getId(),
+                            mPrefs.getString(Constant.PUSHY_TOKEN, ""));
+                    mCommentsList.remove(position);
+                    notifyItemRemoved(position);
                 });
                 AlertDialog alert = alertBuilder.create();
                 alert.show();

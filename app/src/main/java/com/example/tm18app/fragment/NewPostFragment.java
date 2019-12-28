@@ -84,7 +84,8 @@ public class NewPostFragment extends BaseFragmentMediaSelector implements BaseFr
                              Bundle savedInstanceState) {
         setBitmapLoaderInterface(this);
         mModel = ViewModelProviders.of(getActivity()).get(NewPostViewModel.class);
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_new_post, container, false);
+        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_new_post, container,
+                false);
         mBinding.setMyVM(mModel);
         mBinding.setLifecycleOwner(this);
         mModel.setContext(getContext());
@@ -111,19 +112,9 @@ public class NewPostFragment extends BaseFragmentMediaSelector implements BaseFr
         mContentVW = mBinding.videpPlayer;
         mPostBtn = mBinding.newPostBtn;
         mUploadPicBtn = mBinding.uploadImageBtn;
-        mUploadPicBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openGalleryForImage();
-            }
-        });
+        mUploadPicBtn.setOnClickListener(view -> openGalleryForImage());
         mUploadVideoBtn = mBinding.uploadVideoBtn;
-        mUploadVideoBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openGalleryForVideo();
-            }
-        });
+        mUploadVideoBtn.setOnClickListener(view -> openGalleryForVideo());
     }
 
     @Override
@@ -135,7 +126,10 @@ public class NewPostFragment extends BaseFragmentMediaSelector implements BaseFr
             Uri contentImgUri = data.getData();
             mModel.setContentImageURI(String.valueOf(contentImgUri));
             try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), contentImgUri);
+                Bitmap bitmap = MediaStore
+                        .Images
+                        .Media
+                        .getBitmap(getActivity().getContentResolver(), contentImgUri);
                 processImageURI(contentImgUri, 0, bitmap.getHeight());
             } catch (IOException e) {
                 e.printStackTrace();
@@ -149,9 +143,12 @@ public class NewPostFragment extends BaseFragmentMediaSelector implements BaseFr
                 mPlayer.release();
             TrackSelector selector = new DefaultTrackSelector();
             mPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), selector);
-            DefaultDataSourceFactory dataSourceFactory = new DefaultDataSourceFactory(getContext(), "exoplayer_video");
+            DefaultDataSourceFactory dataSourceFactory =
+                    new DefaultDataSourceFactory(getContext(), "exoplayer_video");
             ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
-            MediaSource source = new ExtractorMediaSource(contentVideoUri, dataSourceFactory, extractorsFactory, null, null);
+            MediaSource source = new ExtractorMediaSource(contentVideoUri,
+                    dataSourceFactory,
+                    extractorsFactory, null, null);
             mContentVW.setPlayer(mPlayer);
             mPlayer.prepare(source);
             mPlayer.setPlayWhenReady(true);

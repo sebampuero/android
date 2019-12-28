@@ -52,19 +52,16 @@ public class PostWebViewFragment extends BaseWebViewFragment {
     protected void setupViews() {
         super.setupViews();
         mToolbar.inflateMenu(R.menu.webview_menu); // this fragment loads a custom toolbar
-        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()){
-                    case R.id.downloadImg:
-                        setDownload();
-                        break;
-                    case R.id.share:
-                        setShareIntent();
-                        break;
-                }
-                return false;
+        mToolbar.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()){
+                case R.id.downloadImg:
+                    setDownload();
+                    break;
+                case R.id.share:
+                    setShareIntent();
+                    break;
             }
+            return false;
         });
     }
 

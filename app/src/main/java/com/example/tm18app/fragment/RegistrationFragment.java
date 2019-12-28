@@ -52,7 +52,8 @@ import static android.app.Activity.RESULT_OK;
  * @version 1.0
  * @since 03.12.2019
  */
-public class RegistrationFragment extends BaseFragmentMediaSelector implements BaseFragmentMediaSelector.BitmapLoaderInterface {
+public class RegistrationFragment extends BaseFragmentMediaSelector
+        implements BaseFragmentMediaSelector.BitmapLoaderInterface {
 
     private MultiGoalSelectAdapter mAdapter;
     private FragmentRegistrationBinding mBinding;

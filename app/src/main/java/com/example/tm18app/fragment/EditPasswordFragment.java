@@ -43,12 +43,8 @@ public class EditPasswordFragment extends BaseFragment {
         binding.setMyVM(mModel);
         binding.setLifecycleOwner(this);
         // Set observer for the status of the password change feedback
-        mModel.getStatusCodeResponseLiveData().observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer responseStatusCode) {
-                handleResponse(responseStatusCode);
-            }
-        });
+        mModel.getStatusCodeResponseLiveData().observe(this,
+                this::handleResponse);
         setupViews();
         return binding.getRoot();
     }

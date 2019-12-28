@@ -37,7 +37,8 @@ public class NewGoalsDialogFragment extends DialogFragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_create_goal, container);
     }
 
@@ -50,15 +51,12 @@ public class NewGoalsDialogFragment extends DialogFragment {
         mGoalsEditText.requestFocus();
         getDialog().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-        mSendRequestBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(validInputs()){ // TODO: add real functionality
-                    Toast.makeText(getActivity(),
-                            getActivity().getString(R.string.goal_request_toast_msg),
-                            Toast.LENGTH_LONG).show();
-                    dismiss();
-                }
+        mSendRequestBtn.setOnClickListener(view1 -> {
+            if(validInputs()){ // TODO: add real functionality
+                Toast.makeText(getActivity(),
+                        getActivity().getString(R.string.goal_request_toast_msg),
+                        Toast.LENGTH_LONG).show();
+                dismiss();
             }
         });
     }

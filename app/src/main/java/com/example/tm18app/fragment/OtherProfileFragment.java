@@ -68,7 +68,8 @@ public class OtherProfileFragment extends BaseProfileFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mModel = ViewModelProviders.of(this).get(OtherUserProfileViewModel.class);
-        mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_other_profile, container, false);
+        mBinding = DataBindingUtil.inflate(inflater,
+                R.layout.fragment_other_profile, container, false);
         mBinding.setMyVM(mModel);
         mBinding.setLifecycleOwner(this);
         setupViews();
