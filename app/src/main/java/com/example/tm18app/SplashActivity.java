@@ -19,6 +19,8 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // No layout for this View to inflate. The splash screen is just a theme containing a
+        // background and a drawable.
         Intent intent = new Intent(this, IntroActivity.class);
         startActivity(intent);
         finish();

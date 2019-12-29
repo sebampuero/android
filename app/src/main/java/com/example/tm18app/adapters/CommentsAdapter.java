@@ -1,11 +1,9 @@
 package com.example.tm18app.adapters;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -42,7 +40,7 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
     private int mCurrentUserId;
     private NavController mNavController;
     private SharedPreferences mPrefs;
-    private int profilePicDimen;
+    private int mProfilePicDimen;
 
     public CommentsAdapter(FragmentActivity activity, List<Comment> comments, NavController mNavController) {
         this.mContext = activity;
@@ -51,7 +49,7 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
                 .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
         this.mCurrentUserId = mPrefs.getInt(Constant.USER_ID, 0);
         this.mNavController = mNavController;
-        profilePicDimen =  mContext.getResources().getInteger(R.integer.thumbnail_profile_pic);
+        mProfilePicDimen =  mContext.getResources().getInteger(R.integer.thumbnail_profile_pic);
     }
 
     @NonNull
@@ -79,7 +77,7 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
         if(comment.getCommentatorPicUrl() != null)
             Picasso.get()
                     .load(comment.getCommentatorPicUrl())
-                    .resize(profilePicDimen,profilePicDimen)
+                    .resize(mProfilePicDimen, mProfilePicDimen)
                     .centerCrop()
                     .into(holder.commenterPic);
     }

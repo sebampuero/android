@@ -10,7 +10,7 @@ import android.util.Log;
 import com.example.tm18app.fragment.SettingsFragment;
 
 /**
- * Class for cheking network status, type and connectivity.
+ * Class for checking network status, type and connectivity.
  *
  * @author Sebastian Ampuero
  * @version 1.0
@@ -53,6 +53,7 @@ public class NetworkConnectivity {
     /**
      * Tweaks the quality of an image by network type. If the network type is not WiFi,
      * the image is downloaded with less quality to save data
+     * <a href="https://cloudinary.com/documentation/image_transformations#adjusting_image_quality">Adjusting image quality with Cloudinary</a>
      * @param context {@link Context}
      * @param imgUrl {@link String} the URL of the image
      * @return {@link String} the tweaked URL of the image for the transformation of a low quality
@@ -63,7 +64,7 @@ public class NetworkConnectivity {
                 .getSharedPreferences(SettingsFragment.SETTINGS_SHARED_PREFERENCES_FILE_NAME,
                         Context.MODE_PRIVATE);
         boolean hasWifi = isWiFiActive(context);
-        boolean badQualityOnMobileNetwork =
+        boolean badQualityOnMobileNetwork = // check if user set the settings for "data saver mode"
                 settingsPrefs.getBoolean("allow_downloads_mobile_net", false);
         // the structure of the URL is so , that after the "upload" segment some transformations
         // can be made. One of those transformations is the quality tweak that is done by percentage.

@@ -72,6 +72,7 @@ public class UserRepository {
      * Edits info of a {@link User} by sending a POST Request to the API
      * @param user {@link User} the user to be edited
      * @param userLiveData {@link MutableLiveData} containing a {@link HashMap} for the HTTP Status code and response body that contains information about the edited user
+     * @param pushyToken {@link String} unique token of the logged in user
      */
     public void editUser(User user, MutableLiveData<HashMap<Integer,
                             User>> userLiveData, String pushyToken) {
@@ -96,6 +97,7 @@ public class UserRepository {
      * Makes a request to the server to change the user's password
      * @param passwordReset {@link PasswordReset} containing old password, new password and user id
      * @param statusCodeResponseLiveData {@link MutableLiveData} to emit status response to the UI
+     * @param pushyToken {@link String} unique token of the logged in user
      */
     public void changeUserPassword(PasswordReset passwordReset,
                                    MutableLiveData<Integer> statusCodeResponseLiveData,

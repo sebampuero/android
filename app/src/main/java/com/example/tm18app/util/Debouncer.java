@@ -36,6 +36,9 @@ public class Debouncer {
         }
     }
 
+    /**
+     * Shuts down the spawned scheduler
+     */
     public void shutdown() {
         scheduler.shutdownNow();
     }

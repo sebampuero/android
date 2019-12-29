@@ -43,7 +43,11 @@ public class ConverterUtils {
         ByteArrayOutputStream stream = null;
         try{
             stream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            // Quality of 70% because:
+            // No high resolutions needed due to the only usage of smartphones < 5.5"
+            // Save network bandwidth
+            // Save Cloudinary limited bandwidth and storage usage
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream);
             return stream.toByteArray();
         }catch (Exception e){
             e.printStackTrace();

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Goals App</string>
+    <string name="app_name">Goals</string>
     <string name="loginBtn">Login</string>
     <string name="registerBtn">Register</string>
     <string name="emailAddrInput">Email Address</string>

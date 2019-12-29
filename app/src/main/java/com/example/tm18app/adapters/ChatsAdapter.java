@@ -34,14 +34,14 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.MyViewHolder
     private List<ChatRoom> mChatsList;
     private NavController mNavController;
     private Context mContext;
-    private int profilePicDimen;
+    private int mProfilePicDimen;
 
 
     public ChatsAdapter(List<ChatRoom> list, NavController navController, Context context) {
         this.mChatsList = list;
         this.mNavController = navController;
         this.mContext = context;
-        profilePicDimen = mContext.getResources().getInteger(R.integer.thumbnail_profile_pic);
+        mProfilePicDimen = mContext.getResources().getInteger(R.integer.thumbnail_profile_pic);
     }
 
     @NonNull
@@ -70,7 +70,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.MyViewHolder
             holder.profilePic.setVisibility(View.VISIBLE);
             Picasso.get()
                     .load(chatRoom.getProfilePic())
-                    .resize(profilePicDimen, profilePicDimen)
+                    .resize(mProfilePicDimen, mProfilePicDimen)
                     .centerCrop()
                     .into(holder.profilePic);
         }

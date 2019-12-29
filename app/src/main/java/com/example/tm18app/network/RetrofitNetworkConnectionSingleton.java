@@ -39,6 +39,10 @@ public class RetrofitNetworkConnectionSingleton {
         }
     }
 
+    /**
+     * Returns the {@link Retrofit} instance
+     * @return {@link Retrofit}
+     */
     public static RetrofitNetworkConnectionSingleton getInstance(){
         if(singleInstance == null)
             singleInstance = new RetrofitNetworkConnectionSingleton();

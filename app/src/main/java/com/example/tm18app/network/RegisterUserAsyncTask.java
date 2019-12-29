@@ -25,7 +25,7 @@ import me.pushy.sdk.util.exceptions.PushyException;
 import retrofit2.Response;
 
 /**
- * RegisterUserAsyncTask is responsible for handling the asynchronous registration of the mUser.
+ * RegisterUserAsyncTask is responsible for handling the asynchronous registration of the User.
  * In addition to that, the token and auth key for {@link Pushy} notifications services are retrieved
  * and stored in the database
  *
@@ -62,7 +62,7 @@ public class RegisterUserAsyncTask extends AsyncTask<Void, Void, User> {
                 conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setRequestProperty("User-Agent", "okhttp/3.10.0");
-                if(conn.getResponseCode() == HttpURLConnection.HTTP_OK){
+                if(conn.getResponseCode() == HttpURLConnection.HTTP_OK){ // means there is NO existing email address
                     String deviceToken = Pushy.register(mContext.get());
                     mUser.setPushyAuthKey(Pushy.getDeviceCredentials(mContext.get()).authKey);
                     mUser.setPushyToken(deviceToken);

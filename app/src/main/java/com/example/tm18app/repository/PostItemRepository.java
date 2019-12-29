@@ -49,6 +49,7 @@ public class PostItemRepository {
     /**
      * Fetches a {@link List} of {@link Post} that correspond to a given goalId
      * @param goalIds {@link Integer} the goalId for the corresponding posts
+     * @param pushyToken {@link String} unique token of the logged in user
      * @return {@link LiveData} containing the {@link List} of {@link Post} items
      */
     public LiveData<List<Post>> getPosts(List<String> goalIds, String pushyToken, String page) {
@@ -72,6 +73,7 @@ public class PostItemRepository {
     /**
      * Fetches a {@link List} of {@link Post} that correspond to a given userId
      * @param userId {@link Integer} the userId
+     * @param pushyToken {@link String} unique token of the logged in user
      * @return {@link LiveData} containing the {@link List} of {@link com.example.tm18app.model.User} items
      */
     public LiveData<List<Post>> getUserPosts(String userId, String pushyToken, String page) {
@@ -95,6 +97,7 @@ public class PostItemRepository {
     /**
      * Fetches a {@link List} of {@link Comment} that correspond to a given postId
      * @param postID {@link Integer} the postId
+     * @param pushyToken {@link String} unique token of the logged in user
      * @return {@link LiveData} containing the {@link List} of {@link Comment} items
      */
     public MutableLiveData<List<Comment>> getComments(String postID, String pushyToken) {
@@ -119,6 +122,7 @@ public class PostItemRepository {
      * Inserts a {@link Comment} by sending a POST Request to the API
      * @param comment {@link Comment} the comment to be inserted
      * @param commentLiveData {@link MutableLiveData} containing the {@link List} of {@link Comment}. The {@link com.example.tm18app.fragment.CommentSectionFragment} observes this parameter to display changes
+     * @param pushyToken {@link String} unique token of the logged in user
      */
     public void createComment(final Comment comment,
                               MutableLiveData<List<Comment>> commentLiveData,
@@ -146,7 +150,8 @@ public class PostItemRepository {
     }
 
     /**
-     * Creates a {@link Post}
+     * Creates a {@link Post}. For the upload of the post, a service is used.
+     * @see UploadService
      * @param post {@link Post} object containing post's data
      * @param pushyToken {@link String} unique token of the logged in user
      * @param context {@link Context}
@@ -167,6 +172,7 @@ public class PostItemRepository {
      * Deletes a {@link Post} from the server.
      * @param postID {@link Integer} the post id of the post to be deleted
      * @param statusCode {@link MutableLiveData} containing the response status code
+     * @param pushyToken {@link String} unique token of the logged in user
      */
     public void deletePost(int postID, final MutableLiveData<Integer> statusCode, String pushyToken){
         postRestInterface.deletePost(String.valueOf(postID), pushyToken).enqueue(new Callback<Void>() {
@@ -185,6 +191,7 @@ public class PostItemRepository {
     /**
      * Deletes a {@link Comment} from the server.
      * @param commentID {@link Integer} the comment id of the comment to be deleted
+     * @param pushyToken {@link String} unique token of the logged in user
      */
     public void deleteComment(int commentID, String pushyToken) {
         postRestInterface.deleteComment(String.valueOf(commentID), pushyToken).enqueue(new Callback<Void>() {

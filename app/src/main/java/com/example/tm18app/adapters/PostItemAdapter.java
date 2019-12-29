@@ -242,7 +242,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
             if(post.getContentPicUrl() != null){
                 playBtnView.setVisibility(View.GONE);
                 surfaceView.setVisibility(View.GONE);
-                String imgUrl =  NetworkConnectivity
+                String imgUrl =  NetworkConnectivity // download on low quality if on metered connection
                         .tweakImgQualityByNetworkType(mContext,
                                 post.getContentPicUrl());
                 Picasso.get()
