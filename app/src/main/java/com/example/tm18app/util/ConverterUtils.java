@@ -1,5 +1,6 @@
 package com.example.tm18app.util;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 
 import java.io.ByteArrayOutputStream;
@@ -59,6 +60,19 @@ public class ConverterUtils {
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * Get density pixels out of a plain pixel input
+     * @param dp {@link Integer} density pixels to convert from
+     * @param context {@link Context}
+     * @return pixel values
+     */
+    public static int dpToPx(int dp, Context context) {
+        float density = context.getResources()
+                .getDisplayMetrics()
+                .density;
+        return Math.round((float) dp * density);
     }
 
 

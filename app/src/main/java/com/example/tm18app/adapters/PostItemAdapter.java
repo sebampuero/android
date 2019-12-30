@@ -5,9 +5,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -16,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.MutableLiveData;
 import androidx.navigation.NavController;
@@ -30,12 +34,16 @@ import com.example.tm18app.fragment.PostWebViewFragment;
 import com.example.tm18app.network.NetworkConnectivity;
 import com.example.tm18app.model.Post;
 import com.example.tm18app.repository.PostItemRepository;
+import com.example.tm18app.util.ConverterUtils;
 import com.example.tm18app.util.TimeUtils;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.metadata.Metadata;
+import com.google.android.exoplayer2.metadata.MetadataOutput;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.MediaSourceEventListener;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
@@ -46,6 +54,7 @@ import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.google.android.exoplayer2.video.VideoListener;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.squareup.picasso.Picasso;
@@ -344,7 +353,30 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
                             .createMediaSource(Uri.parse(contentUrl));
                     videoPlayer.prepare(videoSource);
                     videoPlayer.setPlayWhenReady(true);
+                    videoPlayer.addVideoListener(new VideoListenerImpl());
                 }
+            }
+        }
+
+        /**
+         * {@link VideoListener} implementation.
+         */
+        class VideoListenerImpl implements VideoListener {
+
+            @Override
+            public void onVideoSizeChanged(int width, int height, int unappliedRotationDegrees, float pixelWidthHeightRatio) {
+                // Listen for changes on the video size of the buffered video and set a height to the
+                // player view dynamically
+                int minVideoHeight = mContext.getResources().getInteger(R.integer.min_video_height);
+                int maxVideoHeight = mContext.getResources().getInteger(R.integer.max_video_height);
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(surfaceView.getWidth(), surfaceView.getHeight());
+                int heightInDp = ConverterUtils.dpToPx(height, mContext);
+                if(heightInDp > maxVideoHeight)
+                    heightInDp = maxVideoHeight;
+                else if(heightInDp < minVideoHeight)
+                    heightInDp = minVideoHeight;
+                params.height = heightInDp;
+                surfaceView.setLayoutParams(params);
             }
         }
 
@@ -362,12 +394,12 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
                 switch (playbackState) {
                     case Player.STATE_BUFFERING:
                         progressBarVideo.setVisibility(View.VISIBLE);
-                        contentImage.setVisibility(View.GONE);
                         postsEventsListener.onPlayerReproducing(true);
                         break;
                     case Player.STATE_READY:
                         progressBarVideo.setVisibility(View.GONE);
                         surfaceView.setVisibility(View.VISIBLE);
+                        contentImage.setVisibility(View.GONE);
                         break;
                     default:
                         break;
