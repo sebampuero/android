@@ -23,9 +23,10 @@
     <dimen name="padding_10_2">18dp</dimen>
     <dimen name="text_size_12">12sp</dimen>
     <dimen name="text_size_16">16sp</dimen>
+    <dimen name="player_view_height">450dp</dimen>
 
     <integer name="thumbnail_profile_pic">70</integer>
-    <integer name="max_img_height">750</integer>
-    <integer name="max_video_height">750</integer>
+    <integer name="max_img_height">800</integer>
+    <integer name="max_video_height">800</integer>
     <integer name="min_video_height">400</integer>
 </resources>
