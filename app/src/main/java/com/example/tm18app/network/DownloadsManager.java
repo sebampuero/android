@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 
+import com.example.tm18app.util.FileUtils;
+
 import java.io.File;
 
 /**
@@ -53,17 +55,9 @@ public class DownloadsManager  {
      * @return {@link DownloadsManager}
      */
     public DownloadsManager setFilenameForImg(String filename){
-        String appName = mContext.getApplicationInfo()
-                .loadLabel(mContext.getPackageManager()).toString();
-        File direct =
-                new File(Environment
-                        .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                        .getAbsolutePath() + "/" + appName + "/");
-        if (!direct.exists()) {
-            direct.mkdir();
-        }
-        mRequest.setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES,
-                File.separator + appName + File.separator + filename);
+        mRequest
+                .setDestinationUri(Uri.fromFile(new File(FileUtils.getPublicMediaDir(mContext)
+                        + File.separator + filename)));
         return this;
     }
 

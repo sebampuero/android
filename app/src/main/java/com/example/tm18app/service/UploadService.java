@@ -3,15 +3,21 @@ package com.example.tm18app.service;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -24,11 +30,15 @@ import com.example.tm18app.model.Post;
 import com.example.tm18app.network.PostRestInterface;
 import com.example.tm18app.network.RetrofitNetworkConnectionSingleton;
 import com.example.tm18app.util.ConverterUtils;
+import com.example.tm18app.util.FileUtils;
+import com.iceteck.silicompressorr.SiliCompressor;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
 
 import retrofit2.Response;
 
@@ -152,12 +162,14 @@ public class UploadService extends Service {
          * @throws FileTooLargeException if the video is bigger than 50MB
          */
         private String getDataForVideo(String contentVideoURI) throws IOException, FileTooLargeException {
-            InputStream is =  getContentResolver().openInputStream(Uri.parse(contentVideoURI));
+            InputStream is =  getContentResolver().openInputStream(compressedVideoUri(Uri.parse(contentVideoURI)));
             byte[] videoBytes = ConverterUtils.getBytes(is);
+            Log.e("TAG", String.valueOf(videoBytes.length));
             if(videoBytes.length > 50000000)
                 throw new FileTooLargeException(getResources().getString(R.string.file_is_too_large));
             return Base64.encodeToString(videoBytes, Base64.DEFAULT);
         }
+
 
         /**
          * Converts a {@link Uri} into bytes and then into a 65base encoded {@link String} for an image.
@@ -175,6 +187,22 @@ public class UploadService extends Service {
             byte[] contentImageBytes = ConverterUtils.getBytes(resizedBitmap);
             return Base64.encodeToString(contentImageBytes, Base64.DEFAULT);
         }
+    }
+
+    /**
+     * Compresses a video using as input its {@link Uri}
+     * @param inputUri {@link Uri} the source path Uri of the video
+     * @return {@link Uri} the destination path of the compressed video
+     */
+    private Uri compressedVideoUri(Uri inputUri) {
+        try {
+            String filePath = SiliCompressor.with(this).compressVideo(FileUtils.getPath(this, inputUri),
+                    FileUtils.getPublicMediaDir(this));
+            return Uri.fromFile(new File(filePath));
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        return inputUri;
     }
 
     /**
@@ -197,4 +225,5 @@ public class UploadService extends Service {
     public IBinder onBind(Intent intent) {
         return null;
     }
+
 }
