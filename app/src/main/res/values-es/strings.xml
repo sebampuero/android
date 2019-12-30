@@ -19,7 +19,7 @@
     <string name="confirm_password">Confirmar contraseña</string>
     <string name="goalsListLabel">Elige algunas metas predefinidas:</string>
     <string name="goalSpinnerLabel">Elige la meta del post</string>
-    <string name="post_title_label">Titulo del post</string>
+    <string name="post_title_label">Titulo del post (opcional)</string>
     <string name="post_content_hint">Contenido del post</string>
     <string name="load_comments">Mostrar comentarios</string>
     <string name="goals_colon">Metas:</string>

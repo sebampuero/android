@@ -139,7 +139,7 @@ public class UploadService extends Service {
         @Override
         protected void onPostExecute(Integer statusCode) {
             if(statusCode == HttpURLConnection.HTTP_OK){
-                mBuilder.setContentTitle(getResources().getString(R.string.post_successfully_created) + " " + post.getTitle());
+                mBuilder.setContentTitle(getResources().getString(R.string.post_successfully_created));
                 mNotifyManager.notify(1, mBuilder.build());
                 mHandler.post(new ShowToastInUI(getResources()
                         .getString(R.string.post_successfully_created)));

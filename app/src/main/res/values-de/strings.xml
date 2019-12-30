@@ -18,7 +18,7 @@
     <string name="confirm_password">Password bestätigen</string>
     <string name="goalsListLabel">Wähle einige vordefinierte Ziele aus:</string>
     <string name="goalSpinnerLabel">Wähle das Ziel des Posts aus</string>
-    <string name="post_title_label">Titel des Posts</string>
+    <string name="post_title_label">Titel des Posts (freiwillig)</string>
     <string name="post_content_hint">Inhalt des Posts here</string>
     <string name="load_comments">Kommentare laden</string>
     <string name="goals_colon">Ziele:</string>

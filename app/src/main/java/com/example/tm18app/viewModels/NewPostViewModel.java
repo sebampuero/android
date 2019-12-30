@@ -80,11 +80,11 @@ public class NewPostViewModel extends ViewModel {
      * @return true if valid, false otherwise
      */
     private boolean areInputsValid() {
-        if(title.getValue() == null || content.getValue() == null){
+        if(content.getValue() == null){
             Toast.makeText(appContext, appContext.getString(R.string.empty_fields), Toast.LENGTH_SHORT).show();
             return false;
         }
-        else if(title.getValue().trim().equals("") || content.getValue().trim().equals("")){
+        else if(content.getValue().trim().equals("")){
             Toast.makeText(appContext, appContext.getString(R.string.empty_fields), Toast.LENGTH_SHORT).show();
             return false;
         }else if(selectedGoal == null){

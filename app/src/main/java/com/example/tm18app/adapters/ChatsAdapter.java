@@ -53,6 +53,16 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.MyViewHolder
     }
 
     @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+    @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         final ChatRoom chatRoom = mChatsList.get(position);
         holder.name.setText(chatRoom.getReceiverName());
@@ -66,16 +76,12 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.MyViewHolder
             holder.lastTs.setTypeface(null, Typeface.BOLD);
             holder.newMessages.setVisibility(View.VISIBLE);
         }
-        if(chatRoom.getProfilePic() != null){
-            holder.profilePic.setVisibility(View.VISIBLE);
+        if(chatRoom.getProfilePic() != null)
             Picasso.get()
                     .load(chatRoom.getProfilePic())
                     .resize(mProfilePicDimen, mProfilePicDimen)
                     .centerCrop()
                     .into(holder.profilePic);
-        }
-        else
-            holder.profilePic.setImageDrawable(mContext.getDrawable(R.drawable.ic_person_black_24dp));
     }
 
     @Override

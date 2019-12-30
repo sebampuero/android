@@ -168,6 +168,16 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
             }
     }
 
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
     class ItemViewHolder extends RecyclerView.ViewHolder{
 
         TextView nameLastname;
@@ -216,7 +226,10 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
                 subscriberIds = new ArrayList<>(Arrays.asList(post.getSubscriberIds().split(",")));
             }
             nameLastname.setText(String.format("%s %s", post.getName(), post.getLastname()));
-            postTitle.setText(post.getTitle());
+            if(post.getTitle() != null)
+                postTitle.setText(post.getTitle());
+            else
+                postTitle.setVisibility(View.GONE);
             postContent.setText(post.getContent());
             goalTag.setText(post.getGoalTag());
             commentCount.setText(String.valueOf(post.getCommentCount()));
@@ -224,33 +237,13 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
             commentsSection.setOnClickListener(new CommentsClickListener());
             posterProfilePic.setOnClickListener(new ProfilePicClickListener());
             moreVertOptions.setOnClickListener(new OptionsClickListener(subscriberIds));
-            if(post.getPosterPicUrl() != null){
-                posterProfilePic.setVisibility(View.VISIBLE);
+            if(post.getPosterPicUrl() != null)
                 Picasso.get()
                         .load(post.getPosterPicUrl()) // no need to tweak quality
                         .resize(profilePicDimen, profilePicDimen)
                         .centerCrop()
                         .into(posterProfilePic);
-            }else
-                posterProfilePic.setImageDrawable(mContext
-                        .getResources()
-                        .getDrawable(R.drawable.ic_person_black_24dp));
-
-            if(post.getContentPicUrl() != null || post.getContentVideoUrl() != null){
-                postMediaContent.setVisibility(View.VISIBLE);
-                contentImage.setVisibility(View.VISIBLE);
-                surfaceView.setVisibility(View.VISIBLE);
-                playBtnView.setVisibility(View.VISIBLE);
-            }else{
-                contentImage.setVisibility(View.GONE);
-                surfaceView.setVisibility(View.GONE);
-                postMediaContent.setVisibility(View.GONE);
-                playBtnView.setVisibility(View.GONE);
-            }
-
             if(post.getContentPicUrl() != null){
-                playBtnView.setVisibility(View.GONE);
-                surfaceView.setVisibility(View.GONE);
                 String imgUrl =  NetworkConnectivity // download on low quality if on metered connection
                         .tweakImgQualityByNetworkType(mContext,
                                 post.getContentPicUrl());
@@ -261,12 +254,14 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
                 contentImage.setOnClickListener(new ImageClickListener());
             }
             if(post.getContentVideoUrl() != null){
-                surfaceView.setVisibility(View.GONE);
+                playBtnView.setVisibility(View.VISIBLE);
                 Picasso.get()
                         .load(post.getContentVideoThumbnailUrl())
                         .into(contentImage);
                 contentImage.setOnClickListener(new VideoThumbnailClickListener());
             }
+            if(post.getContentVideoUrl() == null && post.getContentPicUrl() == null)
+                postMediaContent.setVisibility(View.GONE);
         }
 
         /**
@@ -364,12 +359,14 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
         class VideoListenerImpl implements VideoListener {
 
             @Override
-            public void onVideoSizeChanged(int width, int height, int unappliedRotationDegrees, float pixelWidthHeightRatio) {
+            public void onVideoSizeChanged(int width, int height,
+                                           int unappliedRotationDegrees, float pixelWidthHeightRatio) {
                 // Listen for changes on the video size of the buffered video and set a height to the
                 // player view dynamically
                 int minVideoHeight = mContext.getResources().getInteger(R.integer.min_video_height);
                 int maxVideoHeight = mContext.getResources().getInteger(R.integer.max_video_height);
-                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(surfaceView.getWidth(), surfaceView.getHeight());
+                RelativeLayout.LayoutParams params =
+                        new RelativeLayout.LayoutParams(surfaceView.getWidth(), surfaceView.getHeight());
                 int heightInDp = ConverterUtils.dpToPx(height, mContext);
                 if(heightInDp > maxVideoHeight)
                     heightInDp = maxVideoHeight;
