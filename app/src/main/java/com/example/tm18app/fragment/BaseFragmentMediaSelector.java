@@ -95,7 +95,7 @@ public abstract class BaseFragmentMediaSelector extends BaseFragment{
 
             @Override
             public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                Log.e("TAG", "failed bitmap");
+                bitmapLoaderInterface.onErrorLoadingBitmap();
             }
 
             @Override
