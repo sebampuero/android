@@ -109,8 +109,6 @@ public class UploadService extends Service {
      */
     class UploaderAsync extends AsyncTask<Void, Void, Integer> {
 
-        final int MAX_IMG_HEIGHT = 800;
-
         Post post;
         String pushyToken;
 
@@ -164,8 +162,7 @@ public class UploadService extends Service {
         private String getDataForVideo(String contentVideoURI) throws IOException, FileTooLargeException {
             InputStream is =  getContentResolver().openInputStream(compressedVideoUri(Uri.parse(contentVideoURI)));
             byte[] videoBytes = ConverterUtils.getBytes(is);
-            Log.e("TAG", String.valueOf(videoBytes.length));
-            if(videoBytes.length > 50000000)
+            if(videoBytes.length > getResources().getInteger(R.integer.max_video_size))
                 throw new FileTooLargeException(getResources().getString(R.string.file_is_too_large));
             return Base64.encodeToString(videoBytes, Base64.DEFAULT);
         }
@@ -181,8 +178,9 @@ public class UploadService extends Service {
         private String getDataForImage(String contentImageURI) throws IOException {
             Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.parse(contentImageURI));
             int height = bitmap.getHeight();
-            if(height > MAX_IMG_HEIGHT)
-                height = MAX_IMG_HEIGHT;
+            int maxHeight = getResources().getInteger(R.integer.max_img_height);
+            if(height > maxHeight)
+                height = maxHeight;
             Bitmap resizedBitmap = Picasso.get().load(contentImageURI).resize(0, height).centerCrop().get();
             byte[] contentImageBytes = ConverterUtils.getBytes(resizedBitmap);
             return Base64.encodeToString(contentImageBytes, Base64.DEFAULT);

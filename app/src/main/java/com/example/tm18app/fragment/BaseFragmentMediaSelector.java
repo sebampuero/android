@@ -10,6 +10,7 @@ import android.widget.ImageView;
 
 import androidx.fragment.app.Fragment;
 
+import com.example.tm18app.R;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -26,8 +27,6 @@ public abstract class BaseFragmentMediaSelector extends BaseFragment{
     protected static final int PICK_IMAGE = 100;
     protected static final int PICK_VIDEO = 200;
     protected BitmapLoaderInterface bitmapLoaderInterface;
-
-    private static final int MAX_HEIGHT = 800;
 
     /**
      * Interface to get called for when a {@link Bitmap} gets loaded by {@link Picasso}
@@ -84,8 +83,9 @@ public abstract class BaseFragmentMediaSelector extends BaseFragment{
      * @param height {@link Integer}
      */
     protected void processImageURI(Uri imageUri, int width, int height){
-        if(height > MAX_HEIGHT)
-            height = MAX_HEIGHT;
+        int maxHeight = getResources().getInteger(R.integer.max_img_height);
+        if(height > maxHeight)
+            height = maxHeight;
         Picasso.get().load(imageUri).resize(width, height).centerCrop().into(new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
