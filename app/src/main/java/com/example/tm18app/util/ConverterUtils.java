@@ -76,4 +76,15 @@ public class ConverterUtils {
     }
 
 
+    /**
+     * Extracts the key of an Image hosted in the internet, e.g. host.com/files/[12345.jpg]
+     * Useful for caching images. Picasso caches images using a key. By default, Picasso uses the whole
+     * URL but since Cloudinary changes the URL to tweak quality it invalidates the Cache. For
+     * that reason, use the image key that remains unchanged instead of the whole URL.
+     * @param imgUrl {@link String} the URL
+     * @return {@link String} the key of the URL
+     */
+    public static String extractUrlKey(String imgUrl) {
+        return imgUrl.substring(imgUrl.lastIndexOf("/")+1);
+    }
 }

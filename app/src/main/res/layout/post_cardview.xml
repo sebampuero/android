@@ -97,6 +97,7 @@
                     <ImageView
                         android:id="@+id/contentImage"
                         android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:maxHeight="@dimen/max_img_height_dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />

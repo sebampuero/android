@@ -244,19 +244,25 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
                 String imgUrl =  NetworkConnectivity // download on low quality if on metered connection
                         .tweakImgQualityByNetworkType(mContext,
                                 post.getContentPicUrl());
+                String pictureCacheKey = ConverterUtils.extractUrlKey(imgUrl);
                 Picasso.get()
                         .load(imgUrl)
                         .placeholder(R.drawable.progress_img_animation)
+                        .stableKey(pictureCacheKey)
                         .into(contentImage);
                 contentImage.setOnClickListener(new ImageClickListener());
             }
             if(post.getContentVideoUrl() != null){
+                String thumbnailUrl = NetworkConnectivity.tweakImgQualityByNetworkType(mContext,
+                        post.getContentVideoThumbnailUrl());
+                String thumbnailCacheKey = ConverterUtils.extractUrlKey(thumbnailUrl);
                 playBtnView.setVisibility(View.VISIBLE); // show that this post is video
                 surfaceView.setVisibility(View.GONE); // hide player if another one was instantiated for this position
                 playPauseBtn.setVisibility(View.GONE); // hide play/pause btn if another one was instantiated for this position
                 contentImage.setVisibility(View.VISIBLE); // show thumbnail of video
                 Picasso.get()
-                        .load(post.getContentVideoThumbnailUrl())
+                        .load(thumbnailUrl)
+                        .stableKey(thumbnailCacheKey)
                         .into(contentImage);
                 contentImage.setOnClickListener(new VideoThumbnailClickListener());
                 isPausedPressed = false; // reset play/pause btn state
