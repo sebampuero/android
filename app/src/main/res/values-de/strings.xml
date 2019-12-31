@@ -142,6 +142,8 @@
     <string name="undo">Rückganging machen</string>
     <string name="last_online">Last online</string>
     <string name="see_user_goals">Ziele ansehen</string>
+    <string name="today">heute</string>
+    <string name="yesterday">gestern</string>
 
     <array name="notification_settings">
         <item>Alle Benachrichtigungen erlauben</item>

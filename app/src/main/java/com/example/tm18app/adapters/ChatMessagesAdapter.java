@@ -1,7 +1,7 @@
 package com.example.tm18app.adapters;
 
+import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +15,6 @@ import com.example.tm18app.constants.Constant;
 import com.example.tm18app.model.ChatMessage;
 import com.example.tm18app.util.TimeUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,11 +30,13 @@ public class ChatMessagesAdapter  extends RecyclerView.Adapter<ChatMessagesAdapt
     private static final int ME = 1; // represents the currently logged in user
 
     private List<ChatMessage> mChatMessagesList ;
-    private SharedPreferences prefs;
+    private SharedPreferences mPrefs;
+    private Context mContext;
 
-    public ChatMessagesAdapter(List<ChatMessage> list, SharedPreferences prefs) {
+    public ChatMessagesAdapter(List<ChatMessage> list, SharedPreferences prefs, Context context) {
         this.mChatMessagesList = list;
-        this.prefs = prefs;
+        this.mPrefs = prefs;
+        this.mContext = context;
     }
 
     @NonNull
@@ -53,7 +54,7 @@ public class ChatMessagesAdapter  extends RecyclerView.Adapter<ChatMessagesAdapt
 
     @Override
     public int getItemViewType(int position) {
-        int currentUserId = prefs.getInt(Constant.USER_ID, 0);
+        int currentUserId = mPrefs.getInt(Constant.USER_ID, 0);
         ChatMessage message = mChatMessagesList.get(position);
         if(message.getSenderId() != currentUserId)
             return OTHER;
@@ -64,7 +65,8 @@ public class ChatMessagesAdapter  extends RecyclerView.Adapter<ChatMessagesAdapt
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         ChatMessage chatMessage = mChatMessagesList.get(position);
-        holder.contentTs.setText(TimeUtils.parseTimestampToLocaleTime(chatMessage.getTimestamp()));
+        holder.contentTs.setText(TimeUtils
+                .parseTimestampToLocaleDatetime(chatMessage.getTimestamp(), mContext));
         holder.contentText.setText(chatMessage.getText());
     }
 

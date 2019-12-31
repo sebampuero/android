@@ -143,6 +143,8 @@
     <string name="undo">Deshacer</string>
     <string name="last_online">Last online</string>
     <string name="see_user_goals">Ver metas</string>
+    <string name="today">hoy</string>
+    <string name="yesterday">ayer</string>
 
     <array name="notification_settings">
         <item>Permitir todas las notificaciones</item>

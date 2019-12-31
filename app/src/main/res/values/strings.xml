@@ -159,6 +159,8 @@
     <string name="undo">Undo</string>
     <string name="last_online">Last online</string>
     <string name="see_user_goals">See goals</string>
+    <string name="today">today</string>
+    <string name="yesterday">yesterday</string>
 
 
 </resources>

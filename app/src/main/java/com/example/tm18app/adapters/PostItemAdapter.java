@@ -5,12 +5,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -19,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.MutableLiveData;
 import androidx.navigation.NavController;
@@ -39,15 +35,13 @@ import com.example.tm18app.util.TimeUtils;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.metadata.Metadata;
-import com.google.android.exoplayer2.metadata.MetadataOutput;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.source.MediaSourceEventListener;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DataSource;
@@ -194,6 +188,8 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
         ProgressBar progressBarVideo;
         PlayerView surfaceView;
         RelativeLayout postMediaContent;
+        ImageView playPauseBtn;
+        boolean isPausedPressed;
 
         ItemViewHolder(final PostCardviewBinding binding) {
             super(binding.getRoot());
@@ -212,6 +208,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
             surfaceView = binding.videoPlayerPost;
             postMediaContent = binding.postMediaContent;
             playBtnView = binding.playBtnView;
+            playPauseBtn = binding.playPauseBtn;
         }
 
 
@@ -233,7 +230,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
             postContent.setText(post.getContent());
             goalTag.setText(post.getGoalTag());
             commentCount.setText(String.valueOf(post.getCommentCount()));
-            timestamp.setText(TimeUtils.parseTimestampToLocaleDatetime(post.getTimestamp()));
+            timestamp.setText(TimeUtils.parseTimestampToLocaleDatetime(post.getTimestamp(), mContext));
             commentsSection.setOnClickListener(new CommentsClickListener());
             posterProfilePic.setOnClickListener(new ProfilePicClickListener());
             moreVertOptions.setOnClickListener(new OptionsClickListener(subscriberIds));
@@ -254,11 +251,15 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
                 contentImage.setOnClickListener(new ImageClickListener());
             }
             if(post.getContentVideoUrl() != null){
-                playBtnView.setVisibility(View.VISIBLE);
+                playBtnView.setVisibility(View.VISIBLE); // show that this post is video
+                surfaceView.setVisibility(View.GONE); // hide player if another one was instantiated for this position
+                playPauseBtn.setVisibility(View.GONE); // hide play/pause btn if another one was instantiated for this position
+                contentImage.setVisibility(View.VISIBLE); // show thumbnail of video
                 Picasso.get()
                         .load(post.getContentVideoThumbnailUrl())
                         .into(contentImage);
                 contentImage.setOnClickListener(new VideoThumbnailClickListener());
+                isPausedPressed = false; // reset play/pause btn state
             }
             if(post.getContentVideoUrl() == null && post.getContentPicUrl() == null)
                 postMediaContent.setVisibility(View.GONE);
@@ -321,6 +322,18 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
 
             @Override
             public void onClick(View view) {
+                // a play/pause button to control the video
+                playPauseBtn.setVisibility(View.VISIBLE);
+                playPauseBtn.setImageDrawable(mContext.getDrawable(R.drawable.ic_pause_white_24dp));
+                playPauseBtn.setOnClickListener(view1 -> {
+                    isPausedPressed = !isPausedPressed;
+                    SimpleExoPlayer player = videoPlayers.get(getAdapterPosition());
+                    player.setPlayWhenReady(!player.getPlayWhenReady());
+                    if(isPausedPressed)
+                        playPauseBtn.setImageDrawable(mContext.getDrawable(R.drawable.ic_play_arrow_white_24dp));
+                    else
+                        playPauseBtn.setImageDrawable(mContext.getDrawable(R.drawable.ic_pause_white_24dp));
+                });
                 surfaceView.setVisibility(View.VISIBLE);
                 playBtnView.setVisibility(View.GONE);
                 //Init video player params
@@ -331,25 +344,27 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
                         new DefaultTrackSelector(videoTrackSelectionFactory);
                 SimpleExoPlayer videoPlayer = ExoPlayerFactory
                         .newSimpleInstance(mContext, trackSelector);
+                // pause other players is another player is currently playing video
+                pausePlayers();
                 // if there is already a videoplayer instance in the position index, release it to
                 // not occupy too much memory
                 if(videoPlayers.get(getAdapterPosition()) != null)
                     videoPlayers.get(getAdapterPosition()).release();
                 videoPlayers.put(getAdapterPosition(), videoPlayer);
-                surfaceView.setUseController(true); // allow user to pause/resume video
+                surfaceView.setUseController(false); // allow user to pause/resume video
                 surfaceView.setPlayer(videoPlayer);
+                // occupy whole width of screen
+                surfaceView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM);
                 videoPlayer.addListener(new PlayerListener());
                 DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(
                         mContext,
                         Util.getUserAgent(mContext, "RecyclerView VideoPlayer"));
                 String contentUrl = mPostsList.get(getAdapterPosition()).getContentVideoUrl();
-                if(contentUrl != null){
-                    MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
-                            .createMediaSource(Uri.parse(contentUrl));
-                    videoPlayer.prepare(videoSource);
-                    videoPlayer.setPlayWhenReady(true);
-                    videoPlayer.addVideoListener(new VideoListenerImpl());
-                }
+                MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
+                        .createMediaSource(Uri.parse(contentUrl));
+                videoPlayer.prepare(videoSource);
+                videoPlayer.setPlayWhenReady(true);
+                videoPlayer.addVideoListener(new VideoListenerImpl());
             }
         }
 
@@ -389,6 +404,8 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
             @Override
             public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
                 switch (playbackState) {
+                    case Player.STATE_ENDED:
+                        videoPlayers.get(getAdapterPosition()).seekTo(0);
                     case Player.STATE_BUFFERING:
                         progressBarVideo.setVisibility(View.VISIBLE);
                         postsEventsListener.onPlayerReproducing(true);
@@ -469,7 +486,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
              */
             private void showUndoSnackbar() {
                 View view = ((Activity)mContext).findViewById(android.R.id.content);
-                Snackbar snackbar = Snackbar.make(view, mContext.getResources().getString(R.string.post_deleted_msg), Snackbar.LENGTH_LONG);
+                Snackbar snackbar = Snackbar.make(view, mContext.getResources().getString(R.string.post_deleted_msg), 1500);
                 snackbar.show();
                 snackbar.setAction(mContext.getResources().getString(R.string.undo), view1 -> undoDelete());
                 snackbar.addCallback(new Snackbar.Callback() {

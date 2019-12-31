@@ -66,7 +66,7 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
         holder.name.setText(comment.getName());
         holder.lastname.setText(comment.getLastname());
         holder.content.setText(comment.getContent());
-        holder.timestamp.setText(TimeUtils.parseTimestampToLocaleDatetime(comment.getTimestamp()));
+        holder.timestamp.setText(TimeUtils.parseTimestampToLocaleDatetime(comment.getTimestamp(), mContext));
         holder.commenterPic.setOnClickListener(view -> {
             int commentUserId = mCommentsList.get(position).getUserID();
             Bundle b = new Bundle();

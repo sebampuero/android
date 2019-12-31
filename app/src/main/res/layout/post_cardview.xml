@@ -95,8 +95,6 @@
                     android:id="@+id/mediaLayout">
 
                     <ImageView
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="5dp"
                         android:id="@+id/contentImage"
                         android:adjustViewBounds="true"
                         android:maxHeight="@dimen/max_img_height_dp"
@@ -118,6 +116,15 @@
                         android:visibility="gone"
                         android:layout_height="wrap_content"
                         android:id="@+id/videoPlayerPost"/>
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/ic_pause_white_24dp"
+                        android:layout_alignParentEnd="true"
+                        android:visibility="gone"
+                        android:layout_alignParentBottom="true"
+                        android:id="@+id/playPauseBtn"/>
                     <ProgressBar
                         android:layout_centerVertical="true"
                         android:layout_centerHorizontal="true"

@@ -23,13 +23,13 @@
     <dimen name="padding_10_2">20dp</dimen>
     <dimen name="text_size_12">12sp</dimen>
     <dimen name="text_size_16">16sp</dimen>
-    <dimen name="player_view_height">500dp</dimen>
-    <dimen name="max_img_height_dp">800dp</dimen>
+    <dimen name="player_view_height">400dp</dimen>
+    <dimen name="max_img_height_dp">600dp</dimen>
 
     <integer name="thumbnail_profile_pic">80</integer>
     <integer name="max_img_height">800</integer>
-    <integer name="max_video_height">800</integer>
-    <integer name="min_video_height">400</integer>
+    <integer name="max_video_height">1000</integer>
+    <integer name="min_video_height">500</integer>
     <integer name="max_video_size">50000</integer>
 
 </resources>

@@ -256,13 +256,14 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
             mToolbar.setSubtitle(getResources().getString(R.string.online));
         else if(status == ChatSocket.OFFLINE)
             mToolbar.setSubtitle(TimeUtils
-                    .parseTimestampToLocaleDatetime(System.currentTimeMillis() / 1000L));
+                    .parseTimestampToLocaleDatetime(System.currentTimeMillis() / 1000L,
+                            getContext()));
     }
 
     @Override
     public void onOtherLastOnline(int lastOnline) {
         if(lastOnline != 0){
-            mToolbar.setSubtitle(TimeUtils.parseTimestampToLocaleDatetime(lastOnline));
+            mToolbar.setSubtitle(TimeUtils.parseTimestampToLocaleDatetime(lastOnline, getContext()));
         }
     }
 
@@ -287,7 +288,7 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
         mRv.setLayoutManager(manager);
         SharedPreferences prefs = getActivity().getSharedPreferences(Constant.USER_INFO,
                 Context.MODE_PRIVATE);
-        mAdapter = new ChatMessagesAdapter(mChatMessagesList, prefs);
+        mAdapter = new ChatMessagesAdapter(mChatMessagesList, prefs, getContext());
         mRv.setAdapter(mAdapter);
         mRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

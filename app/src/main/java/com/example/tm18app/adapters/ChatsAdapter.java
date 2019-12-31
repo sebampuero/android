@@ -66,7 +66,8 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.MyViewHolder
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         final ChatRoom chatRoom = mChatsList.get(position);
         holder.name.setText(chatRoom.getReceiverName());
-        holder.lastTs.setText(TimeUtils.parseTimestampToLocaleDatetime(chatRoom.getLastTimestamp()));
+        holder.lastTs.setText(TimeUtils
+                .parseTimestampToLocaleDatetime(chatRoom.getLastTimestamp(), mContext));
         holder.name.setTypeface(null, Typeface.NORMAL);
         holder.lastTs.setTypeface(null, Typeface.NORMAL);
         holder.newMessages.setVisibility(View.GONE);

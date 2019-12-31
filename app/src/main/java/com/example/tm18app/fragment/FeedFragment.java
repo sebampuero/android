@@ -191,8 +191,10 @@ public class FeedFragment extends BasePostsContainerFragment{
             int orientation = getResources().getConfiguration().orientation;
             if (orientation == Configuration.ORIENTATION_LANDSCAPE && reproducing) {
                 setCinemaMode(true);
+                mFab.setVisibility(View.GONE);
             } else {
                 setCinemaMode(false);
+                mFab.setVisibility(View.VISIBLE);
             }
         }
     };

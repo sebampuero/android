@@ -1,12 +1,17 @@
 package com.example.tm18app.util;
 
+import android.content.Context;
 import android.content.res.Resources;
+import android.util.Log;
 
 import androidx.core.os.ConfigurationCompat;
+
+import com.example.tm18app.R;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -19,8 +24,11 @@ import java.util.TimeZone;
  */
 public class TimeUtils {
 
-    private static final String DATEFORMAT_1 = "h:mm a dd MMMM";
+    private static final String TAG = "TimeUtils";
+
+    private static final String DATEFORMAT_1 = "dd MMMM";
     private static final String DATEFORMAT_2 = "h:mm a";
+    private static final String DATEFORMAT_DAY_IN_YEAR = "D";
 
     private TimeUtils() {
         throw new AssertionError();
@@ -31,33 +39,40 @@ public class TimeUtils {
      * @param timestamp {@link Long} the UNIX Timestamp in seconds
      * @return {@link String} the formatted timestamp to current user's locale
      */
-    public static String parseTimestampToLocaleDatetime(long timestamp){
+    public static String parseTimestampToLocaleDatetime(long timestamp, Context context){
         long milliseconds = timestamp * 1000L;
-        DateFormat sdf = new SimpleDateFormat(DATEFORMAT_1, getLocale());
+        DateFormat sdf = new SimpleDateFormat(DATEFORMAT_2, getLocale());
+        String day = getDayDisplay(timestamp, context);
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(milliseconds);
         TimeZone tz = TimeZone.getDefault();
         sdf.setTimeZone(tz);
-        return sdf.format(calendar.getTime());
+        return sdf.format(calendar.getTime()) + " " + day;
     }
 
     /**
-     * Parses a UNIX timestamp to a readable hour timestamp (e.g. 10:00 PM) format
-     * depending onn the user's locale
-     * @param timestamp {@link Long}
-     * @return {@link String} the formatted hour timestamp
+     * Calculates the day in human readable format with a given timestamp and the current timestamp
+     * @param timestamp {@link Long} the timestamp to be compared against
+     * @param context {@link Context}
+     * @return the day in readable format e.g. today, yesterday or a date if more than yesterday
      */
-    public static String parseTimestampToLocaleTime(long timestamp) {
-        long milliseconds = timestamp * 1000L;
-        DateFormat sdf = new SimpleDateFormat(DATEFORMAT_2, getLocale());
-        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(milliseconds);
-        TimeZone tz = TimeZone.getDefault();
-        sdf.setTimeZone(tz);
-        return sdf.format(calendar.getTime());
+    private static String getDayDisplay(long timestamp, Context context) {
+        DateFormat sdf = new SimpleDateFormat(DATEFORMAT_DAY_IN_YEAR, getLocale());
+        int dayOfPost = Integer.parseInt(sdf.format(new Date(timestamp * 1000L)));
+        int today = Integer.parseInt(sdf.format(new Date()));
+        String result;
+        if(today == dayOfPost)
+            result = context.getResources().getString(R.string.today);
+        else if(today - dayOfPost == 1)
+            result = context.getResources().getString(R.string.yesterday);
+        else{
+            sdf = new SimpleDateFormat(DATEFORMAT_1, getLocale());
+            result = sdf.format(new Date(timestamp * 1000L));
+        }
+        return result;
     }
+
 
     /**
      * Retrieves the locale the user is using on the phone
