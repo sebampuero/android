@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -386,14 +387,17 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
                 // player view dynamically
                 int minVideoHeight = mContext.getResources().getInteger(R.integer.min_video_height);
                 int maxVideoHeight = mContext.getResources().getInteger(R.integer.max_video_height);
+                Log.e(TAG, "Max height " + maxVideoHeight);
                 RelativeLayout.LayoutParams params =
                         new RelativeLayout.LayoutParams(surfaceView.getWidth(), surfaceView.getHeight());
                 int heightInDp = ConverterUtils.dpToPx(height, mContext);
+                Log.e(TAG, "Height in dp " + heightInDp);
                 if(heightInDp > maxVideoHeight)
                     heightInDp = maxVideoHeight;
                 else if(heightInDp < minVideoHeight)
                     heightInDp = minVideoHeight;
                 params.height = heightInDp;
+                Log.e(TAG, "final height " + params.height);
                 surfaceView.setLayoutParams(params);
             }
         }
