@@ -2,6 +2,7 @@ package com.example.tm18app.network;
 
 import com.example.tm18app.model.PasswordReset;
 import com.example.tm18app.model.User;
+import com.example.tm18app.model.UserActivity;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -33,4 +34,7 @@ public interface UserRestInterface {
 
     @GET("api/users/{userId}")
     Call<User> getUserById(@Path("userId") String userId, @Header("pushy") String pushyToken);
+
+    @GET("api/users/userActivity/{userId}")
+    Call<UserActivity> getUserActivity(@Path("userId") String userId, @Header("pushy") String pushyToken);
 }

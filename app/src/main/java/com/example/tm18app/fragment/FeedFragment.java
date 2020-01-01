@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
@@ -21,11 +22,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.tm18app.App;
 import com.example.tm18app.R;
 import com.example.tm18app.adapters.PostItemAdapter;
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.FragmentFeedBinding;
 import com.example.tm18app.model.Post;
+import com.example.tm18app.model.UserActivity;
+import com.example.tm18app.network.UserActivityAsyncTask;
 import com.example.tm18app.viewModels.FeedViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -62,6 +66,44 @@ public class FeedFragment extends BasePostsContainerFragment{
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        checkUserActivity();
+    }
+
+    /**
+     * Checks the activity of the user. Since this Fragment is the Home Fragment, the activity
+     * of the user has to be checked upon this fragment's creation. The activity of a user is for
+     * instance if he has new chat messages or if there are unread notifications. In that case,
+     * the view should be updated to show that activity.
+     * @see UserActivity
+     */
+    private void checkUserActivity() {
+        if(mPrefs.getBoolean(Constant.LOGGED_IN, false)
+                && !App.getUserActivityInstance().isAlreadyChecked()){
+            // only check if the user is logged in and if the request was not already sent
+            // do not send requests on every fragment!! only when the app starts
+            new UserActivityAsyncTask(this::updateBottomNavigation)
+                    .execute(mPrefs.getString(Constant.PUSHY_TOKEN, ""),
+                            String.valueOf(mPrefs.getInt(Constant.USER_ID, 0)));
+        }
+    }
+
+    /**
+     * Updates the {@link com.google.android.material.bottomnavigation.BottomNavigationView} of
+     * this App depending on the user activity.
+     * @param userActivity {@link UserActivity} containing this user's activity
+     */
+    private void updateBottomNavigation(UserActivity userActivity) {
+        UserActivity appsUserActivity = App.getUserActivityInstance();
+        appsUserActivity.setAlreadyChecked(true);
+        appsUserActivity.setChatActivity(userActivity.isChatActivity());
+        if(userActivity.isChatActivity()){
+            mBottomNavigationView.getMenu().getItem(2) // icon for unread messages
+                    .setIcon(getResources().getDrawable(R.drawable.ic_chat_vector_important));
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

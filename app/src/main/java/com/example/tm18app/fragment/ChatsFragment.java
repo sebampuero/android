@@ -2,28 +2,26 @@ package com.example.tm18app.fragment;
 
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.tm18app.MainActivity;
+import com.example.tm18app.App;
 import com.example.tm18app.R;
 import com.example.tm18app.adapters.ChatsAdapter;
 import com.example.tm18app.databinding.FragmentChatsBinding;
 import com.example.tm18app.model.ChatRoom;
+import com.example.tm18app.model.UserActivity;
 import com.example.tm18app.viewModels.ChatsViewModel;
 
 import java.util.ArrayList;
@@ -54,7 +52,6 @@ public class ChatsFragment extends BaseFragment {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -65,10 +62,24 @@ public class ChatsFragment extends BaseFragment {
         mBinding.setLifecycleOwner(this);
         mModel.setPrefs(mPrefs);
         setupViews();
+        updateBottomViewBasedOnUserActivity();
         setupRecyclerView();
         mModel.callRepository();
         fetchData();
         return mBinding.getRoot();
+    }
+
+    /**
+     * Updates the {@link com.google.android.material.bottomnavigation.BottomNavigationView} of
+     * this App for when this fragment is viewed. Upon creation, this fragment sets it's navigation
+     * icon to the default one.
+     */
+    private void updateBottomViewBasedOnUserActivity() {
+        UserActivity activity = App.getUserActivityInstance();
+        if(activity.isChatActivity()){
+            mBottomNavigationView.getMenu().getItem(2)
+                    .setIcon(getResources().getDrawable(R.drawable.ic_chat_black_24dp));
+        }
     }
 
     @Override
