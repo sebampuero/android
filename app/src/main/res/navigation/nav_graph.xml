@@ -92,11 +92,6 @@
             app:destination="@id/loginFragment" />
     </fragment>
     <fragment
-        android:id="@+id/postImgWebviewFragment"
-        android:name="com.example.tm18app.fragment.PostWebViewFragment"
-        android:label=""
-        tools:layout="@layout/fragment_webview" />
-    <fragment
         android:id="@+id/otherProfileFragment"
         android:name="com.example.tm18app.fragment.OtherProfileFragment"
         android:label=""
@@ -119,4 +114,9 @@
         android:name="com.example.tm18app.fragment.ChatMessagesFragment"
         android:label=""
         tools:layout="@layout/fragment_chat_messages" />
+    <fragment
+        android:id="@+id/postImgFragment"
+        android:name="com.example.tm18app.fragment.PostImgFragment"
+        android:label=""
+        tools:layout="@layout/fragment_post_img" />
 </navigation>

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +26,7 @@ import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.PostCardviewBinding;
 import com.example.tm18app.fragment.CommentSectionFragment;
 import com.example.tm18app.fragment.OtherProfileFragment;
-import com.example.tm18app.fragment.PostWebViewFragment;
+import com.example.tm18app.fragment.PostImgFragment;
 import com.example.tm18app.network.NetworkConnectivity;
 import com.example.tm18app.model.Post;
 import com.example.tm18app.repository.PostItemRepository;
@@ -312,11 +311,10 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
             public void onClick(View view) {
                 Post post = mPostsList.get(getAdapterPosition());
                 Bundle bundle = new Bundle();
-                bundle.putString(PostWebViewFragment.IMG_URL,
+                bundle.putString(PostImgFragment.IMG_URL,
                         post.getContentPicUrl());
-                bundle.putString(PostWebViewFragment.IMG_NAME,
-                        String.valueOf(post.getId()));
-                mNavController.navigate(R.id.postImgWebviewFragment, bundle);
+                mNavController.navigate(R.id.postImgFragment, bundle);
+
             }
         }
 
