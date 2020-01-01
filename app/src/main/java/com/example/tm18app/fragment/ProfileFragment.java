@@ -102,7 +102,7 @@ public class ProfileFragment extends BaseProfileFragment{
         });
         mGoalsTvCall = mBinding.getRoot().findViewById(R.id.seeUserGoalsTv);
         mGoalsTvCall.setOnClickListener(goalsInfoClickListener);
-        mLoadMoreItemsProgressBar = mBinding.loadMoreItemsProgressBar;
+        mLoadMoreItemsProgressBar = mBinding.getRoot().findViewById(R.id.loadMoreItemsProgressBar);
     }
 
     private PostItemAdapter.PostsEventsListener listener = new PostItemAdapter.PostsEventsListener() {
@@ -130,7 +130,7 @@ public class ProfileFragment extends BaseProfileFragment{
 
     @Override
     protected void setupRecyclerView() {
-        mRecyclerView = mBinding.getRoot().findViewById(R.id.goalsUserRv);
+        mRecyclerView = mBinding.getRoot().findViewById(R.id.postsUserRv);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layoutManager);
         mAdapter = new PostItemAdapter((ArrayList<Post>) mPostsList,
@@ -185,11 +185,12 @@ public class ProfileFragment extends BaseProfileFragment{
 
     @Override
     protected void setProfilePic() {
+        int profilePicRes = getResources().getInteger(R.integer.main_profile_picture);
         String imgUrl = mPrefs.getString(Constant.PROFILE_PIC_URL, null);
         if(imgUrl != null){
             Picasso.get()
                     .load(mPrefs.getString(Constant.PROFILE_PIC_URL, null))
-                    .resize(300, 300)
+                    .resize(profilePicRes, profilePicRes)
                     .centerCrop()
                     .placeholder(R.drawable.progress_img_animation)
                     .into(mProfilePicIW);

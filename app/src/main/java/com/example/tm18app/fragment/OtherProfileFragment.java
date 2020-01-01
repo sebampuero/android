@@ -144,7 +144,7 @@ public class OtherProfileFragment extends BaseProfileFragment {
         });
         mGoalsTvCall = mBinding.getRoot().findViewById(R.id.seeUserGoalsTv);
         mGoalsTvCall.setOnClickListener(goalsInfoClickListener);
-        mLoadMoreItemsProgressBar = mBinding.loadMoreItemsProgressBar;
+        mLoadMoreItemsProgressBar = mBinding.getRoot().findViewById(R.id.loadMoreItemsProgressBar);
     }
 
     /**
@@ -159,11 +159,12 @@ public class OtherProfileFragment extends BaseProfileFragment {
 
     @Override
     protected void setProfilePic() {
+        int profilePicRes = getResources().getInteger(R.integer.main_profile_picture);
         String imgUrl = otherUser.getProfilePicUrl();
         if(imgUrl != null){
             Picasso.get()
                     .load(imgUrl)
-                    .resize(300, 300)
+                    .resize(profilePicRes, profilePicRes)
                     .centerCrop()
                     .placeholder(R.drawable.progress_img_animation)
                     .into(mProfilePicIW);
@@ -181,7 +182,7 @@ public class OtherProfileFragment extends BaseProfileFragment {
 
     @Override
     protected void setupRecyclerView() {
-        mRecyclerView = mBinding.getRoot().findViewById(R.id.goalsUserRv);
+        mRecyclerView = mBinding.getRoot().findViewById(R.id.postsUserRv);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layoutManager);
         mAdapter = new PostItemAdapter((ArrayList<Post>) mPostsList,

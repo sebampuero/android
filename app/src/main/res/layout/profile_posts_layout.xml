@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
     <ProgressBar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/progressBar"
-        android:layout_below="@id/editLayout"/>
+        android:id="@+id/progressBar" />
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/editLayout"
         android:layout_marginTop="@dimen/margin_10_2"
-        android:paddingStart="5dp"
-        android:paddingEnd="5dp"
-        android:id="@+id/goalsUserRv"/>
+        android:id="@+id/postsUserRv"/>
+    <ProgressBar
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:alpha="0"
+        android:layout_alignBottom="@id/postsUserRv"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/loadMoreItemsProgressBar"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_below="@id/editLayout"
         android:id="@+id/noPostsLayout"
         android:visibility="gone"
         android:padding="@dimen/padding_10_2"
@@ -30,4 +32,4 @@
             android:textSize="@dimen/text_size_15"
             android:text="@string/you_have_no_posts"/>
     </LinearLayout>
-</LinearLayout>
+</RelativeLayout>
