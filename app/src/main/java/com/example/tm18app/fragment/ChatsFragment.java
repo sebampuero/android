@@ -62,25 +62,12 @@ public class ChatsFragment extends BaseFragment {
         mBinding.setLifecycleOwner(this);
         mModel.setPrefs(mPrefs);
         setupViews();
-        updateBottomViewBasedOnUserActivity();
         setupRecyclerView();
         mModel.callRepository();
         fetchData();
         return mBinding.getRoot();
     }
 
-    /**
-     * Updates the {@link com.google.android.material.bottomnavigation.BottomNavigationView} of
-     * this App for when this fragment is viewed. Upon creation, this fragment sets it's navigation
-     * icon to the default one.
-     */
-    private void updateBottomViewBasedOnUserActivity() {
-        UserActivity activity = App.getUserActivityInstance();
-        if(activity.isChatActivity()){
-            mBottomNavigationView.getMenu().getItem(2)
-                    .setIcon(getResources().getDrawable(R.drawable.ic_chat_black_24dp));
-        }
-    }
 
     @Override
     protected void setupViews() {

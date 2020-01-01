@@ -78,8 +78,6 @@ public abstract class BaseFragment extends Fragment {
      * @param userActivity {@link UserActivity} containing this user's activity
      */
     private void updateBottomNavigation(UserActivity userActivity) {
-        UserActivity appsUserActivity = App.getUserActivityInstance();
-        appsUserActivity.setChatActivity(userActivity.isChatActivity());
         if(userActivity.isChatActivity())
             mBottomNavigationView.getMenu().getItem(2) // icon for unread messages
                     .setIcon(getResources().getDrawable(R.drawable.ic_chat_vector_important));

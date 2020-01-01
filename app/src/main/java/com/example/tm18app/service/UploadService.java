@@ -40,6 +40,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 
+import okhttp3.Request;
 import retrofit2.Response;
 
 import static com.example.tm18app.App.CHANNEL_ID;
