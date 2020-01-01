@@ -104,8 +104,8 @@
 
                     <ImageView
                         android:id="@+id/playBtnView"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp"
+                        android:layout_width="@dimen/play_btn"
+                        android:layout_height="@dimen/play_btn"
                         android:visibility="gone"
                         android:src="@drawable/thumbnail_video"
                         android:layout_centerHorizontal="true"

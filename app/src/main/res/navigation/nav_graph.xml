@@ -12,10 +12,12 @@
         tools:layout="@layout/fragment_feed">
         <action
             android:id="@+id/action_feedFragment_to_newPostFragment"
-            app:destination="@id/newPostFragment" />
+            app:destination="@id/newPostFragment"
+            app:enterAnim="@anim/nav_default_enter_anim" />
         <action
             android:id="@+id/action_feedFragment_to_otherProfileFragment"
-            app:destination="@id/otherProfileFragment" />
+            app:destination="@id/otherProfileFragment"
+            app:enterAnim="@anim/nav_default_enter_anim" />
     </fragment>
     <fragment
         android:id="@+id/newPostFragment"
@@ -34,7 +36,8 @@
         tools:layout="@layout/fragment_profile">
         <action
             android:id="@+id/action_profileFragment_to_editProfileFragment"
-            app:destination="@id/editProfileFragment" />
+            app:destination="@id/editProfileFragment"
+            app:enterAnim="@anim/nav_default_enter_anim" />
     </fragment>
     <fragment
         android:id="@+id/commentSectionFragment"
@@ -43,7 +46,8 @@
         tools:layout="@layout/fragment_comment_section" >
         <action
             android:id="@+id/action_commentSectionFragment_to_otherProfileFragment"
-            app:destination="@id/otherProfileFragment" />
+            app:destination="@id/otherProfileFragment"
+            app:enterAnim="@anim/nav_default_enter_anim" />
     </fragment>
     <fragment
         android:id="@+id/editProfileFragment"
@@ -52,7 +56,8 @@
         tools:layout="@layout/fragment_edit_profile" >
         <action
             android:id="@+id/action_editProfileFragment_to_editPasswordFragment"
-            app:destination="@id/editPasswordFragment" />
+            app:destination="@id/editPasswordFragment"
+            app:enterAnim="@anim/nav_default_enter_anim" />
     </fragment>
     <fragment
         android:id="@+id/editPasswordFragment"
@@ -67,6 +72,7 @@
         <action
             android:id="@+id/action_loginFragment_to_feedFragment"
             app:destination="@id/feedFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
             app:popUpTo="@+id/feedFragment"
             app:popUpToInclusive="true" />
     </fragment>

@@ -2,12 +2,9 @@ package com.example.tm18app.network;
 
 import android.os.AsyncTask;
 
-import com.example.tm18app.constants.Constant;
 import com.example.tm18app.model.UserActivity;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 import retrofit2.Response;
 

@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 
 
@@ -42,6 +43,11 @@ public class MainActivity extends AppCompatActivity {
 
     private Toolbar mToolbar;
     private BottomNavigationView mBottonNavigationView;
+    private GestureListener gestureListener;
+
+    public interface GestureListener {
+        void onTouched(MotionEvent event);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
     public Toolbar getToolbar() {
         return mToolbar;
     }
@@ -108,4 +115,13 @@ public class MainActivity extends AppCompatActivity {
         return mBottonNavigationView;
     }
 
+    public void setGestureListener(GestureListener gestureListener) {
+        this.gestureListener = gestureListener;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        gestureListener.onTouched(event);
+        return true;
+    }
 }

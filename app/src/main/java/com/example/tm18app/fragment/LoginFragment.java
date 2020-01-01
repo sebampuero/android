@@ -125,11 +125,11 @@ public class LoginFragment extends BaseFragment {
             editor.putString(Constant.GOAL_TAGS, sb1.toString());
         }
         editor.apply();
+        setUserPushyCreds(user);
         mMainModel.getNavController().navigate(R.id.action_loginFragment_to_feedFragment);
         mModel.getUserLiveData().getValue().clear();
         mLoginBtn.revertAnimation();
         cleanInputs();
-        setUserPushyCreds(user);
     }
 
     private void setUserPushyCreds(User user) {

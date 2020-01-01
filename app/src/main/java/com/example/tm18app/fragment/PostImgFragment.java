@@ -6,10 +6,13 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
 import com.example.tm18app.network.NetworkConnectivity;
 import com.example.tm18app.util.ConverterUtils;
@@ -18,10 +21,12 @@ import com.squareup.picasso.Picasso;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PostImgFragment extends BaseFragment {
+public class PostImgFragment extends BaseFragment implements MainActivity.GestureListener {
 
     public static final String IMG_URL = "img_url";
 
+    private ScaleGestureDetector mScaleGestureDetector;
+    private float mScaleFactor = 1.0f;
     private ImageView mImageView;
     private View mRoot;
 
@@ -35,7 +40,9 @@ public class PostImgFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         mRoot = inflater.inflate(R.layout.fragment_post_img, container, false);
         setupViews();
+        mScaleGestureDetector = new ScaleGestureDetector(getContext(), new ScaleListener());
         displayPostImage();
+        ((MainActivity)getActivity()).setGestureListener(this);
         return mRoot;
     }
 
@@ -50,9 +57,28 @@ public class PostImgFragment extends BaseFragment {
                 .into(mImageView);
     }
 
+
+
     @Override
     protected void setupViews() {
         super.setupViews();
         mImageView = mRoot.findViewById(R.id.postImage);
+    }
+
+    @Override
+    public void onTouched(MotionEvent event) {
+        mScaleGestureDetector.onTouchEvent(event);
+    }
+
+    private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+        @Override
+        public boolean onScale(ScaleGestureDetector scaleGestureDetector){
+            mScaleFactor *= scaleGestureDetector.getScaleFactor();
+            mScaleFactor = Math.max(0.1f,
+                    Math.min(mScaleFactor, 10.0f));
+            mImageView.setScaleX(mScaleFactor);
+            mImageView.setScaleY(mScaleFactor);
+            return true;
+        }
     }
 }
