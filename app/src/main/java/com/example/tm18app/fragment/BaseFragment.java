@@ -41,7 +41,6 @@ public abstract class BaseFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mMainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
         mPrefs = getContext().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
-        checkUserActivity();
     }
 
     /**
@@ -53,6 +52,7 @@ public abstract class BaseFragment extends Fragment {
         mToolbar.setVisibility(View.VISIBLE);
         mBottomNavigationView.setVisibility(View.VISIBLE);
         mToolbar.getMenu().clear();
+        checkUserActivity();
     }
 
     /**
