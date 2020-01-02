@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +38,7 @@ import com.example.tm18app.util.ConverterUtils;
 import com.example.tm18app.viewModels.EditViewModel;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -119,7 +121,7 @@ public class EditProfileFragment extends BaseFragmentMediaSelector
         if(imgUrl != null){
             if(!imgUrl.equals("")){
                 Picasso.get().load(prefs.getString(Constant.PROFILE_PIC_URL, null))
-                        .resize(300, 300).centerCrop().into(mProfilePicIW);
+                        .into(mProfilePicIW);
             }
         }
     }
@@ -129,7 +131,7 @@ public class EditProfileFragment extends BaseFragmentMediaSelector
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == PICK_IMAGE){
             Uri profilePicUri = data.getData();
-            processImageURI(profilePicUri, 300, 300);
+            processImageURI(profilePicUri, 300,300);
         }
     }
 

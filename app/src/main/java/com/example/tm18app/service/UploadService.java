@@ -171,19 +171,13 @@ public class UploadService extends Service {
 
         /**
          * Converts a {@link Uri} into bytes and then into a 65base encoded {@link String} for an image.
-         * Also processes the corresponding {@link Bitmap} to allow only up to a maximal height.
          * @param contentImageURI {@link Uri}
          * @return {@link String} 64base encoded data
          * @throws IOException
          */
         private String getDataForImage(String contentImageURI) throws IOException {
             Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), Uri.parse(contentImageURI));
-            int height = bitmap.getHeight();
-            int maxHeight = getResources().getInteger(R.integer.max_img_height);
-            if(height > maxHeight)
-                height = maxHeight;
-            Bitmap resizedBitmap = Picasso.get().load(contentImageURI).resize(0, height).centerCrop().get();
-            byte[] contentImageBytes = ConverterUtils.getBytes(resizedBitmap);
+            byte[] contentImageBytes = ConverterUtils.getBytes(bitmap);
             return Base64.encodeToString(contentImageBytes, Base64.DEFAULT);
         }
     }

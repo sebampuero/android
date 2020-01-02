@@ -36,6 +36,9 @@
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:maxHeight="@dimen/max_img_height_dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
                         android:visibility="gone"
                         android:layout_marginBottom="@dimen/margin_10"
                         android:id="@+id/contentImage"/>

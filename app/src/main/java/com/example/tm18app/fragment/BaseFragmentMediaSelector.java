@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.tm18app.R;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Target;
 
 /**
@@ -79,14 +80,12 @@ public abstract class BaseFragmentMediaSelector extends BaseFragment{
     /**
      * Loads the selected image from gallery by {@link Picasso}
      * @param imageUri {@link Uri}
-     * @param width {@link Integer}
-     * @param height {@link Integer}
      */
-    protected void processImageURI(Uri imageUri, int width, int height){
-        int maxHeight = getResources().getInteger(R.integer.max_img_height);
-        if(height > maxHeight)
-            height = maxHeight;
-        Picasso.get().load(imageUri).resize(width, height).centerCrop().into(new Target() {
+    protected void processImageURI(Uri imageUri, int height, int width){
+        RequestCreator creator = Picasso.get().load(imageUri);
+        if(height != 0 && width != 0)
+            creator = creator.resize(width, height).centerCrop();
+        creator.into(new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                 bitmapLoaderInterface.onBitmapLoaded(bitmap); // call the method for fragments to

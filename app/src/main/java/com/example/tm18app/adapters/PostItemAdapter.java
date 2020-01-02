@@ -247,7 +247,6 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
                 String pictureCacheKey = ConverterUtils.extractUrlKey(imgUrl);
                 Picasso.get()
                         .load(imgUrl)
-                        .placeholder(R.drawable.progress_img_animation)
                         .stableKey(pictureCacheKey)
                         .into(contentImage);
                 contentImage.setOnClickListener(new ImageClickListener());

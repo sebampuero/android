@@ -125,15 +125,7 @@ public class NewPostFragment extends BaseFragmentMediaSelector implements BaseFr
             mContentIW.setVisibility(View.VISIBLE);
             Uri contentImgUri = data.getData();
             mModel.setContentImageURI(String.valueOf(contentImgUri));
-            try {
-                Bitmap bitmap = MediaStore
-                        .Images
-                        .Media
-                        .getBitmap(getActivity().getContentResolver(), contentImgUri);
-                processImageURI(contentImgUri, 0, bitmap.getHeight());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            processImageURI(contentImgUri, 0, 0);
         }else if(resultCode == RESULT_OK && requestCode == PICK_VIDEO){
             mContentVW.setVisibility(View.VISIBLE);
             mContentIW.setVisibility(View.GONE);

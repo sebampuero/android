@@ -38,6 +38,7 @@ public class UserActivityAsyncTask extends AsyncTask<String,Void, UserActivity> 
 
     @Override
     protected void onPostExecute(UserActivity activity) {
-        listener.onUserActivityReceived(activity);
+        if(activity != null)
+            listener.onUserActivityReceived(activity);
     }
 }

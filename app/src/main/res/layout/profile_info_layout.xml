@@ -2,6 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profilePic"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/max_img_profile_dp"
+        android:src="@drawable/ic_person_black_80dp" />
+
     <TextView
         android:id="@+id/namesTv"
         android:layout_width="match_parent"

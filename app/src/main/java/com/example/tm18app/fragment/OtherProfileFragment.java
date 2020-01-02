@@ -133,7 +133,7 @@ public class OtherProfileFragment extends BaseProfileFragment {
         });
         mNoPostsView = mBinding.getRoot().findViewById(R.id.noPostsLayout);
         mProgressBar = mBinding.getRoot().findViewById(R.id.progressBar);
-        mProfilePicIW = mBinding.profilePic;
+        mProfilePicIW = mBinding.getRoot().findViewById(R.id.profilePic);
         mProgressBar.setVisibility(View.VISIBLE); // show loading animation when posts are being loaded
         mNamesTV = mBinding.getRoot().findViewById(R.id.namesTv);
         mSwipe = mBinding.getRoot().findViewById(R.id.swipeRefreshOtherProfile);
@@ -159,14 +159,10 @@ public class OtherProfileFragment extends BaseProfileFragment {
 
     @Override
     protected void setProfilePic() {
-        int profilePicRes = getResources().getInteger(R.integer.main_profile_picture);
         String imgUrl = otherUser.getProfilePicUrl();
         if(imgUrl != null){
             Picasso.get()
                     .load(imgUrl)
-                    .resize(profilePicRes, profilePicRes)
-                    .centerCrop()
-                    .placeholder(R.drawable.progress_img_animation)
                     .into(mProfilePicIW);
         }
     }
