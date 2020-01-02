@@ -145,7 +145,7 @@
     <string name="see_user_goals">Ver metas</string>
     <string name="today">hoy</string>
     <string name="yesterday">ayer</string>
-    <string name="cannot_load_posts">Unable to load posts</string>
+    <string name="cannot_load_posts">Error al cargar el feed</string>
 
     <array name="notification_settings">
         <item>Permitir todas las notificaciones</item>

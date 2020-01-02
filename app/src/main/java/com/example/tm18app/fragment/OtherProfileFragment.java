@@ -34,6 +34,7 @@ import com.example.tm18app.adapters.PostItemAdapter;
 import com.example.tm18app.databinding.FragmentOtherProfileBinding;
 import com.example.tm18app.model.Post;
 import com.example.tm18app.model.User;
+import com.example.tm18app.util.ConverterUtils;
 import com.example.tm18app.viewModels.OtherUserProfileViewModel;
 import com.squareup.picasso.Picasso;
 
@@ -162,10 +163,12 @@ public class OtherProfileFragment extends BaseProfileFragment {
     @Override
     protected void setProfilePic() {
         String imgUrl = otherUser.getProfilePicUrl();
+        String cacheKey = ConverterUtils.extractUrlKey(imgUrl);
         if(imgUrl != null){
             Picasso.get()
                     .load(imgUrl)
                     .placeholder(R.drawable.ic_person_black_80dp)
+                    .stableKey(cacheKey)
                     .into(mProfilePicIW);
         }
     }

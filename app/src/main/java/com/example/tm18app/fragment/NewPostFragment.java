@@ -125,12 +125,14 @@ public class NewPostFragment extends BaseFragmentMediaSelector implements BaseFr
             mContentIW.setVisibility(View.VISIBLE);
             Uri contentImgUri = data.getData();
             mModel.setContentImageURI(String.valueOf(contentImgUri));
+            mModel.setContentVideoURI(null);
             processImageURI(contentImgUri, 0, 0);
         }else if(resultCode == RESULT_OK && requestCode == PICK_VIDEO){
             mContentVW.setVisibility(View.VISIBLE);
             mContentIW.setVisibility(View.GONE);
             Uri contentVideoUri = data.getData();
             mModel.setContentVideoURI(String.valueOf(contentVideoUri));
+            mModel.setContentImageURI(null);
             if(mPlayer != null)
                 mPlayer.release();
             TrackSelector selector = new DefaultTrackSelector();

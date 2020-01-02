@@ -121,7 +121,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        gestureListener.onTouched(event);
+        if(gestureListener != null)
+            gestureListener.onTouched(event);
         return true;
     }
 }

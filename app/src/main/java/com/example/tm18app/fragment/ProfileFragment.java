@@ -29,6 +29,7 @@ import com.example.tm18app.adapters.PostItemAdapter;
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.FragmentProfileBinding;
 import com.example.tm18app.model.Post;
+import com.example.tm18app.util.ConverterUtils;
 import com.example.tm18app.viewModels.CurrentProfileViewModel;
 import com.squareup.picasso.Picasso;
 
@@ -188,10 +189,12 @@ public class ProfileFragment extends BaseProfileFragment{
     @Override
     protected void setProfilePic() {
         String imgUrl = mPrefs.getString(Constant.PROFILE_PIC_URL, null);
+        String cacheKey = ConverterUtils.extractUrlKey(imgUrl);
         if(imgUrl != null){
             Picasso.get()
                     .load(mPrefs.getString(Constant.PROFILE_PIC_URL, null))
                     .placeholder(R.drawable.ic_person_black_80dp)
+                    .stableKey(cacheKey)
                     .into(mProfilePicIW);
         }
     }
