@@ -80,6 +80,8 @@ public abstract class BaseFragmentMediaSelector extends BaseFragment{
     /**
      * Loads the selected image from gallery by {@link Picasso}
      * @param imageUri {@link Uri}
+     * @param height {@link Integer} height to resize the image, can be 0. If 0, original height is used
+     * @param width {@link Integer} width to resize the image, can be 0. If 0, original width is used
      */
     protected void processImageURI(Uri imageUri, int height, int width){
         RequestCreator creator = Picasso.get().load(imageUri);

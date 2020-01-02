@@ -9,11 +9,4 @@
         android:title="@string/download"
         app:showAsAction="ifRoom" />
 
-    <item
-        android:id="@+id/share"
-        android:enabled="true"
-        android:icon="@drawable/ic_share_black_24dp"
-        android:title="@string/share_image"
-        app:showAsAction="ifRoom" />
-
 </menu>

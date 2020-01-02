@@ -5,7 +5,9 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.example.tm18app.R;
 import com.example.tm18app.util.FileUtils;
 
 import java.io.File;
@@ -23,8 +25,13 @@ public class DownloadsManager  {
     private DownloadManager.Request mRequest;
     private Context mContext;
 
+    public static int VISIBLE = DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED;
+    public static int INVISIBLE = DownloadManager.Request.VISIBILITY_HIDDEN;
+
     public DownloadsManager(String URL, Context context) {
         this.mRequest = new DownloadManager.Request(Uri.parse(URL));
+        this.mRequest.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI
+                | DownloadManager.Request.NETWORK_MOBILE);
         this.mContext = context;
     }
 
@@ -68,5 +75,7 @@ public class DownloadsManager  {
         DownloadManager manager =
                 (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
         manager.enqueue(mRequest);
+        Toast.makeText(mContext, mContext.getString(R.string.downloading_img_msg),
+                Toast.LENGTH_LONG).show();
     }
 }

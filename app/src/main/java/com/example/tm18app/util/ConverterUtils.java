@@ -44,6 +44,7 @@ public class ConverterUtils {
         ByteArrayOutputStream stream = null;
         try{
             stream = new ByteArrayOutputStream();
+            // only 50% of original quality. Bandwidth and network are costly
             bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
             return stream.toByteArray();
         }catch (Exception e){

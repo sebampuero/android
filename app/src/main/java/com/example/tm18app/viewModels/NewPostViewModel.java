@@ -33,8 +33,6 @@ public class NewPostViewModel extends ViewModel {
 
     private Context appContext;
     private String selectedGoal;
-    private String contentImageBase64Data;
-    private String contentVideoBase64Data;
 
     private String contentImageURI;
     private String contentVideoURI;
@@ -45,7 +43,6 @@ public class NewPostViewModel extends ViewModel {
      */
     public void setContext(Context context) {
         this.appContext = context;
-        contentImageBase64Data = null;
     }
 
     /**
@@ -102,18 +99,6 @@ public class NewPostViewModel extends ViewModel {
         this.selectedGoal = goalTag;
     }
 
-    /**
-     * Sets the {@link String} base64 data of the post picture that is later uploaded to the
-     * server
-     * @param contentImageBase64Data {@link String} base64 encoded image data
-     */
-    public void setContentImageBase64Data(String contentImageBase64Data) {
-        this.contentImageBase64Data = contentImageBase64Data;
-    }
-
-    public void setContentVideoBase64Data(String contentVideoBase64Data) {
-        this.contentVideoBase64Data = contentVideoBase64Data;
-    }
 
     public String getContentImageURI() {
         return contentImageURI;

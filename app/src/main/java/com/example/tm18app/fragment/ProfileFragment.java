@@ -177,7 +177,9 @@ public class ProfileFragment extends BaseProfileFragment{
                 }
                 mModel.setLoadingMoreItems(false);
                 mProgressBar.setVisibility(View.GONE);
-            }
+            }else
+                Toast.makeText(getContext(),
+                        getString(R.string.cannot_load_posts), Toast.LENGTH_SHORT).show();
             mSwipe.setRefreshing(false);
         });
         setProfilePic();
@@ -189,6 +191,7 @@ public class ProfileFragment extends BaseProfileFragment{
         if(imgUrl != null){
             Picasso.get()
                     .load(mPrefs.getString(Constant.PROFILE_PIC_URL, null))
+                    .placeholder(R.drawable.ic_person_black_80dp)
                     .into(mProfilePicIW);
         }
     }

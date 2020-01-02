@@ -9,7 +9,6 @@
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_10_2"
         android:id="@+id/postsUserRv"/>
     <ProgressBar
         android:layout_width="40dp"

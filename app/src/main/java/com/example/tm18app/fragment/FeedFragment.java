@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -154,26 +155,30 @@ public class FeedFragment extends BasePostsContainerFragment{
      */
     private void fetchData() {
         mModel.getPostLiveData().observe(this, posts -> {
-            if(posts.size() > 0){
-                if(doGoalsExist){
-                    mModel.setHasResultsOnPreviousPages(true);
-                    HashSet<Post> postsSet = new HashSet<>(posts);
-                    postsSet.addAll(mPostsList);
-                    mPostsList.clear();
-                    mPostsList.addAll(postsSet);
-                    Collections.sort(mPostsList);
-                    mAdapter.notifyDataSetChanged();
-                    mNoPostsView.setVisibility(View.GONE);
-                    mRecyclerView.setVisibility(View.VISIBLE);
+            if(posts != null){
+                if(posts.size() > 0){
+                    if(doGoalsExist){
+                        mModel.setHasResultsOnPreviousPages(true);
+                        HashSet<Post> postsSet = new HashSet<>(posts);
+                        postsSet.addAll(mPostsList);
+                        mPostsList.clear();
+                        mPostsList.addAll(postsSet);
+                        Collections.sort(mPostsList);
+                        mAdapter.notifyDataSetChanged();
+                        mNoPostsView.setVisibility(View.GONE);
+                        mRecyclerView.setVisibility(View.VISIBLE);
+                        mLoadMoreItemsProgressBar.animate().alpha(0).setDuration(200);
+                    }
+                }else{
+                    if(!mModel.hasResultsOnPreviousPages()){
+                        mNoPostsView.setVisibility(View.VISIBLE);
+                        mRecyclerView.setVisibility(View.GONE);
+                    }
                     mLoadMoreItemsProgressBar.animate().alpha(0).setDuration(200);
                 }
-            }else{
-                if(!mModel.hasResultsOnPreviousPages()){
-                    mNoPostsView.setVisibility(View.VISIBLE);
-                    mRecyclerView.setVisibility(View.GONE);
-                }
-                mLoadMoreItemsProgressBar.animate().alpha(0).setDuration(200);
-            }
+            }else
+                Toast.makeText(getContext(),
+                        getString(R.string.cannot_load_posts), Toast.LENGTH_SHORT).show();
             mProgressBar.setVisibility(View.GONE);
             mSwipe.setRefreshing(false);
             mModel.setLoadingMoreItems(false);

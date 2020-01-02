@@ -239,6 +239,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
                         .load(post.getPosterPicUrl()) // no need to tweak quality
                         .resize(profilePicDimen, profilePicDimen)
                         .centerCrop()
+                        .placeholder(R.drawable.ic_person_black_24dp)
                         .into(posterProfilePic);
             if(post.getContentPicUrl() != null){
                 String imgUrl =  NetworkConnectivity // download on low quality if on metered connection
@@ -247,6 +248,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
                 String pictureCacheKey = ConverterUtils.extractUrlKey(imgUrl);
                 Picasso.get()
                         .load(imgUrl)
+                        .placeholder(R.drawable.placeholder)
                         .stableKey(pictureCacheKey)
                         .into(contentImage);
                 contentImage.setOnClickListener(new ImageClickListener());

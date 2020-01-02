@@ -64,7 +64,7 @@ public class PostItemRepository {
 
             @Override
             public void onFailure(Call<List<Post>> call, Throwable t) {
-
+                data.setValue(null);
             }
         });
         return data;
@@ -88,7 +88,7 @@ public class PostItemRepository {
 
             @Override
             public void onFailure(Call<List<Post>> call, Throwable t) {
-
+                data.setValue(null);
             }
         });
         return data;
@@ -183,7 +183,6 @@ public class PostItemRepository {
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-
             }
         });
     }

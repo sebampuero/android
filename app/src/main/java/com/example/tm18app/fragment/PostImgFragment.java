@@ -14,6 +14,7 @@ import android.widget.ImageView;
 
 import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
+import com.example.tm18app.network.DownloadsManager;
 import com.example.tm18app.network.NetworkConnectivity;
 import com.example.tm18app.util.ConverterUtils;
 import com.squareup.picasso.Picasso;
@@ -52,7 +53,7 @@ public class PostImgFragment extends BaseFragment implements MainActivity.Gestur
         String urlKey = ConverterUtils.extractUrlKey(url);
         Picasso.get()
                 .load(url)
-                .placeholder(R.drawable.progress_img_animation)
+                .placeholder(R.drawable.placeholder)
                 .stableKey(urlKey)
                 .into(mImageView);
     }
@@ -63,6 +64,17 @@ public class PostImgFragment extends BaseFragment implements MainActivity.Gestur
     protected void setupViews() {
         super.setupViews();
         mImageView = mRoot.findViewById(R.id.postImage);
+        mToolbar.inflateMenu(R.menu.post_img_menu);
+        mToolbar.setOnMenuItemClickListener(item -> {
+            if(item.getItemId() ==  R.id.downloadImg){
+                new DownloadsManager(getArguments().getString(IMG_URL), getContext())
+                        .setFilenameForImg(String.valueOf(System.currentTimeMillis()))
+                        .setNotificationVisibility(DownloadsManager.VISIBLE)
+                        .setTitle(getString(R.string.downloading_img_msg))
+                        .download();
+            }
+            return true;
+        });
     }
 
     @Override

@@ -180,22 +180,22 @@ public class UploadService extends Service {
             byte[] contentImageBytes = ConverterUtils.getBytes(bitmap);
             return Base64.encodeToString(contentImageBytes, Base64.DEFAULT);
         }
-    }
 
-    /**
-     * Compresses a video using as input its {@link Uri}
-     * @param inputUri {@link Uri} the source path Uri of the video
-     * @return {@link Uri} the destination path of the compressed video
-     */
-    private Uri compressedVideoUri(Uri inputUri) {
-        try {
-            String filePath = SiliCompressor.with(this).compressVideo(FileUtils.getPath(this, inputUri),
-                    FileUtils.getPublicMediaDir(this));
-            return Uri.fromFile(new File(filePath));
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
+        /**
+         * Compresses a video using as input its {@link Uri}
+         * @param inputUri {@link Uri} the source path Uri of the video
+         * @return {@link Uri} the destination path of the compressed video
+         */
+        private Uri compressedVideoUri(Uri inputUri) {
+            try {
+                String filePath = SiliCompressor.with(UploadService.this).compressVideo(FileUtils.getPath(UploadService.this, inputUri),
+                        FileUtils.getPublicMediaDir(UploadService.this));
+                return Uri.fromFile(new File(filePath));
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+            return inputUri;
         }
-        return inputUri;
     }
 
     /**
