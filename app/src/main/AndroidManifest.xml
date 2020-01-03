@@ -56,7 +56,8 @@
             android:name="me.pushy.sdk.services.PushyJobService"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" /> <!-- End Pushy Declarations -->
-        <activity android:name=".MainActivity" />
+        <activity android:name=".MainActivity"
+            android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".IntroActivity" />
         <activity android:name=".SplashActivity"
             android:theme="@style/SplashTheme">
