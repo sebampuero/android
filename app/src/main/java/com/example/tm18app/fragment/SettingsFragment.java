@@ -83,6 +83,10 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     public void onResume() {
         super.onResume(); // register the listener for changes when app in foreground
         getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+        getPreferenceScreen().findPreference("notifications_other")
+                .setEnabled(!getContext()
+                        .getSharedPreferences(SETTINGS_SHARED_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE)
+                        .getBoolean("notifications", true));
     }
 
     @Override

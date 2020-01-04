@@ -77,11 +77,14 @@ public abstract class BaseFragment extends Fragment {
      * @param userActivity {@link UserActivity} containing this user's activity
      */
     private void updateBottomNavigation(UserActivity userActivity) {
-        if(userActivity.isChatActivity())
-            mBottomNavigationView.getMenu().getItem(2) // icon for unread messages
-                    .setIcon(getResources().getDrawable(R.drawable.ic_chat_vector_important));
-        else
-            mBottomNavigationView.getMenu().getItem(2) // icon for unread messages
-                    .setIcon(getResources().getDrawable(R.drawable.ic_chat_black_24dp));
+        if(getContext() != null){ // to prevent java.lang.IllegalStateException: Fragment not attached
+            // to a context. Research about this bug keeps on...
+            if(userActivity.isChatActivity())
+                mBottomNavigationView.getMenu().getItem(2) // icon for unread messages
+                        .setIcon(getResources().getDrawable(R.drawable.ic_chat_vector_important));
+            else
+                mBottomNavigationView.getMenu().getItem(2) // icon for unread messages
+                        .setIcon(getResources().getDrawable(R.drawable.ic_chat_black_24dp));
+        }
     }
 }

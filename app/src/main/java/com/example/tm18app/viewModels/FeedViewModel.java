@@ -63,41 +63,23 @@ public class FeedViewModel extends ViewModel {
         return totalPagesLiveData;
     }
 
-    /**
-     * Getter for the {@link LiveData}
-     * @return {@link LiveData}
-     */
     public LiveData<List<Post>> getPostLiveData() {
         return postLiveData;
     }
 
-    /**
-     * Sets the {@link NavController} for this ViewModel
-     * @param navController {@link NavController}
-     */
     public void setNavController(NavController navController) {
         this.navController = navController;
     }
 
-    /**
-     * Sets the {@link Context} for this ViewModel
-     * @param context {@link Context}
-     */
     public void setContext(Context context) {
         this.appContext = context;
     }
 
-    /**
-     * Calls the repository to fetch and/or update the Posts
-     */
     public void callRepository() {
         reloadTrigger.setValue(true);
     }
 
 
-    /**
-     * Navigates to the UI for Post creation
-     */
     public void onNewPostButtonClicked() {
         navController.navigate(R.id.action_feedFragment_to_newPostFragment);
     }

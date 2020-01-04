@@ -17,11 +17,23 @@ import com.google.android.exoplayer2.util.Util;
 
 import java.io.File;
 
+/**
+ * A custom  implementation of a {@link DataSource}. This class is useful when downloaded media
+ * has to be cached in order to save network requests and bandwidth.
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 25.12.2019
+ */
 public class CacheDataSourceFactory implements DataSource.Factory {
     private final Context context;
     private final DefaultDataSourceFactory defaultDatasourceFactory;
     private final long maxFileSize, maxCacheSize;
 
+    /**
+     * The {@link SimpleCache} cannot be used multiple times by different {@link DataSource} entities.
+     * For that reason, a Singleton is implemented.
+     */
     static class SimpleCacheSingleton {
         static SimpleCache simpleCache;
 

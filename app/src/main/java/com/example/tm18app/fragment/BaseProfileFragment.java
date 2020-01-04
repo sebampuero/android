@@ -1,5 +1,6 @@
 package com.example.tm18app.fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import com.example.tm18app.R;
 import com.example.tm18app.model.Post;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -32,7 +34,7 @@ public abstract class BaseProfileFragment extends BasePostsContainerFragment {
     protected String[] userGoals;
     protected ProgressBar mLoadMoreItemsProgressBar;
 
-    protected View.OnClickListener goalsInfoClickListener = new View.OnClickListener() {
+    protected final View.OnClickListener goalsInfoClickListener = new View.OnClickListener() {
 
         @Override
         public void onClick(View view) {
@@ -44,11 +46,18 @@ public abstract class BaseProfileFragment extends BasePostsContainerFragment {
             dialog.setView(dialogLayout);
             dialog.show();
             dialog.setCancelable(true);
-            for(String string : userGoals){
-                TextView tv = new TextView(getContext());
+            TextView tv;
+            for (String string : userGoals) {
+                tv = new TextView(getContext());
                 tv.setText(string);
                 tv.setTextSize((float) 15);
-                tv.setPadding(0,5,0,5);
+                tv.setPadding(0, 5, 0, 5);
+                layout.addView(tv);
+            }
+            if (userGoals.length == 1) { // somehow array is [] but .length returns 1 ???
+                tv = new TextView(getContext());
+                tv.setText(getString(R.string.user_has_no_goals));
+                tv.setTextSize((float) 15);
                 layout.addView(tv);
             }
         }

@@ -162,9 +162,8 @@
     <string name="today">today</string>
     <string name="yesterday">yesterday</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="cannot_load_posts">Unable to load posts</string>
+    <string name="user_has_no_goals">No goals</string>
 
 
 </resources>

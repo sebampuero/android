@@ -331,7 +331,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
             @Override
             public void onClick(View view) {
                 // a play/pause button to control the video
-                //TODO: FIX LOGIC
+                //TODO: FIX LOGIC, open error: when playing a video and playing another one, currently playing video pauses but pause btn stays in state "pause"
                 playPauseBtn.setVisibility(View.VISIBLE);
                 playPauseBtn.setImageDrawable(mContext.getDrawable(R.drawable.ic_pause_white_24dp));
                 playPauseBtn.setOnClickListener(view1 -> {

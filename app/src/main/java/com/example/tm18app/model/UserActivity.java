@@ -2,7 +2,6 @@ package com.example.tm18app.model;
 
 public class UserActivity {
 
-
     private boolean chatActivity;
 
     public UserActivity() {

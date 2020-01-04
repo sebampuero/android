@@ -145,6 +145,7 @@
     <string name="today">heute</string>
     <string name="yesterday">gestern</string>
     <string name="cannot_load_posts">Posts konnten nicht geladen werden</string>
+    <string name="user_has_no_goals">Keine Ziele</string>
 
     <array name="notification_settings">
         <item>Alle Benachrichtigungen erlauben</item>

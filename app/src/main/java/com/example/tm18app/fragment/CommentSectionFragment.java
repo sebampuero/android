@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +58,7 @@ public class CommentSectionFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mModel = ViewModelProviders.of(this).get(CommentsSectionViewModel.class);
+        mModel = ViewModelProviders.of(getActivity()).get(CommentsSectionViewModel.class);
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_comment_section,
                 container, false);
         mBinding.setLifecycleOwner(this);

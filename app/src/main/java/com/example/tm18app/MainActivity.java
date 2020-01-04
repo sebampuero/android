@@ -52,10 +52,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Make Pushy listen for incoming MQTT Notification messages. It only works if writing and
-        // reading permissions are granted
-        Pushy.listen(this);
         
         // Enable or disable Wi-Fi sleep policy compliance to prevent the SDK 
         // from acquiring a wake lock in case the "Keep Wi-Fi on during sleep" device setting is set to "Never"

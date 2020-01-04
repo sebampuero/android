@@ -36,6 +36,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import me.pushy.sdk.Pushy;
+
 
 /**
  * A simple {@link Fragment} subclass. Responsible for UI and events for the feed section UI.
@@ -65,6 +67,9 @@ public class FeedFragment extends BasePostsContainerFragment{
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Make Pushy listen for incoming MQTT Notification messages. It only works if writing and
+        // reading permissions are granted
+        Pushy.listen(getContext());
     }
 
     @Override
