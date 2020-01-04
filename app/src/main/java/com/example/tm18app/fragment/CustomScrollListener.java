@@ -29,7 +29,7 @@ abstract class CustomScrollListener extends RecyclerView.OnScrollListener {
     @Override
     public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
         super.onScrollStateChanged(recyclerView, newState);
-        if(!isLoading()){
+        if(!isLoading() && !lastPageReached()){
             if(!recyclerView.canScrollVertically(1) // user stopped scrolling and view reached
                     // end of window
                     && newState == RecyclerView.SCROLL_STATE_IDLE ){
@@ -48,5 +48,7 @@ abstract class CustomScrollListener extends RecyclerView.OnScrollListener {
      * @return true if currently loading, false otherwise
      */
     abstract boolean isLoading();
+
+    abstract boolean lastPageReached();
 
 }

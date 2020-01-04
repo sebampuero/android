@@ -94,7 +94,6 @@ public class OtherProfileFragment extends BaseProfileFragment {
         mModel.getPostLiveData().observe(this, posts -> {
             if(posts != null){
                 if(posts.size() > 0){
-                    mModel.setHasResultsOnPreviousPages(true);
                     HashSet<Post> postsSet = new HashSet<>(posts);
                     postsSet.addAll(mPostsList);
                     mPostsList.clear();
@@ -104,10 +103,8 @@ public class OtherProfileFragment extends BaseProfileFragment {
                     mRecyclerView.setVisibility(View.VISIBLE);
                     mLoadMoreItemsProgressBar.animate().alpha(0).setDuration(200);
                 }else{
-                    if(!mModel.hasResultsOnPreviousPages()){
-                        mNoPostsView.setVisibility(View.VISIBLE);
-                        mRecyclerView.setVisibility(View.GONE);
-                    }
+                    mNoPostsView.setVisibility(View.VISIBLE);
+                    mRecyclerView.setVisibility(View.GONE);
                     mLoadMoreItemsProgressBar.animate().alpha(0).setDuration(200);
                 }
                 mModel.setLoadingMoreItems(false);
@@ -202,6 +199,13 @@ public class OtherProfileFragment extends BaseProfileFragment {
             @Override
             boolean isLoading() {
                 return mModel.isLoadingMoreItems();
+            }
+
+            @Override
+            boolean lastPageReached() {
+                if(mModel.getTotalPagesLiveData().getValue() != null)
+                    return mModel.getPageNumber() + 1 == mModel.getTotalPagesLiveData().getValue();
+                return true;
             }
         });
     }

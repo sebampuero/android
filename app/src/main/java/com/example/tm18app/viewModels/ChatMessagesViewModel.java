@@ -1,8 +1,6 @@
 package com.example.tm18app.viewModels;
 
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
@@ -32,9 +30,9 @@ public class ChatMessagesViewModel extends ViewModel {
     private String roomName;
     private String toId;
     private String toName;
-    private String profilePic;
     private int numberPage;
-    private boolean isPaginating;
+    private boolean isLoadingMoreItems;
+    private LiveData<Integer> totalPagesLiveData = new MutableLiveData<>();
 
     private SharedPreferences prefs;
     private ChatSocket socket;
@@ -43,6 +41,8 @@ public class ChatMessagesViewModel extends ViewModel {
         @Override
         public LiveData<List<ChatMessage>> apply(Boolean input) {
             ChatsRepository repository = new ChatsRepository();
+            ChatMessagesViewModel.this.totalPagesLiveData =
+                    repository.getTotalPagesForRoom(roomId, prefs.getString(Constant.PUSHY_TOKEN, ""));
             return repository.getChatsForRoom(roomId,
                     String.valueOf(numberPage), prefs.getString(Constant.PUSHY_TOKEN, ""));
         }
@@ -50,6 +50,10 @@ public class ChatMessagesViewModel extends ViewModel {
 
     public LiveData<List<ChatMessage>> getMessagesLiveData() {
         return messagesLiveData;
+    }
+
+    public LiveData<Integer> getTotalPagesLiveData() {
+        return totalPagesLiveData;
     }
 
     public void onSendMessage() {
@@ -107,14 +111,6 @@ public class ChatMessagesViewModel extends ViewModel {
         this.toName = toName;
     }
 
-    public String getProfilePic() {
-        return profilePic;
-    }
-
-    public void setProfilePic(String profilePic) {
-        this.profilePic = profilePic;
-    }
-
     public int getNumberPage() {
         return numberPage;
     }
@@ -123,11 +119,11 @@ public class ChatMessagesViewModel extends ViewModel {
         this.numberPage = numberPage;
     }
 
-    public boolean isPaginating() {
-        return isPaginating;
+    public boolean isLoadingMoreItems() {
+        return isLoadingMoreItems;
     }
 
-    public void setPaginating(boolean paginating) {
-        isPaginating = paginating;
+    public void setLoadingMoreItems(boolean loadingMoreItems) {
+        isLoadingMoreItems = loadingMoreItems;
     }
 }

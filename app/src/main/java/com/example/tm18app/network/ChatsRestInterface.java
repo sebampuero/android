@@ -28,6 +28,8 @@ public interface ChatsRestInterface {
     @GET("api/chats/{roomId}/{page}")
     Call<List<ChatMessage>> getChatMessagesByRoomId(@Path("roomId") String roomId, @Path("page") String page,
                                                     @Header("pushy") String pushyToken);
+    @GET("api/chats/pagination/totalPages/{roomId}")
+    Call<Integer> getTotalPagesForRoom(@Path("roomId") String roomId, @Header("pushy") String pushyToken);
 
     @DELETE("api/chats/{roomId}")
     Call<Void> deleteChatRoom(@Path("roomId") String roomId,

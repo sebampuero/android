@@ -1,5 +1,7 @@
 package com.example.tm18app.repository;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -71,6 +73,21 @@ public class ChatsRepository {
             @Override
             public void onFailure(Call<List<ChatMessage>> call, Throwable t) {
 
+            }
+        });
+        return data;
+    }
+
+    public LiveData<Integer> getTotalPagesForRoom(String roomId, String pushyToken) {
+        final MutableLiveData<Integer> data = new MutableLiveData<>();
+        chatsRestInterface.getTotalPagesForRoom(roomId, pushyToken).enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                data.setValue(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
             }
         });
         return data;

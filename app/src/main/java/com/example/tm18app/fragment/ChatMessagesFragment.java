@@ -2,14 +2,12 @@ package com.example.tm18app.fragment;
 
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -19,14 +17,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
 import com.example.tm18app.adapters.ChatMessagesAdapter;
 import com.example.tm18app.constants.Constant;
@@ -42,7 +38,6 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -216,19 +211,19 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
                     HashSet<ChatMessage> set = new HashSet<>(chatMessages);
                     set.addAll(mChatMessagesList);
                     mChatMessagesList.clear();
-                    if(!mModel.isPaginating()){
+                    if(!mModel.isLoadingMoreItems()){
                         mChatMessagesList.addAll(set);
                         Collections.sort(mChatMessagesList);
                         mAdapter.notifyDataSetChanged();
                         mRv.scrollToPosition(mAdapter.getItemCount() - 1);
-                    }else{
+                    }else{ // append new messages to the beginning of list when user is scrolling UP
                         mChatMessagesList.addAll(0, set);
                         Collections.sort(mChatMessagesList);
                         mAdapter.notifyItemRangeInserted(0, chatMessages.size());
                         mLoadingMessagesTv.setVisibility(View.GONE);
                     }
                 }
-                mModel.setPaginating(false);
+                mModel.setLoadingMoreItems(false);
             }
             mLoadingMessagesTv.setVisibility(View.GONE);
         });
@@ -294,14 +289,22 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if(newState == RecyclerView.SCROLL_STATE_IDLE
-                        && !recyclerView.canScrollVertically(-1) && !mModel.isPaginating()){
-                    loadMoreItems();
+                if(!mModel.isLoadingMoreItems() && !lastPageReached()){
+                    if(newState == RecyclerView.SCROLL_STATE_IDLE
+                            && !recyclerView.canScrollVertically(-1)){
+                        loadMoreItems();
+                    }
                 }
             }
 
+            private boolean lastPageReached() {
+                if(mModel.getTotalPagesLiveData().getValue() != null)
+                    return mModel.getNumberPage() + 1 == mModel.getTotalPagesLiveData().getValue();
+                return true;
+            }
+
             private void loadMoreItems() {
-                mModel.setPaginating(true);
+                mModel.setLoadingMoreItems(true);
                 mModel.setNumberPage(mModel.getNumberPage()+1);
                 mModel.callRepository();
                 mLoadingMessagesTv.setVisibility(View.VISIBLE);

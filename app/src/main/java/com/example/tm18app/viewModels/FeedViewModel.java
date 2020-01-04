@@ -2,6 +2,7 @@ package com.example.tm18app.viewModels;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
@@ -28,12 +29,11 @@ import java.util.List;
 public class FeedViewModel extends ViewModel {
 
     private int pageNumber;
-    private boolean hasResultsOnPreviousPages;
     private boolean isLoadingMoreItems;
     private NavController navController;
     private Context appContext;
     private int currentScrolledItemPosition;
-
+    private LiveData<Integer> totalPagesLiveData = new MutableLiveData<>();
     private MutableLiveData<Boolean> reloadTrigger = new MutableLiveData<>();
 
     /**
@@ -49,12 +49,19 @@ public class FeedViewModel extends ViewModel {
                     .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
             if(preferences.getString(Constant.GOAL_IDS, null) != null){
                 String[] goalIds = preferences.getString(Constant.GOAL_IDS, null).split(",");
+                FeedViewModel.this.totalPagesLiveData =
+                        postItemRepository.getPagesNumberForPosts(Arrays.asList(goalIds),
+                                preferences.getString(Constant.PUSHY_TOKEN, ""));
                 return postItemRepository.getPosts(Arrays.asList(goalIds),
                         preferences.getString(Constant.PUSHY_TOKEN, ""), String.valueOf(pageNumber));
             }
             return null;
         }
     });
+
+    public LiveData<Integer> getTotalPagesLiveData() {
+        return totalPagesLiveData;
+    }
 
     /**
      * Getter for the {@link LiveData}
@@ -111,13 +118,6 @@ public class FeedViewModel extends ViewModel {
         this.pageNumber = pageNumber;
     }
 
-    public boolean hasResultsOnPreviousPages() {
-        return hasResultsOnPreviousPages;
-    }
-
-    public void setHasResultsOnPreviousPages(boolean hasResultsOnPreviousPages) {
-        this.hasResultsOnPreviousPages = hasResultsOnPreviousPages;
-    }
 
     public boolean isLoadingMoreItems() {
         return isLoadingMoreItems;
@@ -126,4 +126,5 @@ public class FeedViewModel extends ViewModel {
     public void setLoadingMoreItems(boolean loadingMoreItems) {
         isLoadingMoreItems = loadingMoreItems;
     }
+
 }

@@ -70,6 +70,21 @@ public class PostItemRepository {
         return data;
     }
 
+    public LiveData<Integer> getPagesNumberForPosts(List<String> goals, String pushyToken) {
+        final MutableLiveData<Integer> data = new MutableLiveData<>();
+        postRestInterface.getTotalPagesForPosts(goals, pushyToken).enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                data.setValue(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
+            }
+        });
+        return data;
+    }
+
     /**
      * Fetches a {@link List} of {@link Post} that correspond to a given userId
      * @param userId {@link Integer} the userId
@@ -89,6 +104,21 @@ public class PostItemRepository {
             @Override
             public void onFailure(Call<List<Post>> call, Throwable t) {
                 data.setValue(null);
+            }
+        });
+        return data;
+    }
+
+    public LiveData<Integer> getPagesNumberForPosts(String userId, String pushyToken) {
+        final MutableLiveData<Integer> data = new MutableLiveData<>();
+        postRestInterface.getTotalPagesForPosts(userId, pushyToken).enqueue(new Callback<Integer>() {
+            @Override
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                data.setValue(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<Integer> call, Throwable t) {
             }
         });
         return data;
@@ -223,4 +253,5 @@ public class PostItemRepository {
             }
         });
     }
+
 }

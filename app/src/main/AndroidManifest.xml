@@ -19,6 +19,7 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/goalsappicon100100"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning">
         <!-- Pushy Declarations -->
