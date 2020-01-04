@@ -27,6 +27,7 @@ import com.example.tm18app.databinding.PostCardviewBinding;
 import com.example.tm18app.fragment.CommentSectionFragment;
 import com.example.tm18app.fragment.OtherProfileFragment;
 import com.example.tm18app.fragment.PostImgFragment;
+import com.example.tm18app.network.CacheDataSourceFactory;
 import com.example.tm18app.network.NetworkConnectivity;
 import com.example.tm18app.model.Post;
 import com.example.tm18app.repository.PostItemRepository;
@@ -35,6 +36,7 @@ import com.example.tm18app.util.TimeUtils;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
@@ -362,12 +364,13 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
                 // occupy whole width of screen
                 surfaceView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM);
                 videoPlayer.addListener(new PlayerListener());
-                DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(
-                        mContext,
-                        Util.getUserAgent(mContext, "RecyclerView VideoPlayer"));
+
                 String contentUrl = mPostsList.get(getAdapterPosition()).getContentVideoUrl();
-                MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
-                        .createMediaSource(Uri.parse(contentUrl));
+                MediaSource videoSource = new ExtractorMediaSource(Uri.parse(contentUrl),
+                        new CacheDataSourceFactory(mContext,
+                                100 * 1024 * 1024,
+                                5 * 1024 * 1024),
+                        new DefaultExtractorsFactory(), null, null);
                 videoPlayer.prepare(videoSource);
                 videoPlayer.setPlayWhenReady(true);
                 videoPlayer.addVideoListener(new VideoListenerImpl());

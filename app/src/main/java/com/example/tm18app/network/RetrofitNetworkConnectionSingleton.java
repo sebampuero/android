@@ -4,6 +4,9 @@ import com.example.tm18app.constants.Constant;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -26,6 +29,12 @@ public class RetrofitNetworkConnectionSingleton {
         gson = new GsonBuilder()
                 .setLenient()
                 .create();
+        // Big timeout now for Heroku, since heroku sleeps, retrofit will close the connection
+        // using a default timeout
+        final OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .readTimeout(60, TimeUnit.SECONDS)
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .build();
         if(DEBUG){
             retrofit = new Retrofit.Builder()
                     .baseUrl(Constant.API_ENDPOINT_LOCAL)
@@ -35,6 +44,7 @@ public class RetrofitNetworkConnectionSingleton {
             retrofit = new Retrofit.Builder()
                     .baseUrl(Constant.API_ENDPOINT)
                     .addConverterFactory(GsonConverterFactory.create(gson))
+                    .client(okHttpClient)
                     .build();
         }
     }

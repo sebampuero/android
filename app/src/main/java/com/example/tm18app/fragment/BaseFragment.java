@@ -65,7 +65,6 @@ public abstract class BaseFragment extends Fragment {
     private void checkUserActivity() {
         if(mPrefs.getBoolean(Constant.LOGGED_IN, false)){
             // only check if the user is logged in and if the request was not already sent
-            // do not send requests on every fragment!! only when the app starts
             new UserActivityAsyncTask(this::updateBottomNavigation)
                     .execute(mPrefs.getString(Constant.PUSHY_TOKEN, ""),
                             String.valueOf(mPrefs.getInt(Constant.USER_ID, 0)));
