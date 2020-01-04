@@ -331,6 +331,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
             @Override
             public void onClick(View view) {
                 // a play/pause button to control the video
+                //TODO: FIX LOGIC
                 playPauseBtn.setVisibility(View.VISIBLE);
                 playPauseBtn.setImageDrawable(mContext.getDrawable(R.drawable.ic_pause_white_24dp));
                 playPauseBtn.setOnClickListener(view1 -> {
@@ -368,8 +369,8 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
                 String contentUrl = mPostsList.get(getAdapterPosition()).getContentVideoUrl();
                 MediaSource videoSource = new ExtractorMediaSource(Uri.parse(contentUrl),
                         new CacheDataSourceFactory(mContext,
-                                100 * 1024 * 1024,
-                                5 * 1024 * 1024),
+                                1000 * 1024 * 1024,
+                                500 * 1024 * 1024),
                         new DefaultExtractorsFactory(), null, null);
                 videoPlayer.prepare(videoSource);
                 videoPlayer.setPlayWhenReady(true);
