@@ -27,7 +27,7 @@ public abstract class ProfileViewModel extends ViewModel {
 
     protected String userId;
     protected SharedPreferences prefs;
-    protected int pageNumber;
+    protected int pageNumber = -1;
     protected boolean isLoadingMoreItems;
     private LiveData<Integer> totalPagesLiveData = new MutableLiveData<>();
 

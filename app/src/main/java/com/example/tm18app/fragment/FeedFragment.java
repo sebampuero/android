@@ -3,6 +3,7 @@ package com.example.tm18app.fragment;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,7 +77,7 @@ public class FeedFragment extends BasePostsContainerFragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         checkBackBtnPressedFromMainFragment();
-        mModel = ViewModelProviders.of(getActivity()).get(FeedViewModel.class);
+        mModel = ViewModelProviders.of(this).get(FeedViewModel.class);
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_feed, container, false);
         mBinding.setMyVM(mModel);
         mBinding.setLifecycleOwner(this);
@@ -87,7 +88,8 @@ public class FeedFragment extends BasePostsContainerFragment{
         mModel.setContext(getContext());
         checkIfGoalsExist();
         if(doGoalsExist){ // if user has selected goals, fetch posts
-            mModel.setPageNumber(0);
+            if(mModel.getPageNumber() == -1)
+                mModel.setPageNumber(0);
             mModel.callRepository();
             fetchData();
         }else{
@@ -279,5 +281,4 @@ public class FeedFragment extends BasePostsContainerFragment{
             return true;
         }
     }
-
 }

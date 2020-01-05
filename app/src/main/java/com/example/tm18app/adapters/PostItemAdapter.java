@@ -243,7 +243,10 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
                         .centerCrop()
                         .placeholder(R.drawable.ic_person_black_24dp)
                         .into(posterProfilePic);
+            else
+                posterProfilePic.setImageDrawable(mContext.getDrawable(R.drawable.ic_person_black_24dp));
             if(post.getContentPicUrl() != null){
+                postMediaContent.setVisibility(View.VISIBLE);
                 String imgUrl =  NetworkConnectivity // download on low quality if on metered connection
                         .tweakImgQualityByNetworkType(mContext,
                                 post.getContentPicUrl());
@@ -256,6 +259,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
                 contentImage.setOnClickListener(new ImageClickListener());
             }
             if(post.getContentVideoUrl() != null){
+                postMediaContent.setVisibility(View.VISIBLE);
                 String thumbnailUrl = NetworkConnectivity.tweakImgQualityByNetworkType(mContext,
                         post.getContentVideoThumbnailUrl());
                 String thumbnailCacheKey = ConverterUtils.extractUrlKey(thumbnailUrl);

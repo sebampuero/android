@@ -28,7 +28,7 @@ import java.util.List;
  */
 public class FeedViewModel extends ViewModel {
 
-    private int pageNumber;
+    private int pageNumber = -1;
     private boolean isLoadingMoreItems;
     private NavController navController;
     private Context appContext;

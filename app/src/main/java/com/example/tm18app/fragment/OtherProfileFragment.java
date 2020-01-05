@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -75,7 +76,8 @@ public class OtherProfileFragment extends BaseProfileFragment {
         mBinding.setLifecycleOwner(this);
         setupViews();
         mModel.setPreferences(mPrefs);
-        mModel.setPageNumber(0);
+        if(mModel.getPageNumber() == -1)
+            mModel.setPageNumber(0);
         mModel.callRepositoryForUser(getArguments().getString(OTHER_USER_ID));
         mModel.getUserLiveData().observe(this, user -> {
             ((MainActivity)getActivity()).getToolbar().setTitle(user.getName());
@@ -160,8 +162,8 @@ public class OtherProfileFragment extends BaseProfileFragment {
     @Override
     protected void setProfilePic() {
         String imgUrl = otherUser.getProfilePicUrl();
-        String cacheKey = ConverterUtils.extractUrlKey(imgUrl);
         if(imgUrl != null){
+            String cacheKey = ConverterUtils.extractUrlKey(imgUrl);
             Picasso.get()
                     .load(imgUrl)
                     .placeholder(R.drawable.ic_person_black_80dp)

@@ -62,7 +62,7 @@ public class ProfileFragment extends BaseProfileFragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mModel = ViewModelProviders.of(getActivity()).get(CurrentProfileViewModel.class);
+        mModel = ViewModelProviders.of(this).get(CurrentProfileViewModel.class);
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false);
         mBinding.setMyVM(mModel);
         mBinding.setLifecycleOwner(this);
@@ -72,7 +72,8 @@ public class ProfileFragment extends BaseProfileFragment{
         mModel.setNavController(mMainModel.getNavController());
         mModel.setUserId(String.valueOf(mPrefs.getInt(Constant.USER_ID, 0)));
         mModel.setPreferences(mPrefs);
-        mModel.setPageNumber(0);
+        if(mModel.getPageNumber() == -1)
+            mModel.setPageNumber(0);
         mModel.callRepositoryForPosts();
         setupRecyclerView();
         fetchData();
@@ -193,8 +194,8 @@ public class ProfileFragment extends BaseProfileFragment{
     @Override
     protected void setProfilePic() {
         String imgUrl = mPrefs.getString(Constant.PROFILE_PIC_URL, null);
-        String cacheKey = ConverterUtils.extractUrlKey(imgUrl);
         if(imgUrl != null){
+            String cacheKey = ConverterUtils.extractUrlKey(imgUrl);
             Picasso.get()
                     .load(mPrefs.getString(Constant.PROFILE_PIC_URL, null))
                     .placeholder(R.drawable.ic_person_black_80dp)
