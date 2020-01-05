@@ -32,7 +32,6 @@ public class FeedViewModel extends ViewModel {
     private boolean isLoadingMoreItems;
     private NavController navController;
     private Context appContext;
-    private int currentScrolledItemPosition;
     private LiveData<Integer> totalPagesLiveData = new MutableLiveData<>();
     private MutableLiveData<Boolean> reloadTrigger = new MutableLiveData<>();
 
@@ -82,14 +81,6 @@ public class FeedViewModel extends ViewModel {
 
     public void onNewPostButtonClicked() {
         navController.navigate(R.id.action_feedFragment_to_newPostFragment);
-    }
-
-    public int getCurrentScrolledItemPosition() {
-        return currentScrolledItemPosition;
-    }
-
-    public void setCurrentScrolledItemPosition(int currentScrolledItemPosition) {
-        this.currentScrolledItemPosition = currentScrolledItemPosition;
     }
 
     public int getPageNumber() {

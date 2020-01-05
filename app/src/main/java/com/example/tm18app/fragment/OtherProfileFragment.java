@@ -172,22 +172,13 @@ public class OtherProfileFragment extends BaseProfileFragment {
         }
     }
 
-    private PostItemAdapter.PostsEventsListener listener = reproducing -> {
-        int orientation = getResources().getConfiguration().orientation;
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE && reproducing) {
-            setCinemaMode(true);
-        } else {
-            setCinemaMode(false);
-        }
-    };
-
     @Override
     protected void setupRecyclerView() {
         mRecyclerView = mBinding.getRoot().findViewById(R.id.postsUserRv);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layoutManager);
         mAdapter = new PostItemAdapter((ArrayList<Post>) mPostsList,
-                mMainModel.getNavController(), getContext(), listener);
+                mMainModel.getNavController(), getContext(), null);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addOnScrollListener(new CustomScrollListener((LinearLayoutManager)mRecyclerView.getLayoutManager()) {
             @Override

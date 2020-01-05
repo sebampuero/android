@@ -7,6 +7,7 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.tm18app.constants.Constant;
+import com.example.tm18app.devConfig.Config;
 import com.example.tm18app.model.User;
 
 import java.io.BufferedInputStream;
@@ -58,7 +59,8 @@ public class RegisterUserAsyncTask extends AsyncTask<Void, Void, User> {
                 // Firstly verify that the email does not exist before attempting to assign a pushy
                 // token
                 HttpURLConnection conn;
-                URL url = new URL(Constant.API_ENDPOINT + "/api/users/verifyEmail/" + mUser.getEmail());
+                URL url = new URL((Config.DEBUG) ? Constant.API_ENDPOINT_LOCAL
+                        : Constant.API_ENDPOINT + "/api/users/verifyEmail/" + mUser.getEmail());
                 conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setRequestProperty("User-Agent", "okhttp/3.10.0");

@@ -1,6 +1,7 @@
 package com.example.tm18app.network;
 
 import com.example.tm18app.constants.Constant;
+import com.example.tm18app.devConfig.Config;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -22,7 +23,6 @@ public class RetrofitNetworkConnectionSingleton {
     private static RetrofitNetworkConnectionSingleton singleInstance = null;
     private static Retrofit retrofit;
     private Gson gson;
-    private static final boolean DEBUG = false;
 
     private RetrofitNetworkConnectionSingleton(){
         // network initialization
@@ -35,7 +35,7 @@ public class RetrofitNetworkConnectionSingleton {
                 .readTimeout(60, TimeUnit.SECONDS)
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .build();
-        if(DEBUG){
+        if(Config.DEBUG){
             retrofit = new Retrofit.Builder()
                     .baseUrl(Constant.API_ENDPOINT_LOCAL)
                     .addConverterFactory(GsonConverterFactory.create(gson))

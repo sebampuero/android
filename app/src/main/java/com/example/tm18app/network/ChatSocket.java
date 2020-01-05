@@ -3,6 +3,7 @@ package com.example.tm18app.network;
 import android.app.Activity;
 
 import com.example.tm18app.constants.Constant;
+import com.example.tm18app.devConfig.Config;
 import com.example.tm18app.model.ChatMessage;
 import com.example.tm18app.viewModels.ChatMessagesViewModel;
 import com.github.nkzawa.emitter.Emitter;
@@ -25,7 +26,6 @@ public class ChatSocket {
 
     public static final int ONLINE = 1;
     public static final int OFFLINE = 0;
-    private static final boolean DEBUG = false;
 
     /**
      * SocketListener for socket events
@@ -76,7 +76,7 @@ public class ChatSocket {
 
     public ChatSocket(Activity activity, ChatMessagesViewModel model) {
         try {
-            if(DEBUG)
+            if(Config.DEBUG)
                 socket = IO.socket(Constant.API_ENDPOINT_LOCAL);
             else
                 socket = IO.socket(Constant.API_ENDPOINT);

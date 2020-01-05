@@ -118,16 +118,6 @@ public class ProfileFragment extends BaseProfileFragment{
         public void onUndoPostDeleted(int itemPosition) {
             mRecyclerView.scrollToPosition(itemPosition);
         }
-
-        @Override
-        public void onPlayerReproducing(boolean reproducing) {
-            int orientation = getResources().getConfiguration().orientation;
-            if (orientation == Configuration.ORIENTATION_LANDSCAPE && reproducing) {
-                setCinemaMode(true);
-            } else {
-                setCinemaMode(false);
-            }
-        }
     };
 
     @Override

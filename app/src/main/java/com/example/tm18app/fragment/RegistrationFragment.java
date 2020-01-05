@@ -1,6 +1,7 @@
 package com.example.tm18app.fragment;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -35,6 +36,7 @@ import com.example.tm18app.model.GoalItemSelection;
 import com.example.tm18app.model.User;
 import com.example.tm18app.util.ConverterUtils;
 import com.example.tm18app.viewModels.RegisterViewModel;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -174,14 +176,16 @@ public class RegistrationFragment extends BaseFragmentMediaSelector
         else if(integerUserHashMap.containsKey(HttpURLConnection.HTTP_OK)){
             User user = integerUserHashMap.get(HttpURLConnection.HTTP_OK);
             handleRegisterSuccess(user);
-            Toast.makeText(getContext(),
-                    getResources().getString(R.string.successfully_registered), Toast.LENGTH_SHORT).show();
+            View view = getActivity().findViewById(android.R.id.content);
+            Snackbar snackbar = Snackbar.make(view,
+                    getString(R.string.successfully_registered), Snackbar.LENGTH_LONG);
+            snackbar.show();
         }
         mRegistrationBtn.revertAnimation();
     }
 
     /**
-     * Handle the successful registration. Store relevant user*s info in {@link SharedPreferences}
+     * Handle the successful registration.
      * @param user {@link User} containing the registered user's info
      */
     private void handleRegisterSuccess(User user) {

@@ -1,5 +1,7 @@
 package com.example.tm18app;
 
+import com.example.tm18app.devConfig.Config;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;

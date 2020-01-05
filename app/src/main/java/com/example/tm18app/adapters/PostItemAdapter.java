@@ -100,12 +100,6 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
          */
         default void onUndoPostDeleted(int itemPosition) {}
 
-        /**
-         * Called when a video is reproducing
-         * @param reproducing
-         */
-        void onPlayerReproducing(boolean reproducing);
-
     }
 
     public PostItemAdapter(ArrayList<Post> posts, NavController mNavController,
@@ -191,7 +185,6 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
         PlayerView surfaceView;
         RelativeLayout postMediaContent;
         ImageView playPauseBtn;
-        boolean isPausedPressed;
 
         ItemViewHolder(final PostCardviewBinding binding) {
             super(binding.getRoot());
@@ -272,7 +265,6 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
                         .stableKey(thumbnailCacheKey)
                         .into(contentImage);
                 contentImage.setOnClickListener(new VideoThumbnailClickListener());
-                isPausedPressed = false; // reset play/pause btn state
             }
             if(post.getContentVideoUrl() == null && post.getContentPicUrl() == null)
                 postMediaContent.setVisibility(View.GONE);
@@ -335,17 +327,10 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
             @Override
             public void onClick(View view) {
                 // a play/pause button to control the video
-                //TODO: FIX LOGIC, open error: when playing a video and playing another one, currently playing video pauses but pause btn stays in state "pause"
                 playPauseBtn.setVisibility(View.VISIBLE);
-                playPauseBtn.setImageDrawable(mContext.getDrawable(R.drawable.ic_pause_white_24dp));
                 playPauseBtn.setOnClickListener(view1 -> {
-                    isPausedPressed = !isPausedPressed;
                     SimpleExoPlayer player = videoPlayers.get(getAdapterPosition());
                     player.setPlayWhenReady(!player.getPlayWhenReady());
-                    if(isPausedPressed)
-                        playPauseBtn.setImageDrawable(mContext.getDrawable(R.drawable.ic_play_arrow_white_24dp));
-                    else
-                        playPauseBtn.setImageDrawable(mContext.getDrawable(R.drawable.ic_pause_white_24dp));
                 });
                 surfaceView.setVisibility(View.VISIBLE);
                 playBtnView.setVisibility(View.GONE);
@@ -364,7 +349,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
                 if(videoPlayers.get(getAdapterPosition()) != null)
                     videoPlayers.get(getAdapterPosition()).release();
                 videoPlayers.put(getAdapterPosition(), videoPlayer);
-                surfaceView.setUseController(false); // allow user to pause/resume video
+                surfaceView.setUseController(false);
                 surfaceView.setPlayer(videoPlayer);
                 // occupy whole width of screen
                 surfaceView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM);
@@ -410,9 +395,13 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
          * Videoplayer events postsEventsListener.
          */
         class PlayerListener implements Player.EventListener {
+
             @Override
             public void onIsPlayingChanged(boolean isPlaying) {
-                postsEventsListener.onPlayerReproducing(isPlaying);
+                if(isPlaying)
+                    playPauseBtn.setImageDrawable(mContext.getDrawable(R.drawable.ic_pause_white_24dp));
+                else
+                    playPauseBtn.setImageDrawable(mContext.getDrawable(R.drawable.ic_play_arrow_white_24dp));
             }
 
             @Override
@@ -422,7 +411,6 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
                         videoPlayers.get(getAdapterPosition()).seekTo(0);
                     case Player.STATE_BUFFERING:
                         progressBarVideo.setVisibility(View.VISIBLE);
-                        postsEventsListener.onPlayerReproducing(true);
                         break;
                     case Player.STATE_READY:
                         progressBarVideo.setVisibility(View.GONE);

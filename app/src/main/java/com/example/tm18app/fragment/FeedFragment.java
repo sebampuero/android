@@ -198,17 +198,6 @@ public class FeedFragment extends BasePostsContainerFragment{
             mRecyclerView.scrollToPosition(itemPosition);
         }
 
-        @Override
-        public void onPlayerReproducing(boolean reproducing) {
-            int orientation = getResources().getConfiguration().orientation;
-            if (orientation == Configuration.ORIENTATION_LANDSCAPE && reproducing) {
-                setCinemaMode(true);
-                mFab.setVisibility(View.GONE);
-            } else {
-                setCinemaMode(false);
-                mFab.setVisibility(View.VISIBLE);
-            }
-        }
     };
 
 
@@ -222,7 +211,6 @@ public class FeedFragment extends BasePostsContainerFragment{
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addOnScrollListener(
                 new CustomFeedScrollListener((LinearLayoutManager)mRecyclerView.getLayoutManager()));
-        mRecyclerView.scrollToPosition(mModel.getCurrentScrolledItemPosition());
     }
 
 
@@ -249,11 +237,6 @@ public class FeedFragment extends BasePostsContainerFragment{
         public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
             if(newState == RecyclerView.SCROLL_STATE_IDLE){
-                // if scroll stopped save current item position in model view so that when user
-                // changes view and comes back the rv shows the last position on the list the user
-                // was on
-                int itemPositionInSight = layoutManager.findFirstCompletelyVisibleItemPosition();
-                mModel.setCurrentScrolledItemPosition(itemPositionInSight);
                 mFab.animate().alpha(1).setDuration(ANIMATION_DURATION);
             }else if(newState == RecyclerView.SCROLL_STATE_DRAGGING){
                 // on scrolling, disappear the fab
