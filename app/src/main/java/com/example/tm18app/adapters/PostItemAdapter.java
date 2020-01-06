@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,10 +46,7 @@ import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
-import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-import com.google.android.exoplayer2.util.Util;
 import com.google.android.exoplayer2.video.VideoListener;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
@@ -77,6 +73,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
     private SharedPreferences mPrefs;
     private int profilePicDimen;
     private HashMap<Integer, SimpleExoPlayer> videoPlayers;
+    private boolean volumeForVideosAllowed = true;
     private Post recentlyDeletedPost;
     private int recentlyDeletedPostPosition;
     private PostsEventsListener postsEventsListener;
@@ -185,7 +182,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
         ProgressBar progressBarVideo;
         PlayerView surfaceView;
         RelativeLayout postMediaContent;
-        ImageView playPauseBtn;
+        ImageView volumeControl;
 
         ItemViewHolder(final PostCardviewBinding binding) {
             super(binding.getRoot());
@@ -204,7 +201,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
             surfaceView = binding.videoPlayerPost;
             postMediaContent = binding.postMediaContent;
             playBtnView = binding.playBtnView;
-            playPauseBtn = binding.playPauseBtn;
+            volumeControl = binding.volumeControl;
         }
 
 
@@ -259,7 +256,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
                 String thumbnailCacheKey = ConverterUtils.extractUrlKey(thumbnailUrl);
                 playBtnView.setVisibility(View.VISIBLE); // show that this post is video
                 surfaceView.setVisibility(View.GONE); // hide player if another one was instantiated for this position
-                playPauseBtn.setVisibility(View.GONE); // hide play/pause btn if another one was instantiated for this position
+                volumeControl.setVisibility(View.GONE); // hide play/pause btn if another one was instantiated for this position
                 contentImage.setVisibility(View.VISIBLE); // show thumbnail of video
                 Picasso.get()
                         .load(thumbnailUrl)
@@ -327,12 +324,10 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
 
             @Override
             public void onClick(View view) {
-                // a play/pause button to control the video
-                playPauseBtn.setVisibility(View.VISIBLE);
-                playPauseBtn.setOnClickListener(view1 -> {
-                    SimpleExoPlayer player = videoPlayers.get(getAdapterPosition());
-                    // play or pause the video upon click on the play/pause btn
-                    player.setPlayWhenReady(!player.getPlayWhenReady());
+                volumeControl.setVisibility(View.VISIBLE);
+                volumeControl.setOnClickListener(view1 -> {
+                    volumeForVideosAllowed = !volumeForVideosAllowed;
+                    setVolume();
                 });
                 surfaceView.setVisibility(View.VISIBLE);
                 playBtnView.setVisibility(View.GONE);
@@ -366,6 +361,22 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
                 videoPlayer.prepare(videoSource);
                 videoPlayer.setPlayWhenReady(true);
                 videoPlayer.addVideoListener(new VideoListenerImpl());
+                setVolume();
+            }
+
+            private void setVolume() {
+                SimpleExoPlayer player = videoPlayers.get(getAdapterPosition());
+                // play or pause the video upon click on the play/pause btn
+                if(volumeForVideosAllowed){
+                    volumeControl.setImageDrawable(mContext.getDrawable(R.drawable.ic_volume_up_grey_24dp));
+                    if(player != null)
+                        player.setVolume(1);
+                }
+                else{
+                    volumeControl.setImageDrawable(mContext.getDrawable(R.drawable.ic_volume_off_grey_24dp));
+                    if(player != null)
+                        player.setVolume(0);
+                }
             }
         }
 
@@ -403,18 +414,12 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
         class PlayerListener implements Player.EventListener {
 
             @Override
-            public void onIsPlayingChanged(boolean isPlaying) {
-                if(isPlaying)
-                    playPauseBtn.setImageDrawable(mContext.getDrawable(R.drawable.ic_pause_white_24dp));
-                else
-                    playPauseBtn.setImageDrawable(mContext.getDrawable(R.drawable.ic_play_arrow_white_24dp));
-            }
-
-            @Override
             public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
                 switch (playbackState) {
                     case Player.STATE_ENDED: // at end of video, play again
-                        videoPlayers.get(getAdapterPosition()).seekTo(0);
+                        Player player = videoPlayers.get(getAdapterPosition());
+                        if(player != null)
+                            player.seekTo(0);
                     case Player.STATE_BUFFERING:
                         progressBarVideo.setVisibility(View.VISIBLE);
                         break;
