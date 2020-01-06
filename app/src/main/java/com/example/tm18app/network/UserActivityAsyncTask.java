@@ -8,8 +8,24 @@ import java.io.IOException;
 
 import retrofit2.Response;
 
+/**
+ * AsyncTask to retrieve the user's activity. As Activity is understood the following:
+ * <ul>
+ *     <li>New chat messages</li>
+ *     <li>New notifications</li>
+ *     <li>Other type of news for the user</li>
+ * </ul>
+ *
+ * @see UserActivity
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 15.12.2019
+ */
 public class UserActivityAsyncTask extends AsyncTask<String,Void, UserActivity> {
 
+    /**
+     * Listener for when the user activity is successfully retrieved from the server
+     */
     public interface OnUserActivityListener {
         void onUserActivityReceived(UserActivity activity);
     }

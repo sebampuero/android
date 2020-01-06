@@ -132,6 +132,13 @@ public class LoginFragment extends BaseFragment {
         cleanInputs();
     }
 
+    /**
+     * Registers the device for Pushy to send notifications successfully. The retrieved user from
+     * the server contains the pushy token and auth key, those are stored in the internal storage
+     * by Pushy.
+     * @see PushyDeviceCredentials
+     * @param user {@link User}
+     */
     private void setUserPushyCreds(User user) {
         final PushyDeviceCredentials credentials =
                 new PushyDeviceCredentials(user.getPushyToken(), user.getPushyAuthKey());

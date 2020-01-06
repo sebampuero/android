@@ -58,7 +58,7 @@ public class CommentSectionFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mModel = ViewModelProviders.of(getActivity()).get(CommentsSectionViewModel.class);
+        mModel = ViewModelProviders.of(this).get(CommentsSectionViewModel.class);
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_comment_section,
                 container, false);
         mBinding.setLifecycleOwner(this);

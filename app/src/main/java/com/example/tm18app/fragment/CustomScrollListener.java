@@ -49,6 +49,10 @@ abstract class CustomScrollListener extends RecyclerView.OnScrollListener {
      */
     abstract boolean isLoading();
 
+    /**
+     * If last page is reached
+     * @return if last page is reached
+     */
     abstract boolean lastPageReached();
 
 }

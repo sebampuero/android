@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -330,6 +331,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
                 playPauseBtn.setVisibility(View.VISIBLE);
                 playPauseBtn.setOnClickListener(view1 -> {
                     SimpleExoPlayer player = videoPlayers.get(getAdapterPosition());
+                    // play or pause the video upon click on the play/pause btn
                     player.setPlayWhenReady(!player.getPlayWhenReady());
                 });
                 surfaceView.setVisibility(View.VISIBLE);
@@ -357,9 +359,9 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
 
                 String contentUrl = mPostsList.get(getAdapterPosition()).getContentVideoUrl();
                 MediaSource videoSource = new ExtractorMediaSource(Uri.parse(contentUrl),
-                        new CacheDataSourceFactory(mContext,
-                                1000 * 1024 * 1024,
-                                500 * 1024 * 1024),
+                        new CacheDataSourceFactory(mContext, // init cache params
+                                20 * 1024 * 1024, // 20mb
+                                50 * 1024 * 1024), // 50mb
                         new DefaultExtractorsFactory(), null, null);
                 videoPlayer.prepare(videoSource);
                 videoPlayer.setPlayWhenReady(true);
@@ -376,18 +378,22 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
             public void onVideoSizeChanged(int width, int height,
                                            int unappliedRotationDegrees, float pixelWidthHeightRatio) {
                 // Listen for changes on the video size of the buffered video and set a height to the
-                // player view dynamically
+                // player view dynamically, this because playerview has no maxHeight attr
                 int minVideoHeight = mContext.getResources().getInteger(R.integer.min_video_height);
                 int maxVideoHeight = mContext.getResources().getInteger(R.integer.max_video_height);
                 RelativeLayout.LayoutParams params =
                         new RelativeLayout.LayoutParams(surfaceView.getWidth(), surfaceView.getHeight());
                 int heightInDp = ConverterUtils.dpToPx(height, mContext);
-                if(heightInDp > maxVideoHeight)
+                if(heightInDp > maxVideoHeight){
                     heightInDp = maxVideoHeight;
-                else if(heightInDp < minVideoHeight)
+                    params.height = heightInDp;
+                    surfaceView.setLayoutParams(params);
+                }
+                else if(heightInDp < minVideoHeight){
                     heightInDp = minVideoHeight;
-                params.height = heightInDp;
-                surfaceView.setLayoutParams(params);
+                    params.height = heightInDp;
+                    surfaceView.setLayoutParams(params);
+                }
             }
         }
 
@@ -407,7 +413,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
             @Override
             public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
                 switch (playbackState) {
-                    case Player.STATE_ENDED:
+                    case Player.STATE_ENDED: // at end of video, play again
                         videoPlayers.get(getAdapterPosition()).seekTo(0);
                     case Player.STATE_BUFFERING:
                         progressBarVideo.setVisibility(View.VISIBLE);

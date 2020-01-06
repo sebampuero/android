@@ -78,6 +78,12 @@ public class ChatsRepository {
         return data;
     }
 
+    /**
+     * Retrieves the total pages for the pagination of chat messages
+     * @param roomId {@link String}
+     * @param pushyToken {@link String}
+     * @return the total number of pages
+     */
     public LiveData<Integer> getTotalPagesForRoom(String roomId, String pushyToken) {
         final MutableLiveData<Integer> data = new MutableLiveData<>();
         chatsRestInterface.getTotalPagesForRoom(roomId, pushyToken).enqueue(new Callback<Integer>() {

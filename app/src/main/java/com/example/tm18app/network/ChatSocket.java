@@ -24,7 +24,13 @@ import java.util.TimerTask;
  */
 public class ChatSocket {
 
+    /**
+     * Status for when the user transmits on line
+     */
     public static final int ONLINE = 1;
+    /**
+     * Status for when the user transmits offline
+     */
     public static final int OFFLINE = 0;
 
     /**

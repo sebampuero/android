@@ -20,12 +20,16 @@ import com.example.tm18app.util.ConverterUtils;
 import com.squareup.picasso.Picasso;
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link Fragment} subclass. Responsible for events and the content Image of a {@link com.example.tm18app.model.Post}
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
  */
 public class PostImgFragment extends BaseFragment implements MainActivity.GestureListener {
 
     public static final String IMG_URL = "img_url";
-
+    // scale gesture for zoom functionality
     private ScaleGestureDetector mScaleGestureDetector;
     private float mScaleFactor = 1.0f;
     private ImageView mImageView;
@@ -43,10 +47,15 @@ public class PostImgFragment extends BaseFragment implements MainActivity.Gestur
         setupViews();
         mScaleGestureDetector = new ScaleGestureDetector(getContext(), new ScaleListener());
         displayPostImage();
+        // Since a Gesture Detector can be only operated in the Activity containing a fragment,
+        // we set the gesture listener for that activity
         ((MainActivity)getActivity()).setGestureListener(this);
         return mRoot;
     }
 
+    /**
+     * Display the image into the {@link ImageView}
+     */
     private void displayPostImage() {
         String url = NetworkConnectivity.tweakImgQualityByNetworkType(getContext(),
                 getArguments().getString(IMG_URL));
@@ -82,6 +91,9 @@ public class PostImgFragment extends BaseFragment implements MainActivity.Gestur
         mScaleGestureDetector.onTouchEvent(event);
     }
 
+    /**
+     * Listener for a Touch Event that handles the scale for the zoom functionality
+     */
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         @Override
         public boolean onScale(ScaleGestureDetector scaleGestureDetector){

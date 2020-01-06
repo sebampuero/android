@@ -163,14 +163,14 @@ public class RegistrationFragment extends BaseFragmentMediaSelector
         if(integerUserHashMap.containsKey(HttpURLConnection.HTTP_INTERNAL_ERROR)){
             Toast.makeText(this.getContext(),
                     this.getContext().getString(R.string.server_error),
-                    Toast.LENGTH_SHORT).show();
+                    Toast.LENGTH_LONG).show();
             mRegistrationBtn.revertAnimation();
         }
         else if(integerUserHashMap.containsKey(HttpURLConnection.HTTP_BAD_REQUEST)){
             mRegistrationBtn.stopAnimation();
             Toast.makeText(this.getContext(),
                     this.getContext().getString(R.string.email_already_exists),
-                    Toast.LENGTH_SHORT).show();
+                    Toast.LENGTH_LONG).show();
             mRegistrationBtn.revertAnimation();
         }
         else if(integerUserHashMap.containsKey(HttpURLConnection.HTTP_OK)){

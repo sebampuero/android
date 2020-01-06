@@ -70,6 +70,12 @@ public class PostItemRepository {
         return data;
     }
 
+    /**
+     * Retrieves the total number of pages for pagination
+     * @param goals {@link List}
+     * @param pushyToken {@link String}
+     * @return {@link MutableLiveData} containing the total number of pages
+     */
     public LiveData<Integer> getPagesNumberForPosts(List<String> goals, String pushyToken) {
         final MutableLiveData<Integer> data = new MutableLiveData<>();
         postRestInterface.getTotalPagesForPosts(goals, pushyToken).enqueue(new Callback<Integer>() {
@@ -109,6 +115,12 @@ public class PostItemRepository {
         return data;
     }
 
+    /**
+     * Retrieves the total number of pages for pagination of user posts
+     * @param userId {@link String}
+     * @param pushyToken {@link String}
+     * @return {@link MutableLiveData} containing the total number of pages
+     */
     public LiveData<Integer> getPagesNumberForPosts(String userId, String pushyToken) {
         final MutableLiveData<Integer> data = new MutableLiveData<>();
         postRestInterface.getTotalPagesForPosts(userId, pushyToken).enqueue(new Callback<Integer>() {

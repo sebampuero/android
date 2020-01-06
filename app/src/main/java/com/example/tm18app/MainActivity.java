@@ -45,6 +45,10 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView mBottonNavigationView;
     private GestureListener gestureListener;
 
+    /**
+     * A Gesture Listener for all Fragments that require to listen to an onTouched Event
+     * @see MotionEvent
+     */
     public interface GestureListener {
         void onTouched(MotionEvent event);
     }

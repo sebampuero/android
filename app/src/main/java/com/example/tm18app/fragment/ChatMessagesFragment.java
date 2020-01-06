@@ -285,11 +285,10 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
                 Context.MODE_PRIVATE);
         mAdapter = new ChatMessagesAdapter(mChatMessagesList, prefs, getContext());
         mRv.setAdapter(mAdapter);
-        mRv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRv.addOnScrollListener(new CustomScrollListener((LinearLayoutManager)mRv.getLayoutManager()){
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if(!mModel.isLoadingMoreItems() && !lastPageReached()){
+                if(!isLoading() && !lastPageReached()){
                     if(newState == RecyclerView.SCROLL_STATE_IDLE
                             && !recyclerView.canScrollVertically(-1)){
                         loadMoreItems();
@@ -297,17 +296,24 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
                 }
             }
 
-            private boolean lastPageReached() {
+            @Override
+            boolean lastPageReached() {
                 if(mModel.getTotalPagesLiveData().getValue() != null)
                     return mModel.getNumberPage() + 1 == mModel.getTotalPagesLiveData().getValue();
                 return true;
             }
 
-            private void loadMoreItems() {
+            @Override
+            void loadMoreItems() {
                 mModel.setLoadingMoreItems(true);
                 mModel.setNumberPage(mModel.getNumberPage()+1);
                 mModel.callRepository();
                 mLoadingMessagesTv.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            boolean isLoading() {
+                return mModel.isLoadingMoreItems();
             }
         });
     }
