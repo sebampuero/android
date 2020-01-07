@@ -169,6 +169,8 @@ public class FeedFragment extends BasePostsContainerFragment{
                         mNoPostsView.setVisibility(View.GONE);
                         mRecyclerView.setVisibility(View.VISIBLE);
                         mLoadMoreItemsProgressBar.animate().alpha(0).setDuration(200);
+                        if(mModel.getPageNumber() > 0)
+                            mRecyclerView.scrollBy(0, 100);
                     }
                 }else{
                     mNoPostsView.setVisibility(View.VISIBLE);

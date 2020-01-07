@@ -136,7 +136,6 @@ public class NewPostFragment extends BaseFragmentMediaSelector implements BaseFr
             if(mPlayer != null)
                 mPlayer.release();
             TrackSelector selector = new DefaultTrackSelector();
-            //TODO: set this to on resume too
             mPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), selector);
             DefaultDataSourceFactory dataSourceFactory =
                     new DefaultDataSourceFactory(getContext(), "exoplayer_video");
@@ -151,8 +150,8 @@ public class NewPostFragment extends BaseFragmentMediaSelector implements BaseFr
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onPause() {
+        super.onPause();
         if(mPlayer != null)
             mPlayer.release();
     }

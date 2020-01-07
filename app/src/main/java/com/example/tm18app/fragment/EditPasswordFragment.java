@@ -23,6 +23,10 @@ import java.net.HttpURLConnection;
 
 /**
  * A simple {@link Fragment} subclass. Responsible for UI and events for the password edition UI.
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 03.12.2019
  */
 public class EditPasswordFragment extends BaseFragment {
 
@@ -47,13 +51,6 @@ public class EditPasswordFragment extends BaseFragment {
                 this::handleResponse);
         setupViews();
         return binding.getRoot();
-    }
-
-    @Override
-    protected void setupViews() {
-        super.setupViews();
-        Toolbar toolbar = ((MainActivity)getActivity()).getToolbar();
-        toolbar.getMenu().clear();
     }
 
     /**

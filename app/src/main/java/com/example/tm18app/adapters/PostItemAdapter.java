@@ -73,7 +73,6 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
     private SharedPreferences mPrefs;
     private int profilePicDimen;
     private HashMap<Integer, SimpleExoPlayer> videoPlayers;
-    private boolean volumeForVideosAllowed = true;
     private Post recentlyDeletedPost;
     private int recentlyDeletedPostPosition;
     private PostsEventsListener postsEventsListener;
@@ -182,7 +181,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
         ProgressBar progressBarVideo;
         PlayerView surfaceView;
         RelativeLayout postMediaContent;
-        ImageView volumeControl;
+        ImageView playPauseBtn;
 
         ItemViewHolder(final PostCardviewBinding binding) {
             super(binding.getRoot());
@@ -201,7 +200,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
             surfaceView = binding.videoPlayerPost;
             postMediaContent = binding.postMediaContent;
             playBtnView = binding.playBtnView;
-            volumeControl = binding.volumeControl;
+            playPauseBtn = binding.playPauseBtn;
         }
 
 
@@ -256,7 +255,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
                 String thumbnailCacheKey = ConverterUtils.extractUrlKey(thumbnailUrl);
                 playBtnView.setVisibility(View.VISIBLE); // show that this post is video
                 surfaceView.setVisibility(View.GONE); // hide player if another one was instantiated for this position
-                volumeControl.setVisibility(View.GONE); // hide play/pause btn if another one was instantiated for this position
+                playPauseBtn.setVisibility(View.GONE); // hide play/pause btn if another one was instantiated for this position
                 contentImage.setVisibility(View.VISIBLE); // show thumbnail of video
                 Picasso.get()
                         .load(thumbnailUrl)
@@ -324,10 +323,11 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
 
             @Override
             public void onClick(View view) {
-                volumeControl.setVisibility(View.VISIBLE);
-                volumeControl.setOnClickListener(view1 -> {
-                    volumeForVideosAllowed = !volumeForVideosAllowed;
-                    setVolume();
+                playPauseBtn.setVisibility(View.VISIBLE);
+                playPauseBtn.setOnClickListener(view1 -> {
+                    SimpleExoPlayer player = videoPlayers.get(getAdapterPosition());
+                    // play or pause the video upon click on the play/pause btn
+                    player.setPlayWhenReady(!player.getPlayWhenReady());
                 });
                 surfaceView.setVisibility(View.VISIBLE);
                 playBtnView.setVisibility(View.GONE);
@@ -361,23 +361,8 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
                 videoPlayer.prepare(videoSource);
                 videoPlayer.setPlayWhenReady(true);
                 videoPlayer.addVideoListener(new VideoListenerImpl());
-                setVolume();
             }
 
-            private void setVolume() {
-                SimpleExoPlayer player = videoPlayers.get(getAdapterPosition());
-                // play or pause the video upon click on the play/pause btn
-                if(volumeForVideosAllowed){
-                    volumeControl.setImageDrawable(mContext.getDrawable(R.drawable.ic_volume_up_grey_24dp));
-                    if(player != null)
-                        player.setVolume(1);
-                }
-                else{
-                    volumeControl.setImageDrawable(mContext.getDrawable(R.drawable.ic_volume_off_grey_24dp));
-                    if(player != null)
-                        player.setVolume(0);
-                }
-            }
         }
 
         /**
@@ -412,6 +397,14 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
          * Videoplayer events postsEventsListener.
          */
         class PlayerListener implements Player.EventListener {
+
+            @Override
+            public void onIsPlayingChanged(boolean isPlaying) {
+                if(isPlaying)
+                    playPauseBtn.setImageDrawable(mContext.getDrawable(R.drawable.ic_pause_white_24dp));
+                else
+                    playPauseBtn.setImageDrawable(mContext.getDrawable(R.drawable.ic_play_arrow_white_24dp));
+            }
 
             @Override
             public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
