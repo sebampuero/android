@@ -164,6 +164,10 @@
 
     <string name="cannot_load_posts">Unable to load posts</string>
     <string name="user_has_no_goals">No goals</string>
+    <string name="cannot_load_comments">Unable to load comments</string>
+    <string name="cannot_load_messages">Unable to load messages</string>
+    <string name="cannot_load_chats">Unable to load  chats</string>
+    <string name="chat_room_deleted_by_other">deleteted the chat</string>
 
 
 </resources>

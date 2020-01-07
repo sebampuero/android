@@ -146,6 +146,10 @@
     <string name="yesterday">gestern</string>
     <string name="cannot_load_posts">Posts konnten nicht geladen werden</string>
     <string name="user_has_no_goals">Keine Ziele</string>
+    <string name="cannot_load_comments">Kommentare konnten nicht geladen werden</string>
+    <string name="cannot_load_messages">Nachrichten konnten nicht geladen werden</string>
+    <string name="cannot_load_chats">Chats konnten nicht geladen werden</string>
+    <string name="chat_room_deleted_by_other">hat den chat gelöscht</string>
 
     <array name="notification_settings">
         <item>Alle Benachrichtigungen erlauben</item>

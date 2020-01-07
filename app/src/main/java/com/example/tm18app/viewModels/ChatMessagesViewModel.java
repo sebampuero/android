@@ -1,6 +1,8 @@
 package com.example.tm18app.viewModels;
 
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.widget.Toast;
 
 import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
@@ -8,9 +10,11 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
+import com.example.tm18app.R;
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.model.ChatMessage;
 import com.example.tm18app.network.ChatSocket;
+import com.example.tm18app.network.NetworkConnectivity;
 import com.example.tm18app.repository.ChatsRepository;
 
 import java.util.List;
@@ -47,6 +51,7 @@ public class ChatMessagesViewModel extends ViewModel {
                     String.valueOf(numberPage), prefs.getString(Constant.PUSHY_TOKEN, ""));
         }
     });
+    private Context context;
 
     public LiveData<List<ChatMessage>> getMessagesLiveData() {
         return messagesLiveData;
@@ -59,6 +64,12 @@ public class ChatMessagesViewModel extends ViewModel {
     public void onSendMessage() {
         if(inputMessage.getValue() != null)
             if(!inputMessage.getValue().equals("")){
+                if(!NetworkConnectivity.isOnline(context)){
+                    Toast.makeText(context,
+                            context.getString(R.string.no_int_connection), Toast.LENGTH_SHORT).show();
+                    inputMessage.setValue("");
+                    return;
+                }
                 socket.sendMessage(prefs.getInt(Constant.USER_ID, 0),
                         Integer.parseInt(roomId),
                         roomName,
@@ -125,5 +136,9 @@ public class ChatMessagesViewModel extends ViewModel {
 
     public void setLoadingMoreItems(boolean loadingMoreItems) {
         isLoadingMoreItems = loadingMoreItems;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
     }
 }

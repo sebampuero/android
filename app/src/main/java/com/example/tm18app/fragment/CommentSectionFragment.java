@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
@@ -91,8 +92,10 @@ public class CommentSectionFragment extends BaseFragment {
                 Collections.sort(mCommentsList);
                 mAdapter.notifyDataSetChanged();
                 mCommentInputEditText.setText("");
-                mProgressBar.setVisibility(View.GONE);
-            }
+            }else
+                Toast.makeText(getContext(),
+                        getString(R.string.cannot_load_comments), Toast.LENGTH_SHORT).show();
+            mProgressBar.setVisibility(View.GONE);
         });
     }
 

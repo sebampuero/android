@@ -92,6 +92,7 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
         mModel.setRoomName(getArguments().getString(ROOM_NAME, null));
         mModel.setToId(getArguments().getString(TO_ID));
         mModel.setToName(getArguments().getString(TO_NAME));
+        mModel.setContext(getContext());
     }
 
     @Override
@@ -137,6 +138,7 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
         mModel.setSocket(socket);
         socket.attachLastOnlineListener();
         socket.attachMessageListener();
+        socket.attachRoomDeletedListener();
         if(mModel.getMessagesLiveData().getValue() != null){
             mModel.getMessagesLiveData().getValue().clear();
         }
@@ -190,12 +192,14 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
         alertBuilder.setTitle(getContext().getString(R.string.delete_chat));
         alertBuilder.setMessage(getContext().getString(R.string.delete_chat_conf_message));
         alertBuilder.setPositiveButton(android.R.string.yes, (dialogInterface, which) -> {
+            socket.transmitRoomDeleted(mModel.getRoomName());
             ChatsRepository repository = new ChatsRepository();
             repository.deleteChatRoom(mModel.getRoomId(),
                     mPrefs.getString(Constant.PUSHY_TOKEN, ""));
             mMainModel.getNavController().navigateUp();
             Toast.makeText(getContext(), getResources().getString(R.string.chat_room_deleted),
                     Toast.LENGTH_SHORT).show();
+
         });
         AlertDialog alert = alertBuilder.create();
         alert.show();
@@ -224,18 +228,16 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
                     }
                 }
                 mModel.setLoadingMoreItems(false);
-            }
+            }else
+                Toast.makeText(getContext(),
+                        getString(R.string.cannot_load_messages), Toast.LENGTH_SHORT).show();
             mLoadingMessagesTv.setVisibility(View.GONE);
         });
     }
 
     @Override
     public void onNewMessage(ChatMessage chatMessage) {
-        ArrayList<ChatMessage> messages;
-        messages = (ArrayList<ChatMessage>) mChatMessagesList.clone();
-        messages.add(chatMessage);
-        mChatMessagesList.clear();
-        mChatMessagesList.addAll(messages);
+        mChatMessagesList.add(chatMessage);
         mAdapter.notifyDataSetChanged();
         mRv.scrollToPosition(mAdapter.getItemCount() - 1);
     }
@@ -271,6 +273,14 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
     public void onError() {
         Toast.makeText(getContext(), getResources().getString(R.string.server_error),
                 Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRoomDeleted() {
+        Toast.makeText(getContext(),
+                mModel.getToName() + " " + getString(R.string.chat_room_deleted_by_other),
+                Toast.LENGTH_SHORT).show();
+        mMainModel.getNavController().navigateUp();
     }
 
     /**

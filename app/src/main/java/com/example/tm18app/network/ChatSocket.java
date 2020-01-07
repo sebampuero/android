@@ -72,6 +72,11 @@ public class ChatSocket {
          * Called when there was an error.
          */
         void onError();
+
+        /**
+         * Called when the other user deletes the chat room
+         */
+        void onRoomDeleted();
     }
 
     private Timer timer;
@@ -196,6 +201,14 @@ public class ChatSocket {
         socket.on("lastOnline", new LastOnlineListener());
     }
 
+    public void attachRoomDeletedListener() {
+        socket.on("roomDeleted", new RoomDeletedListener());
+    }
+
+    public void transmitRoomDeleted(String room){
+        socket.emit("roomDeleted", room);
+    }
+
     /**
      * Detaches all listeners for this {@link ChatSocket} and disconnects.
      */
@@ -238,6 +251,8 @@ public class ChatSocket {
             });
         }
     }
+
+    //TODO: REPLACE FOR ANONYMOUS CLASSES
 
     /**
      * Listener for online status.
@@ -283,4 +298,10 @@ public class ChatSocket {
         }
     }
 
+    class RoomDeletedListener implements Emitter.Listener {
+        @Override
+        public void call(Object... args) {
+            activity.runOnUiThread(() -> socketListener.onRoomDeleted());
+        }
+    }
 }

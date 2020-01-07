@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
@@ -80,17 +81,21 @@ public class ChatsFragment extends BaseFragment {
 
     private void fetchData() {
         mModel.getChatLiveData().observe(this, chatRooms -> {
-            if(chatRooms.size() > 0){
-                mChatsList.clear();
-                mChatsList.addAll(chatRooms);
-                Collections.sort(mChatsList);
-                mAdapter.notifyDataSetChanged();
-                mNoChatsTV.setVisibility(View.GONE);
-                mRv.setVisibility(View.VISIBLE);
-            }else{
-                mNoChatsTV.setVisibility(View.VISIBLE);
-                mRv.setVisibility(View.GONE);
-            }
+            if(chatRooms != null){
+                if(chatRooms.size() > 0){
+                    mChatsList.clear();
+                    mChatsList.addAll(chatRooms);
+                    Collections.sort(mChatsList);
+                    mAdapter.notifyDataSetChanged();
+                    mNoChatsTV.setVisibility(View.GONE);
+                    mRv.setVisibility(View.VISIBLE);
+                }else{
+                    mNoChatsTV.setVisibility(View.VISIBLE);
+                    mRv.setVisibility(View.GONE);
+                }
+            }else
+                Toast.makeText(getContext(),
+                        getString(R.string.cannot_load_chats), Toast.LENGTH_LONG).show();
             mChatsProgressView.setVisibility(View.GONE);
             mSwipeRefresh.setRefreshing(false);
         });

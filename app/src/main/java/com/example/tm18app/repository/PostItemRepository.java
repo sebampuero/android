@@ -40,6 +40,7 @@ import retrofit2.Response;
 public class PostItemRepository {
 
     private PostRestInterface postRestInterface;
+    private final String TAG = getClass().getSimpleName();
 
     public PostItemRepository(){
         postRestInterface = RetrofitNetworkConnectionSingleton.
@@ -154,7 +155,7 @@ public class PostItemRepository {
 
             @Override
             public void onFailure(Call<List<Comment>> call, Throwable t) {
-
+                data.setValue(null);
             }
         });
         return data;
@@ -186,7 +187,8 @@ public class PostItemRepository {
 
             @Override
             public void onFailure(Call<Comment> call, Throwable t) {
-
+                data.setValue(null);
+                Log.e(TAG, t.getMessage());
             }
         });
     }

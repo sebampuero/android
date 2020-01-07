@@ -61,13 +61,13 @@ public class CommentsSectionViewModel extends ViewModel {
      */
     public void setAppContext(Context appContext) {
         this.appContext = appContext;
-        fetchData();
+        callRepository();
     }
 
     /**
      * Calls the {@link PostItemRepository} and fetches the data from the server
      */
-    private void fetchData() {
+    private void callRepository() {
         SharedPreferences prefs =
                 appContext.getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
         PostItemRepository postItemRepository = new PostItemRepository();

@@ -49,7 +49,7 @@ public class ChatsRepository {
 
             @Override
             public void onFailure(Call<List<ChatRoom>> call, Throwable t) {
-
+                data.setValue(null);
             }
         });
         return data;
@@ -72,7 +72,7 @@ public class ChatsRepository {
 
             @Override
             public void onFailure(Call<List<ChatMessage>> call, Throwable t) {
-
+                data.setValue(null);
             }
         });
         return data;

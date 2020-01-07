@@ -160,22 +160,22 @@ public class FeedFragment extends BasePostsContainerFragment{
             if(posts != null){
                 if(posts.size() > 0){
                     if(doGoalsExist){
+                        mNoPostsView.setVisibility(View.GONE);
+                        mRecyclerView.setVisibility(View.VISIBLE);
                         HashSet<Post> postsSet = new HashSet<>(posts);
                         postsSet.addAll(mPostsList);
                         mPostsList.clear();
                         mPostsList.addAll(postsSet);
                         Collections.sort(mPostsList);
                         mAdapter.notifyDataSetChanged();
-                        mNoPostsView.setVisibility(View.GONE);
-                        mRecyclerView.setVisibility(View.VISIBLE);
-                        mLoadMoreItemsProgressBar.animate().alpha(0).setDuration(200);
                         if(mModel.getPageNumber() > 0)
                             mRecyclerView.scrollBy(0, 100);
+                        mLoadMoreItemsProgressBar.animate().alpha(0).setDuration(ANIMATION_DURATION);
                     }
                 }else{
                     mNoPostsView.setVisibility(View.VISIBLE);
                     mRecyclerView.setVisibility(View.GONE);
-                    mLoadMoreItemsProgressBar.animate().alpha(0).setDuration(200);
+                    mLoadMoreItemsProgressBar.animate().alpha(0).setDuration(ANIMATION_DURATION);
                 }
             }else
                 Toast.makeText(getContext(),
@@ -250,7 +250,7 @@ public class FeedFragment extends BasePostsContainerFragment{
         void loadMoreItems() {
             mModel.setPageNumber(mModel.getPageNumber()+1);
             mModel.callRepository();
-            mLoadMoreItemsProgressBar.animate().alpha(1).setDuration(200);
+            mLoadMoreItemsProgressBar.animate().alpha(1).setDuration(ANIMATION_DURATION);
             mModel.setLoadingMoreItems(true);
         }
 

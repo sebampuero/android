@@ -147,6 +147,10 @@
     <string name="yesterday">ayer</string>
     <string name="cannot_load_posts">Error al cargar el feed</string>
     <string name="user_has_no_goals">No hay metas</string>
+    <string name="cannot_load_comments">Error al cargar comentarios</string>
+    <string name="cannot_load_messages">Error al cargar los mensajes</string>
+    <string name="cannot_load_chats">Error al cargar los chats</string>
+    <string name="chat_room_deleted_by_other">borró el chat</string>
 
     <array name="notification_settings">
         <item>Permitir todas las notificaciones</item>
