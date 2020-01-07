@@ -121,7 +121,7 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
      * Sets up the {@link ChatSocket} for the chat.
      */
     private void setupSocketConnection() {
-        socket = new ChatSocket(getActivity(), mModel);
+        socket = new ChatSocket(getActivity());
         socket.setSocketListener(this);
         if(mModel.getRoomName() == null || mModel.getRoomId() == null){
             // when the user initializes a chatroom for the first time there is no chat room available
@@ -243,7 +243,9 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
     }
 
     @Override
-    public void onRoomReceived() {
+    public void onRoomReceived(String roomName, String roomId) {
+        mModel.setRoomName(roomName);
+        mModel.setRoomId(roomId);
         mModel.callRepository();
     }
 

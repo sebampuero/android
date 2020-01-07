@@ -48,8 +48,10 @@ public class ChatSocket {
          * Called when the server sends back a created chat room. When a user initializes a chat
          * with another one, there is no room yet. The server creates a room and sends the response
          * as soon as the room is created.
+         * @param roomName {@link String} the received room name
+         * @param roomId {@link String} the received room id
          */
-        void onRoomReceived();
+        void onRoomReceived(String roomName, String roomId);
 
         /**
          * Called when the other user's online status changes
@@ -83,9 +85,8 @@ public class ChatSocket {
     private SocketListener socketListener;
     private Socket socket;
     private Activity activity;
-    private ChatMessagesViewModel chatsModel;
 
-    public ChatSocket(Activity activity, ChatMessagesViewModel model) {
+    public ChatSocket(Activity activity) {
         try {
             if(Config.DEBUG)
                 socket = IO.socket(Constant.API_ENDPOINT_LOCAL);
@@ -93,7 +94,6 @@ public class ChatSocket {
                 socket = IO.socket(Constant.API_ENDPOINT);
             socket.connect();
             this.activity = activity;
-            this.chatsModel = model;
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -166,43 +166,56 @@ public class ChatSocket {
      * Attaches the listener for incoming messages
      */
     public void attachMessageListener() {
-        socket.on("message", new MessageListener());
+        socket.on("message", args -> activity.runOnUiThread(() -> {
+            ChatMessage message = new ChatMessage();
+            message.setRoomId((Integer) args[0]);
+            message.setSenderId((Integer) args[1]);
+            message.setText((String) args[2]);
+            message.setTimestamp((Integer) args[3]);
+            socketListener.onNewMessage(message);
+        }));
     }
 
     /**
      * Attaches the listener for incoming room creations.
      */
     public void attachRoomListener() {
-        socket.on("room",  new RoomCreationListener());
+        socket.on("room", args -> activity.runOnUiThread(() -> {
+            socketListener.onRoomReceived(String.valueOf(args[0]), String.valueOf(args[1]));
+            startOnlineStatusBroadcaster(String.valueOf(args[0]));
+        }));
     }
 
     /**
      * Attaches an online status listener.
      */
     public void attachStatusListener() {
-        socket.on("status", new OtherOnlineStatusListener());
+        socket.on("status", args -> activity.runOnUiThread(()
+                -> socketListener.onOtherOnlineStatus((Integer) args[0])));
     }
 
     /**
      * Attaches a typing status listener.
      */
     public void attachTypingListener() {
-        socket.on("isTyping", new TypingListener());
+        socket.on("isTyping", args -> activity.runOnUiThread(() -> socketListener.onOtherTyping()));
     }
 
     /**
      * Attaches an error listener.
      */
     public void attachErrorListener() {
-        socket.on("errorEvent", new ErrorListener());
+        socket.on("errorEvent", args -> activity.runOnUiThread(() -> socketListener.onError()));
     }
 
     public void attachLastOnlineListener() {
-        socket.on("lastOnline", new LastOnlineListener());
+        socket.on("lastOnline", args -> activity.runOnUiThread(()
+                -> socketListener.onOtherLastOnline((int) args[0])));
     }
 
     public void attachRoomDeletedListener() {
-        socket.on("roomDeleted", new RoomDeletedListener());
+        socket.on("roomDeleted", args ->
+                activity.runOnUiThread(() -> socketListener.onRoomDeleted()));
     }
 
     public void transmitRoomDeleted(String room){
@@ -217,91 +230,5 @@ public class ChatSocket {
         socket.disconnect();
         socket.off();
         timer.cancel();
-    }
-
-    /**
-     * Listener for rooms.
-     */
-    class RoomCreationListener implements Emitter.Listener {
-        @Override
-        public void call(final Object... args) {
-            activity.runOnUiThread(() -> {
-                chatsModel.setRoomName(String.valueOf(args[0]));
-                chatsModel.setRoomId(String.valueOf(args[1]));
-                socketListener.onRoomReceived();
-                startOnlineStatusBroadcaster(String.valueOf(args[0]));
-            });
-        }
-    }
-
-    /**
-     * Listener for messages.
-     */
-    class MessageListener implements Emitter.Listener {
-
-        @Override
-        public void call(final Object... args) {
-            activity.runOnUiThread(() -> {
-                ChatMessage message = new ChatMessage();
-                message.setRoomId((Integer) args[0]);
-                message.setSenderId((Integer) args[1]);
-                message.setText((String) args[2]);
-                message.setTimestamp((Integer) args[3]);
-                socketListener.onNewMessage(message);
-            });
-        }
-    }
-
-    //TODO: REPLACE FOR ANONYMOUS CLASSES
-
-    /**
-     * Listener for online status.
-     */
-    class OtherOnlineStatusListener implements Emitter.Listener {
-
-        @Override
-        public void call(final Object... args) {
-            activity.runOnUiThread(() -> socketListener.onOtherOnlineStatus((Integer) args[0]));
-        }
-    }
-
-    /**
-     * Listener for typing status.
-     */
-    class TypingListener implements Emitter.Listener {
-
-        @Override
-        public void call(Object... args) {
-            activity.runOnUiThread(() -> socketListener.onOtherTyping());
-        }
-    }
-
-    /**
-     * Listener for errors.
-     */
-    class ErrorListener implements Emitter.Listener {
-
-        @Override
-        public void call(final Object... args) {
-            activity.runOnUiThread(() -> socketListener.onError());
-        }
-    }
-
-    /**
-     * Listener for online status
-     */
-    class LastOnlineListener implements Emitter.Listener {
-
-        @Override
-        public void call(final Object... args) {
-            activity.runOnUiThread(() -> socketListener.onOtherLastOnline((int) args[0]));
-        }
-    }
-
-    class RoomDeletedListener implements Emitter.Listener {
-        @Override
-        public void call(Object... args) {
-            activity.runOnUiThread(() -> socketListener.onRoomDeleted());
-        }
     }
 }
