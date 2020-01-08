@@ -9,6 +9,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 
 import com.example.tm18app.R;
@@ -33,6 +34,7 @@ public abstract class BaseProfileFragment extends BasePostsContainerFragment {
     protected TextView mGoalsTvCall;
     protected String[] userGoals;
     protected ProgressBar mLoadMoreItemsProgressBar;
+    protected CoordinatorLayout mCoordinatorLayout;
 
     protected final View.OnClickListener goalsInfoClickListener = new View.OnClickListener() {
 

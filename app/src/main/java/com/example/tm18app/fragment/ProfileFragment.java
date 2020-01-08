@@ -1,29 +1,21 @@
 package com.example.tm18app.fragment;
 
 
-import android.content.res.Configuration;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
 import com.example.tm18app.adapters.PostItemAdapter;
 import com.example.tm18app.constants.Constant;
@@ -35,10 +27,8 @@ import com.squareup.picasso.Picasso;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 
 
 /**
@@ -48,7 +38,7 @@ import java.util.List;
  * @version 1.0
  * @since 03.12.2019
  */
-public class ProfileFragment extends BaseProfileFragment{
+public class ProfileFragment extends BaseProfileFragment implements MainActivity.BackPressedListener {
 
     private final String TAG = getClass().getSimpleName();
 
@@ -72,12 +62,25 @@ public class ProfileFragment extends BaseProfileFragment{
         mModel.setNavController(mMainModel.getNavController());
         mModel.setUserId(String.valueOf(mPrefs.getInt(Constant.USER_ID, 0)));
         mModel.setPreferences(mPrefs);
-        if(mModel.getPageNumber() == -1)
-            mModel.setPageNumber(0);
-        mModel.callRepositoryForPosts();
+        ((MainActivity)getActivity()).setBackPressedListener(this);
+        if(!mModel.isVideoOnFullscreen()){
+            if(mModel.getPostsList() != null)
+                mPostsList = mModel.getPostsList();
+            if(mModel.getPageNumber() == -1)
+                mModel.setPageNumber(0);
+            mModel.callRepositoryForPosts();
+            fetchData();
+        }else{
+            prepareVideoForFullscreenPlayback();
+        }
         setupRecyclerView();
-        fetchData();
         return mBinding.getRoot();
+    }
+
+    @Override
+    protected void prepareVideoForFullscreenPlayback() {
+        super.prepareVideoForFullscreenPlayback();
+        mCoordinatorLayout.setVisibility(View.GONE);
     }
 
     private void fillUserData() {
@@ -86,7 +89,6 @@ public class ProfileFragment extends BaseProfileFragment{
         userGoals = mPrefs.getString(Constant.GOAL_TAGS, "").split(",");
         mNamesTV.setText(names);
     }
-
 
     @Override
     protected void setupViews() {
@@ -105,6 +107,9 @@ public class ProfileFragment extends BaseProfileFragment{
         mGoalsTvCall = mBinding.getRoot().findViewById(R.id.seeUserGoalsTv);
         mGoalsTvCall.setOnClickListener(goalsInfoClickListener);
         mLoadMoreItemsProgressBar = mBinding.getRoot().findViewById(R.id.loadMoreItemsProgressBar);
+        mVideoRL = mBinding.videoRelativeLayoutProfile;
+        mSurfaceView = mBinding.playerViewFullScreen;
+        mCoordinatorLayout = mBinding.coordinator;
     }
 
     private PostItemAdapter.PostsEventsListener listener = new PostItemAdapter.PostsEventsListener() {
@@ -117,6 +122,18 @@ public class ProfileFragment extends BaseProfileFragment{
         @Override
         public void onUndoPostDeleted(int itemPosition) {
             mRecyclerView.scrollToPosition(itemPosition);
+        }
+
+        @Override
+        public void onFullscreen(String videoUrl, long seekPoint) {
+            getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
+                    |View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    |View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            mModel.setFullScreen(true);
+            mModel.setVideoUrlFullScreen(videoUrl);
+            mModel.setVideoPosFullScreen(seekPoint);
+            mModel.setCurrentPostsList(mPostsList);
         }
     };
 
@@ -149,6 +166,16 @@ public class ProfileFragment extends BaseProfileFragment{
                 return true;
             }
         });
+    }
+
+    @Override
+    protected long getVideoFullscreenCurrPos() {
+        return mModel.getSeekPoint();
+    }
+
+    @Override
+    protected String getVideoFullscreenUrl() {
+        return mModel.getVideoUrl();
     }
 
 
@@ -201,5 +228,19 @@ public class ProfileFragment extends BaseProfileFragment{
     private void handlePostDeletion(Integer statusCode) {
         if(statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR)
             Toast.makeText(getContext(), getContext().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(mModel.isVideoOnFullscreen()){
+            mModel.setFullScreen(false);
+            getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+    }
+
+    @Override
+    public boolean backPressAllowed() {
+        return !mModel.isVideoOnFullscreen();
     }
 }

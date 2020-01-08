@@ -2,7 +2,6 @@ package com.example.tm18app.fragment;
 
 
 import android.content.pm.ActivityInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,18 +27,7 @@ import com.example.tm18app.adapters.PostItemAdapter;
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.FragmentFeedBinding;
 import com.example.tm18app.model.Post;
-import com.example.tm18app.network.CacheDataSourceFactory;
 import com.example.tm18app.viewModels.FeedViewModel;
-import com.google.android.exoplayer2.ExoPlayerFactory;
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
-import com.google.android.exoplayer2.source.ExtractorMediaSource;
-import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
-import com.google.android.exoplayer2.trackselection.TrackSelection;
-import com.google.android.exoplayer2.trackselection.TrackSelector;
-import com.google.android.exoplayer2.upstream.BandwidthMeter;
-import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -83,20 +71,22 @@ public class FeedFragment extends BasePostsContainerFragment implements MainActi
         super.onCreate(savedInstanceState);
         // Make Pushy listen for incoming MQTT Notification messages. It only works if writing and
         // reading permissions are granted
-        Pushy.listen(getContext());
+        if(mPrefs.getBoolean(Constant.LOGGED_IN, false)){
+            Pushy.listen(getContext());
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        checkBackBtnPressedFromMainFragment();
+        checkIfLoggedInProperly();
         mModel = ViewModelProviders.of(this).get(FeedViewModel.class);
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_feed, container, false);
         mBinding.setMyVM(mModel);
         mBinding.setLifecycleOwner(this);
         setupViews();
         ((MainActivity)getActivity()).setBackPressedListener(this);
-        if(!mModel.isFullscreen()){
+        if(!mModel.isVideoOnFullscreen()){
             if(mModel.getCurrentPostsList() != null)
                 mPostsList = mModel.getCurrentPostsList();
             mModel.setNavController(mMainModel.getNavController());
@@ -113,39 +103,31 @@ public class FeedFragment extends BasePostsContainerFragment implements MainActi
                 mProgressBar.setVisibility(View.GONE);
             }
         }else{
-            prepareFullscrenForVideoPlayback();
+            prepareVideoForFullscreenPlayback();
         }
         return mBinding.getRoot();
     }
 
-    private void prepareFullscrenForVideoPlayback() {
-        BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
-        TrackSelection.Factory videoTrackSelectionFactory =
-                new AdaptiveTrackSelection.Factory(bandwidthMeter);
-        TrackSelector trackSelector =
-                new DefaultTrackSelector(videoTrackSelectionFactory);
-        mExoPlayer = ExoPlayerFactory
-                .newSimpleInstance(getContext(), trackSelector);
-        mSurfaceView.setUseController(true);
-        mSurfaceView.setPlayer(mExoPlayer);
-        MediaSource videoSource = new ExtractorMediaSource(Uri.parse(mModel.getVideoUrl()),
-                new CacheDataSourceFactory(getContext(), // init cache params
-                        20 * 1024 * 1024, // 20mb
-                        50 * 1024 * 1024), // 50mb
-                new DefaultExtractorsFactory(), null, null);
-        mExoPlayer.prepare(videoSource);
-        mExoPlayer.setPlayWhenReady(true);
-        mExoPlayer.seekTo(mModel.getVideoCurrPos());
-        mVideoRL.setVisibility(View.VISIBLE);
-        mBottomNavigationView.setVisibility(View.GONE);
-        mToolbar.setVisibility(View.GONE);
+    @Override
+    protected void prepareVideoForFullscreenPlayback() {
+        super.prepareVideoForFullscreenPlayback();
         mFab.setVisibility(View.GONE);
         mFeedFrameLayout.setBackgroundColor(getResources().getColor(R.color.black));
     }
 
     @Override
+    protected String getVideoFullscreenUrl() {
+        return mModel.getVideoUrl();
+    }
+
+    @Override
+    protected long getVideoFullscreenCurrPos() {
+        return mModel.getVideoCurrPos();
+    }
+
+    @Override
     public void onBackPressed() {
-        if(mModel.isFullscreen()){
+        if(mModel.isVideoOnFullscreen()){
             mModel.setFullScreen(false);
             getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -155,7 +137,7 @@ public class FeedFragment extends BasePostsContainerFragment implements MainActi
 
     @Override
     public boolean backPressAllowed() {
-        return !mModel.isFullscreen();
+        return !mModel.isVideoOnFullscreen();
     }
 
     @Override
@@ -175,7 +157,7 @@ public class FeedFragment extends BasePostsContainerFragment implements MainActi
      * Temporary method to prevent going back to the {@link FeedFragment} when the user logs out.
      * This is  a workaround and wouldn't be propery to keep on production
      */
-    private void checkBackBtnPressedFromMainFragment() {
+    private void checkIfLoggedInProperly() {
         if(!mPrefs.getBoolean(Constant.LOGGED_IN, false)){
             getActivity().finish(); // closes the activity when the app detects the user swipes back
             // when logged out
@@ -283,8 +265,39 @@ public class FeedFragment extends BasePostsContainerFragment implements MainActi
         mAdapter = new PostItemAdapter((ArrayList<Post>) mPostsList,
                 mMainModel.getNavController(), getContext(), listener);
         mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.addOnScrollListener(
-                new CustomFeedScrollListener((LinearLayoutManager)mRecyclerView.getLayoutManager()));
+        mRecyclerView.addOnScrollListener(new CustomScrollListener((LinearLayoutManager)mRecyclerView.getLayoutManager()) {
+
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if(newState == RecyclerView.SCROLL_STATE_IDLE){
+                    mFab.animate().alpha(1).setDuration(ANIMATION_DURATION);
+                }else if(newState == RecyclerView.SCROLL_STATE_DRAGGING){
+                    // on scrolling, disappear the fab
+                    mFab.animate().alpha(0).setDuration(ANIMATION_DURATION);
+                }
+            }
+
+            @Override
+            void loadMoreItems() {
+                mModel.setPageNumber(mModel.getPageNumber()+1);
+                mModel.callRepository();
+                mLoadMoreItemsProgressBar.animate().alpha(1).setDuration(ANIMATION_DURATION);
+                mModel.setLoadingMoreItems(true);
+            }
+
+            @Override
+            boolean isLoading() {
+                return mModel.isLoadingMoreItems();
+            }
+
+            @Override
+            boolean lastPageReached() {
+                if(mModel.getTotalPagesLiveData().getValue() != null)
+                    return mModel.getPageNumber() + 1 == mModel.getTotalPagesLiveData().getValue();
+                return true;
+            }
+        });
     }
 
 
@@ -295,47 +308,5 @@ public class FeedFragment extends BasePostsContainerFragment implements MainActi
     private void handlePostDeletion(Integer statusCode) {
         if(statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR)
             Toast.makeText(getContext(), getContext().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * Custom scroll listener for the {@link FeedFragment}.
-     * @see CustomScrollListener
-     */
-    class CustomFeedScrollListener extends CustomScrollListener{
-
-        CustomFeedScrollListener(LinearLayoutManager manager) {
-            super(manager);
-        }
-
-        @Override
-        public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-            super.onScrollStateChanged(recyclerView, newState);
-            if(newState == RecyclerView.SCROLL_STATE_IDLE){
-                mFab.animate().alpha(1).setDuration(ANIMATION_DURATION);
-            }else if(newState == RecyclerView.SCROLL_STATE_DRAGGING){
-                // on scrolling, disappear the fab
-                mFab.animate().alpha(0).setDuration(ANIMATION_DURATION);
-            }
-        }
-
-        @Override
-        void loadMoreItems() {
-            mModel.setPageNumber(mModel.getPageNumber()+1);
-            mModel.callRepository();
-            mLoadMoreItemsProgressBar.animate().alpha(1).setDuration(ANIMATION_DURATION);
-            mModel.setLoadingMoreItems(true);
-        }
-
-        @Override
-        boolean isLoading() {
-            return mModel.isLoadingMoreItems();
-        }
-
-        @Override
-        boolean lastPageReached() {
-            if(mModel.getTotalPagesLiveData().getValue() != null)
-                return mModel.getPageNumber() + 1 == mModel.getTotalPagesLiveData().getValue();
-            return true;
-        }
     }
 }

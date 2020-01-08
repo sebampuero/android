@@ -29,7 +29,7 @@ public abstract class ProfileViewModel extends ViewModel {
     protected SharedPreferences prefs;
     protected int pageNumber = -1;
     protected boolean isLoadingMoreItems;
-    private LiveData<Integer> totalPagesLiveData = new MutableLiveData<>();
+    protected LiveData<Integer> totalPagesLiveData = new MutableLiveData<>();
 
     protected MutableLiveData<Boolean> reloadTrigger = new MutableLiveData<>();
     protected LiveData<List<Post>> postLiveData = Transformations.switchMap(reloadTrigger, new Function<Boolean, LiveData<List<Post>>>() {
@@ -43,6 +43,10 @@ public abstract class ProfileViewModel extends ViewModel {
                     prefs.getString(Constant.PUSHY_TOKEN, ""));
         }
     });
+    private boolean videoOnFullscreen;
+    private String videoUrl;
+    private long seekPoint;
+    private List<Post> postsList;
 
     public LiveData<Integer> getTotalPagesLiveData() {
         return totalPagesLiveData;
@@ -85,6 +89,38 @@ public abstract class ProfileViewModel extends ViewModel {
 
     public void setLoadingMoreItems(boolean loadingMoreItems) {
         isLoadingMoreItems = loadingMoreItems;
+    }
+
+    public void setFullScreen(boolean fullScreen){
+        this.videoOnFullscreen = fullScreen;
+    }
+
+    public void setVideoUrlFullScreen(String videoUrl) {
+        this.videoUrl = videoUrl;
+    }
+
+    public void setVideoPosFullScreen(long seekPoint) {
+        this.seekPoint = seekPoint;
+    }
+
+    public void setCurrentPostsList(List<Post> mPostsList) {
+        this.postsList = mPostsList;
+    }
+
+    public boolean isVideoOnFullscreen() {
+        return videoOnFullscreen;
+    }
+
+    public String getVideoUrl() {
+        return videoUrl;
+    }
+
+    public long getSeekPoint() {
+        return seekPoint;
+    }
+
+    public List<Post> getPostsList() {
+        return postsList;
     }
 }
 

@@ -84,7 +84,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.MyViewHolder
                     .centerCrop()
                     .into(holder.profilePic);
         else
-            Picasso.get().load(R.drawable.ic_person_black_24dp).into(holder.profilePic);
+            holder.profilePic.setImageDrawable(mContext.getDrawable(R.drawable.ic_person_black_24dp));
     }
 
     @Override

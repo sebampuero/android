@@ -54,8 +54,21 @@ public class MainActivity extends AppCompatActivity {
         void onTouched(MotionEvent event);
     }
 
+    /**
+     * Listener for Backpress events. Fragments that need to implement custom events when the back
+     * button is pressed should implement this interface
+     */
     public interface BackPressedListener {
+        /**
+         * Called when the back button is pressed
+         */
         void onBackPressed();
+
+        /**
+         * Called when the real back press functionality should occur
+         * @return true if back press functionality should occur, false if custom implementation
+         * should occur
+         */
         boolean backPressAllowed();
     }
 

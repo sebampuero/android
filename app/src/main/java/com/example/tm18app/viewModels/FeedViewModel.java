@@ -2,7 +2,6 @@ package com.example.tm18app.viewModels;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
@@ -57,7 +56,7 @@ public class FeedViewModel extends ViewModel {
             return null;
         }
     });
-    private boolean fullscreen;
+    private boolean videoOnFullscreen;
     private String videoUrl;
     private long videoCurrPos;
     private List<Post> currentPostsList;
@@ -105,11 +104,11 @@ public class FeedViewModel extends ViewModel {
     }
 
     public void setFullScreen(boolean fullscreen) {
-        this.fullscreen = fullscreen;
+        this.videoOnFullscreen = fullscreen;
     }
 
-    public boolean isFullscreen() {
-        return fullscreen;
+    public boolean isVideoOnFullscreen() {
+        return videoOnFullscreen;
     }
 
     public void setVideoUrlFullScreen(String videoUrl) {
