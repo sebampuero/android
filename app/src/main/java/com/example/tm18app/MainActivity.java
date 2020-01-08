@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView mBottonNavigationView;
     private GestureListener gestureListener;
     private BackPressedListener backPressedListener;
+    private NavController navController;
 
     /**
      * A Gesture Listener for all Fragments that require to listen to an onTouched Event
@@ -93,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         binding.setMyVM(model);
         binding.setLifecycleOwner(this);
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         model.setNavController(navController);
         model.setContext(this.getApplication());
         model.checkLoginStatus();
@@ -144,9 +145,22 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(backPressedListener.superBackPressAllowed()) // if back press should function normally
-            super.onBackPressed();
-        else // custom fragment back press functionality
-            backPressedListener.onBackPressed();
+        if(backPressedListener != null){
+            if(backPressedListener.superBackPressAllowed()){ // if the current dest is the main fragment
+                // dont call onBackpressed because it takes the user back to feed fragment(host fragment in nav graph)
+                // , which is not what we want. Instead it should exit the app
+                if(navController.getCurrentDestination().getId() == R.id.mainFragment){
+                    finish();
+                }else
+                    super.onBackPressed();
+            }
+            else
+                backPressedListener.onBackPressed();
+        }else{
+            if(navController.getCurrentDestination().getId() == R.id.mainFragment){
+                finish();
+            }else
+                super.onBackPressed();
+        }
     }
 }

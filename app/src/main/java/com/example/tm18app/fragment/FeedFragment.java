@@ -79,7 +79,6 @@ public class FeedFragment extends BasePostsContainerFragment implements MainActi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        checkIfLoggedInProperly();
         mModel = ViewModelProviders.of(this).get(FeedViewModel.class);
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_feed, container, false);
         mBinding.setMyVM(mModel);
@@ -150,17 +149,6 @@ public class FeedFragment extends BasePostsContainerFragment implements MainActi
         mVideoRL = mBinding.videoRelativeLayout;
         mSurfaceView = mBinding.playerViewFullScreen;
         mFeedFrameLayout = mBinding.feedFrameLayout;
-    }
-
-    /**
-     * Temporary method to prevent going back to the {@link FeedFragment} when the user logs out.
-     * This is  a workaround and wouldn't be propery to keep on production
-     */
-    private void checkIfLoggedInProperly() {
-        if(!mPrefs.getBoolean(Constant.LOGGED_IN, false)){
-            requireActivity().finish(); // closes the activity when the app detects the user swipes back
-            // when logged out
-        }
     }
 
     /**
