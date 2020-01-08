@@ -57,6 +57,10 @@ public class FeedViewModel extends ViewModel {
             return null;
         }
     });
+    private boolean fullscreen;
+    private String videoUrl;
+    private long videoCurrPos;
+    private List<Post> currentPostsList;
 
     public LiveData<Integer> getTotalPagesLiveData() {
         return totalPagesLiveData;
@@ -100,4 +104,35 @@ public class FeedViewModel extends ViewModel {
         isLoadingMoreItems = loadingMoreItems;
     }
 
+    public void setFullScreen(boolean fullscreen) {
+        this.fullscreen = fullscreen;
+    }
+
+    public boolean isFullscreen() {
+        return fullscreen;
+    }
+
+    public void setVideoUrlFullScreen(String videoUrl) {
+        this.videoUrl = videoUrl;
+    }
+
+    public void setVideoPosFullScreen(long currPos) {
+        this.videoCurrPos = currPos;
+    }
+
+    public String getVideoUrl() {
+        return videoUrl;
+    }
+
+    public long getVideoCurrPos() {
+        return videoCurrPos;
+    }
+
+    public void setCurrentPostsList(List<Post> mPostsList) {
+        this.currentPostsList = mPostsList;
+    }
+
+    public List<Post> getCurrentPostsList() {
+        return currentPostsList;
+    }
 }

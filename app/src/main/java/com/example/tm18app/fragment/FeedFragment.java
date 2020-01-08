@@ -1,12 +1,13 @@
 package com.example.tm18app.fragment;
 
 
-import android.content.res.Configuration;
+import android.content.pm.ActivityInfo;
+import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,18 +17,29 @@ import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
 import com.example.tm18app.adapters.PostItemAdapter;
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.FragmentFeedBinding;
 import com.example.tm18app.model.Post;
+import com.example.tm18app.network.CacheDataSourceFactory;
 import com.example.tm18app.viewModels.FeedViewModel;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelection;
+import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.upstream.BandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -47,7 +59,7 @@ import me.pushy.sdk.Pushy;
  * @version 1.0
  * @since 03.12.2019
  */
-public class FeedFragment extends BasePostsContainerFragment{
+public class FeedFragment extends BasePostsContainerFragment implements MainActivity.BackPressedListener {
 
     private final String TAG = getClass().getSimpleName();
 
@@ -60,6 +72,7 @@ public class FeedFragment extends BasePostsContainerFragment{
     private boolean doGoalsExist = true;
     private TextView mNoPostsView;
     private FloatingActionButton mFab;
+    private FrameLayout mFeedFrameLayout;
 
     public FeedFragment() {
         // Required empty public constructor
@@ -82,20 +95,67 @@ public class FeedFragment extends BasePostsContainerFragment{
         mBinding.setMyVM(mModel);
         mBinding.setLifecycleOwner(this);
         setupViews();
-        mModel.setNavController(mMainModel.getNavController());
-        setupSwipeRefreshLayout(); // swipe refresh for the possibility to reload posts
-        setupRecyclerView();
-        mModel.setContext(getContext());
-        checkIfGoalsExist();
-        if(doGoalsExist){ // if user has selected goals, fetch posts
-            if(mModel.getPageNumber() == -1)
-                mModel.setPageNumber(0);
-            mModel.callRepository();
-            fetchData();
+        ((MainActivity)getActivity()).setBackPressedListener(this);
+        if(!mModel.isFullscreen()){
+            if(mModel.getCurrentPostsList() != null)
+                mPostsList = mModel.getCurrentPostsList();
+            mModel.setNavController(mMainModel.getNavController());
+            setupSwipeRefreshLayout(); // swipe refresh for the possibility to reload posts
+            setupRecyclerView();
+            mModel.setContext(getContext());
+            checkIfGoalsExist();
+            if(doGoalsExist){ // if user has selected goals, fetch posts
+                if(mModel.getPageNumber() == -1)
+                    mModel.setPageNumber(0);
+                mModel.callRepository();
+                fetchData();
+            }else{
+                mProgressBar.setVisibility(View.GONE);
+            }
         }else{
-            mProgressBar.setVisibility(View.GONE);
+            prepareFullscrenForVideoPlayback();
         }
         return mBinding.getRoot();
+    }
+
+    private void prepareFullscrenForVideoPlayback() {
+        BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
+        TrackSelection.Factory videoTrackSelectionFactory =
+                new AdaptiveTrackSelection.Factory(bandwidthMeter);
+        TrackSelector trackSelector =
+                new DefaultTrackSelector(videoTrackSelectionFactory);
+        mExoPlayer = ExoPlayerFactory
+                .newSimpleInstance(getContext(), trackSelector);
+        mSurfaceView.setUseController(true);
+        mSurfaceView.setPlayer(mExoPlayer);
+        MediaSource videoSource = new ExtractorMediaSource(Uri.parse(mModel.getVideoUrl()),
+                new CacheDataSourceFactory(getContext(), // init cache params
+                        20 * 1024 * 1024, // 20mb
+                        50 * 1024 * 1024), // 50mb
+                new DefaultExtractorsFactory(), null, null);
+        mExoPlayer.prepare(videoSource);
+        mExoPlayer.setPlayWhenReady(true);
+        mExoPlayer.seekTo(mModel.getVideoCurrPos());
+        mVideoRL.setVisibility(View.VISIBLE);
+        mBottomNavigationView.setVisibility(View.GONE);
+        mToolbar.setVisibility(View.GONE);
+        mFab.setVisibility(View.GONE);
+        mFeedFrameLayout.setBackgroundColor(getResources().getColor(R.color.black));
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(mModel.isFullscreen()){
+            mModel.setFullScreen(false);
+            getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            mFeedFrameLayout.setBackgroundColor(getResources().getColor(R.color.inAppBackgroundColor));
+        }
+    }
+
+    @Override
+    public boolean backPressAllowed() {
+        return !mModel.isFullscreen();
     }
 
     @Override
@@ -106,6 +166,9 @@ public class FeedFragment extends BasePostsContainerFragment{
         mProgressBar.setVisibility(View.VISIBLE); // to show that posts are loading
         mFab = mBinding.newPostFab;
         mLoadMoreItemsProgressBar = mBinding.loadMoreItemsProgressBar;
+        mVideoRL = mBinding.videoRelativeLayout;
+        mSurfaceView = mBinding.playerViewFullScreen;
+        mFeedFrameLayout = mBinding.feedFrameLayout;
     }
 
     /**
@@ -168,8 +231,6 @@ public class FeedFragment extends BasePostsContainerFragment{
                         mPostsList.addAll(postsSet);
                         Collections.sort(mPostsList);
                         mAdapter.notifyDataSetChanged();
-                        if(mModel.getPageNumber() > 0)
-                            mRecyclerView.scrollBy(0, 100);
                         mLoadMoreItemsProgressBar.animate().alpha(0).setDuration(ANIMATION_DURATION);
                     }
                 }else{
@@ -200,6 +261,17 @@ public class FeedFragment extends BasePostsContainerFragment{
             mRecyclerView.scrollToPosition(itemPosition);
         }
 
+        @Override
+        public void onFullscreen(String videoUrl, long currPos) {
+            getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
+                    |View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    |View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            mModel.setFullScreen(true);
+            mModel.setVideoUrlFullScreen(videoUrl);
+            mModel.setVideoPosFullScreen(currPos);
+            mModel.setCurrentPostsList(mPostsList);
+        }
     };
 
 

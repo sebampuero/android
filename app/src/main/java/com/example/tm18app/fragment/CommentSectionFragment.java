@@ -30,6 +30,7 @@ import com.example.tm18app.viewModels.MyViewModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 
@@ -87,8 +88,10 @@ public class CommentSectionFragment extends BaseFragment {
     private void fetchData() {
         mModel.getCommentLiveData().observe(this, comments -> {
             if(comments != null){
+                HashSet<Comment> set = new HashSet<>(mCommentsList);
+                set.addAll(comments);
                 mCommentsList.clear();
-                mCommentsList.addAll(comments);
+                mCommentsList.addAll(set);
                 Collections.sort(mCommentsList);
                 mAdapter.notifyDataSetChanged();
                 mCommentInputEditText.setText("");

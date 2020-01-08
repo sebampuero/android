@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private BottomNavigationView mBottonNavigationView;
     private GestureListener gestureListener;
+    private BackPressedListener backPressedListener;
 
     /**
      * A Gesture Listener for all Fragments that require to listen to an onTouched Event
@@ -51,6 +52,11 @@ public class MainActivity extends AppCompatActivity {
      */
     public interface GestureListener {
         void onTouched(MotionEvent event);
+    }
+
+    public interface BackPressedListener {
+        void onBackPressed();
+        boolean backPressAllowed();
     }
 
     @Override
@@ -119,10 +125,22 @@ public class MainActivity extends AppCompatActivity {
         this.gestureListener = gestureListener;
     }
 
+    public void setBackPressedListener(BackPressedListener backPressedListener) {
+        this.backPressedListener = backPressedListener;
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if(gestureListener != null)
             gestureListener.onTouched(event);
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(backPressedListener.backPressAllowed())
+            super.onBackPressed();
+        else
+            backPressedListener.onBackPressed();
     }
 }

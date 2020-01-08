@@ -2,6 +2,7 @@ package com.example.tm18app.fragment;
 
 import android.util.Log;
 import android.view.View;
+import android.widget.RelativeLayout;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
@@ -9,6 +10,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.tm18app.adapters.PostItemAdapter;
 import com.example.tm18app.model.Post;
+import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.ui.PlayerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +31,9 @@ public abstract class BasePostsContainerFragment extends BaseFragment {
     protected PostItemAdapter mAdapter;
     protected SwipeRefreshLayout mSwipe;
     protected List<Post> mPostsList = new ArrayList<>();
+    protected RelativeLayout mVideoRL;
+    protected PlayerView mSurfaceView;
+    protected SimpleExoPlayer mExoPlayer;
 
     /**
      * Sets up the {@link RecyclerView} containing post items.
@@ -45,6 +52,8 @@ public abstract class BasePostsContainerFragment extends BaseFragment {
         super.onPause();
         if(mAdapter != null)
             mAdapter.pausePlayers();
+        if(mExoPlayer != null)
+            mExoPlayer.release();
     }
 
 }

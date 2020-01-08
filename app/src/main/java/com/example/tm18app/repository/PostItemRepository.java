@@ -174,15 +174,9 @@ public class PostItemRepository {
         postRestInterface.newComment(comment, pushyToken).enqueue(new Callback<Comment>() {
             @Override
             public void onResponse(Call<Comment> call, Response<Comment> response) {
-                if(data.getValue() != null){
-                    ArrayList<Comment> comments = new ArrayList<>(data.getValue());
-                    comments.add(response.body());
-                    data.setValue(comments);
-                }else{
-                    ArrayList<Comment> comments = new ArrayList<>();
-                    comments.add(response.body());
-                    data.setValue(comments);
-                }
+                ArrayList<Comment> comments = new ArrayList<>();
+                comments.add(response.body());
+                data.setValue(comments);
             }
 
             @Override

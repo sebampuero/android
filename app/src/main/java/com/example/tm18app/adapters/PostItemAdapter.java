@@ -97,6 +97,8 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
          */
         default void onUndoPostDeleted(int itemPosition) {}
 
+        default void onFullscreen(String videoUrl, long seekPoint) {}
+
     }
 
     public PostItemAdapter(ArrayList<Post> posts, NavController mNavController,
@@ -182,6 +184,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
         PlayerView surfaceView;
         RelativeLayout postMediaContent;
         ImageView playPauseBtn;
+        ImageView fullScreenBtn;
 
         ItemViewHolder(final PostCardviewBinding binding) {
             super(binding.getRoot());
@@ -201,6 +204,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
             postMediaContent = binding.postMediaContent;
             playBtnView = binding.playBtnView;
             playPauseBtn = binding.playPauseBtn;
+            fullScreenBtn = binding.fullScreenBtn;
         }
 
 
@@ -254,6 +258,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
                         post.getContentVideoThumbnailUrl());
                 String thumbnailCacheKey = ConverterUtils.extractUrlKey(thumbnailUrl);
                 playBtnView.setVisibility(View.VISIBLE); // show that this post is video
+                fullScreenBtn.setVisibility(View.GONE); // hide full screen btn if another one was instantiated for post
                 surfaceView.setVisibility(View.GONE); // hide player if another one was instantiated for this position
                 playPauseBtn.setVisibility(View.GONE); // hide play/pause btn if another one was instantiated for this position
                 contentImage.setVisibility(View.VISIBLE); // show thumbnail of video
@@ -328,6 +333,13 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
                     SimpleExoPlayer player = videoPlayers.get(getAdapterPosition());
                     // play or pause the video upon click on the play/pause btn
                     player.setPlayWhenReady(!player.getPlayWhenReady());
+                });
+                fullScreenBtn.setVisibility(View.VISIBLE);
+                fullScreenBtn.setOnClickListener(view12 -> {
+                    Player player = videoPlayers.get(getAdapterPosition());
+                    if(player != null){
+                        postsEventsListener.onFullscreen(mPostsList.get(getAdapterPosition()).getContentVideoUrl(), player.getContentPosition());
+                    }
                 });
                 surfaceView.setVisibility(View.VISIBLE);
                 playBtnView.setVisibility(View.GONE);
