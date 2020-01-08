@@ -46,7 +46,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         setupViews();
         Preference button = findPreference("logout");
         button.setOnPreferenceClickListener(preference -> {
-            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getContext());
+            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(requireContext());
             alertBuilder.setCancelable(true);
             alertBuilder.setTitle(getContext().getString(R.string.log_out_alert_title));
             alertBuilder.setMessage(getContext().getString(R.string.log_out_conf_message));
@@ -75,7 +75,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     }
 
     private void setupViews() {
-        Toolbar toolbar = ((MainActivity)getActivity()).getToolbar();
+        Toolbar toolbar = ((MainActivity)requireActivity()).getToolbar();
         toolbar.getMenu().clear();
     }
 
@@ -99,7 +99,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if(key.equals("notifications")){ // upon toggle notifs off, pushy shuts down service
             Pushy.toggleNotifications(!sharedPreferences.getBoolean(key, false),
-                    getActivity().getApplicationContext());
+                    requireActivity().getApplicationContext());
             getPreferenceScreen().findPreference("notifications_other")
                     .setEnabled(!sharedPreferences.getBoolean(key, false));
         }

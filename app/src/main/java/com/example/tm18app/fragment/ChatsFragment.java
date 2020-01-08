@@ -56,7 +56,7 @@ public class ChatsFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mModel = ViewModelProviders.of(getActivity()).get(ChatsViewModel.class);
+        mModel = ViewModelProviders.of(requireActivity()).get(ChatsViewModel.class);
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_chats,container,
                 false);
         mBinding.setMyVM(mModel);

@@ -7,8 +7,18 @@ import android.os.Build;
 
 import com.example.tm18app.model.UserActivity;
 
+/**
+ * Application class
+ *
+ * @author Sebastian Ampuero
+ * @version 1.0
+ * @since 10.12.2019
+ */
 public class App extends Application {
 
+    /**
+     * Notification channel which is required after Android API 28
+     */
     public static final String CHANNEL_ID = "exampleServiceChannel";
 
     @Override

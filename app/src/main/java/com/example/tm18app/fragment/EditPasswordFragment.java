@@ -59,13 +59,13 @@ public class EditPasswordFragment extends BaseFragment {
      */
     private void handleResponse(Integer responseStatusCode) {
         if(responseStatusCode == HttpURLConnection.HTTP_INTERNAL_ERROR){
-            Toast.makeText(getActivity(),
+            Toast.makeText(requireActivity(),
                     getActivity().getString(R.string.server_error), Toast.LENGTH_SHORT).show();
         }else if(responseStatusCode == HttpURLConnection.HTTP_BAD_REQUEST){
-            Toast.makeText(getActivity(),
+            Toast.makeText(requireActivity(),
                     getActivity().getString(R.string.old_password_error), Toast.LENGTH_SHORT).show();
         }else if(responseStatusCode == HttpURLConnection.HTTP_OK){
-            Toast.makeText(getActivity(),
+            Toast.makeText(requireActivity(),
                     getActivity().getString(R.string.password_update_success), Toast.LENGTH_SHORT).show();
             // Navigate back to the edit profile UI
             mMainModel.getNavController().navigateUp();

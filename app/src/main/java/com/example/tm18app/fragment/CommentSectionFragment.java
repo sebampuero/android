@@ -65,9 +65,9 @@ public class CommentSectionFragment extends BaseFragment {
                 container, false);
         mBinding.setLifecycleOwner(this);
         mBinding.setMyVM(mModel);
-        mPostID = getArguments().getString(POST_ID);
+        mPostID = requireArguments().getString(POST_ID);
         mModel.setPostID(mPostID);
-        mModel.setAppContext(getActivity());
+        mModel.setAppContext(requireActivity());
         setupViews();
         setupRecyclerView();
         fetchData();
@@ -107,9 +107,9 @@ public class CommentSectionFragment extends BaseFragment {
      */
     private void setupRecyclerView() {
         RecyclerView recyclerView = mBinding.commentsRv;
-        LinearLayoutManager manager = new LinearLayoutManager(getActivity());
+        LinearLayoutManager manager = new LinearLayoutManager(requireActivity());
         recyclerView.setLayoutManager(manager);
-        mAdapter = new CommentsAdapter(getActivity(), mCommentsList, mMainModel.getNavController());
+        mAdapter = new CommentsAdapter(requireActivity(), mCommentsList, mMainModel.getNavController());
         recyclerView.setAdapter(mAdapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(),
                 manager.getOrientation()));

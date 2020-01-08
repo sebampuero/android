@@ -72,7 +72,7 @@ public class FeedFragment extends BasePostsContainerFragment implements MainActi
         // Make Pushy listen for incoming MQTT Notification messages. It only works if writing and
         // reading permissions are granted
         if(mPrefs.getBoolean(Constant.LOGGED_IN, false)){
-            Pushy.listen(getContext());
+            Pushy.listen(requireActivity());
         }
     }
 
@@ -85,7 +85,7 @@ public class FeedFragment extends BasePostsContainerFragment implements MainActi
         mBinding.setMyVM(mModel);
         mBinding.setLifecycleOwner(this);
         setupViews();
-        ((MainActivity)getActivity()).setBackPressedListener(this);
+        ((MainActivity)requireActivity()).setBackPressedListener(this);
         if(!mModel.isVideoOnFullscreen()){ // if video not playing load everything normally
             if(mModel.getCurrentPostsList() != null)
                 mPostsList = mModel.getCurrentPostsList();
@@ -128,8 +128,8 @@ public class FeedFragment extends BasePostsContainerFragment implements MainActi
     public void onBackPressed() {
         if(mModel.isVideoOnFullscreen()){ // revert back all changes from fullscreen video playback
             mModel.setFullScreen(false);
-            getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
-            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            requireActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+            requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             mFeedFrameLayout.setBackgroundColor(getResources().getColor(R.color.inAppBackgroundColor));
         }
     }
@@ -158,7 +158,7 @@ public class FeedFragment extends BasePostsContainerFragment implements MainActi
      */
     private void checkIfLoggedInProperly() {
         if(!mPrefs.getBoolean(Constant.LOGGED_IN, false)){
-            getActivity().finish(); // closes the activity when the app detects the user swipes back
+            requireActivity().finish(); // closes the activity when the app detects the user swipes back
             // when logged out
         }
     }
@@ -244,11 +244,11 @@ public class FeedFragment extends BasePostsContainerFragment implements MainActi
 
         @Override
         public void onFullscreen(String videoUrl, long currPos) {
-            getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
+            requireActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
                     |View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                     |View.SYSTEM_UI_FLAG_HIDE_NAVIGATION); // set full screen flags
             // orientation to landscape. Attention: causes fragment to recalculate views and invalidate lifecycle
-            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             // set important properties in ViewModel which survives lifecycle changes
             mModel.setFullScreen(true);
             mModel.setVideoUrlFullScreen(videoUrl);
@@ -264,7 +264,7 @@ public class FeedFragment extends BasePostsContainerFragment implements MainActi
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layoutManager);
         mAdapter = new PostItemAdapter((ArrayList<Post>) mPostsList,
-                mMainModel.getNavController(), getContext(), listener);
+                mMainModel.getNavController(), requireContext(), listener);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addOnScrollListener(new CustomScrollListener((LinearLayoutManager)mRecyclerView.getLayoutManager()) {
             @Override

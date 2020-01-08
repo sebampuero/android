@@ -100,7 +100,7 @@ public class LoginFragment extends BaseFragment {
      * @param user {@link User} the logged in user info
      */
     private void handleSuccessLogin(User user) {
-        SharedPreferences introPreferences = this.getActivity().
+        SharedPreferences introPreferences = this.requireActivity().
                 getSharedPreferences(Constant.FIRST_TIME_INTRO,Context.MODE_PRIVATE);
         SharedPreferences.Editor editorIntro = introPreferences.edit();
         editorIntro.putBoolean(Constant.INTRO_OPENED,true);
@@ -144,7 +144,7 @@ public class LoginFragment extends BaseFragment {
                 new PushyDeviceCredentials(user.getPushyToken(), user.getPushyAuthKey());
         AsyncTask.execute(() -> {
             try {
-                Pushy.setDeviceCredentials(credentials, getContext());
+                Pushy.setDeviceCredentials(credentials, requireContext());
             } catch (PushyException e) {
                 e.printStackTrace();
             }

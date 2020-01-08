@@ -121,7 +121,7 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
      * Sets up the {@link ChatSocket} for the chat.
      */
     private void setupSocketConnection() {
-        socket = new ChatSocket(getActivity());
+        socket = new ChatSocket(requireActivity());
         socket.setSocketListener(this);
         if(mModel.getRoomName() == null || mModel.getRoomId() == null){
             // when the user initializes a chatroom for the first time there is no chat room available
@@ -170,7 +170,7 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
             mMainModel.getNavController().navigate(R.id.otherProfileFragment, b);
         });
         mLoadingMessagesTv = mBinding.loadingMessagesTv;
-        mProfileIW = getActivity().findViewById(R.id.toolbarLogo);
+        mProfileIW = requireActivity().findViewById(R.id.toolbarLogo);
         if(mProfilePicUrl != null){
             mProfileIW.setVisibility(View.VISIBLE);
             Picasso.get()
@@ -187,7 +187,7 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
      * be good to implement a different approach in the future.
      */
     private void deleteChatRoom() {
-        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(requireContext());
         alertBuilder.setCancelable(true);
         alertBuilder.setTitle(getContext().getString(R.string.delete_chat));
         alertBuilder.setMessage(getContext().getString(R.string.delete_chat_conf_message));
@@ -293,7 +293,7 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         //manager.setStackFromEnd(true);
         mRv.setLayoutManager(manager);
-        SharedPreferences prefs = getActivity().getSharedPreferences(Constant.USER_INFO,
+        SharedPreferences prefs = requireActivity().getSharedPreferences(Constant.USER_INFO,
                 Context.MODE_PRIVATE);
         mAdapter = new ChatMessagesAdapter(mChatMessagesList, prefs, getContext());
         mRv.setAdapter(mAdapter);

@@ -116,7 +116,7 @@ public class EditProfileFragment extends BaseFragmentMediaSelector
      */
     private void fetchProfilePic() {
         SharedPreferences prefs =
-                getContext().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
+                requireContext().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
         String imgUrl = prefs.getString(Constant.PROFILE_PIC_URL, null);
         if(imgUrl != null){
             if(!imgUrl.equals("")){
@@ -143,7 +143,7 @@ public class EditProfileFragment extends BaseFragmentMediaSelector
             mModel.setProfilePicBase64Data(Base64.encodeToString(profilePicByteArray, Base64.DEFAULT));
         }catch (Exception e){
             e.printStackTrace();
-            getActivity().runOnUiThread(() ->
+            requireActivity().runOnUiThread(() ->
                     Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show());
             mProfilePicIW.setVisibility(View.GONE);
         }
@@ -175,7 +175,7 @@ public class EditProfileFragment extends BaseFragmentMediaSelector
             Toast.makeText(this.getContext(), this.getContext().getString(R.string.email_already_exists), Toast.LENGTH_LONG).show();
         }else if(integerUserHashMap.containsKey(HttpURLConnection.HTTP_OK)){ // everything ok
             SharedPreferences preferences =
-                    this.getActivity().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
+                    this.requireActivity().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = preferences.edit();
             User user = integerUserHashMap.get(HttpURLConnection.HTTP_OK);
             editor.clear();
@@ -212,7 +212,7 @@ public class EditProfileFragment extends BaseFragmentMediaSelector
      * @param goals {@link List} of {@link Goal} items
      */
     private void prepareDataForAdapter(List<Goal> goals) {
-        SharedPreferences preferences = getActivity()
+        SharedPreferences preferences = requireActivity()
                 .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
         // Populate a list of GoalItemSelection items for the Adapter to handle the goals displaying
         // correctly
@@ -223,8 +223,8 @@ public class EditProfileFragment extends BaseFragmentMediaSelector
             goalItemSelections.add(goalItemSelection);
         }
         if(preferences.getString(Constant.GOAL_TAGS, null) != null){ // if user has checked goals
-            List<String> selectedGoals =
-                    Arrays.asList(preferences.getString(Constant.GOAL_TAGS, null).split(","));
+            String[] selectedGoals =
+                    preferences.getString(Constant.GOAL_TAGS, "").split(",");
             for(String goalTag : selectedGoals){
                 for(GoalItemSelection item : goalItemSelections){
                     if(goalTag.equals(item.getTag())){
@@ -241,8 +241,8 @@ public class EditProfileFragment extends BaseFragmentMediaSelector
      */
     private void setupGoalsBoxRecyclerView() {
         RecyclerView recyclerView = mBinding.goalsComboBoxEditProfile;
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireActivity()));
+        recyclerView.addItemDecoration(new DividerItemDecoration(requireActivity(),
                 LinearLayoutManager.VERTICAL));
         mAdapter = new MultiGoalSelectAdapter();
         recyclerView.setAdapter(mAdapter);

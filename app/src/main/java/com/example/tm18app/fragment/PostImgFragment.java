@@ -49,7 +49,7 @@ public class PostImgFragment extends BaseFragment implements MainActivity.Gestur
         displayPostImage();
         // Since a Gesture Detector can be only operated in the Activity containing a fragment,
         // we set the gesture listener for that activity
-        ((MainActivity)getActivity()).setGestureListener(this);
+        ((MainActivity)requireActivity()).setGestureListener(this);
         return mRoot;
     }
 
@@ -57,7 +57,7 @@ public class PostImgFragment extends BaseFragment implements MainActivity.Gestur
      * Display the image into the {@link ImageView}
      */
     private void displayPostImage() {
-        String url = NetworkConnectivity.tweakImgQualityByNetworkType(getContext(),
+        String url = NetworkConnectivity.tweakImgQualityByNetworkType(requireContext(),
                 getArguments().getString(IMG_URL));
         String urlKey = ConverterUtils.extractUrlKey(url);
         Picasso.get()

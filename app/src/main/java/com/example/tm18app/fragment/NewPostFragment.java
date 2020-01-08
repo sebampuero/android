@@ -83,7 +83,7 @@ public class NewPostFragment extends BaseFragmentMediaSelector implements BaseFr
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         setBitmapLoaderInterface(this);
-        mModel = ViewModelProviders.of(getActivity()).get(NewPostViewModel.class);
+        mModel = ViewModelProviders.of(requireActivity()).get(NewPostViewModel.class);
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_new_post, container,
                 false);
         mBinding.setMyVM(mModel);
@@ -136,9 +136,9 @@ public class NewPostFragment extends BaseFragmentMediaSelector implements BaseFr
             if(mPlayer != null)
                 mPlayer.release();
             TrackSelector selector = new DefaultTrackSelector();
-            mPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), selector);
+            mPlayer = ExoPlayerFactory.newSimpleInstance(requireContext(), selector);
             DefaultDataSourceFactory dataSourceFactory =
-                    new DefaultDataSourceFactory(getContext(), "exoplayer_video");
+                    new DefaultDataSourceFactory(requireContext(), "exoplayer_video");
             ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
             MediaSource source = new ExtractorMediaSource(contentVideoUri,
                     dataSourceFactory,
@@ -188,7 +188,7 @@ public class NewPostFragment extends BaseFragmentMediaSelector implements BaseFr
         Spinner goalTagsSpinner = mBinding.goalTagsSpinner;
         if(mPrefs.getString(Constant.GOAL_TAGS, null) != null){
             final ArrayList<String> goalTags = new ArrayList<>(Arrays.asList(mPrefs.getString(Constant.GOAL_TAGS, null).split(",")));
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, goalTags);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(requireActivity(), android.R.layout.simple_spinner_item, goalTags);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             goalTagsSpinner.setAdapter(adapter);
             goalTagsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

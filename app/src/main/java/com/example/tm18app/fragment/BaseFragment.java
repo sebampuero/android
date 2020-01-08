@@ -39,16 +39,16 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mMainModel = ViewModelProviders.of(getActivity()).get(MyViewModel.class);
-        mPrefs = getContext().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
+        mMainModel = ViewModelProviders.of(requireActivity()).get(MyViewModel.class);
+        mPrefs = requireContext().getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
     }
 
     /**
      * Sets up views for the {@link Fragment}
      */
     protected void setupViews() {
-        mBottomNavigationView = ((MainActivity)getActivity()).getmBottonNavigationView();
-        mToolbar = ((MainActivity)getActivity()).getToolbar();
+        mBottomNavigationView = ((MainActivity)requireActivity()).getmBottonNavigationView();
+        mToolbar = ((MainActivity)requireActivity()).getToolbar();
         mToolbar.setVisibility(View.VISIBLE);
         mBottomNavigationView.setVisibility(View.VISIBLE);
         mToolbar.getMenu().clear();

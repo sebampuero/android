@@ -42,7 +42,7 @@ public abstract class BaseProfileFragment extends BasePostsContainerFragment {
         public void onClick(View view) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             final AlertDialog dialog = builder.create();
-            LayoutInflater inflater = getActivity().getLayoutInflater();
+            LayoutInflater inflater = requireActivity().getLayoutInflater();
             View dialogLayout = inflater.inflate(R.layout.goals_layout, null);
             LinearLayout layout = dialogLayout.findViewById(R.id.goalsListContainer);
             dialog.setView(dialogLayout);

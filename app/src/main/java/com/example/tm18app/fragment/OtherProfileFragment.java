@@ -77,11 +77,11 @@ public class OtherProfileFragment extends BaseProfileFragment implements MainAct
         mBinding.setLifecycleOwner(this);
         setupViews();
         mModel.setPreferences(mPrefs);
-        ((MainActivity)getActivity()).setBackPressedListener(this);
+        ((MainActivity)requireActivity()).setBackPressedListener(this);
         if(!mModel.isVideoOnFullscreen()){ // if video not playing load everything normally
             mModel.callRepositoryForUser(getArguments().getString(OTHER_USER_ID));
             mModel.getUserLiveData().observe(this, user -> {
-                ((MainActivity)getActivity()).getToolbar().setTitle(user.getName());
+                ((MainActivity)requireActivity()).getToolbar().setTitle(user.getName());
                 otherUser = user;
                 mModel.setUserId(String.valueOf(user.getId()));
                 if(mModel.getPostsList() != null)
@@ -194,14 +194,14 @@ public class OtherProfileFragment extends BaseProfileFragment implements MainAct
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layoutManager);
         mAdapter = new PostItemAdapter((ArrayList<Post>) mPostsList,
-                mMainModel.getNavController(), getContext(), new PostItemAdapter.PostsEventsListener() {
+                mMainModel.getNavController(), requireContext(), new PostItemAdapter.PostsEventsListener() {
             @Override
             public void onFullscreen(String videoUrl, long seekPoint) {
-                getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
+                requireActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
                         |View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                         |View.SYSTEM_UI_FLAG_HIDE_NAVIGATION); // set full screen flags
                 // orientation to landscape. Attention: causes fragment to recalculate views and invalidate lifecycle
-                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 // set important properties in ViewModel which survives lifecycle changes
                 mModel.setFullScreen(true);
                 mModel.setVideoUrlFullScreen(videoUrl);
@@ -247,8 +247,8 @@ public class OtherProfileFragment extends BaseProfileFragment implements MainAct
     public void onBackPressed() {
         if(mModel.isVideoOnFullscreen()){ // revert back all changes from fullscreen video playback
             mModel.setFullScreen(false);
-            getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
-            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            requireActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+            requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
     }
 

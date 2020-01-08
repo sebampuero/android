@@ -124,7 +124,7 @@ public class RegistrationFragment extends BaseFragmentMediaSelector
                     Base64.DEFAULT));
         }catch (Exception e){
             e.printStackTrace();
-            getActivity().runOnUiThread(() ->
+            requireActivity().runOnUiThread(() ->
                     Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show());
             mProfilePicIW.setVisibility(View.GONE);
         }
@@ -176,7 +176,7 @@ public class RegistrationFragment extends BaseFragmentMediaSelector
         else if(integerUserHashMap.containsKey(HttpURLConnection.HTTP_OK)){
             User user = integerUserHashMap.get(HttpURLConnection.HTTP_OK);
             handleRegisterSuccess(user);
-            View view = getActivity().findViewById(android.R.id.content);
+            View view = requireActivity().findViewById(android.R.id.content);
             Snackbar snackbar = Snackbar.make(view,
                     getString(R.string.successfully_registered), Snackbar.LENGTH_LONG);
             snackbar.show();
@@ -189,7 +189,7 @@ public class RegistrationFragment extends BaseFragmentMediaSelector
      * @param user {@link User} containing the registered user's info
      */
     private void handleRegisterSuccess(User user) {
-        SharedPreferences introPreferences = this.getActivity().
+        SharedPreferences introPreferences = this.requireActivity().
                 getSharedPreferences(Constant.FIRST_TIME_INTRO,Context.MODE_PRIVATE);
         SharedPreferences.Editor editorIntro = introPreferences.edit();
         editorIntro.putBoolean(Constant.INTRO_OPENED,true);
@@ -229,8 +229,8 @@ public class RegistrationFragment extends BaseFragmentMediaSelector
      */
     private void setupGoalsBoxRecyclerView() {
         mRecyclerView = mBinding.goalsComboBox;
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(requireActivity()));
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(requireActivity(),
                 LinearLayoutManager.VERTICAL));
         mAdapter = new MultiGoalSelectAdapter();
         mRecyclerView.setAdapter(mAdapter);

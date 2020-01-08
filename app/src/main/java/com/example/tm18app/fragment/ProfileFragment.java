@@ -61,7 +61,7 @@ public class ProfileFragment extends BaseProfileFragment implements MainActivity
         mModel.setNavController(mMainModel.getNavController());
         mModel.setUserId(String.valueOf(mPrefs.getInt(Constant.USER_ID, 0)));
         mModel.setPreferences(mPrefs);
-        ((MainActivity)getActivity()).setBackPressedListener(this);
+        ((MainActivity)requireActivity()).setBackPressedListener(this);
         if(!mModel.isVideoOnFullscreen()){ // if video not playing load everything normally
             if(mModel.getPostsList() != null)
                 mPostsList = mModel.getPostsList();
@@ -125,10 +125,10 @@ public class ProfileFragment extends BaseProfileFragment implements MainActivity
 
         @Override
         public void onFullscreen(String videoUrl, long seekPoint) {
-            getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
+            requireActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
                     |View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                     |View.SYSTEM_UI_FLAG_HIDE_NAVIGATION); // set full screen flags
-            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             // orientation to landscape. Attention: causes fragment to recalculate views and invalidate lifecycle
             mModel.setFullScreen(true);
             mModel.setVideoUrlFullScreen(videoUrl);
@@ -143,7 +143,7 @@ public class ProfileFragment extends BaseProfileFragment implements MainActivity
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layoutManager);
         mAdapter = new PostItemAdapter((ArrayList<Post>) mPostsList,
-                mMainModel.getNavController(), getContext(), listener);
+                mMainModel.getNavController(), requireContext(), listener);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addOnScrollListener(new CustomScrollListener((LinearLayoutManager)mRecyclerView.getLayoutManager()) {
             @Override
@@ -234,8 +234,8 @@ public class ProfileFragment extends BaseProfileFragment implements MainActivity
     public void onBackPressed() {
         if(mModel.isVideoOnFullscreen()){ // revert back all changes from fullscreen video playback
             mModel.setFullScreen(false);
-            getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
-            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            requireActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+            requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
     }
 
