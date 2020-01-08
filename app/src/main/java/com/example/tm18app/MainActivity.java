@@ -1,32 +1,25 @@
 package com.example.tm18app;
 
 import android.Manifest;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.tm18app.databinding.ActivityMainBinding;
-import com.example.tm18app.fragment.FeedFragment;
 import com.example.tm18app.viewModels.MyViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -69,13 +62,13 @@ public class MainActivity extends AppCompatActivity {
          * @return true if back press functionality should occur, false if custom implementation
          * should occur
          */
-        boolean backPressAllowed();
+        boolean superBackPressAllowed();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
         // Enable or disable Wi-Fi sleep policy compliance to prevent the SDK 
         // from acquiring a wake lock in case the "Keep Wi-Fi on during sleep" device setting is set to "Never"
         Pushy.toggleWifiPolicyCompliance(true, this.getApplicationContext());
@@ -151,9 +144,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(backPressedListener.backPressAllowed())
+        if(backPressedListener.superBackPressAllowed()) // if back press should function normally
             super.onBackPressed();
-        else
+        else // custom fragment back press functionality
             backPressedListener.onBackPressed();
     }
 }

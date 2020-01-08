@@ -50,6 +50,9 @@ public abstract class BasePostsContainerFragment extends BaseFragment {
      */
     protected abstract void setupRecyclerView();
 
+    /**
+     * Initializes the {@link SimpleExoPlayer} that plays the video on fullscreen.
+     */
     protected void prepareVideoForFullscreenPlayback() {
         BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
         TrackSelection.Factory videoTrackSelectionFactory =
@@ -73,8 +76,16 @@ public abstract class BasePostsContainerFragment extends BaseFragment {
         mExoPlayer.seekTo(getVideoFullscreenCurrPos());
     }
 
+    /**
+     * Retrives the current position in milliseconds of a video that was playing on portrait mode.
+     * @return {@link Long} the position in milliseconds of a playing video before fullscreen
+     */
     protected abstract long getVideoFullscreenCurrPos();
 
+    /**
+     * Retrieves the video URL of a video that was playing in portrait mode
+     * @return {@link String} video URL
+     */
     protected abstract String getVideoFullscreenUrl();
 
     @Override

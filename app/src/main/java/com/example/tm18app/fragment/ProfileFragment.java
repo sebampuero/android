@@ -58,22 +58,21 @@ public class ProfileFragment extends BaseProfileFragment implements MainActivity
         mBinding.setLifecycleOwner(this);
         mModel.setNavController(mMainModel.getNavController());
         setupViews();
-        fillUserData();
         mModel.setNavController(mMainModel.getNavController());
         mModel.setUserId(String.valueOf(mPrefs.getInt(Constant.USER_ID, 0)));
         mModel.setPreferences(mPrefs);
         ((MainActivity)getActivity()).setBackPressedListener(this);
-        if(!mModel.isVideoOnFullscreen()){
+        if(!mModel.isVideoOnFullscreen()){ // if video not playing load everything normally
             if(mModel.getPostsList() != null)
                 mPostsList = mModel.getPostsList();
             if(mModel.getPageNumber() == -1)
                 mModel.setPageNumber(0);
             mModel.callRepositoryForPosts();
+            setupRecyclerView();
             fetchData();
-        }else{
+            fillUserData();
+        }else // video fullscreen playback triggered
             prepareVideoForFullscreenPlayback();
-        }
-        setupRecyclerView();
         return mBinding.getRoot();
     }
 
@@ -128,8 +127,9 @@ public class ProfileFragment extends BaseProfileFragment implements MainActivity
         public void onFullscreen(String videoUrl, long seekPoint) {
             getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
                     |View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                    |View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+                    |View.SYSTEM_UI_FLAG_HIDE_NAVIGATION); // set full screen flags
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            // orientation to landscape. Attention: causes fragment to recalculate views and invalidate lifecycle
             mModel.setFullScreen(true);
             mModel.setVideoUrlFullScreen(videoUrl);
             mModel.setVideoPosFullScreen(seekPoint);
@@ -232,7 +232,7 @@ public class ProfileFragment extends BaseProfileFragment implements MainActivity
 
     @Override
     public void onBackPressed() {
-        if(mModel.isVideoOnFullscreen()){
+        if(mModel.isVideoOnFullscreen()){ // revert back all changes from fullscreen video playback
             mModel.setFullScreen(false);
             getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -240,7 +240,7 @@ public class ProfileFragment extends BaseProfileFragment implements MainActivity
     }
 
     @Override
-    public boolean backPressAllowed() {
+    public boolean superBackPressAllowed() {
         return !mModel.isVideoOnFullscreen();
     }
 }

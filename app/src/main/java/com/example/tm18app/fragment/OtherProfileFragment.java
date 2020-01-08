@@ -2,6 +2,7 @@ package com.example.tm18app.fragment;
 
 
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
@@ -52,7 +53,7 @@ import java.util.List;
  * @version 1.0
  * @since 03.12.2019
  */
-public class OtherProfileFragment extends BaseProfileFragment {
+public class OtherProfileFragment extends BaseProfileFragment implements MainActivity.BackPressedListener {
 
     public static final String OTHER_USER_ID = "otherUserID";
     private final String TAG = getClass().getSimpleName();
@@ -76,19 +77,31 @@ public class OtherProfileFragment extends BaseProfileFragment {
         mBinding.setLifecycleOwner(this);
         setupViews();
         mModel.setPreferences(mPrefs);
-        if(mModel.getPageNumber() == -1)
-            mModel.setPageNumber(0);
-        mModel.callRepositoryForUser(getArguments().getString(OTHER_USER_ID));
-        mModel.getUserLiveData().observe(this, user -> {
-            ((MainActivity)getActivity()).getToolbar().setTitle(user.getName());
-            otherUser = user;
-            fillUserData();
-            mModel.setUserId(String.valueOf(user.getId()));
-            mModel.callRepositoryForPosts();
-            fetchData();
-        });
-        setupRecyclerView();
+        ((MainActivity)getActivity()).setBackPressedListener(this);
+        if(!mModel.isVideoOnFullscreen()){ // if video not playing load everything normally
+            mModel.callRepositoryForUser(getArguments().getString(OTHER_USER_ID));
+            mModel.getUserLiveData().observe(this, user -> {
+                ((MainActivity)getActivity()).getToolbar().setTitle(user.getName());
+                otherUser = user;
+                mModel.setUserId(String.valueOf(user.getId()));
+                if(mModel.getPostsList() != null)
+                    mPostsList = mModel.getPostsList();
+                if(mModel.getPageNumber() == -1)
+                    mModel.setPageNumber(0);
+                mModel.callRepositoryForPosts();
+                setupRecyclerView();
+                fetchData();
+                fillUserData();
+            });
+        }else // video fullscreen playback triggered
+            prepareVideoForFullscreenPlayback();
         return mBinding.getRoot();
+    }
+
+    @Override
+    protected void prepareVideoForFullscreenPlayback() {
+        super.prepareVideoForFullscreenPlayback();
+        mCoordinatorLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -147,6 +160,9 @@ public class OtherProfileFragment extends BaseProfileFragment {
         mGoalsTvCall = mBinding.getRoot().findViewById(R.id.seeUserGoalsTv);
         mGoalsTvCall.setOnClickListener(goalsInfoClickListener);
         mLoadMoreItemsProgressBar = mBinding.getRoot().findViewById(R.id.loadMoreItemsProgressBar);
+        mVideoRL = mBinding.videoRelativeLayoutProfile;
+        mSurfaceView = mBinding.playerViewFullScreen;
+        mCoordinatorLayout = mBinding.coordinator;
     }
 
     /**
@@ -178,7 +194,21 @@ public class OtherProfileFragment extends BaseProfileFragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layoutManager);
         mAdapter = new PostItemAdapter((ArrayList<Post>) mPostsList,
-                mMainModel.getNavController(), getContext(), null);
+                mMainModel.getNavController(), getContext(), new PostItemAdapter.PostsEventsListener() {
+            @Override
+            public void onFullscreen(String videoUrl, long seekPoint) {
+                getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
+                        |View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        |View.SYSTEM_UI_FLAG_HIDE_NAVIGATION); // set full screen flags
+                // orientation to landscape. Attention: causes fragment to recalculate views and invalidate lifecycle
+                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                // set important properties in ViewModel which survives lifecycle changes
+                mModel.setFullScreen(true);
+                mModel.setVideoUrlFullScreen(videoUrl);
+                mModel.setVideoPosFullScreen(seekPoint);
+                mModel.setCurrentPostsList(mPostsList);
+            }
+        });
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addOnScrollListener(new CustomScrollListener((LinearLayoutManager)mRecyclerView.getLayoutManager()) {
             @Override
@@ -203,4 +233,27 @@ public class OtherProfileFragment extends BaseProfileFragment {
         });
     }
 
+    @Override
+    protected long getVideoFullscreenCurrPos() {
+        return mModel.getSeekPoint();
+    }
+
+    @Override
+    protected String getVideoFullscreenUrl() {
+        return mModel.getVideoUrl();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(mModel.isVideoOnFullscreen()){ // revert back all changes from fullscreen video playback
+            mModel.setFullScreen(false);
+            getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+    }
+
+    @Override
+    public boolean superBackPressAllowed() {
+        return !mModel.isVideoOnFullscreen();
+    }
 }

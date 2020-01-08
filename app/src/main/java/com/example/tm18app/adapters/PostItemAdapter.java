@@ -97,6 +97,11 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
          */
         default void onUndoPostDeleted(int itemPosition) {}
 
+        /**
+         * Called when a video is clicked to be played fullscreen on landscape mode
+         * @param videoUrl {@link String} URL of the video
+         * @param seekPoint {@link Long} current position in milliseconds of the video
+         */
         default void onFullscreen(String videoUrl, long seekPoint) {}
 
     }
@@ -338,7 +343,8 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
                 fullScreenBtn.setOnClickListener(view12 -> {
                     Player player = videoPlayers.get(getAdapterPosition());
                     if(player != null){
-                        postsEventsListener.onFullscreen(mPostsList.get(getAdapterPosition()).getContentVideoUrl(), player.getContentPosition());
+                        postsEventsListener.onFullscreen(mPostsList.get(getAdapterPosition())
+                                .getContentVideoUrl(), player.getContentPosition());
                     }
                 });
                 surfaceView.setVisibility(View.VISIBLE);

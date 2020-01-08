@@ -86,7 +86,7 @@ public class FeedFragment extends BasePostsContainerFragment implements MainActi
         mBinding.setLifecycleOwner(this);
         setupViews();
         ((MainActivity)getActivity()).setBackPressedListener(this);
-        if(!mModel.isVideoOnFullscreen()){
+        if(!mModel.isVideoOnFullscreen()){ // if video not playing load everything normally
             if(mModel.getCurrentPostsList() != null)
                 mPostsList = mModel.getCurrentPostsList();
             mModel.setNavController(mMainModel.getNavController());
@@ -102,9 +102,8 @@ public class FeedFragment extends BasePostsContainerFragment implements MainActi
             }else{
                 mProgressBar.setVisibility(View.GONE);
             }
-        }else{
+        }else // video fullscreen playback triggered
             prepareVideoForFullscreenPlayback();
-        }
         return mBinding.getRoot();
     }
 
@@ -127,7 +126,7 @@ public class FeedFragment extends BasePostsContainerFragment implements MainActi
 
     @Override
     public void onBackPressed() {
-        if(mModel.isVideoOnFullscreen()){
+        if(mModel.isVideoOnFullscreen()){ // revert back all changes from fullscreen video playback
             mModel.setFullScreen(false);
             getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -136,7 +135,7 @@ public class FeedFragment extends BasePostsContainerFragment implements MainActi
     }
 
     @Override
-    public boolean backPressAllowed() {
+    public boolean superBackPressAllowed() {
         return !mModel.isVideoOnFullscreen();
     }
 
@@ -247,8 +246,10 @@ public class FeedFragment extends BasePostsContainerFragment implements MainActi
         public void onFullscreen(String videoUrl, long currPos) {
             getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN
                     |View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                    |View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+                    |View.SYSTEM_UI_FLAG_HIDE_NAVIGATION); // set full screen flags
+            // orientation to landscape. Attention: causes fragment to recalculate views and invalidate lifecycle
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            // set important properties in ViewModel which survives lifecycle changes
             mModel.setFullScreen(true);
             mModel.setVideoUrlFullScreen(videoUrl);
             mModel.setVideoPosFullScreen(currPos);
@@ -266,7 +267,6 @@ public class FeedFragment extends BasePostsContainerFragment implements MainActi
                 mMainModel.getNavController(), getContext(), listener);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addOnScrollListener(new CustomScrollListener((LinearLayoutManager)mRecyclerView.getLayoutManager()) {
-
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);

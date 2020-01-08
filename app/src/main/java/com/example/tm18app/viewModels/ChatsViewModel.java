@@ -25,6 +25,12 @@ public class ChatsViewModel extends ViewModel {
 
     private MutableLiveData<Boolean> reloadTrigger = new MutableLiveData<>();
     private SharedPreferences prefs;
+
+    /**
+     * Upon change on the {@link MutableLiveData} reloadTrigger, the chatsLiveData is created
+     * or updated. The reloadTrigger is actuated when the ChatsView is loaded and reloaded
+     * by a swipe. (Can also be programatically called)
+     */
     private LiveData<List<ChatRoom>> chatLiveData = Transformations.switchMap(reloadTrigger,
             new Function<Boolean, LiveData<List<ChatRoom>>>() {
         @Override

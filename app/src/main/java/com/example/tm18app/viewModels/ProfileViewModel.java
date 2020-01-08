@@ -32,6 +32,12 @@ public abstract class ProfileViewModel extends ViewModel {
     protected LiveData<Integer> totalPagesLiveData = new MutableLiveData<>();
 
     protected MutableLiveData<Boolean> reloadTrigger = new MutableLiveData<>();
+
+    /**
+     * Upon change on the {@link MutableLiveData} reloadTrigger, the postLiveData is created
+     * or updated. The reloadTrigger is actuated when the Profile is loaded and reloaded
+     * by a swipe. (Can also be programatically called)
+     */
     protected LiveData<List<Post>> postLiveData = Transformations.switchMap(reloadTrigger, new Function<Boolean, LiveData<List<Post>>>() {
         @Override
         public LiveData<List<Post>> apply(Boolean input) {
@@ -52,17 +58,10 @@ public abstract class ProfileViewModel extends ViewModel {
         return totalPagesLiveData;
     }
 
-    /**
-     * Getter for the {@link LiveData} for the user's posts that show on the profile
-     * @return {@link LiveData}
-     */
     public LiveData<List<Post>> getPostLiveData() {
         return postLiveData;
     }
 
-    /**
-     * Calls the repository and fetches the user's posts from the server
-     */
     public void callRepositoryForPosts() {
         reloadTrigger.setValue(true);
     }
