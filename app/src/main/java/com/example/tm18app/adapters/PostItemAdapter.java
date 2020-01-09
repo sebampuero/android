@@ -32,6 +32,7 @@ import com.example.tm18app.network.NetworkConnectivity;
 import com.example.tm18app.model.Post;
 import com.example.tm18app.repository.PostItemRepository;
 import com.example.tm18app.util.ConverterUtils;
+import com.example.tm18app.util.DialogManager;
 import com.example.tm18app.util.TimeUtils;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Player;
@@ -460,48 +461,49 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
             public void onClick(View view) {
                 final int userID = mPrefs.getInt(Constant.USER_ID, 0);
                 final Post post = mPostsList.get(getAdapterPosition());
-                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                final AlertDialog dialog = builder.create();
-                LayoutInflater inflater = ((Activity)mContext).getLayoutInflater();
-                View dialogLayout = inflater.inflate(R.layout.post_options_alert, null);
-                dialog.setView(dialogLayout);
-                dialog.show();
-                dialog.setCancelable(true);
-                dialogLayout.findViewById(R.id.reportPost).setOnClickListener(view13 -> {
-                    Toast.makeText(mContext,
-                            "Not yet implemented!", Toast.LENGTH_SHORT).show();
-                    dialog.dismiss();
-                });
-                if(subscriberIds != null){
-                    // if current user is subscribed to this post
-                    if(subscriberIds.indexOf(String.valueOf(userID)) >= 0) {
-                        dialogLayout.findViewById(R.id.unsubscribe).setVisibility(View.VISIBLE);
-                        dialogLayout.findViewById(R.id.unsubscribe).setOnClickListener(view12 -> {
-                            PostItemRepository repository = new PostItemRepository();
-                            repository.deleteSubscription(
-                                    String.valueOf(userID),
-                                    String.valueOf(post.getId()),
-                                    mPrefs.getString(Constant.PUSHY_TOKEN, ""));
-                            Toast.makeText(
-                                    mContext,
-                                    mContext.getResources().getString(R.string.unsubcribed_from_post),
-                                    Toast.LENGTH_SHORT).show();
-                            dialog.dismiss();
-                        });
-                    }
-                }
-                if(post.getUserID() == userID){
-                    dialogLayout.findViewById(R.id.deletePost).setVisibility(View.VISIBLE);
-                    dialogLayout.findViewById(R.id.deletePost).setOnClickListener(view1 -> {
-                        pausePlayers();
-                        recentlyDeletedPost = mPostsList.get(getAdapterPosition());
-                        recentlyDeletedPostPosition = getAdapterPosition();
-                        mPostsList.remove(getAdapterPosition());
-                        notifyItemRemoved(getAdapterPosition());
-                        dialog.dismiss();
-                        showUndoSnackbar();
-                    });
-                }
+                DialogManager
+                        .getInstance()
+                        .showCustomDialog(
+                                R.layout.post_options_alert,
+                                mContext,
+                                (dialogCustomView, dialog) -> {
+                                    dialogCustomView.findViewById(R.id.reportPost).setOnClickListener(view13 -> {
+                                        Toast.makeText(mContext,
+                                                "Not yet implemented!", Toast.LENGTH_SHORT).show();
+                                        dialog.dismiss();
+                                    });
+                                    if(subscriberIds != null){
+                                        // if current user is subscribed to this post
+                                        if(subscriberIds.indexOf(String.valueOf(userID)) >= 0) {
+                                            dialogCustomView.findViewById(R.id.unsubscribe).setVisibility(View.VISIBLE);
+                                            dialogCustomView.findViewById(R.id.unsubscribe).setOnClickListener(view12 -> {
+                                                PostItemRepository repository = new PostItemRepository();
+                                                repository.deleteSubscription(
+                                                        String.valueOf(userID),
+                                                        String.valueOf(post.getId()),
+                                                        mPrefs.getString(Constant.PUSHY_TOKEN, ""));
+                                                Toast.makeText(
+                                                        mContext,
+                                                        mContext.getResources().getString(R.string.unsubcribed_from_post),
+                                                        Toast.LENGTH_SHORT).show();
+                                                dialog.dismiss();
+                                            });
+                                        }
+                                    }
+                                    if(post.getUserID() == userID){
+                                        dialogCustomView.findViewById(R.id.deletePost).setVisibility(View.VISIBLE);
+                                        dialogCustomView.findViewById(R.id.deletePost).setOnClickListener(view1 -> {
+                                            pausePlayers();
+                                            recentlyDeletedPost = mPostsList.get(getAdapterPosition());
+                                            recentlyDeletedPostPosition = getAdapterPosition();
+                                            mPostsList.remove(getAdapterPosition());
+                                            notifyItemRemoved(getAdapterPosition());
+                                            dialog.dismiss();
+                                            showUndoSnackbar();
+                                        });
+                                    }
+                                }
+                        );
             }
 
             /**

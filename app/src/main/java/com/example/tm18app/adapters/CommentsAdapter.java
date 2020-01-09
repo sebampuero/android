@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentActivity;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,6 +19,7 @@ import com.example.tm18app.databinding.CommentItemBinding;
 import com.example.tm18app.fragment.OtherProfileFragment;
 import com.example.tm18app.model.Comment;
 import com.example.tm18app.repository.PostItemRepository;
+import com.example.tm18app.util.DialogManager;
 import com.example.tm18app.util.TimeUtils;
 import com.squareup.picasso.Picasso;
 
@@ -114,7 +114,7 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
             timestamp = binding.timestamp;
             commenterPic = binding.commenterPic;
             binding.getRoot().setOnLongClickListener(view -> {
-                buildDeletionAlertDialog();
+                showDeletDialog();
                 return false;
             });
         }
@@ -123,23 +123,23 @@ public class CommentsAdapter  extends RecyclerView.Adapter<CommentsAdapter.MyVie
          * Shows an alert dialog to the user to confirm the deletion of a comment. Upon acceptance,
          * the comment gets deleted.
          */
-        private void buildDeletionAlertDialog() {
+        private void showDeletDialog() {
             final int position = getAdapterPosition();
             final Comment commentToDelete = mCommentsList.get(position);
             if(mCurrentUserId == commentToDelete.getUserID()){
-                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(mContext);
-                alertBuilder.setCancelable(true);
-                alertBuilder.setTitle(mContext.getString(R.string.delete_comment_title));
-                alertBuilder.setMessage(mContext.getString(R.string.delete_comment_conf_message));
-                alertBuilder.setPositiveButton(android.R.string.yes, (dialogInterface, which) -> {
-                    PostItemRepository repository = new PostItemRepository();
-                    repository.deleteComment(commentToDelete.getId(),
-                            mPrefs.getString(Constant.PUSHY_TOKEN, ""));
-                    mCommentsList.remove(position);
-                    notifyItemRemoved(position);
-                });
-                AlertDialog alert = alertBuilder.create();
-                alert.show();
+                DialogManager
+                        .getInstance()
+                        .showAlertDialogSingleButton(mContext,
+                                mContext.getString(R.string.delete_comment_title),
+                                mContext.getString(R.string.delete_comment_conf_message),
+                                android.R.string.yes,
+                                (dialogInterface, i) -> {
+                                    PostItemRepository repository = new PostItemRepository();
+                                    repository.deleteComment(commentToDelete.getId(),
+                                            mPrefs.getString(Constant.PUSHY_TOKEN, ""));
+                                    mCommentsList.remove(position);
+                                    notifyItemRemoved(position);
+                                });
             }
         }
 

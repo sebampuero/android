@@ -2,6 +2,7 @@ package com.example.tm18app.fragment;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -31,6 +32,7 @@ import com.example.tm18app.model.ChatMessage;
 import com.example.tm18app.network.ChatSocket;
 import com.example.tm18app.repository.ChatsRepository;
 import com.example.tm18app.util.Debouncer;
+import com.example.tm18app.util.DialogManager;
 import com.example.tm18app.util.TimeUtils;
 import com.example.tm18app.viewModels.ChatMessagesViewModel;
 import com.squareup.picasso.Picasso;
@@ -187,22 +189,24 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
      * be good to implement a different approach in the future.
      */
     private void deleteChatRoom() {
-        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(requireContext());
-        alertBuilder.setCancelable(true);
-        alertBuilder.setTitle(getContext().getString(R.string.delete_chat));
-        alertBuilder.setMessage(getContext().getString(R.string.delete_chat_conf_message));
-        alertBuilder.setPositiveButton(android.R.string.yes, (dialogInterface, which) -> {
-            socket.transmitRoomDeleted(mModel.getRoomName());
-            ChatsRepository repository = new ChatsRepository();
-            repository.deleteChatRoom(mModel.getRoomId(),
-                    mPrefs.getString(Constant.PUSHY_TOKEN, ""));
-            mMainModel.getNavController().navigateUp();
-            Toast.makeText(getContext(), getResources().getString(R.string.chat_room_deleted),
-                    Toast.LENGTH_SHORT).show();
-
-        });
-        AlertDialog alert = alertBuilder.create();
-        alert.show();
+        DialogManager
+                .getInstance()
+                .showAlertDialogSingleButton(
+                        requireContext(),
+                        requireContext().getString(R.string.delete_chat),
+                        requireContext().getString(R.string.delete_chat_conf_message),
+                        android.R.string.yes,
+                        (dialogInterface, i) -> {
+                            socket.transmitRoomDeleted(mModel.getRoomName());
+                            ChatsRepository repository = new ChatsRepository();
+                            repository.deleteChatRoom(mModel.getRoomId(),
+                                    mPrefs.getString(Constant.PUSHY_TOKEN, ""));
+                            mMainModel.getNavController().navigateUp();
+                            Toast.makeText(requireContext(),
+                                    getResources().getString(R.string.chat_room_deleted),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                );
     }
 
     /**

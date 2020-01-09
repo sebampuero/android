@@ -17,6 +17,7 @@ import androidx.preference.PreferenceFragmentCompat;
 import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
 import com.example.tm18app.constants.Constant;
+import com.example.tm18app.util.DialogManager;
 
 import me.pushy.sdk.Pushy;
 
@@ -46,30 +47,30 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         setupViews();
         Preference button = findPreference("logout");
         button.setOnPreferenceClickListener(preference -> {
-            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(requireContext());
-            alertBuilder.setCancelable(true);
-            alertBuilder.setTitle(getContext().getString(R.string.log_out_alert_title));
-            alertBuilder.setMessage(getContext().getString(R.string.log_out_conf_message));
-            alertBuilder.setPositiveButton(android.R.string.yes, (dialogInterface, which) -> {
-                SharedPreferences preferences = getContext().
-                        getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
-                SharedPreferences.Editor e = preferences.edit();
-                e.clear().apply(); // clear SharedPreferences info
-                Pushy.unregister(getContext()); // wipe user token and auth key info
-                // Navigate to the main fragment with a deep link
-                PendingIntent pendingIntent = new NavDeepLinkBuilder(getContext())
-                        .setComponentName(MainActivity.class)
-                        .setGraph(R.navigation.nav_graph)
-                        .setDestination(R.id.mainFragment)
-                        .createPendingIntent();
-                try {
-                    pendingIntent.send();
-                } catch (PendingIntent.CanceledException ex) {
-                    ex.printStackTrace();
-                }
-            });
-            AlertDialog alert = alertBuilder.create();
-            alert.show();
+            DialogManager.
+                    getInstance()
+                    .showAlertDialogSingleButton(requireContext(),
+                            requireContext().getString(R.string.log_out_alert_title),
+                            requireContext().getString(R.string.log_out_conf_message),
+                            android.R.string.yes,
+                            (dialogInterface, i) -> {
+                                SharedPreferences preferences = requireContext().
+                                        getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
+                                SharedPreferences.Editor e = preferences.edit();
+                                e.clear().apply(); // clear SharedPreferences info
+                                Pushy.unregister(requireContext()); // wipe user token and auth key info
+                                // Navigate to the main fragment with a deep link
+                                PendingIntent pendingIntent = new NavDeepLinkBuilder(requireContext())
+                                        .setComponentName(MainActivity.class)
+                                        .setGraph(R.navigation.nav_graph)
+                                        .setDestination(R.id.mainFragment)
+                                        .createPendingIntent();
+                                try {
+                                    pendingIntent.send();
+                                } catch (PendingIntent.CanceledException ex) {
+                                    ex.printStackTrace();
+                                }
+                            });
             return true;
         });
     }

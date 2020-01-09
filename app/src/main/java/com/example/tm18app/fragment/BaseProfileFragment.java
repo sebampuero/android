@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.tm18app.R;
 import com.example.tm18app.model.Post;
+import com.example.tm18app.util.DialogManager;
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,28 +41,29 @@ public abstract class BaseProfileFragment extends BasePostsContainerFragment {
 
         @Override
         public void onClick(View view) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            final AlertDialog dialog = builder.create();
-            LayoutInflater inflater = requireActivity().getLayoutInflater();
-            View dialogLayout = inflater.inflate(R.layout.goals_layout, null);
-            LinearLayout layout = dialogLayout.findViewById(R.id.goalsListContainer);
-            dialog.setView(dialogLayout);
-            dialog.show();
-            dialog.setCancelable(true);
-            TextView tv;
-            for (String string : userGoals) {
-                tv = new TextView(getContext());
-                tv.setText(string);
-                tv.setTextSize((float) 15);
-                tv.setPadding(0, 5, 0, 5);
-                layout.addView(tv);
-            }
-            if (userGoals.length == 1) { // somehow array is [] but .length returns 1 ???
-                tv = new TextView(getContext());
-                tv.setText(getString(R.string.user_has_no_goals));
-                tv.setTextSize((float) 15);
-                layout.addView(tv);
-            }
+            DialogManager
+                    .getInstance()
+                    .showCustomDialog(
+                            R.layout.goals_layout,
+                            requireActivity(),
+                            (dialogCustomView, dialog) -> {
+                                TextView tv;
+                                LinearLayout layout = dialogCustomView.findViewById(R.id.goalsListContainer);
+                                for (String string : userGoals) {
+                                    tv = new TextView(getContext());
+                                    tv.setText(string);
+                                    tv.setTextSize((float) 15);
+                                    tv.setPadding(0, 5, 0, 5);
+                                    layout.addView(tv);
+                                }
+                                if (userGoals.length == 1) { // somehow array is [] but .length returns 1 ???
+                                    tv = new TextView(getContext());
+                                    tv.setText(getString(R.string.user_has_no_goals));
+                                    tv.setTextSize((float) 15);
+                                    layout.addView(tv);
+                                }
+                            }
+                    );
         }
     };
 
