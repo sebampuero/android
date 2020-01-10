@@ -1,7 +1,5 @@
 package com.example.tm18app.repository;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -25,10 +23,10 @@ import retrofit2.Response;
  */
 public class ChatsRepository {
 
-    private ChatsRestInterface chatsRestInterface;
+    private ChatsRestInterface mChatsRestInterface;
 
     public ChatsRepository() {
-        chatsRestInterface = RetrofitNetworkConnectionSingleton.getInstance()
+        mChatsRestInterface = RetrofitNetworkConnectionSingleton.getInstance()
                 .retrofitInstance().create(ChatsRestInterface.class);
     }
 
@@ -40,7 +38,7 @@ public class ChatsRepository {
      */
     public LiveData<List<ChatRoom>> getChatRooms(String userId, String pushyToken) {
         final MutableLiveData<List<ChatRoom>> data = new MutableLiveData<>();
-        chatsRestInterface.getRoomsByUserId(userId, pushyToken).enqueue(new Callback<List<ChatRoom>>() {
+        mChatsRestInterface.getRoomsByUserId(userId, pushyToken).enqueue(new Callback<List<ChatRoom>>() {
             @Override
             public void onResponse(Call<List<ChatRoom>> call, Response<List<ChatRoom>> response) {
                 if(response.body() != null)
@@ -64,7 +62,7 @@ public class ChatsRepository {
      */
     public LiveData<List<ChatMessage>> getChatsForRoom(String roomId, String pushyToken, String page) {
         final MutableLiveData<List<ChatMessage>> data = new MutableLiveData<>();
-        chatsRestInterface.getChatMessagesByRoomId(roomId, pushyToken, page).enqueue(new Callback<List<ChatMessage>>() {
+        mChatsRestInterface.getChatMessagesByRoomId(roomId, pushyToken, page).enqueue(new Callback<List<ChatMessage>>() {
             @Override
             public void onResponse(Call<List<ChatMessage>> call, Response<List<ChatMessage>> response) {
                 data.setValue(response.body());
@@ -86,7 +84,7 @@ public class ChatsRepository {
      */
     public LiveData<Integer> getTotalPagesForRoom(String roomId, String pushyToken) {
         final MutableLiveData<Integer> data = new MutableLiveData<>();
-        chatsRestInterface.getTotalPagesForRoom(roomId, pushyToken).enqueue(new Callback<Integer>() {
+        mChatsRestInterface.getTotalPagesForRoom(roomId, pushyToken).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 data.setValue(response.body());
@@ -105,7 +103,7 @@ public class ChatsRepository {
      * @param pushyToken {@link String} unique token of the logged in user
      */
     public void deleteChatRoom(String roomId, String pushyToken) {
-        chatsRestInterface.deleteChatRoom(roomId, pushyToken).enqueue(new Callback<Void>() {
+        mChatsRestInterface.deleteChatRoom(roomId, pushyToken).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
             }

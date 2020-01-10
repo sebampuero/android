@@ -2,27 +2,18 @@ package com.example.tm18app.repository;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.tm18app.MainActivity;
-import com.example.tm18app.R;
 import com.example.tm18app.network.PostRestInterface;
 import com.example.tm18app.network.RetrofitNetworkConnectionSingleton;
 import com.example.tm18app.model.Comment;
 import com.example.tm18app.model.Post;
 import com.example.tm18app.service.UploadService;
 
-import org.json.HTTP;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -39,11 +30,11 @@ import retrofit2.Response;
  */
 public class PostItemRepository {
 
-    private PostRestInterface postRestInterface;
+    private PostRestInterface mPostRestInterface;
     private final String TAG = getClass().getSimpleName();
 
     public PostItemRepository(){
-        postRestInterface = RetrofitNetworkConnectionSingleton.
+        mPostRestInterface = RetrofitNetworkConnectionSingleton.
                 getInstance().retrofitInstance().create(PostRestInterface.class);
     }
 
@@ -55,7 +46,7 @@ public class PostItemRepository {
      */
     public LiveData<List<Post>> getPosts(List<String> goalIds, String pushyToken, String page) {
         final MutableLiveData<List<Post>> data = new MutableLiveData<>();
-        postRestInterface.getPostsWithGoals(page, goalIds, pushyToken).enqueue(new Callback<List<Post>>() {
+        mPostRestInterface.getPostsWithGoals(page, goalIds, pushyToken).enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                 if(response.body() != null){
@@ -79,7 +70,7 @@ public class PostItemRepository {
      */
     public LiveData<Integer> getPagesNumberForPosts(List<String> goals, String pushyToken) {
         final MutableLiveData<Integer> data = new MutableLiveData<>();
-        postRestInterface.getTotalPagesForPosts(goals, pushyToken).enqueue(new Callback<Integer>() {
+        mPostRestInterface.getTotalPagesForPosts(goals, pushyToken).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 data.setValue(response.body());
@@ -100,7 +91,7 @@ public class PostItemRepository {
      */
     public LiveData<List<Post>> getUserPosts(String userId, String pushyToken, String page) {
         final MutableLiveData<List<Post>> data = new MutableLiveData<>();
-        postRestInterface.getPostsByUserId(userId, pushyToken, page).enqueue(new Callback<List<Post>>() {
+        mPostRestInterface.getPostsByUserId(userId, pushyToken, page).enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {
                 if(response.body() != null){
@@ -124,7 +115,7 @@ public class PostItemRepository {
      */
     public LiveData<Integer> getPagesNumberForPosts(String userId, String pushyToken) {
         final MutableLiveData<Integer> data = new MutableLiveData<>();
-        postRestInterface.getTotalPagesForPosts(userId, pushyToken).enqueue(new Callback<Integer>() {
+        mPostRestInterface.getTotalPagesForPosts(userId, pushyToken).enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {
                 data.setValue(response.body());
@@ -145,7 +136,7 @@ public class PostItemRepository {
      */
     public MutableLiveData<List<Comment>> getComments(String postID, String pushyToken) {
         final MutableLiveData<List<Comment>> data = new MutableLiveData<>();
-        postRestInterface.getCommentsByPostId(postID, pushyToken).enqueue(new Callback<List<Comment>>() {
+        mPostRestInterface.getCommentsByPostId(postID, pushyToken).enqueue(new Callback<List<Comment>>() {
             @Override
             public void onResponse(Call<List<Comment>> call, Response<List<Comment>> response) {
                 if(response.body() != null){
@@ -171,7 +162,7 @@ public class PostItemRepository {
                               MutableLiveData<List<Comment>> commentLiveData,
                               String pushyToken) {
         final MutableLiveData<List<Comment>> data = commentLiveData;
-        postRestInterface.newComment(comment, pushyToken).enqueue(new Callback<Comment>() {
+        mPostRestInterface.newComment(comment, pushyToken).enqueue(new Callback<Comment>() {
             @Override
             public void onResponse(Call<Comment> call, Response<Comment> response) {
                 ArrayList<Comment> comments = new ArrayList<>();
@@ -213,7 +204,7 @@ public class PostItemRepository {
      * @param pushyToken {@link String} unique token of the logged in user
      */
     public void deletePost(int postID, final MutableLiveData<Integer> statusCode, String pushyToken){
-        postRestInterface.deletePost(String.valueOf(postID), pushyToken).enqueue(new Callback<Void>() {
+        mPostRestInterface.deletePost(String.valueOf(postID), pushyToken).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 statusCode.setValue(response.code());
@@ -231,7 +222,7 @@ public class PostItemRepository {
      * @param pushyToken {@link String} unique token of the logged in user
      */
     public void deleteComment(int commentID, String pushyToken) {
-        postRestInterface.deleteComment(String.valueOf(commentID), pushyToken).enqueue(new Callback<Void>() {
+        mPostRestInterface.deleteComment(String.valueOf(commentID), pushyToken).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
             }
@@ -249,7 +240,7 @@ public class PostItemRepository {
      * @param pushyToken {@link String} unique token of the logged in user
      */
     public void deleteSubscription(String userID, String postID, String pushyToken) {
-        postRestInterface.deletePostSubscription(userID, postID, pushyToken).enqueue(new Callback<Void>() {
+        mPostRestInterface.deletePostSubscription(userID, postID, pushyToken).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
 

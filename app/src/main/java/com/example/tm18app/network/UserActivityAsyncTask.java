@@ -15,6 +15,7 @@ import retrofit2.Response;
  *     <li>New notifications</li>
  *     <li>Other type of news for the user</li>
  * </ul>
+ * Upon user activity changes, those changes should be reflected on the UI.
  *
  * @see UserActivity
  * @author Sebastian Ampuero
@@ -26,15 +27,15 @@ public class UserActivityAsyncTask extends AsyncTask<String,Void, UserActivity> 
     /**
      * Listener for when the user activity is successfully retrieved from the server
      */
-    public interface OnUserActivityListener {
+    public interface UserActivityListener {
         void onUserActivityReceived(UserActivity activity);
     }
 
-    private OnUserActivityListener listener;
+    private UserActivityListener mListener;
     private UserRestInterface mUserRestInterface;
 
-    public UserActivityAsyncTask(OnUserActivityListener listener){
-        this.listener = listener;
+    public UserActivityAsyncTask(UserActivityListener listener){
+        this.mListener = listener;
         this.mUserRestInterface = RetrofitNetworkConnectionSingleton
                 .getInstance().retrofitInstance().create(UserRestInterface.class);
     }
@@ -55,6 +56,6 @@ public class UserActivityAsyncTask extends AsyncTask<String,Void, UserActivity> 
     @Override
     protected void onPostExecute(UserActivity activity) {
         if(activity != null)
-            listener.onUserActivityReceived(activity);
+            mListener.onUserActivityReceived(activity);
     }
 }

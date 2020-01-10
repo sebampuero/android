@@ -3,21 +3,15 @@ package com.example.tm18app.service;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
-import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Base64;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -32,7 +26,6 @@ import com.example.tm18app.network.RetrofitNetworkConnectionSingleton;
 import com.example.tm18app.util.ConverterUtils;
 import com.example.tm18app.util.FileUtils;
 import com.iceteck.silicompressorr.SiliCompressor;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,7 +33,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 
-import okhttp3.Request;
 import retrofit2.Response;
 
 import static com.example.tm18app.App.CHANNEL_ID;
@@ -60,13 +52,13 @@ public class UploadService extends Service {
     private NotificationCompat.Builder mBuilder;
     private Handler mHandler;
 
-    private PostRestInterface postRestInterface;
+    private PostRestInterface mPostRestInterface;
 
     @Override
     public void onCreate() {
         super.onCreate();
         mHandler = new Handler();
-        postRestInterface = RetrofitNetworkConnectionSingleton.
+        mPostRestInterface = RetrofitNetworkConnectionSingleton.
                 getInstance().retrofitInstance().create(PostRestInterface.class);
     }
 
@@ -125,7 +117,7 @@ public class UploadService extends Service {
                     post.setBase64Video(getDataForVideo(post.getContentVideoURI()));
                 if(post.getContentImageURI() != null)
                     post.setBase64Image(getDataForImage(post.getContentImageURI()));
-                Response<Void> resp = postRestInterface.newPost(post, pushyToken).execute();
+                Response<Void> resp = mPostRestInterface.newPost(post, pushyToken).execute();
                 return resp.code();
             }catch (FileTooLargeException e){
                 mBuilder.setContentTitle(e.getMessage());

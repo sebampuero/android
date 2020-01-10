@@ -5,12 +5,9 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.util.Log;
-import android.widget.ImageView;
 
 import androidx.fragment.app.Fragment;
 
-import com.example.tm18app.R;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Target;
@@ -27,7 +24,7 @@ public abstract class BaseFragmentMediaSelector extends BaseFragment{
 
     protected static final int PICK_IMAGE = 100;
     protected static final int PICK_VIDEO = 200;
-    protected BitmapLoaderInterface bitmapLoaderInterface;
+    protected BitmapLoaderInterface mBitmapLoaderInterface;
 
     /**
      * Interface to get called for when a {@link Bitmap} gets loaded by {@link Picasso}
@@ -56,7 +53,7 @@ public abstract class BaseFragmentMediaSelector extends BaseFragment{
      * @param ic {@link BitmapLoaderInterface}
      */
     protected void setBitmapLoaderInterface(BitmapLoaderInterface ic){
-        this.bitmapLoaderInterface = ic;
+        this.mBitmapLoaderInterface = ic;
     }
 
     /**
@@ -90,18 +87,18 @@ public abstract class BaseFragmentMediaSelector extends BaseFragment{
         creator.into(new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                bitmapLoaderInterface.onBitmapLoaded(bitmap); // call the method for fragments to
+                mBitmapLoaderInterface.onBitmapLoaded(bitmap); // call the method for fragments to
                 // know that the bitmap was loaded
             }
 
             @Override
             public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                bitmapLoaderInterface.onErrorLoadingBitmap();
+                mBitmapLoaderInterface.onErrorLoadingBitmap();
             }
 
             @Override
             public void onPrepareLoad(Drawable placeHolderDrawable) {
-                bitmapLoaderInterface.onLoadingBitmap();
+                mBitmapLoaderInterface.onLoadingBitmap();
             }
         });
     }

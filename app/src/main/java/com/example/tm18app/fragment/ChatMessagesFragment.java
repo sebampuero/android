@@ -2,13 +2,11 @@ package com.example.tm18app.fragment;
 
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -16,7 +14,6 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,12 +62,12 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
     private ImageView mProfileIW;
 
     // vars
-    private ChatSocket socket;
+    private ChatSocket mSocket;
     private String mProfilePicUrl;
     private ChatMessagesViewModel mModel;
     private ChatMessagesAdapter mAdapter;
     private ArrayList<ChatMessage> mChatMessagesList = new ArrayList<>();
-    private Debouncer debouncer;
+    private Debouncer mDebouncer;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -99,15 +96,15 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
 
     @Override
     public void onPause() {
-        // it is important to disconnect the socket when the user leaves the fragment
+        // it is important to disconnect the mSocket when the user leaves the fragment
         // protect battery and bandwidth
         super.onPause();
-        socket.detachListener(mPrefs.getInt(Constant.USER_ID, 0),
+        mSocket.detachListener(mPrefs.getInt(Constant.USER_ID, 0),
                 Integer.parseInt(mModel.getRoomId()));
         mProfileIW.setVisibility(View.GONE);
         mToolbar.setSubtitle("");
         mToolbar.setOnClickListener(null);
-        debouncer.shutdown();
+        mDebouncer.shutdown();
     }
 
     @Override
@@ -123,35 +120,35 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
      * Sets up the {@link ChatSocket} for the chat.
      */
     private void setupSocketConnection() {
-        socket = new ChatSocket(requireActivity());
-        socket.setSocketListener(this);
+        mSocket = new ChatSocket(requireActivity());
+        mSocket.setmSocketListener(this);
         if(mModel.getRoomName() == null || mModel.getRoomId() == null){
             // when the user initializes a chatroom for the first time there is no chat room available
             // init a listener for the server to send the room name and therefore start chatting
-            socket.attachRoomListener();
+            mSocket.attachRoomListener();
         }else{
             // if there is a chat room already, retrieve the chat messages from the server
             mModel.callRepository();
         }
-        socket.establishChat(mModel.getRoomName(),
+        mSocket.establishChat(mModel.getRoomName(),
                 mPrefs.getInt(Constant.USER_ID, 0),
                 Integer.parseInt(mModel.getToId()),
                 mPrefs.getString(Constant.PUSHY_TOKEN, ""));
-        mModel.setSocket(socket);
-        socket.attachLastOnlineListener();
-        socket.attachMessageListener();
-        socket.attachRoomDeletedListener();
+        mModel.setSocket(mSocket);
+        mSocket.attachLastOnlineListener();
+        mSocket.attachMessageListener();
+        mSocket.attachRoomDeletedListener();
         if(mModel.getMessagesLiveData().getValue() != null){
             mModel.getMessagesLiveData().getValue().clear();
         }
-        socket.attachStatusListener();
-        socket.attachTypingListener();
-        socket.attachErrorListener();
+        mSocket.attachStatusListener();
+        mSocket.attachTypingListener();
+        mSocket.attachErrorListener();
         // the chat room is capable of transmitting typing status. But it wastes network if done
-        // for every key stroke, therefore use a debouncer to send keystrokes every half second
-        debouncer = new Debouncer();
-        mModel.inputMessage.observe(this, keyInput -> debouncer.debounce(Void.class,
-                () -> socket.sendTypingStatus(mModel.getRoomName()), 500, TimeUnit.MILLISECONDS));
+        // for every key stroke, therefore use a mDebouncer to send keystrokes every half second
+        mDebouncer = new Debouncer();
+        mModel.inputMessage.observe(this, keyInput -> mDebouncer.debounce(Void.class,
+                () -> mSocket.sendTypingStatus(mModel.getRoomName()), 500, TimeUnit.MILLISECONDS));
     }
 
     @Override
@@ -197,7 +194,7 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
                         requireContext().getString(R.string.delete_chat_conf_message),
                         android.R.string.yes,
                         (dialogInterface, i) -> {
-                            socket.transmitRoomDeleted(mModel.getRoomName());
+                            mSocket.transmitRoomDeleted(mModel.getRoomName());
                             ChatsRepository repository = new ChatsRepository();
                             repository.deleteChatRoom(mModel.getRoomId(),
                                     mPrefs.getString(Constant.PUSHY_TOKEN, ""));

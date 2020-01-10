@@ -23,10 +23,10 @@ import retrofit2.Response;
  */
 public class GoalsItemRepository {
 
-    private GoalsRestInterface goalsRestInterface;
+    private GoalsRestInterface mGoalsRestInterface;
 
     public GoalsItemRepository() {
-        goalsRestInterface = RetrofitNetworkConnectionSingleton.
+        mGoalsRestInterface = RetrofitNetworkConnectionSingleton.
                 getInstance().retrofitInstance().create(GoalsRestInterface.class);
     }
 
@@ -36,7 +36,7 @@ public class GoalsItemRepository {
      */
     public LiveData<List<Goal>> getGoals() {
         final MutableLiveData<List<Goal>> data = new MutableLiveData<>();
-        goalsRestInterface.getGoals().enqueue(new Callback<List<Goal>>() {
+        mGoalsRestInterface.getGoals().enqueue(new Callback<List<Goal>>() {
             @Override
             public void onResponse(Call<List<Goal>> call, Response<List<Goal>> response) {
                 if(response.body() != null){

@@ -27,10 +27,10 @@ import retrofit2.Response;
  */
 public class UserRepository {
 
-    private UserRestInterface userRestInterface;
+    private UserRestInterface mUserRestInterface;
 
     public UserRepository() {
-        userRestInterface = RetrofitNetworkConnectionSingleton
+        mUserRestInterface = RetrofitNetworkConnectionSingleton
                 .getInstance().retrofitInstance().create(UserRestInterface.class);
     }
 
@@ -41,7 +41,7 @@ public class UserRepository {
      */
     public void loginUser(User user, MutableLiveData<HashMap<Integer, User>> userLiveData){
         final MutableLiveData<HashMap<Integer, User>> responseCode = userLiveData;
-        userRestInterface.loginUser(user).enqueue(new Callback<User>() {
+        mUserRestInterface.loginUser(user).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 HashMap<Integer, User> hashMap = new HashMap<>();
@@ -64,7 +64,7 @@ public class UserRepository {
      */
     public void registerUser(User user, MutableLiveData<HashMap<Integer, User>> userLiveData, Context ctx){
         final MutableLiveData<HashMap<Integer, User>> responseMappingMutableLiveData = userLiveData;
-        new RegisterUserAsyncTask(ctx, user, userRestInterface, responseMappingMutableLiveData).execute();
+        new RegisterUserAsyncTask(ctx, user, mUserRestInterface, responseMappingMutableLiveData).execute();
     }
 
 
@@ -77,7 +77,7 @@ public class UserRepository {
     public void editUser(User user, MutableLiveData<HashMap<Integer,
                             User>> userLiveData, String pushyToken) {
         final MutableLiveData<HashMap<Integer, User>> responseCode = userLiveData;
-        userRestInterface.updateUser(user, pushyToken).enqueue(new Callback<User>() {
+        mUserRestInterface.updateUser(user, pushyToken).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 HashMap<Integer, User> hashMap = new HashMap<>();
@@ -103,7 +103,7 @@ public class UserRepository {
                                    MutableLiveData<Integer> statusCodeResponseLiveData,
                                    String pushyToken){
         final MutableLiveData<Integer> statusCodeRespIntegerMutableLiveData = statusCodeResponseLiveData;
-        userRestInterface.updatePassword(passwordReset, pushyToken).enqueue(new Callback<Void>() {
+        mUserRestInterface.updatePassword(passwordReset, pushyToken).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 statusCodeRespIntegerMutableLiveData.setValue(response.code());
@@ -124,7 +124,7 @@ public class UserRepository {
      */
     public LiveData<User> getUser(String id, String pushyToken) {
         final MutableLiveData<User> data = new MutableLiveData<>();
-        userRestInterface.getUserById(id, pushyToken).enqueue(new Callback<User>() {
+        mUserRestInterface.getUserById(id, pushyToken).enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 if(response.body() != null){

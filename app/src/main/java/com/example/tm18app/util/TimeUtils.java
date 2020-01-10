@@ -8,6 +8,8 @@ import androidx.core.os.ConfigurationCompat;
 
 import com.example.tm18app.R;
 
+import org.jetbrains.annotations.Contract;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -29,10 +31,6 @@ public class TimeUtils {
     private static final String DATEFORMAT_1 = "dd MMMM";
     private static final String DATEFORMAT_2 = "h:mm a";
     private static final String DATEFORMAT_DAY_IN_YEAR = "D";
-
-    private TimeUtils() {
-        throw new AssertionError();
-    }
 
     /**
      * Parses a UNIX Timestamp to a readable timestamp format depending on the user's locale

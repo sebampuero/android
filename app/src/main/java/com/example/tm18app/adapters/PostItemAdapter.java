@@ -16,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.MutableLiveData;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
@@ -72,11 +71,11 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
     private NavController mNavController;
     private Context mContext;
     private SharedPreferences mPrefs;
-    private int profilePicDimen;
-    private HashMap<Integer, SimpleExoPlayer> videoPlayers;
-    private Post recentlyDeletedPost;
-    private int recentlyDeletedPostPosition;
-    private PostsEventsListener postsEventsListener;
+    private int mProfilePicDimen;
+    private HashMap<Integer, SimpleExoPlayer> mVideoPlayers;
+    private Post mRecentlyDeletedPost;
+    private int mRecentlyDeletedPostPosition;
+    private PostsEventsListener mPostsEventListener;
 
     private final String TAG = getClass().getSimpleName();
 
@@ -113,9 +112,9 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
         this.mNavController = mNavController;
         this.mContext = context;
         mPrefs = context.getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
-        profilePicDimen = context.getResources().getInteger(R.integer.thumbnail_profile_pic);
-        videoPlayers = new HashMap<>();
-        this.postsEventsListener = postsEventsListener;
+        mProfilePicDimen = context.getResources().getInteger(R.integer.thumbnail_profile_pic);
+        mVideoPlayers = new HashMap<>();
+        this.mPostsEventListener = postsEventsListener;
     }
 
     @NonNull
@@ -143,9 +142,9 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
      * prevent memory leaks.
      */
     public void releasePlayers() {
-        if(videoPlayers != null)
-            if(!videoPlayers.isEmpty()){
-                for(SimpleExoPlayer player : videoPlayers.values()){
+        if(mVideoPlayers != null)
+            if(!mVideoPlayers.isEmpty()){
+                for(SimpleExoPlayer player : mVideoPlayers.values()){
                     player.release();
                 }
             }
@@ -155,9 +154,9 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
      * Pauses all instantiated {@link com.google.android.exoplayer2.ExoPlayer} inside the {@link HashMap}
      */
     public void pausePlayers() {
-        if(videoPlayers != null)
-            if(!videoPlayers.isEmpty()){
-                for(SimpleExoPlayer player : videoPlayers.values()){
+        if(mVideoPlayers != null)
+            if(!mVideoPlayers.isEmpty()){
+                for(SimpleExoPlayer player : mVideoPlayers.values()){
                     player.setPlayWhenReady(false);
                 }
             }
@@ -239,7 +238,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
             if(post.getPosterPicUrl() != null)
                 Picasso.get()
                         .load(post.getPosterPicUrl()) // no need to tweak quality
-                        .resize(profilePicDimen, profilePicDimen)
+                        .resize(mProfilePicDimen, mProfilePicDimen)
                         .centerCrop()
                         .placeholder(R.drawable.ic_person_black_24dp)
                         .into(posterProfilePic);
@@ -279,7 +278,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
         }
 
         /**
-         * Comments click postsEventsListener.
+         * Comments click mPostsEventListener.
          */
         class CommentsClickListener implements View.OnClickListener {
 
@@ -293,7 +292,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
         }
 
         /**
-         * Profile picture click postsEventsListener.
+         * Profile picture click mPostsEventListener.
          */
         class ProfilePicClickListener implements View.OnClickListener {
 
@@ -310,7 +309,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
         }
 
         /**
-         * Content image click postsEventsListener.
+         * Content image click mPostsEventListener.
          */
         class ImageClickListener implements View.OnClickListener {
 
@@ -326,7 +325,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
         }
 
         /**
-         * Videothumbnail click postsEventsListener. Upon click on the video thumbnail the video
+         * Videothumbnail click mPostsEventListener. Upon click on the video thumbnail the video
          * should start buffering and playing.
          * @see PlayerListener
          */
@@ -336,15 +335,15 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
             public void onClick(View view) {
                 playPauseBtn.setVisibility(View.VISIBLE);
                 playPauseBtn.setOnClickListener(view1 -> {
-                    SimpleExoPlayer player = videoPlayers.get(getAdapterPosition());
+                    SimpleExoPlayer player = mVideoPlayers.get(getAdapterPosition());
                     // play or pause the video upon click on the play/pause btn
                     player.setPlayWhenReady(!player.getPlayWhenReady());
                 });
                 fullScreenBtn.setVisibility(View.VISIBLE);
                 fullScreenBtn.setOnClickListener(view12 -> {
-                    Player player = videoPlayers.get(getAdapterPosition());
+                    Player player = mVideoPlayers.get(getAdapterPosition());
                     if(player != null){
-                        postsEventsListener.onFullscreen(mPostsList.get(getAdapterPosition())
+                        mPostsEventListener.onFullscreen(mPostsList.get(getAdapterPosition())
                                 .getContentVideoUrl(), player.getContentPosition());
                     }
                 });
@@ -362,9 +361,9 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
                 pausePlayers();
                 // if there is already a videoplayer instance in the position index, release it to
                 // not occupy too much memory
-                if(videoPlayers.get(getAdapterPosition()) != null)
-                    videoPlayers.get(getAdapterPosition()).release();
-                videoPlayers.put(getAdapterPosition(), videoPlayer);
+                if(mVideoPlayers.get(getAdapterPosition()) != null)
+                    mVideoPlayers.get(getAdapterPosition()).release();
+                mVideoPlayers.put(getAdapterPosition(), videoPlayer);
                 surfaceView.setUseController(false);
                 surfaceView.setPlayer(videoPlayer);
                 // occupy whole width of screen
@@ -413,7 +412,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
         }
 
         /**
-         * Videoplayer events postsEventsListener.
+         * Videoplayer events mPostsEventListener.
          */
         class PlayerListener implements Player.EventListener {
 
@@ -429,7 +428,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
             public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
                 switch (playbackState) {
                     case Player.STATE_ENDED: // at end of video, play again
-                        Player player = videoPlayers.get(getAdapterPosition());
+                        Player player = mVideoPlayers.get(getAdapterPosition());
                         if(player != null)
                             player.seekTo(0);
                     case Player.STATE_BUFFERING:
@@ -447,7 +446,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
         }
 
         /**
-         * Post options click postsEventsListener
+         * Post options click mPostsEventListener
          */
         class OptionsClickListener implements View.OnClickListener {
 
@@ -494,8 +493,8 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
                                         dialogCustomView.findViewById(R.id.deletePost).setVisibility(View.VISIBLE);
                                         dialogCustomView.findViewById(R.id.deletePost).setOnClickListener(view1 -> {
                                             pausePlayers();
-                                            recentlyDeletedPost = mPostsList.get(getAdapterPosition());
-                                            recentlyDeletedPostPosition = getAdapterPosition();
+                                            mRecentlyDeletedPost = mPostsList.get(getAdapterPosition());
+                                            mRecentlyDeletedPostPosition = getAdapterPosition();
                                             mPostsList.remove(getAdapterPosition());
                                             notifyItemRemoved(getAdapterPosition());
                                             dialog.dismiss();
@@ -532,23 +531,23 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
              */
             private void deletePostDefinitely() {
                 final MutableLiveData<Integer> statusCodeLiveData = new MutableLiveData<>();
-                if(videoPlayers.get(getAdapterPosition()) != null)
-                    videoPlayers.get(getAdapterPosition()).release();
+                if(mVideoPlayers.get(getAdapterPosition()) != null)
+                    mVideoPlayers.get(getAdapterPosition()).release();
                 PostItemRepository repository = new PostItemRepository();
-                repository.deletePost(recentlyDeletedPost.getId(),
+                repository.deletePost(mRecentlyDeletedPost.getId(),
                         statusCodeLiveData,
                         mPrefs.getString(Constant.PUSHY_TOKEN, ""));
-                postsEventsListener.onPostDeleted(statusCodeLiveData);
+                mPostsEventListener.onPostDeleted(statusCodeLiveData);
             }
 
             /**
              * Inserts the post back into the list and shows the added post in the UI
              */
             private void undoDelete() {
-                mPostsList.add(recentlyDeletedPostPosition, recentlyDeletedPost);
-                notifyItemChanged(recentlyDeletedPostPosition);
-                notifyItemInserted(recentlyDeletedPostPosition);
-                postsEventsListener.onUndoPostDeleted(recentlyDeletedPostPosition);
+                mPostsList.add(mRecentlyDeletedPostPosition, mRecentlyDeletedPost);
+                notifyItemChanged(mRecentlyDeletedPostPosition);
+                notifyItemInserted(mRecentlyDeletedPostPosition);
+                mPostsEventListener.onUndoPostDeleted(mRecentlyDeletedPostPosition);
             }
         }
     }

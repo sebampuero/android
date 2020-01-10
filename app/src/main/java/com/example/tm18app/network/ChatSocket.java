@@ -5,8 +5,6 @@ import android.app.Activity;
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.devConfig.Config;
 import com.example.tm18app.model.ChatMessage;
-import com.example.tm18app.viewModels.ChatMessagesViewModel;
-import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 
@@ -34,7 +32,7 @@ public class ChatSocket {
     public static final int OFFLINE = 0;
 
     /**
-     * SocketListener for socket events
+     * SocketListener for mSocket events
      */
     public interface SocketListener {
 
@@ -81,19 +79,19 @@ public class ChatSocket {
         void onRoomDeleted();
     }
 
-    private Timer timer;
-    private SocketListener socketListener;
-    private Socket socket;
-    private Activity activity;
+    private Timer mTimer;
+    private SocketListener mSocketListener;
+    private Socket mSocket;
+    private Activity mActivity;
 
     public ChatSocket(Activity activity) {
         try {
             if(Config.DEBUG)
-                socket = IO.socket(Constant.API_ENDPOINT_LOCAL);
+                mSocket = IO.socket(Constant.API_ENDPOINT_LOCAL);
             else
-                socket = IO.socket(Constant.API_ENDPOINT);
-            socket.connect();
-            this.activity = activity;
+                mSocket = IO.socket(Constant.API_ENDPOINT);
+            mSocket.connect();
+            this.mActivity = activity;
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -103,8 +101,8 @@ public class ChatSocket {
      * Sets the {@link SocketListener} for this ChatSocket
      * @param listener {@link SocketListener}
      */
-    public void setSocketListener(SocketListener listener){
-        this.socketListener = listener;
+    public void setmSocketListener(SocketListener listener){
+        this.mSocketListener = listener;
     }
 
     /**
@@ -116,9 +114,9 @@ public class ChatSocket {
      * @param pushyToken {@link String} auth token
      */
     public void establishChat(String room, int senderId, int receiverId, String pushyToken){
-        socket.emit("enterChat", room, senderId, receiverId, pushyToken);
-        timer = new Timer();
-        if(room != null){ // init a timer to transmit online status to the other user
+        mSocket.emit("enterChat", room, senderId, receiverId, pushyToken);
+        mTimer = new Timer();
+        if(room != null){ // init a mTimer to transmit online status to the other user
             startOnlineStatusBroadcaster(room);
         }
     }
@@ -129,10 +127,10 @@ public class ChatSocket {
      * @param room {@link String}
      */
     private void startOnlineStatusBroadcaster(final String room) {
-        timer.scheduleAtFixedRate(new TimerTask() {
+        mTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                socket.emit("clientStatusOnline", room);
+                mSocket.emit("clientStatusOnline", room);
             }
         },0,5000); // every 5 seconds
     }
@@ -145,13 +143,13 @@ public class ChatSocket {
      * @param message {@link String}
      */
     public void sendMessage(int userId, int roomId, String room, String message){
-        socket.emit("message", userId, roomId, room, message);
+        mSocket.emit("message", userId, roomId, room, message);
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setRoomId(roomId);
         chatMessage.setSenderId(userId);
         chatMessage.setText(message);
         chatMessage.setTimestamp( System.currentTimeMillis() / 1000L);
-        socketListener.onNewMessage(chatMessage);
+        mSocketListener.onNewMessage(chatMessage);
     }
 
     /**
@@ -159,20 +157,20 @@ public class ChatSocket {
      * @param room {@link String}
      */
     public void sendTypingStatus(String room) {
-        socket.emit("typing", room);
+        mSocket.emit("typing", room);
     }
 
     /**
      * Attaches the listener for incoming messages
      */
     public void attachMessageListener() {
-        socket.on("message", args -> activity.runOnUiThread(() -> {
+        mSocket.on("message", args -> mActivity.runOnUiThread(() -> {
             ChatMessage message = new ChatMessage();
             message.setRoomId((Integer) args[0]);
             message.setSenderId((Integer) args[1]);
             message.setText((String) args[2]);
             message.setTimestamp((Integer) args[3]);
-            socketListener.onNewMessage(message);
+            mSocketListener.onNewMessage(message);
         }));
     }
 
@@ -180,8 +178,8 @@ public class ChatSocket {
      * Attaches the listener for incoming room creations.
      */
     public void attachRoomListener() {
-        socket.on("room", args -> activity.runOnUiThread(() -> {
-            socketListener.onRoomReceived(String.valueOf(args[0]), String.valueOf(args[1]));
+        mSocket.on("room", args -> mActivity.runOnUiThread(() -> {
+            mSocketListener.onRoomReceived(String.valueOf(args[0]), String.valueOf(args[1]));
             startOnlineStatusBroadcaster(String.valueOf(args[0]));
         }));
     }
@@ -190,45 +188,45 @@ public class ChatSocket {
      * Attaches an online status listener.
      */
     public void attachStatusListener() {
-        socket.on("status", args -> activity.runOnUiThread(()
-                -> socketListener.onOtherOnlineStatus((Integer) args[0])));
+        mSocket.on("status", args -> mActivity.runOnUiThread(()
+                -> mSocketListener.onOtherOnlineStatus((Integer) args[0])));
     }
 
     /**
      * Attaches a typing status listener.
      */
     public void attachTypingListener() {
-        socket.on("isTyping", args -> activity.runOnUiThread(() -> socketListener.onOtherTyping()));
+        mSocket.on("isTyping", args -> mActivity.runOnUiThread(() -> mSocketListener.onOtherTyping()));
     }
 
     /**
      * Attaches an error listener.
      */
     public void attachErrorListener() {
-        socket.on("errorEvent", args -> activity.runOnUiThread(() -> socketListener.onError()));
+        mSocket.on("errorEvent", args -> mActivity.runOnUiThread(() -> mSocketListener.onError()));
     }
 
     public void attachLastOnlineListener() {
-        socket.on("lastOnline", args -> activity.runOnUiThread(()
-                -> socketListener.onOtherLastOnline((int) args[0])));
+        mSocket.on("lastOnline", args -> mActivity.runOnUiThread(()
+                -> mSocketListener.onOtherLastOnline((int) args[0])));
     }
 
     public void attachRoomDeletedListener() {
-        socket.on("roomDeleted", args ->
-                activity.runOnUiThread(() -> socketListener.onRoomDeleted()));
+        mSocket.on("roomDeleted", args ->
+                mActivity.runOnUiThread(() -> mSocketListener.onRoomDeleted()));
     }
 
     public void transmitRoomDeleted(String room){
-        socket.emit("roomDeleted", room);
+        mSocket.emit("roomDeleted", room);
     }
 
     /**
      * Detaches all listeners for this {@link ChatSocket} and disconnects.
      */
     public void detachListener(int userId, int roomid) {
-        socket.emit("beforeDisconnect", userId, roomid);
-        socket.disconnect();
-        socket.off();
-        timer.cancel();
+        mSocket.emit("beforeDisconnect", userId, roomid);
+        mSocket.disconnect();
+        mSocket.off();
+        mTimer.cancel();
     }
 }

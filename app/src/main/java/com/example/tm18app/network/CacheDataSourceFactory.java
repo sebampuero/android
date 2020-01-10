@@ -1,7 +1,6 @@
 package com.example.tm18app.network;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.example.tm18app.R;
 import com.google.android.exoplayer2.upstream.DataSource;
@@ -26,9 +25,9 @@ import java.io.File;
  * @since 25.12.2019
  */
 public class CacheDataSourceFactory implements DataSource.Factory {
-    private final Context context;
-    private final DefaultDataSourceFactory defaultDatasourceFactory;
-    private final long maxFileSize, maxCacheSize;
+    private final Context mContext;
+    private final DefaultDataSourceFactory mDefaultDataSourceFactory;
+    private final long mMaxFileSize, mMaxCacheSize;
 
     /**
      * The {@link SimpleCache} cannot be used multiple times by different {@link DataSource} entities.
@@ -47,23 +46,23 @@ public class CacheDataSourceFactory implements DataSource.Factory {
 
     public CacheDataSourceFactory(Context context, long maxCacheSize, long maxFileSize) {
         super();
-        this.context = context;
-        this.maxCacheSize = maxCacheSize;
-        this.maxFileSize = maxFileSize;
+        this.mContext = context;
+        this.mMaxCacheSize = maxCacheSize;
+        this.mMaxFileSize = maxFileSize;
         String userAgent = Util.getUserAgent(context, context.getString(R.string.app_name));
         DefaultBandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
-        defaultDatasourceFactory = new DefaultDataSourceFactory(this.context,
+        mDefaultDataSourceFactory = new DefaultDataSourceFactory(this.mContext,
                 bandwidthMeter,
                 new DefaultHttpDataSourceFactory(userAgent, bandwidthMeter));
     }
 
     @Override
     public DataSource createDataSource() {
-        LeastRecentlyUsedCacheEvictor evictor = new LeastRecentlyUsedCacheEvictor(maxCacheSize);
+        LeastRecentlyUsedCacheEvictor evictor = new LeastRecentlyUsedCacheEvictor(mMaxCacheSize);
         SimpleCache simpleCache =
-                SimpleCacheSingleton.getSimpleCache(new File(context.getCacheDir(), "media"), evictor);
-        return new CacheDataSource(simpleCache, defaultDatasourceFactory.createDataSource(),
-                new FileDataSource(), new CacheDataSink(simpleCache, maxFileSize),
+                SimpleCacheSingleton.getSimpleCache(new File(mContext.getCacheDir(), "media"), evictor);
+        return new CacheDataSource(simpleCache, mDefaultDataSourceFactory.createDataSource(),
+                new FileDataSource(), new CacheDataSink(simpleCache, mMaxFileSize),
                 CacheDataSource.FLAG_BLOCK_ON_CACHE | CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR, null);
     }
 }
