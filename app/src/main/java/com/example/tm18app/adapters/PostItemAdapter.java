@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -132,6 +133,13 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
     }
 
     @Override
+    public void onViewRecycled(@NonNull ItemViewHolder holder) {
+        SimpleExoPlayer player = mVideoPlayers.get(holder.getLayoutPosition());
+        if(player != null)
+            player.release();
+    }
+
+    @Override
     public int getItemCount() {
         return (mPostsList != null) ? mPostsList.size() : 0;
     }
@@ -217,7 +225,7 @@ public class PostItemAdapter extends RecyclerView.Adapter<PostItemAdapter.ItemVi
          * Binds a {@link Post} into the {@link androidx.recyclerview.widget.RecyclerView.ViewHolder}
          * @param post {@link Post}
          */
-        public void onBind(final Post post) {
+        void onBind(final Post post) {
             ArrayList<String> subscriberIds = null;
             if(post.getSubscriberIds() != null){
                 // subscriber ids comes in a csv format
