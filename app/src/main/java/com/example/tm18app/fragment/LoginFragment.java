@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.tm18app.R;
@@ -20,7 +19,6 @@ import com.example.tm18app.constants.Constant;
 import com.example.tm18app.databinding.FragmentLoginBinding;
 import com.example.tm18app.model.User;
 import com.example.tm18app.viewModels.LoginViewModel;
-import com.example.tm18app.viewModels.MyViewModel;
 
 import java.net.HttpURLConnection;
 import java.util.HashMap;
@@ -60,7 +58,7 @@ public class LoginFragment extends BaseFragment {
         // Observe for response when the user logs in
         mModel.getUserLiveData().observe(this, this::evaluateLogin);
         // Observer to trigger the loading login button animation
-        mModel.triggerLoadingBtn.observe(this, aBoolean -> mLoginBtn.startAnimation());
+        mModel.mTriggerLoadintBtn.observe(this, aBoolean -> mLoginBtn.startAnimation());
         setupViews();
         return mBinding.getRoot();
     }

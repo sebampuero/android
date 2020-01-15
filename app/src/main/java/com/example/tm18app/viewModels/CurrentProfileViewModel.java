@@ -13,16 +13,16 @@ import com.example.tm18app.R;
  */
 public class CurrentProfileViewModel extends ProfileViewModel {
 
-    private NavController navController;
+    private NavController mNavController;
 
     public void setNavController(NavController navController){
-        this.navController = navController;
+        this.mNavController = navController;
     }
     /**
      * Navigate to the edit profile UI
      * @see com.example.tm18app.fragment.EditProfileFragment
      */
     public void onEditInfoClicked() {
-        navController.navigate(R.id.action_profileFragment_to_editProfileFragment);
+        mNavController.navigate(R.id.action_profileFragment_to_editProfileFragment);
     }
 }

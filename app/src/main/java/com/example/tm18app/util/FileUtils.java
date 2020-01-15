@@ -22,7 +22,7 @@ public class FileUtils {
     /**
      * Gets the public media directory for this application
      * @param context {@link Context}
-     * @return {@link String} public media directory under the name of "Goals"
+     * @return {@link String} public media directory under the mName of "Goals"
      */
     public static String getPublicMediaDir(Context context){
         String appName = context.getApplicationInfo()
@@ -66,7 +66,7 @@ public class FileUtils {
 
                 final String id = DocumentsContract.getDocumentId(uri);
                 final Uri contentUri = ContentUris.withAppendedId(
-                        Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+                        Uri.parse("mContent://downloads/public_downloads"), Long.valueOf(id));
 
                 return getDataColumn(context, contentUri, null, null);
             }
@@ -94,7 +94,7 @@ public class FileUtils {
             }
         }
         // MediaStore (and general)
-        else if ("content".equalsIgnoreCase(uri.getScheme())) {
+        else if ("mContent".equalsIgnoreCase(uri.getScheme())) {
             return getDataColumn(context, uri, null, null);
         }
         // File

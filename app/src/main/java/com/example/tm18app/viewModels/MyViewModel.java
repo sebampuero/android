@@ -3,9 +3,7 @@ package com.example.tm18app.viewModels;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.lifecycle.ViewModel;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDeepLinkBuilder;
@@ -23,15 +21,15 @@ import com.example.tm18app.R;
  */
 public class MyViewModel extends ViewModel {
 
-    private NavController navController;
-    private Context cntx;
+    private NavController mNavController;
+    private Context mContext;
 
     /**
      * Sets the {@link NavController} for this ViewModel
      * @param navController {@link NavController}
      */
     public void setNavController(NavController navController) {
-        this.navController=navController;
+        this.mNavController =navController;
     }
 
     /**
@@ -39,7 +37,7 @@ public class MyViewModel extends ViewModel {
      * @return {@link NavController}
      */
     public NavController getNavController() {
-        return this.navController;
+        return this.mNavController;
     }
 
     /**
@@ -47,21 +45,21 @@ public class MyViewModel extends ViewModel {
      * @param cntx
      */
     public void setContext(Context cntx) {
-        this.cntx=cntx;
+        this.mContext =cntx;
     }
 
     /**
      * Navigate to the Login UI
      */
     public void onLoginPressed(){
-        this.navController.navigate(R.id.action_mainFragment_to_loginFragment);
+        this.mNavController.navigate(R.id.action_mainFragment_to_loginFragment);
     }
 
     /**
      * Navigate to the Register UI
      */
     public void onRegisterPressed(){
-        this.navController.navigate(R.id.action_mainFragment_to_registrationFragment);
+        this.mNavController.navigate(R.id.action_mainFragment_to_registrationFragment);
     }
 
     /**
@@ -70,12 +68,12 @@ public class MyViewModel extends ViewModel {
      * {@link com.example.tm18app.fragment.MainFragment} is opened.
      */
     public void checkLoginStatus(){
-        SharedPreferences preferences = cntx.getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
+        SharedPreferences preferences = mContext.getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
         if(!preferences.getBoolean(Constant.LOGGED_IN, false)) {
-            if(navController.getCurrentDestination().getId() == R.id.feedFragment){
+            if(mNavController.getCurrentDestination().getId() == R.id.feedFragment){
                 // if we are trying to open feed without login details, create a DeepLink to the
                 // main page
-                PendingIntent pendingIntent = new NavDeepLinkBuilder(cntx)
+                PendingIntent pendingIntent = new NavDeepLinkBuilder(mContext)
                         .setComponentName(MainActivity.class)
                         .setGraph(R.navigation.nav_graph)
                         .setDestination(R.id.mainFragment)

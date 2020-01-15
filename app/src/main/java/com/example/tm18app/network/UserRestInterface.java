@@ -29,12 +29,12 @@ public interface UserRestInterface {
     @POST("api/users/update")
     Call<User> updateUser(@Body User user, @Header("pushy") String pushyToken);
 
-    @POST("api/users/update/password")
+    @POST("api/users/update/mPassword")
     Call<Void> updatePassword(@Body PasswordReset passwordReset, @Header("pushy") String pushyToken);
 
-    @GET("api/users/{userId}")
-    Call<User> getUserById(@Path("userId") String userId, @Header("pushy") String pushyToken);
+    @GET("api/users/{mUserID}")
+    Call<User> getUserById(@Path("mUserID") String userId, @Header("pushy") String pushyToken);
 
-    @GET("api/users/userActivity/{userId}")
-    Call<UserActivity> getUserActivity(@Path("userId") String userId, @Header("pushy") String pushyToken);
+    @GET("api/users/userActivity/{mUserID}")
+    Call<UserActivity> getUserActivity(@Path("mUserID") String userId, @Header("pushy") String pushyToken);
 }

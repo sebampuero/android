@@ -7,15 +7,10 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import android.provider.MediaStore;
-import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,12 +22,9 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.tm18app.MainActivity;
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.R;
 import com.example.tm18app.databinding.FragmentNewPostBinding;
-import com.example.tm18app.exceptions.FileTooLargeException;
-import com.example.tm18app.util.ConverterUtils;
 import com.example.tm18app.viewModels.NewPostViewModel;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -45,8 +37,6 @@ import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -92,7 +82,7 @@ public class NewPostFragment extends BaseFragmentMediaSelector implements BaseFr
         setupViews();
         setSpinner();
         // Trigger loading button for new post
-        mModel.triggerLoadingBtn.observe(this, aBoolean -> {
+        mModel.mTriggerLoadingBtn.observe(this, aBoolean -> {
             Toast.makeText(getContext(),
                     getResources().getString(R.string.uploading_post),
                     Toast.LENGTH_LONG).show();

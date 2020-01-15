@@ -27,31 +27,31 @@ import java.util.List;
  */
 public class FeedViewModel extends ViewModel {
 
-    private int pageNumber = -1;
-    private boolean isLoadingMoreItems;
-    private NavController navController;
-    private Context appContext;
-    private LiveData<Integer> totalPagesLiveData = new MutableLiveData<>();
-    private MutableLiveData<Boolean> reloadTrigger = new MutableLiveData<>();
+    private int mPageNumber = -1;
+    private boolean mIsLoadingMoreItems;
+    private NavController mNavController;
+    private Context mContext;
+    private LiveData<Integer> mTotalPagesLiveData = new MutableLiveData<>();
+    private MutableLiveData<Boolean> mReloadTrigger = new MutableLiveData<>();
 
     /**
-     * Upon change on the {@link MutableLiveData} reloadTrigger, the postLiveData is created
-     * or updated. The reloadTrigger is actuated when the Feed is loaded and reloaded
+     * Upon change on the {@link MutableLiveData} mReloadTrigger, the mPostLiveData is created
+     * or updated. The mReloadTrigger is actuated when the Feed is loaded and reloaded
      * by a swipe. (Can also be programatically called)
      */
-    private LiveData<List<Post>> postLiveData = Transformations.switchMap(reloadTrigger, new Function<Boolean, LiveData<List<Post>>>() {
+    private LiveData<List<Post>> mPostLiveData = Transformations.switchMap(mReloadTrigger, new Function<Boolean, LiveData<List<Post>>>() {
         @Override
         public LiveData<List<Post>> apply(Boolean input) {
             PostItemRepository postItemRepository = new PostItemRepository();
-            SharedPreferences preferences = appContext
+            SharedPreferences preferences = mContext
                     .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
             if(preferences.getString(Constant.GOAL_IDS, null) != null){
                 String[] goalIds = preferences.getString(Constant.GOAL_IDS, null).split(",");
-                FeedViewModel.this.totalPagesLiveData =
+                FeedViewModel.this.mTotalPagesLiveData =
                         postItemRepository.getPagesNumberForPosts(Arrays.asList(goalIds),
                                 preferences.getString(Constant.PUSHY_TOKEN, ""));
                 return postItemRepository.getPosts(Arrays.asList(goalIds),
-                        preferences.getString(Constant.PUSHY_TOKEN, ""), String.valueOf(pageNumber));
+                        preferences.getString(Constant.PUSHY_TOKEN, ""), String.valueOf(mPageNumber));
             }
             return null;
         }
@@ -62,45 +62,45 @@ public class FeedViewModel extends ViewModel {
     private List<Post> currentPostsList;
 
     public LiveData<Integer> getTotalPagesLiveData() {
-        return totalPagesLiveData;
+        return mTotalPagesLiveData;
     }
 
     public LiveData<List<Post>> getPostLiveData() {
-        return postLiveData;
+        return mPostLiveData;
     }
 
     public void setNavController(NavController navController) {
-        this.navController = navController;
+        this.mNavController = navController;
     }
 
     public void setContext(Context context) {
-        this.appContext = context;
+        this.mContext = context;
     }
 
     public void callRepository() {
-        reloadTrigger.setValue(true);
+        mReloadTrigger.setValue(true);
     }
 
 
     public void onNewPostButtonClicked() {
-        navController.navigate(R.id.action_feedFragment_to_newPostFragment);
+        mNavController.navigate(R.id.action_feedFragment_to_newPostFragment);
     }
 
     public int getPageNumber() {
-        return pageNumber;
+        return mPageNumber;
     }
 
     public void setPageNumber(int pageNumber) {
-        this.pageNumber = pageNumber;
+        this.mPageNumber = pageNumber;
     }
 
 
     public boolean isLoadingMoreItems() {
-        return isLoadingMoreItems;
+        return mIsLoadingMoreItems;
     }
 
     public void setLoadingMoreItems(boolean loadingMoreItems) {
-        isLoadingMoreItems = loadingMoreItems;
+        mIsLoadingMoreItems = loadingMoreItems;
     }
 
     public void setFullScreen(boolean fullscreen) {

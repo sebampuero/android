@@ -33,12 +33,12 @@ public interface PostRestInterface {
     @POST("api/posts/goals/pagination/totalPages")
     Call<Integer> getTotalPagesForPosts(@Body List<String> goals, @Header("pushy") String pushyToken);
 
-    @GET("api/posts/user/{userId}/{page}")
-    Call<List<Post>> getPostsByUserId(@Path("userId") String userId, @Path("page") String page,
+    @GET("api/posts/user/{mUserID}/{page}")
+    Call<List<Post>> getPostsByUserId(@Path("mUserID") String userId, @Path("page") String page,
                                       @Header("pushy") String pushyToken);
 
-    @GET("api/posts/user/pagination/totalPages/{userId}")
-    Call<Integer> getTotalPagesForPosts(@Path("userId") String userId, @Header("pushy") String pushyToken);
+    @GET("api/posts/user/pagination/totalPages/{mUserID}")
+    Call<Integer> getTotalPagesForPosts(@Path("mUserID") String userId, @Header("pushy") String pushyToken);
 
     @POST("api/posts/comment")
     Call<Comment> newComment(@Body Comment comment,

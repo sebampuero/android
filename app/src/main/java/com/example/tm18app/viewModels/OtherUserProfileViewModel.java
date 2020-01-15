@@ -15,10 +15,10 @@ import com.example.tm18app.repository.UserRepository;
  */
 public class OtherUserProfileViewModel extends ProfileViewModel {
 
-    private LiveData<User> userLiveData;
+    private LiveData<User> mUserLiveData;
 
     public LiveData<User> getUserLiveData() {
-        return userLiveData;
+        return mUserLiveData;
     }
 
     /**
@@ -27,6 +27,6 @@ public class OtherUserProfileViewModel extends ProfileViewModel {
      */
     public void callRepositoryForUser(String userId) {
         UserRepository repository = new UserRepository();
-        this.userLiveData = repository.getUser(userId, prefs.getString(Constant.PUSHY_TOKEN, ""));
+        this.mUserLiveData = repository.getUser(userId, mPrefs.getString(Constant.PUSHY_TOKEN, ""));
     }
 }

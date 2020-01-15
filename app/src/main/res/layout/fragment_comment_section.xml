@@ -40,7 +40,7 @@
                 android:hint="@string/post_a_comment"
                 android:padding="@dimen/padding_10"
                 android:background="@drawable/custom_comment_edit_text"
-                android:text="@={myVM.inputComment}"
+                android:text="@={myVM.mInputComment}"
                 android:layout_weight="0.85"
                 />
             <ImageButton

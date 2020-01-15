@@ -36,7 +36,7 @@ public class DownloadsManager  {
     }
 
     /**
-     * Sets a title for the download notification
+     * Sets a mTitle for the download notification
      * @param title {@link String}
      * @return {@link DownloadsManager}
      */

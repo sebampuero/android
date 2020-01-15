@@ -119,10 +119,10 @@ public class User {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
-                ", lastname='" + lastname + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
+                ", mName='" + name + '\'' +
+                ", mLastname='" + lastname + '\'' +
+                ", mEmail='" + email + '\'' +
+                ", mPassword='" + password + '\'' +
                 ", goals=" + Arrays.toString(goals) +
                 ", goalTags=" + Arrays.toString(goalTags) +
                 ", pushyToken='" + pushyToken + '\'' +

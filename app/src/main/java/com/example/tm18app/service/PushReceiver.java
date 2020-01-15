@@ -75,7 +75,7 @@ public class PushReceiver extends BroadcastReceiver {
      * Processes the notification for when a user comments in a post someone is subscribed to
      * @param context {@link Context}
      * @param postId {@link Integer}
-     * @param name {@link String} commenter's name
+     * @param name {@link String} commenter's mName
      */
     private void processCommentNotificationSubscribedPost(Context context, int postId, String name) {
         Bundle bundle = new Bundle();
@@ -98,7 +98,7 @@ public class PushReceiver extends BroadcastReceiver {
      * Processes an incoming comment notification
      * @param context {@link Context}
      * @param postId {@link Integer} the post id the comment belongs to
-     * @param userName {@link String} the name of the user the comment belongs to
+     * @param userName {@link String} the mName of the user the comment belongs to
      */
     private void processCommentNotification(Context context, int postId, String userName) {
         Bundle bundle = new Bundle();
@@ -140,8 +140,8 @@ public class PushReceiver extends BroadcastReceiver {
      * Processes an incoming new chat message notification
      * @param context {@link Context}
      * @param roomId {@link Integer} room id the chat message belongs to
-     * @param roomName {@link String} room name the chat messages belongs to
-     * @param senderName {@link String} name of the sender
+     * @param roomName {@link String} room mName the chat messages belongs to
+     * @param senderName {@link String} mName of the sender
      * @param senderId {@link Integer} id of the sender
      * @param picUrl {@link String} profile picture URL of the sender
      */

@@ -1,7 +1,6 @@
 package com.example.tm18app.viewModels;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
@@ -10,7 +9,6 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.tm18app.R;
 import com.example.tm18app.adapters.MultiGoalSelectAdapter;
-import com.example.tm18app.constants.Constant;
 import com.example.tm18app.model.Goal;
 import com.example.tm18app.model.User;
 import com.example.tm18app.repository.GoalsItemRepository;
@@ -29,19 +27,19 @@ import java.util.List;
  */
 public class RegisterViewModel extends ViewModel {
 
-    public MutableLiveData<String> name = new MutableLiveData<>();
-    public MutableLiveData<String> lastname = new MutableLiveData<>();
-    public MutableLiveData<String> email = new MutableLiveData<>();
-    public MutableLiveData<String> password = new MutableLiveData<>();
-    public MutableLiveData<String> passwordConf = new MutableLiveData<>();
-    public SingleLiveEvent<Boolean> triggerLoadingBtn = new SingleLiveEvent<>();
-    public SingleLiveEvent<Boolean> selectProfilePic = new SingleLiveEvent<>();
+    public MutableLiveData<String> mName = new MutableLiveData<>();
+    public MutableLiveData<String> mLastname = new MutableLiveData<>();
+    public MutableLiveData<String> mEmail = new MutableLiveData<>();
+    public MutableLiveData<String> mPassword = new MutableLiveData<>();
+    public MutableLiveData<String> mPasswordConf = new MutableLiveData<>();
+    public SingleLiveEvent<Boolean> mTriggerLoadingBtn = new SingleLiveEvent<>();
+    public SingleLiveEvent<Boolean> mSelectProfilePic = new SingleLiveEvent<>();
 
-    private Context ctx;
-    private MultiGoalSelectAdapter adapter;
-    private LiveData<List<Goal>> goalItemsLiveData;
-    private LiveData<HashMap<Integer, User>> userLiveData = new MutableLiveData<>();
-    private String profilePicBase64Data;
+    private Context mContext;
+    private MultiGoalSelectAdapter mAdapter;
+    private LiveData<List<Goal>> mGoalItemsLiveData;
+    private LiveData<HashMap<Integer, User>> mUserLiveData = new MutableLiveData<>();
+    private String mProfilePicBase64Data;
 
 
     public RegisterViewModel(){
@@ -52,7 +50,7 @@ public class RegisterViewModel extends ViewModel {
      * @return {@link LiveData}
      */
     public LiveData<List<Goal>> getGoalLiveData() {
-        return goalItemsLiveData;
+        return mGoalItemsLiveData;
     }
 
     /**
@@ -60,7 +58,7 @@ public class RegisterViewModel extends ViewModel {
      * @return {@link LiveData}
      */
     public LiveData<HashMap<Integer, User>> getUserLiveData(){
-        return userLiveData;
+        return mUserLiveData;
     }
 
     /**
@@ -68,7 +66,7 @@ public class RegisterViewModel extends ViewModel {
      */
     private void fetchGoals() {
         GoalsItemRepository goalsItemRepository = new GoalsItemRepository();
-        this.goalItemsLiveData = goalsItemRepository.getGoals();
+        this.mGoalItemsLiveData = goalsItemRepository.getGoals();
     }
 
     /**
@@ -76,9 +74,9 @@ public class RegisterViewModel extends ViewModel {
      * @param context {@link Context}
      */
     public void setContext(Context context) {
-        this.ctx = context;
+        this.mContext = context;
         fetchGoals();
-        profilePicBase64Data = null;
+        mProfilePicBase64Data = null;
     }
 
     /**
@@ -87,24 +85,24 @@ public class RegisterViewModel extends ViewModel {
     public void onRegister(){
         if(isRegisterValid()){
             User user = new User();
-            user.setName(name.getValue());
-            user.setLastname(lastname.getValue());
-            user.setEmail(email.getValue());
-            user.setPassword(password.getValue());
-            Integer[] goalIds = new Integer[this.adapter.getSelected().size()];
-            String[] goalTags = new String[this.adapter.getSelected().size()];
-            for(int i = 0; i < this.adapter.getSelected().size(); i++){
-                goalIds[i] = this.adapter.getSelected().get(i).getId();
-                goalTags[i] = this.adapter.getSelected().get(i).getTag();
+            user.setName(mName.getValue());
+            user.setLastname(mLastname.getValue());
+            user.setEmail(mEmail.getValue());
+            user.setPassword(mPassword.getValue());
+            Integer[] goalIds = new Integer[this.mAdapter.getSelected().size()];
+            String[] goalTags = new String[this.mAdapter.getSelected().size()];
+            for(int i = 0; i < this.mAdapter.getSelected().size(); i++){
+                goalIds[i] = this.mAdapter.getSelected().get(i).getId();
+                goalTags[i] = this.mAdapter.getSelected().get(i).getTag();
              }
              user.setGoals(goalIds);
              user.setGoalTags(goalTags);
-             if(profilePicBase64Data != null)
-                 user.setBase64ProfilePic(profilePicBase64Data);
+             if(mProfilePicBase64Data != null)
+                 user.setBase64ProfilePic(mProfilePicBase64Data);
             UserRepository userRepository = new UserRepository();
             // pass MutableLiveData to the repository to change for when status of response updates
-             userRepository.registerUser(user, (MutableLiveData<HashMap<Integer, User>>) userLiveData, this.ctx);
-            triggerLoadingBtn.call();
+             userRepository.registerUser(user, (MutableLiveData<HashMap<Integer, User>>) mUserLiveData, this.mContext);
+            mTriggerLoadingBtn.call();
         }
     }
 
@@ -112,7 +110,7 @@ public class RegisterViewModel extends ViewModel {
      * Triggers the observer to open gallery
      */
     public void onSelectProfilePic() {
-        selectProfilePic.call();
+        mSelectProfilePic.call();
     }
 
     /**
@@ -120,27 +118,27 @@ public class RegisterViewModel extends ViewModel {
      * @return true if valid, false otherwise
      */
     private boolean isRegisterValid() {
-        if(name.getValue() == null
-                || lastname.getValue() == null
-                || password.getValue() == null
-                || passwordConf.getValue() == null
-                || email.getValue() == null){
-            Toast.makeText(ctx, ctx.getString(R.string.empty_fields), Toast.LENGTH_SHORT).show();
+        if(mName.getValue() == null
+                || mLastname.getValue() == null
+                || mPassword.getValue() == null
+                || mPasswordConf.getValue() == null
+                || mEmail.getValue() == null){
+            Toast.makeText(mContext, mContext.getString(R.string.empty_fields), Toast.LENGTH_SHORT).show();
             return false;
         }
-        else if(name.getValue().trim().equals("")
-                || lastname.getValue().trim().equals("")
-                || password.getValue().trim().equals("")
-                || passwordConf.getValue().trim().equals("")
-                || email.getValue().trim().equals("")){
-            Toast.makeText(ctx, ctx.getString(R.string.empty_fields), Toast.LENGTH_SHORT).show();
+        else if(mName.getValue().trim().equals("")
+                || mLastname.getValue().trim().equals("")
+                || mPassword.getValue().trim().equals("")
+                || mPasswordConf.getValue().trim().equals("")
+                || mEmail.getValue().trim().equals("")){
+            Toast.makeText(mContext, mContext.getString(R.string.empty_fields), Toast.LENGTH_SHORT).show();
             return false;
         }
-        else if(!passwordConf.getValue().equals(password.getValue())){
-            Toast.makeText(ctx, ctx.getString(R.string.pass_dont_match), Toast.LENGTH_SHORT).show();
+        else if(!mPasswordConf.getValue().equals(mPassword.getValue())){
+            Toast.makeText(mContext, mContext.getString(R.string.pass_dont_match), Toast.LENGTH_SHORT).show();
             return false;
-        }else if(!email.getValue().contains("@")){ // vague verification, dont use in production
-            Toast.makeText(ctx, ctx.getString(R.string.invalid_email), Toast.LENGTH_SHORT).show();
+        }else if(!mEmail.getValue().contains("@")){ // vague verification, dont use in production
+            Toast.makeText(mContext, mContext.getString(R.string.invalid_email), Toast.LENGTH_SHORT).show();
         }
         return true;
     }
@@ -150,7 +148,7 @@ public class RegisterViewModel extends ViewModel {
      * @param adapter {@link MultiGoalSelectAdapter}
      */
     public void setGoalsAdapter(MultiGoalSelectAdapter adapter) {
-        this.adapter = adapter;
+        this.mAdapter = adapter;
     }
 
     /**
@@ -159,6 +157,6 @@ public class RegisterViewModel extends ViewModel {
      * @param data {@link String} base64 encoded image data
      */
     public void setProfilePicBase64Data(String data) {
-        profilePicBase64Data = data;
+        mProfilePicBase64Data = data;
     }
 }

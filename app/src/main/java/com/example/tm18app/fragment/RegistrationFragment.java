@@ -1,14 +1,12 @@
 package com.example.tm18app.fragment;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +19,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -38,7 +35,6 @@ import com.example.tm18app.util.ConverterUtils;
 import com.example.tm18app.viewModels.RegisterViewModel;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -97,10 +93,10 @@ public class RegistrationFragment extends BaseFragmentMediaSelector
         mModel.getUserLiveData().observe(this,
                 this::evaluateRegistration);
         // Observe the events on the registration button
-        mModel.triggerLoadingBtn.observe(this,
+        mModel.mTriggerLoadingBtn.observe(this,
                 aBoolean -> mRegistrationBtn.startAnimation());
         // Observe for when the open gallery button is clicked
-        mModel.selectProfilePic.observe(this,
+        mModel.mSelectProfilePic.observe(this,
                 aBoolean -> openGalleryForImage());
         mModel.setGoalsAdapter(mAdapter);
         return mBinding.getRoot();

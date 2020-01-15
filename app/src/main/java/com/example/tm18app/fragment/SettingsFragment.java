@@ -41,7 +41,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-        // set a name to these shared preferences to access them outside
+        // set a mName to these shared preferences to access them outside
         getPreferenceManager().setSharedPreferencesName(SETTINGS_SHARED_PREFERENCES_FILE_NAME);
         setPreferencesFromResource(R.xml.settings_pref, rootKey);
         setupViews();

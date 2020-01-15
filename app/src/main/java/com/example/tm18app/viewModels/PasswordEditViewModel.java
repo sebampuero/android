@@ -21,32 +21,32 @@ import com.example.tm18app.repository.UserRepository;
  */
 public class PasswordEditViewModel extends ViewModel {
 
-    public MutableLiveData<String> oldPassword = new MutableLiveData<>();
-    public MutableLiveData<String> newPassword = new MutableLiveData<>();
-    public MutableLiveData<String> newPasswordConf = new MutableLiveData<>();
+    public MutableLiveData<String> mOldPassword = new MutableLiveData<>();
+    public MutableLiveData<String> mNewPassword = new MutableLiveData<>();
+    public MutableLiveData<String> mNewPasswordConf = new MutableLiveData<>();
 
     /**
      * Getter for the {@link MutableLiveData} of the response status
      * @return {@link MutableLiveData}
      */
     public MutableLiveData<Integer> getStatusCodeResponseLiveData() {
-        return statusCodeResponseLiveData;
+        return mStatusCodeLiveData;
     }
 
-    private MutableLiveData<Integer> statusCodeResponseLiveData = new MutableLiveData<>();
-    private Context appContext;
+    private MutableLiveData<Integer> mStatusCodeLiveData = new MutableLiveData<>();
+    private Context mContext;
 
     /**
      * Event method for when the save buttton is clicked
      */
     public void onSaveBtnClicked() {
         if(areFieldsValid()){
-            SharedPreferences preferences = appContext.getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
+            SharedPreferences preferences = mContext.getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
             int userID = preferences.getInt(Constant.USER_ID, 0);
-            PasswordReset passwordReset = new PasswordReset(userID, oldPassword.getValue(), newPassword.getValue());
+            PasswordReset passwordReset = new PasswordReset(userID, mOldPassword.getValue(), mNewPassword.getValue());
             UserRepository userRepository = new UserRepository();
             userRepository.changeUserPassword(passwordReset,
-                    statusCodeResponseLiveData,
+                    mStatusCodeLiveData,
                     preferences.getString(Constant.PUSHY_TOKEN, ""));
         }
     }
@@ -56,7 +56,7 @@ public class PasswordEditViewModel extends ViewModel {
      * @param context {@link Context}
      */
     public void setContext(Context context) {
-        appContext = context;
+        mContext = context;
     }
 
     /**
@@ -64,11 +64,11 @@ public class PasswordEditViewModel extends ViewModel {
      * @return true if valid, false otherwise
      */
     private boolean areFieldsValid() {
-        if(oldPassword.getValue() == null || newPassword.getValue() == null || newPasswordConf.getValue() == null){
-            Toast.makeText(appContext, appContext.getString(R.string.empty_fields), Toast.LENGTH_SHORT).show();
+        if(mOldPassword.getValue() == null || mNewPassword.getValue() == null || mNewPasswordConf.getValue() == null){
+            Toast.makeText(mContext, mContext.getString(R.string.empty_fields), Toast.LENGTH_SHORT).show();
             return false;
-        }else if(!newPasswordConf.getValue().equals(newPassword.getValue())){
-            Toast.makeText(appContext, appContext.getString(R.string.pass_dont_match), Toast.LENGTH_SHORT).show();
+        }else if(!mNewPasswordConf.getValue().equals(mNewPassword.getValue())){
+            Toast.makeText(mContext, mContext.getString(R.string.pass_dont_match), Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;

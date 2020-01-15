@@ -25,101 +25,101 @@ import java.util.List;
  */
 public abstract class ProfileViewModel extends ViewModel {
 
-    protected String userId;
-    protected SharedPreferences prefs;
-    protected int pageNumber = -1;
-    protected boolean isLoadingMoreItems;
-    protected LiveData<Integer> totalPagesLiveData = new MutableLiveData<>();
+    protected String mUserID;
+    protected SharedPreferences mPrefs;
+    protected int mPageNumber = -1;
+    protected boolean mIsLoadingMoreItems;
+    protected LiveData<Integer> mTotalPagesLiveData = new MutableLiveData<>();
 
-    protected MutableLiveData<Boolean> reloadTrigger = new MutableLiveData<>();
+    protected MutableLiveData<Boolean> mReloadTrigger = new MutableLiveData<>();
 
     /**
-     * Upon change on the {@link MutableLiveData} reloadTrigger, the postLiveData is created
-     * or updated. The reloadTrigger is actuated when the Profile is loaded and reloaded
+     * Upon change on the {@link MutableLiveData} mReloadTrigger, the mPostLiveData is created
+     * or updated. The mReloadTrigger is actuated when the Profile is loaded and reloaded
      * by a swipe. (Can also be programatically called)
      */
-    protected LiveData<List<Post>> postLiveData = Transformations.switchMap(reloadTrigger, new Function<Boolean, LiveData<List<Post>>>() {
+    protected LiveData<List<Post>> mPostLiveData = Transformations.switchMap(mReloadTrigger, new Function<Boolean, LiveData<List<Post>>>() {
         @Override
         public LiveData<List<Post>> apply(Boolean input) {
             PostItemRepository postItemRepository = new PostItemRepository();
-            ProfileViewModel.this.totalPagesLiveData =
-                    postItemRepository.getPagesNumberForPosts(userId,
-                            prefs.getString(Constant.PUSHY_TOKEN, ""));
-            return postItemRepository.getUserPosts(userId, String.valueOf(pageNumber),
-                    prefs.getString(Constant.PUSHY_TOKEN, ""));
+            ProfileViewModel.this.mTotalPagesLiveData =
+                    postItemRepository.getPagesNumberForPosts(mUserID,
+                            mPrefs.getString(Constant.PUSHY_TOKEN, ""));
+            return postItemRepository.getUserPosts(mUserID, String.valueOf(mPageNumber),
+                    mPrefs.getString(Constant.PUSHY_TOKEN, ""));
         }
     });
-    private boolean videoOnFullscreen;
-    private String videoUrl;
-    private long seekPoint;
-    private List<Post> postsList;
+    private boolean mVideoOnFullScreen;
+    private String mVideoUrl;
+    private long mSeekPoint;
+    private List<Post> mPostsList;
 
     public LiveData<Integer> getTotalPagesLiveData() {
-        return totalPagesLiveData;
+        return mTotalPagesLiveData;
     }
 
     public LiveData<List<Post>> getPostLiveData() {
-        return postLiveData;
+        return mPostLiveData;
     }
 
     public void callRepositoryForPosts() {
-        reloadTrigger.setValue(true);
+        mReloadTrigger.setValue(true);
     }
 
     public void setUserId(String userId) {
-        this.userId = userId;
+        this.mUserID = userId;
     }
 
     public void setPreferences(SharedPreferences prefs) {
-        this.prefs = prefs;
+        this.mPrefs = prefs;
     }
 
     public int getPageNumber() {
-        return pageNumber;
+        return mPageNumber;
     }
 
     public void setPageNumber(int pageNumber) {
-        this.pageNumber = pageNumber;
+        this.mPageNumber = pageNumber;
     }
 
     public boolean isLoadingMoreItems() {
-        return isLoadingMoreItems;
+        return mIsLoadingMoreItems;
     }
 
     public void setLoadingMoreItems(boolean loadingMoreItems) {
-        isLoadingMoreItems = loadingMoreItems;
+        mIsLoadingMoreItems = loadingMoreItems;
     }
 
     public void setFullScreen(boolean fullScreen){
-        this.videoOnFullscreen = fullScreen;
+        this.mVideoOnFullScreen = fullScreen;
     }
 
     public void setVideoUrlFullScreen(String videoUrl) {
-        this.videoUrl = videoUrl;
+        this.mVideoUrl = videoUrl;
     }
 
     public void setVideoPosFullScreen(long seekPoint) {
-        this.seekPoint = seekPoint;
+        this.mSeekPoint = seekPoint;
     }
 
     public void setCurrentPostsList(List<Post> mPostsList) {
-        this.postsList = mPostsList;
+        this.mPostsList = mPostsList;
     }
 
     public boolean isVideoOnFullscreen() {
-        return videoOnFullscreen;
+        return mVideoOnFullScreen;
     }
 
     public String getVideoUrl() {
-        return videoUrl;
+        return mVideoUrl;
     }
 
     public long getSeekPoint() {
-        return seekPoint;
+        return mSeekPoint;
     }
 
     public List<Post> getPostsList() {
-        return postsList;
+        return mPostsList;
     }
 }
 

@@ -58,7 +58,7 @@
                     android:layout_below="@id/mediaContent"
                     android:hint="@string/post_title_label"
                     android:id="@+id/postTitle"
-                    android:text="@={myVM.title}"
+                    android:text="@={myVM.mTitle}"
                     android:padding="@dimen/padding_10"
                     android:background="@drawable/custom_edit_text_forms"
                     android:layout_margin="@dimen/margin_10" />
@@ -69,7 +69,7 @@
                     android:layout_height="wrap_content"
                     android:ems="15"
                     android:layout_below="@id/postTitle"
-                    android:text="@={myVM.content}"
+                    android:text="@={myVM.mContent}"
                     android:layout_marginStart="@dimen/margin_10"
                     android:background="@drawable/custom_edit_text_forms"
                     android:padding="@dimen/padding_10"

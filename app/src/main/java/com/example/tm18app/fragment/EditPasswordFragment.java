@@ -22,7 +22,7 @@ import com.example.tm18app.viewModels.PasswordEditViewModel;
 import java.net.HttpURLConnection;
 
 /**
- * A simple {@link Fragment} subclass. Responsible for UI and events for the password edition UI.
+ * A simple {@link Fragment} subclass. Responsible for UI and events for the mPassword edition UI.
  *
  * @author Sebastian Ampuero
  * @version 1.0
@@ -46,7 +46,7 @@ public class EditPasswordFragment extends BaseFragment {
                 R.layout.fragment_edit_password, container, false);
         binding.setMyVM(mModel);
         binding.setLifecycleOwner(this);
-        // Set observer for the status of the password change feedback
+        // Set observer for the status of the mPassword change feedback
         mModel.getStatusCodeResponseLiveData().observe(this,
                 this::handleResponse);
         setupViews();
@@ -54,7 +54,7 @@ public class EditPasswordFragment extends BaseFragment {
     }
 
     /**
-     * Handle the response from the server about the password change
+     * Handle the response from the server about the mPassword change
      * @param responseStatusCode {@link Integer} that represents the HTTP Status Code of the response
      */
     private void handleResponse(Integer responseStatusCode) {

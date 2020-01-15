@@ -71,8 +71,8 @@ public class UploadService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         // extract relevant post data from the IntentService
         String pushyToken = intent.getStringExtra("pushy");
-        Post post = new Post(intent.getStringExtra("title"),
-                intent.getStringExtra("content"),
+        Post post = new Post(intent.getStringExtra("mTitle"),
+                intent.getStringExtra("mContent"),
                 intent.getIntExtra("userID",0),
                 intent.getIntExtra("goalID",0));
         if(intent.getStringExtra("imageUri") != null)
@@ -84,8 +84,10 @@ public class UploadService extends Service {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notifIntent, 0);
 
         mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        String notifTitle = (post.getTitle() != null) ? getString(R.string.uploading_post) + " " + post.getTitle() :
+                getString(R.string.uploading_post);
         mBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle(getResources().getString(R.string.uploading_post) + " " + post.getTitle())
+                .setContentTitle(notifTitle)
                 .setSmallIcon(R.drawable.goalsappicon100100)
                 .setContentIntent(pendingIntent);
 

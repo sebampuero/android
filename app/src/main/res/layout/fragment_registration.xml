@@ -48,7 +48,7 @@
                     android:inputType="textPersonName"
                     android:hint="@string/name"
                     android:padding="@dimen/padding_10"
-                    android:text="@={myVM.name}"
+                    android:text="@={myVM.mName}"
                     android:background="@drawable/custom_edit_text_forms"
                     android:layout_marginBottom="@dimen/margin_10"/>
 
@@ -61,7 +61,7 @@
                     android:inputType="textPersonName"
                     android:background="@drawable/custom_edit_text_forms"
                     android:hint="@string/lastname"
-                    android:text="@={myVM.lastname}"
+                    android:text="@={myVM.mLastname}"
                     android:layout_marginBottom="@dimen/margin_10"
                     />
 
@@ -73,7 +73,7 @@
                     android:padding="@dimen/padding_10"
                     android:hint="@string/emailAddrInput"
                     android:background="@drawable/custom_edit_text_forms"
-                    android:text="@={myVM.email}"
+                    android:text="@={myVM.mEmail}"
                     android:inputType="textEmailAddress"
                     android:layout_marginBottom="@dimen/margin_10"
                     />
@@ -86,7 +86,7 @@
                     android:ems="10"
                     android:padding="@dimen/padding_10"
                     android:inputType="textPassword"
-                    android:text="@={myVM.password}"
+                    android:text="@={myVM.mPassword}"
                     android:hint="@string/password"
                     android:layout_marginBottom="@dimen/margin_10" />
 
@@ -99,7 +99,7 @@
                     android:background="@drawable/custom_edit_text_forms"
                     android:inputType="textPassword"
                     android:hint="@string/confirm_password"
-                    android:text="@={myVM.passwordConf}"
+                    android:text="@={myVM.mPasswordConf}"
                     android:layout_marginBottom="@dimen/margin_10"
                     />
 

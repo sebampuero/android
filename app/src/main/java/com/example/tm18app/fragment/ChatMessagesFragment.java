@@ -124,7 +124,7 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
         mSocket.setmSocketListener(this);
         if(mModel.getRoomName() == null || mModel.getRoomId() == null){
             // when the user initializes a chatroom for the first time there is no chat room available
-            // init a listener for the server to send the room name and therefore start chatting
+            // init a listener for the server to send the room mName and therefore start chatting
             mSocket.attachRoomListener();
         }else{
             // if there is a chat room already, retrieve the chat messages from the server
@@ -147,7 +147,7 @@ public class ChatMessagesFragment extends BaseFragment implements ChatSocket.Soc
         // the chat room is capable of transmitting typing status. But it wastes network if done
         // for every key stroke, therefore use a mDebouncer to send keystrokes every half second
         mDebouncer = new Debouncer();
-        mModel.inputMessage.observe(this, keyInput -> mDebouncer.debounce(Void.class,
+        mModel.mInputMessage.observe(this, keyInput -> mDebouncer.debounce(Void.class,
                 () -> mSocket.sendTypingStatus(mModel.getRoomName()), 500, TimeUnit.MILLISECONDS));
     }
 

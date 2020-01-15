@@ -30,34 +30,34 @@ import java.util.List;
  */
 public class EditViewModel extends ViewModel {
 
-    public MutableLiveData<String> name = new MutableLiveData<>();
-    public MutableLiveData<String> lastname = new MutableLiveData<>();
-    public MutableLiveData<String> email = new MutableLiveData<>();
-    public SingleLiveEvent<Boolean> navigateToDialog = new SingleLiveEvent<>(); // https://medium.com/androiddevelopers/livedata-with-snackbar-navigation-and-other-events-the-singleliveevent-case-ac2622673150
-    public SingleLiveEvent<Boolean> selectProfilePic = new SingleLiveEvent<>();
-    public SingleLiveEvent<Boolean> triggerLoadingBtn = new SingleLiveEvent<>();
+    public MutableLiveData<String> mName = new MutableLiveData<>();
+    public MutableLiveData<String> mLastname = new MutableLiveData<>();
+    public MutableLiveData<String> mEmail = new MutableLiveData<>();
+    public SingleLiveEvent<Boolean> mNavigateToDialog = new SingleLiveEvent<>(); // https://medium.com/androiddevelopers/livedata-with-snackbar-navigation-and-other-events-the-singleliveevent-case-ac2622673150
+    public SingleLiveEvent<Boolean> mSelectProfilePic = new SingleLiveEvent<>();
+    public SingleLiveEvent<Boolean> mTriggerLoadingBtn = new SingleLiveEvent<>();
     public LiveData<List<Goal>> getGoalLiveData() {
-        return goalItemsLiveData;
+        return mGoalItemsLiveData;
     }
     public LiveData<HashMap<Integer, User>> getUserLiveData() {
-        return userLiveData;
+        return mUserLiveData;
     }
 
-    private LiveData<HashMap<Integer, User>> userLiveData = new MutableLiveData<>();
-    private LiveData<List<Goal>> goalItemsLiveData;
-    private int userID;
-    private MultiGoalSelectAdapter adapter;
-    private Context appContext;
-    private SharedPreferences preferences;
-    private NavController navController;
-    private String profilePicBase64Data;
+    private LiveData<HashMap<Integer, User>> mUserLiveData = new MutableLiveData<>();
+    private LiveData<List<Goal>> mGoalItemsLiveData;
+    private int mUserID;
+    private MultiGoalSelectAdapter mAdapter;
+    private Context mContext;
+    private SharedPreferences mPreferences;
+    private NavController mNavController;
+    private String mProfilePic64BaseData;
 
     /**
      * Call repository and fetch goals from the server
      */
     private void fetchGoals() {
         GoalsItemRepository goalsItemRepository = new GoalsItemRepository();
-        this.goalItemsLiveData =
+        this.mGoalItemsLiveData =
                 goalsItemRepository.getGoals();
     }
 
@@ -67,27 +67,27 @@ public class EditViewModel extends ViewModel {
     public void onSaveClicked() {
         if(isFormValid()){
             User user = new User();
-            user.setId(userID);
-            user.setName(name.getValue());
-            user.setLastname(lastname.getValue());
-            user.setEmail(email.getValue());
-            Integer[] goalIds = new Integer[this.adapter.getSelected().size()];
-            String[] goalTags = new String[this.adapter.getSelected().size()];
-            for(int i = 0; i < this.adapter.getSelected().size(); i++){
-                goalIds[i] = this.adapter.getSelected().get(i).getId();
-                goalTags[i] = this.adapter.getSelected().get(i).getTag();
+            user.setId(mUserID);
+            user.setName(mName.getValue());
+            user.setLastname(mLastname.getValue());
+            user.setEmail(mEmail.getValue());
+            Integer[] goalIds = new Integer[this.mAdapter.getSelected().size()];
+            String[] goalTags = new String[this.mAdapter.getSelected().size()];
+            for(int i = 0; i < this.mAdapter.getSelected().size(); i++){
+                goalIds[i] = this.mAdapter.getSelected().get(i).getId();
+                goalTags[i] = this.mAdapter.getSelected().get(i).getTag();
             }
             user.setGoals(goalIds);
             user.setGoalTags(goalTags);
-            if(profilePicBase64Data != null)
-                user.setBase64ProfilePic(profilePicBase64Data);
+            if(mProfilePic64BaseData != null)
+                user.setBase64ProfilePic(mProfilePic64BaseData);
             UserRepository userRepository = new UserRepository();
             // call the editUser method in repository and pass the MutableLiveData for the UI
             // to observe for changes and show feedback accordingly
             userRepository.editUser(user,
-                    (MutableLiveData<HashMap<Integer, User>>) userLiveData,
-                    preferences.getString(Constant.PUSHY_TOKEN, ""));
-            triggerLoadingBtn.call();
+                    (MutableLiveData<HashMap<Integer, User>>) mUserLiveData,
+                    mPreferences.getString(Constant.PUSHY_TOKEN, ""));
+            mTriggerLoadingBtn.call();
         }
     }
 
@@ -96,21 +96,21 @@ public class EditViewModel extends ViewModel {
      * @see com.example.tm18app.fragment.NewGoalsDialogFragment
      */
     public void onNewGoalsClicked() {
-        navigateToDialog.call();
+        mNavigateToDialog.call();
     }
 
     /**
      * Triggers the observer to open the gallery
      */
     public void onProfilePicUploadClicked() {
-        selectProfilePic.call();
+        mSelectProfilePic.call();
     }
 
     /**
-     * Navigates to the UI for password change
+     * Navigates to the UI for mPassword change
      */
     public void onChangePasswordClicked() {
-        navController.navigate(R.id.action_editProfileFragment_to_editPasswordFragment);
+        mNavController.navigate(R.id.action_editProfileFragment_to_editPasswordFragment);
     }
 
     /**
@@ -118,20 +118,20 @@ public class EditViewModel extends ViewModel {
      * @return true if valid, false otherwise
      */
     private boolean isFormValid() {
-        if(name.getValue() == null
-                || lastname.getValue() == null
-                || email.getValue() == null){
-            Toast.makeText(appContext, appContext.getString(R.string.empty_fields), Toast.LENGTH_SHORT).show();
+        if(mName.getValue() == null
+                || mLastname.getValue() == null
+                || mEmail.getValue() == null){
+            Toast.makeText(mContext, mContext.getString(R.string.empty_fields), Toast.LENGTH_SHORT).show();
             return false;
         }
-        else if(name.getValue().trim().equals("")
-                || lastname.getValue().trim().equals("")
-                || email.getValue().trim().equals("")){
-            Toast.makeText(appContext, appContext.getString(R.string.empty_fields), Toast.LENGTH_SHORT).show();
+        else if(mName.getValue().trim().equals("")
+                || mLastname.getValue().trim().equals("")
+                || mEmail.getValue().trim().equals("")){
+            Toast.makeText(mContext, mContext.getString(R.string.empty_fields), Toast.LENGTH_SHORT).show();
             return false;
         }
-        else if(!email.getValue().contains("@")){
-            Toast.makeText(appContext, appContext.getString(R.string.invalid_email), Toast.LENGTH_SHORT).show();
+        else if(!mEmail.getValue().contains("@")){
+            Toast.makeText(mContext, mContext.getString(R.string.invalid_email), Toast.LENGTH_SHORT).show();
         }
         return true;
     }
@@ -141,21 +141,21 @@ public class EditViewModel extends ViewModel {
      * @param context {@link Context}
      */
     public void setContext(Context context) {
-        this.appContext = context;
-        preferences = appContext.getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
+        this.mContext = context;
+        mPreferences = mContext.getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
         fillUserData();
         fetchGoals();
-        profilePicBase64Data = null;
+        mProfilePic64BaseData = null;
     }
 
     /**
      * Fills the input fields with the user's info
      */
     private void fillUserData() {
-        userID = preferences.getInt(Constant.USER_ID, 0);
-        name.setValue(preferences.getString(Constant.NAME, null));
-        lastname.setValue(preferences.getString(Constant.LASTNAME, null));
-        email.setValue(preferences.getString(Constant.EMAIL, null));
+        mUserID = mPreferences.getInt(Constant.USER_ID, 0);
+        mName.setValue(mPreferences.getString(Constant.NAME, null));
+        mLastname.setValue(mPreferences.getString(Constant.LASTNAME, null));
+        mEmail.setValue(mPreferences.getString(Constant.EMAIL, null));
     }
 
     /**
@@ -163,7 +163,7 @@ public class EditViewModel extends ViewModel {
      * @param navController
      */
     public void setNavController(NavController navController) {
-        this.navController = navController;
+        this.mNavController = navController;
     }
 
     /**
@@ -171,7 +171,7 @@ public class EditViewModel extends ViewModel {
      * @param adapter
      */
     public void setAdapter(MultiGoalSelectAdapter adapter) {
-        this.adapter = adapter;
+        this.mAdapter = adapter;
     }
 
     /**
@@ -180,6 +180,6 @@ public class EditViewModel extends ViewModel {
      * @param data {@link String} base64 encoded image data
      */
     public void setProfilePicBase64Data(String data) {
-        profilePicBase64Data = data;
+        mProfilePic64BaseData = data;
     }
 }

@@ -1,7 +1,7 @@
 package com.example.tm18app.model;
 
 /**
- * Model that holds data for a password reset
+ * Model that holds data for a mPassword reset
  *
  * @author Sebastian Ampuero
  * @version 1.0

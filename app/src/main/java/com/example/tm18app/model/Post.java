@@ -199,11 +199,11 @@ public class Post implements Comparable<Post> {
     public String toString() {
         return "Post{" +
                 "id=" + id +
-                ", title='" + title + '\'' +
-                ", content='" + content + '\'' +
+                ", mTitle='" + title + '\'' +
+                ", mContent='" + content + '\'' +
                 ", userID=" + userID +
-                ", name='" + name + '\'' +
-                ", lastname='" + lastname + '\'' +
+                ", mName='" + name + '\'' +
+                ", mLastname='" + lastname + '\'' +
                 ", goalTag='" + goalTag + '\'' +
                 ", goalId=" + goalId +
                 ", commentCount=" + commentCount +

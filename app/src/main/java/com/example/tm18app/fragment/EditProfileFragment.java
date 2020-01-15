@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,17 +15,14 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
 import com.example.tm18app.adapters.MultiGoalSelectAdapter;
 import com.example.tm18app.constants.Constant;
@@ -38,10 +34,8 @@ import com.example.tm18app.util.ConverterUtils;
 import com.example.tm18app.viewModels.EditViewModel;
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -83,7 +77,7 @@ public class EditProfileFragment extends BaseFragmentMediaSelector
         setupViews();
         setupGoalsBoxRecyclerView();
         // Observe for clicks on the button that triggers the DialogFragment to request goal tags
-        mModel.navigateToDialog.observe(this, aBoolean -> {
+        mModel.mNavigateToDialog.observe(this, aBoolean -> {
             FragmentManager fm = getFragmentManager();
             NewGoalsDialogFragment frag = NewGoalsDialogFragment.newInstance();
             frag.setTargetFragment(EditProfileFragment.this, 0);
@@ -96,8 +90,8 @@ public class EditProfileFragment extends BaseFragmentMediaSelector
         // Observe for changes when the user edits his/her info
         mModel.getUserLiveData().observe(this, this::evaluateEditUser);
         // Observe for when the button to open gallery is clicked
-        mModel.selectProfilePic.observe(this, aBoolean -> openGalleryForImage());
-        mModel.triggerLoadingBtn.observe(this, aBoolean -> mSaveBtn.startAnimation());
+        mModel.mSelectProfilePic.observe(this, aBoolean -> openGalleryForImage());
+        mModel.mTriggerLoadingBtn.observe(this, aBoolean -> mSaveBtn.startAnimation());
         mModel.setAdapter(mAdapter);
         fetchProfilePic();
         return mBinding.getRoot();
@@ -171,7 +165,7 @@ public class EditProfileFragment extends BaseFragmentMediaSelector
     private void evaluateEditUser(HashMap<Integer, User> integerUserHashMap) {
         if(integerUserHashMap.containsKey(HttpURLConnection.HTTP_INTERNAL_ERROR)){ // error from server
             Toast.makeText(this.getContext(), this.getContext().getString(R.string.server_error), Toast.LENGTH_LONG).show();
-        }else if(integerUserHashMap.containsKey(HttpURLConnection.HTTP_BAD_REQUEST)){ // email address exists already, bad request
+        }else if(integerUserHashMap.containsKey(HttpURLConnection.HTTP_BAD_REQUEST)){ // mEmail address exists already, bad request
             Toast.makeText(this.getContext(), this.getContext().getString(R.string.email_already_exists), Toast.LENGTH_LONG).show();
         }else if(integerUserHashMap.containsKey(HttpURLConnection.HTTP_OK)){ // everything ok
             SharedPreferences preferences =

@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 /**
- * Splash screen to show before main content.
+ * Splash screen to show before main mContent.
  *
  * @author Sebastian Ampuero
  * @version 1.0

@@ -2,13 +2,11 @@ package com.example.tm18app.viewModels;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
 import com.example.tm18app.constants.Constant;
 import com.example.tm18app.model.Post;
@@ -27,22 +25,22 @@ import java.util.Arrays;
  */
 public class NewPostViewModel extends ViewModel {
 
-    public MutableLiveData<String> title = new MutableLiveData<>();
-    public MutableLiveData<String> content = new MutableLiveData<>();
-    public SingleLiveEvent<Boolean> triggerLoadingBtn = new SingleLiveEvent<>();
+    public MutableLiveData<String> mTitle = new MutableLiveData<>();
+    public MutableLiveData<String> mContent = new MutableLiveData<>();
+    public SingleLiveEvent<Boolean> mTriggerLoadingBtn = new SingleLiveEvent<>();
 
-    private Context appContext;
-    private String selectedGoal;
+    private Context mContext;
+    private String mSelectedGoal;
 
-    private String contentImageURI;
-    private String contentVideoURI;
+    private String mContentImageURI;
+    private String mContentVideoURI;
 
     /**
      * Sets the {@link Context} for this ViewModel
      * @param context {@link Context}
      */
     public void setContext(Context context) {
-        this.appContext = context;
+        this.mContext = context;
     }
 
     /**
@@ -50,7 +48,7 @@ public class NewPostViewModel extends ViewModel {
      */
     public void onNewPostClicked() {
         if(areInputsValid()){
-            SharedPreferences prefs = appContext
+            SharedPreferences prefs = mContext
                     .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
             int userID = prefs.getInt(Constant.USER_ID, 0);
             ArrayList<String> userGoalTags =
@@ -59,15 +57,15 @@ public class NewPostViewModel extends ViewModel {
             ArrayList<String> userGoalIds =
                     new ArrayList<>(Arrays.asList(prefs
                             .getString(Constant.GOAL_IDS, null).split(",")));
-            int goalID = Integer.valueOf(userGoalIds.get(userGoalTags.indexOf(selectedGoal)));
+            int goalID = Integer.valueOf(userGoalIds.get(userGoalTags.indexOf(mSelectedGoal)));
             PostItemRepository repository = new PostItemRepository();
-            Post post = new Post(title.getValue(), content.getValue(), userID, goalID);
-            if(contentImageURI != null)
-                post.setContentImageURI(contentImageURI);
-            if(contentVideoURI != null)
-                post.setContentVideoURI(contentVideoURI);
-            repository.createPost(post, prefs.getString(Constant.PUSHY_TOKEN, ""), appContext);
-            triggerLoadingBtn.call();
+            Post post = new Post(mTitle.getValue(), mContent.getValue(), userID, goalID);
+            if(mContentImageURI != null)
+                post.setContentImageURI(mContentImageURI);
+            if(mContentVideoURI != null)
+                post.setContentVideoURI(mContentVideoURI);
+            repository.createPost(post, prefs.getString(Constant.PUSHY_TOKEN, ""), mContext);
+            mTriggerLoadingBtn.call();
         }
     }
 
@@ -77,15 +75,15 @@ public class NewPostViewModel extends ViewModel {
      * @return true if valid, false otherwise
      */
     private boolean areInputsValid() {
-        if(content.getValue() == null){
-            Toast.makeText(appContext, appContext.getString(R.string.empty_fields), Toast.LENGTH_SHORT).show();
+        if(mContent.getValue() == null){
+            Toast.makeText(mContext, mContext.getString(R.string.empty_fields), Toast.LENGTH_SHORT).show();
             return false;
         }
-        else if(content.getValue().trim().equals("")){
-            Toast.makeText(appContext, appContext.getString(R.string.empty_fields), Toast.LENGTH_SHORT).show();
+        else if(mContent.getValue().trim().equals("")){
+            Toast.makeText(mContext, mContext.getString(R.string.empty_fields), Toast.LENGTH_SHORT).show();
             return false;
-        }else if(selectedGoal == null){
-            Toast.makeText(appContext, appContext.getString(R.string.goal_select_for_post), Toast.LENGTH_SHORT).show();
+        }else if(mSelectedGoal == null){
+            Toast.makeText(mContext, mContext.getString(R.string.goal_select_for_post), Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
@@ -96,23 +94,23 @@ public class NewPostViewModel extends ViewModel {
      * @param goalTag {@link String} the selected goal
      */
     public void setSelectedGoalForPost(String goalTag) {
-        this.selectedGoal = goalTag;
+        this.mSelectedGoal = goalTag;
     }
 
 
     public String getContentImageURI() {
-        return contentImageURI;
+        return mContentImageURI;
     }
 
     public void setContentImageURI(String contentImageURI) {
-        this.contentImageURI = contentImageURI;
+        this.mContentImageURI = contentImageURI;
     }
 
     public String getContentVideoURI() {
-        return contentVideoURI;
+        return mContentVideoURI;
     }
 
     public void setContentVideoURI(String contentVideoURI) {
-        this.contentVideoURI = contentVideoURI;
+        this.mContentVideoURI = contentVideoURI;
     }
 }

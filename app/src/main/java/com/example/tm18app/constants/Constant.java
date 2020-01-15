@@ -15,9 +15,9 @@ public class Constant {
     public static final String INTRO_OPENED = "IsIntroOpened";
 
     public static final String LOGGED_IN  = "loggedIn";
-    public static final String NAME = "name";
-    public static final String LASTNAME = "lastname";
-    public static final String EMAIL = "email";
+    public static final String NAME = "mName";
+    public static final String LASTNAME = "mLastname";
+    public static final String EMAIL = "mEmail";
     public static final String USER_ID = "id";
     public static final String GOAL_IDS = "goalIds";
     public static final String GOAL_TAGS = "goalTags";

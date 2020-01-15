@@ -20,7 +20,7 @@ import com.example.tm18app.util.ConverterUtils;
 import com.squareup.picasso.Picasso;
 
 /**
- * A simple {@link Fragment} subclass. Responsible for events and the content Image of a {@link com.example.tm18app.model.Post}
+ * A simple {@link Fragment} subclass. Responsible for events and the mContent Image of a {@link com.example.tm18app.model.Post}
  *
  * @author Sebastian Ampuero
  * @version 1.0

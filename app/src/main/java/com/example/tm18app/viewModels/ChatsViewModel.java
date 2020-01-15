@@ -23,21 +23,21 @@ import java.util.List;
  */
 public class ChatsViewModel extends ViewModel {
 
-    private MutableLiveData<Boolean> reloadTrigger = new MutableLiveData<>();
-    private SharedPreferences prefs;
+    private MutableLiveData<Boolean> mReloadTrigger = new MutableLiveData<>();
+    private SharedPreferences mPrefs;
 
     /**
-     * Upon change on the {@link MutableLiveData} reloadTrigger, the chatsLiveData is created
-     * or updated. The reloadTrigger is actuated when the ChatsView is loaded and reloaded
+     * Upon change on the {@link MutableLiveData} mReloadTrigger, the chatsLiveData is created
+     * or updated. The mReloadTrigger is actuated when the ChatsView is loaded and reloaded
      * by a swipe. (Can also be programatically called)
      */
-    private LiveData<List<ChatRoom>> chatLiveData = Transformations.switchMap(reloadTrigger,
+    private LiveData<List<ChatRoom>> chatLiveData = Transformations.switchMap(mReloadTrigger,
             new Function<Boolean, LiveData<List<ChatRoom>>>() {
         @Override
         public LiveData<List<ChatRoom>> apply(Boolean input) {
             ChatsRepository repository = new ChatsRepository();
-            String userId = String.valueOf(prefs.getInt(Constant.USER_ID, 0));
-            return repository.getChatRooms(userId, prefs.getString(Constant.PUSHY_TOKEN, ""));
+            String userId = String.valueOf(mPrefs.getInt(Constant.USER_ID, 0));
+            return repository.getChatRooms(userId, mPrefs.getString(Constant.PUSHY_TOKEN, ""));
         }
     });
 
@@ -46,11 +46,11 @@ public class ChatsViewModel extends ViewModel {
     }
 
     public void setPrefs(SharedPreferences prefs) {
-        this.prefs = prefs;
+        this.mPrefs = prefs;
     }
 
     public void callRepository() {
-        reloadTrigger.setValue(true);
+        mReloadTrigger.setValue(true);
     }
 
 }

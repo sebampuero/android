@@ -46,7 +46,7 @@ public class ChatSocket {
          * Called when the server sends back a created chat room. When a user initializes a chat
          * with another one, there is no room yet. The server creates a room and sends the response
          * as soon as the room is created.
-         * @param roomName {@link String} the received room name
+         * @param roomName {@link String} the received room mName
          * @param roomId {@link String} the received room id
          */
         void onRoomReceived(String roomName, String roomId);

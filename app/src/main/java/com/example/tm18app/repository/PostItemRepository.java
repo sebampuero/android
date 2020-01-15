@@ -84,8 +84,8 @@ public class PostItemRepository {
     }
 
     /**
-     * Fetches a {@link List} of {@link Post} that correspond to a given userId
-     * @param userId {@link Integer} the userId
+     * Fetches a {@link List} of {@link Post} that correspond to a given mUserID
+     * @param userId {@link Integer} the mUserID
      * @param pushyToken {@link String} unique token of the logged in user
      * @return {@link LiveData} containing the {@link List} of {@link com.example.tm18app.model.User} items
      */
@@ -188,8 +188,8 @@ public class PostItemRepository {
     public void createPost(Post post, String pushyToken, Context context){
         Intent serviceIntent = new Intent(context, UploadService.class);
         serviceIntent.putExtra("pushy", pushyToken);
-        serviceIntent.putExtra("title", post.getTitle());
-        serviceIntent.putExtra("content", post.getContent());
+        serviceIntent.putExtra("mTitle", post.getTitle());
+        serviceIntent.putExtra("mContent", post.getContent());
         serviceIntent.putExtra("imageUri", post.getContentImageURI());
         serviceIntent.putExtra("videoUri", post.getContentVideoURI());
         serviceIntent.putExtra("userID",  post.getUserID());

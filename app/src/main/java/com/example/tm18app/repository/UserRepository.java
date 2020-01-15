@@ -94,8 +94,8 @@ public class UserRepository {
     }
 
     /**
-     * Makes a request to the server to change the user's password
-     * @param passwordReset {@link PasswordReset} containing old password, new password and user id
+     * Makes a request to the server to change the user's mPassword
+     * @param passwordReset {@link PasswordReset} containing old mPassword, new mPassword and user id
      * @param statusCodeResponseLiveData {@link MutableLiveData} to emit status response to the UI
      * @param pushyToken {@link String} unique token of the logged in user
      */

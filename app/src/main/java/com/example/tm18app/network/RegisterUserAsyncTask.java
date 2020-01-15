@@ -56,7 +56,7 @@ public class RegisterUserAsyncTask extends AsyncTask<Void, Void, User> {
 
     protected User doInBackground(Void... params) {
             try{
-                // Firstly verify that the email does not exist before attempting to assign a pushy
+                // Firstly verify that the mEmail does not exist before attempting to assign a pushy
                 // token
                 HttpURLConnection conn;
                 URL url = new URL((Config.DEBUG) ? Constant.API_ENDPOINT_LOCAL
@@ -64,7 +64,7 @@ public class RegisterUserAsyncTask extends AsyncTask<Void, Void, User> {
                 conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setRequestProperty("User-Agent", "okhttp/3.10.0");
-                if(conn.getResponseCode() == HttpURLConnection.HTTP_OK){ // means there is NO existing email address
+                if(conn.getResponseCode() == HttpURLConnection.HTTP_OK){ // means there is NO existing mEmail address
                     String deviceToken = Pushy.register(mContext.get());
                     mUser.setPushyAuthKey(Pushy.getDeviceCredentials(mContext.get()).authKey);
                     mUser.setPushyToken(deviceToken);

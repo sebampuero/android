@@ -28,117 +28,117 @@ import java.util.List;
  */
 public class ChatMessagesViewModel extends ViewModel {
 
-    public MutableLiveData<String> inputMessage = new MutableLiveData<>();
-    private MutableLiveData<Boolean> reloadTrigger = new MutableLiveData<>();
-    private String roomId;
-    private String roomName;
-    private String toId;
-    private String toName;
-    private int numberPage;
-    private boolean isLoadingMoreItems;
-    private LiveData<Integer> totalPagesLiveData = new MutableLiveData<>();
+    public MutableLiveData<String> mInputMessage = new MutableLiveData<>();
+    private MutableLiveData<Boolean> mReloadTrigger = new MutableLiveData<>();
+    private String mRoomId;
+    private String mRoomName;
+    private String mToId;
+    private String mToName;
+    private int mNumberPage;
+    private boolean mIsLoadingMoreItems;
+    private LiveData<Integer> mTotalPagesLiveData = new MutableLiveData<>();
 
-    private SharedPreferences prefs;
-    private ChatSocket socket;
-    private LiveData<List<ChatMessage>> messagesLiveData = Transformations.switchMap(reloadTrigger,
+    private SharedPreferences mPrefs;
+    private ChatSocket mSocket;
+    private LiveData<List<ChatMessage>> mMessagesLiveData = Transformations.switchMap(mReloadTrigger,
             new Function<Boolean, LiveData<List<ChatMessage>>>() {
         @Override
         public LiveData<List<ChatMessage>> apply(Boolean input) {
             ChatsRepository repository = new ChatsRepository();
-            ChatMessagesViewModel.this.totalPagesLiveData =
-                    repository.getTotalPagesForRoom(roomId, prefs.getString(Constant.PUSHY_TOKEN, ""));
-            return repository.getChatsForRoom(roomId,
-                    String.valueOf(numberPage), prefs.getString(Constant.PUSHY_TOKEN, ""));
+            ChatMessagesViewModel.this.mTotalPagesLiveData =
+                    repository.getTotalPagesForRoom(mRoomId, mPrefs.getString(Constant.PUSHY_TOKEN, ""));
+            return repository.getChatsForRoom(mRoomId,
+                    String.valueOf(mNumberPage), mPrefs.getString(Constant.PUSHY_TOKEN, ""));
         }
     });
-    private Context context;
+    private Context mContext;
 
     public LiveData<List<ChatMessage>> getMessagesLiveData() {
-        return messagesLiveData;
+        return mMessagesLiveData;
     }
 
     public LiveData<Integer> getTotalPagesLiveData() {
-        return totalPagesLiveData;
+        return mTotalPagesLiveData;
     }
 
     public void onSendMessage() {
-        if(inputMessage.getValue() != null)
-            if(!inputMessage.getValue().equals("")){
-                if(!NetworkConnectivity.isOnline(context)){
-                    Toast.makeText(context,
-                            context.getString(R.string.no_int_connection), Toast.LENGTH_SHORT).show();
-                    inputMessage.setValue("");
+        if(mInputMessage.getValue() != null)
+            if(!mInputMessage.getValue().equals("")){
+                if(!NetworkConnectivity.isOnline(mContext)){
+                    Toast.makeText(mContext,
+                            mContext.getString(R.string.no_int_connection), Toast.LENGTH_SHORT).show();
+                    mInputMessage.setValue("");
                     return;
                 }
-                socket.sendMessage(prefs.getInt(Constant.USER_ID, 0),
-                        Integer.parseInt(roomId),
-                        roomName,
-                        inputMessage.getValue());
-                inputMessage.setValue("");
+                mSocket.sendMessage(mPrefs.getInt(Constant.USER_ID, 0),
+                        Integer.parseInt(mRoomId),
+                        mRoomName,
+                        mInputMessage.getValue());
+                mInputMessage.setValue("");
             }
     }
 
     public void setRoomId(String roomId) {
-        this.roomId = roomId;
+        this.mRoomId = roomId;
     }
 
     public void setPrefs(SharedPreferences prefs) {
-        this.prefs = prefs;
+        this.mPrefs = prefs;
     }
 
     public void callRepository() {
-        reloadTrigger.setValue(true);
+        mReloadTrigger.setValue(true);
     }
 
     public void setSocket(ChatSocket socket) {
-        this.socket = socket;
+        this.mSocket = socket;
     }
 
     public void setRoomName(String room) {
-        this.roomName = room;
+        this.mRoomName = room;
     }
 
     public String getRoomName() {
-        return roomName;
+        return mRoomName;
     }
 
     public String getRoomId() {
-        return roomId;
+        return mRoomId;
     }
 
     public String getToId() {
-        return toId;
+        return mToId;
     }
 
     public void setToId(String toId) {
-        this.toId = toId;
+        this.mToId = toId;
     }
 
     public String getToName() {
-        return toName;
+        return mToName;
     }
 
     public void setToName(String toName) {
-        this.toName = toName;
+        this.mToName = toName;
     }
 
     public int getNumberPage() {
-        return numberPage;
+        return mNumberPage;
     }
 
     public void setNumberPage(int numberPage) {
-        this.numberPage = numberPage;
+        this.mNumberPage = numberPage;
     }
 
     public boolean isLoadingMoreItems() {
-        return isLoadingMoreItems;
+        return mIsLoadingMoreItems;
     }
 
     public void setLoadingMoreItems(boolean loadingMoreItems) {
-        isLoadingMoreItems = loadingMoreItems;
+        mIsLoadingMoreItems = loadingMoreItems;
     }
 
     public void setContext(Context context) {
-        this.context = context;
+        this.mContext = context;
     }
 }

@@ -21,35 +21,35 @@ import java.util.List;
  */
 public class CommentsSectionViewModel extends ViewModel {
 
-    public MutableLiveData<String> inputComment = new MutableLiveData<>();
+    public MutableLiveData<String> mInputComment = new MutableLiveData<>();
 
-    private Context appContext;
-    private String postID;
-    private MutableLiveData<List<Comment>> commentLiveData;
+    private Context mContext;
+    private String mPostID;
+    private MutableLiveData<List<Comment>> mCommentLiveData;
 
     /**
      * Getter for the {@link MutableLiveData} that reveals changes for the status of a comment creation
      * @return {@link MutableLiveData}
      */
     public MutableLiveData<List<Comment>> getCommentLiveData() {
-        return commentLiveData;
+        return mCommentLiveData;
     }
 
     /**
      * Event method that gets called when a comment is created
      */
     public void onPostComment() {
-        if(inputComment.getValue() != null){
-            if(!inputComment.getValue().trim().equals("")){
-                SharedPreferences preferences = appContext
+        if(mInputComment.getValue() != null){
+            if(!mInputComment.getValue().trim().equals("")){
+                SharedPreferences preferences = mContext
                         .getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
                 PostItemRepository postItemRepository = new PostItemRepository();
                 Comment comment = new Comment();
-                comment.setContent(inputComment.getValue());
-                comment.setPostID(Integer.parseInt(postID));
+                comment.setContent(mInputComment.getValue());
+                comment.setPostID(Integer.parseInt(mPostID));
                 comment.setUserID(preferences.getInt(Constant.USER_ID, 0));
                 postItemRepository.createComment(comment,
-                        commentLiveData,
+                        mCommentLiveData,
                         preferences.getString(Constant.PUSHY_TOKEN, ""));
             }
         }
@@ -60,7 +60,7 @@ public class CommentsSectionViewModel extends ViewModel {
      * @param appContext {@link Context}
      */
     public void setAppContext(Context appContext) {
-        this.appContext = appContext;
+        this.mContext = appContext;
         callRepository();
     }
 
@@ -69,9 +69,9 @@ public class CommentsSectionViewModel extends ViewModel {
      */
     private void callRepository() {
         SharedPreferences prefs =
-                appContext.getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
+                mContext.getSharedPreferences(Constant.USER_INFO, Context.MODE_PRIVATE);
         PostItemRepository postItemRepository = new PostItemRepository();
-        this.commentLiveData = postItemRepository.getComments(postID,
+        this.mCommentLiveData = postItemRepository.getComments(mPostID,
                 prefs.getString(Constant.PUSHY_TOKEN, ""));
     }
 
@@ -80,7 +80,7 @@ public class CommentsSectionViewModel extends ViewModel {
      * @param postID {@link String}
      */
     public void setPostID(String postID) {
-        this.postID = postID;
+        this.mPostID = postID;
     }
 
 }

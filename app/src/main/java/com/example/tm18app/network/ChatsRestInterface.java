@@ -21,8 +21,8 @@ import retrofit2.http.Path;
  */
 public interface ChatsRestInterface {
 
-    @GET("api/chats/rooms/{userId}")
-    Call<List<ChatRoom>> getRoomsByUserId(@Path("userId") String userId,
+    @GET("api/chats/rooms/{mUserID}")
+    Call<List<ChatRoom>> getRoomsByUserId(@Path("mUserID") String userId,
                                           @Header("pushy") String pushyToken);
 
     @GET("api/chats/{roomId}/{page}")
