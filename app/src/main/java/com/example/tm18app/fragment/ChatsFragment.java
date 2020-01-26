@@ -17,12 +17,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.tm18app.App;
 import com.example.tm18app.R;
 import com.example.tm18app.adapters.ChatsAdapter;
 import com.example.tm18app.databinding.FragmentChatsBinding;
 import com.example.tm18app.model.ChatRoom;
-import com.example.tm18app.model.UserActivity;
 import com.example.tm18app.viewModels.ChatsViewModel;
 
 import java.util.ArrayList;

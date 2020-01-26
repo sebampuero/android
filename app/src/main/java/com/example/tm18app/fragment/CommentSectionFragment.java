@@ -2,17 +2,6 @@ package com.example.tm18app.fragment;
 
 
 import android.os.Bundle;
-
-import androidx.appcompat.widget.Toolbar;
-import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,13 +9,18 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.tm18app.MainActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.tm18app.R;
 import com.example.tm18app.adapters.CommentsAdapter;
 import com.example.tm18app.databinding.FragmentCommentSectionBinding;
 import com.example.tm18app.model.Comment;
 import com.example.tm18app.viewModels.CommentsSectionViewModel;
-import com.example.tm18app.viewModels.MyViewModel;
 
 import java.util.ArrayList;
 import java.util.Collections;

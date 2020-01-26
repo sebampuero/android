@@ -2,13 +2,10 @@ package com.example.tm18app.util;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.util.Log;
 
 import androidx.core.os.ConfigurationCompat;
 
 import com.example.tm18app.R;
-
-import org.jetbrains.annotations.Contract;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

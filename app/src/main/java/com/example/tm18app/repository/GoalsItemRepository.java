@@ -3,9 +3,9 @@ package com.example.tm18app.repository;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.tm18app.model.Goal;
 import com.example.tm18app.network.GoalsRestInterface;
 import com.example.tm18app.network.RetrofitNetworkConnectionSingleton;
-import com.example.tm18app.model.Goal;
 
 import java.util.List;
 

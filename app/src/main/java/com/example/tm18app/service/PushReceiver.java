@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 import androidx.navigation.NavDeepLinkBuilder;
@@ -16,9 +15,7 @@ import androidx.navigation.NavDeepLinkBuilder;
 import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
 import com.example.tm18app.fragment.ChatMessagesFragment;
-import com.example.tm18app.fragment.ChatsFragment;
 import com.example.tm18app.fragment.SettingsFragment;
-import com.example.tm18app.model.ChatMessage;
 
 import me.pushy.sdk.Pushy;
 

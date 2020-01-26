@@ -5,11 +5,11 @@ import android.content.Context;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.tm18app.model.PasswordReset;
+import com.example.tm18app.model.User;
 import com.example.tm18app.network.RegisterUserAsyncTask;
 import com.example.tm18app.network.RetrofitNetworkConnectionSingleton;
 import com.example.tm18app.network.UserRestInterface;
-import com.example.tm18app.model.PasswordReset;
-import com.example.tm18app.model.User;
 
 import java.util.HashMap;
 

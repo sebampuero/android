@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 
 /**
  * Utility class for data type conversions

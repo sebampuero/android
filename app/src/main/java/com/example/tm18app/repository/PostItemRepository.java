@@ -7,10 +7,10 @@ import android.util.Log;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.tm18app.network.PostRestInterface;
-import com.example.tm18app.network.RetrofitNetworkConnectionSingleton;
 import com.example.tm18app.model.Comment;
 import com.example.tm18app.model.Post;
+import com.example.tm18app.network.PostRestInterface;
+import com.example.tm18app.network.RetrofitNetworkConnectionSingleton;
 import com.example.tm18app.service.UploadService;
 
 import java.util.ArrayList;

@@ -7,16 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.example.tm18app.MainActivity;
 import com.example.tm18app.R;
 import com.example.tm18app.databinding.FragmentEditPasswordBinding;
-import com.example.tm18app.viewModels.MyViewModel;
 import com.example.tm18app.viewModels.PasswordEditViewModel;
 
 import java.net.HttpURLConnection;

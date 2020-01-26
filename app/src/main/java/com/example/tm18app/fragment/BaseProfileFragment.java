@@ -1,14 +1,11 @@
 package com.example.tm18app.fragment;
 
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 
@@ -16,7 +13,6 @@ import com.example.tm18app.R;
 import com.example.tm18app.model.Post;
 import com.example.tm18app.util.DialogManager;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**

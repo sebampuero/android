@@ -3,8 +3,6 @@ package com.example.tm18app.network;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.net.Uri;
-import android.os.Environment;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.example.tm18app.R;
