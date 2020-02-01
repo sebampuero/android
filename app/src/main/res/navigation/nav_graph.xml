@@ -125,4 +125,9 @@
         android:name="com.example.tm18app.fragment.PostImgFragment"
         android:label=""
         tools:layout="@layout/fragment_post_img" />
+    <fragment
+        android:id="@+id/notificationsFragment"
+        android:name="com.example.tm18app.fragment.NotificationsFragment"
+        android:label="@string/notifications"
+        tools:layout="@layout/fragment_notifications" />
 </navigation>

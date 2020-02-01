@@ -169,5 +169,8 @@
     <string name="cannot_load_chats">Unable to load  chats</string>
     <string name="chat_room_deleted_by_other">deleteted the chat</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 
 </resources>
